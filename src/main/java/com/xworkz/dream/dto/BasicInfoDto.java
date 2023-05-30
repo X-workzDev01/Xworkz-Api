@@ -3,6 +3,7 @@ package com.xworkz.dream.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 
 //name
@@ -14,6 +15,7 @@ import lombok.Data;
 
 
 @Data
+@NoArgsConstructor
 @AllArgsConstructor
 public class BasicInfoDto {
 	

@@ -4,6 +4,7 @@ import com.xworkz.dream.constants.BatchInfo;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 //course
 //batch
@@ -14,12 +15,13 @@ import lombok.Data;
 //referenceMobileNumber
 
 @Data
+@NoArgsConstructor
 @AllArgsConstructor
-public class Additional_InfoDto {
+public class CourseDto {
 	
 	private String course;
 	private String branch;
-	private BatchInfo batch;
+	private String batch;
 	
 	
 	

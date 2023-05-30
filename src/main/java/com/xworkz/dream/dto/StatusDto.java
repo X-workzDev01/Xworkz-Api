@@ -3,6 +3,7 @@ package com.xworkz.dream.dto;
 import com.xworkz.dream.constants.Interest;
 
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 //enum - Interested
 //Official Status
@@ -10,6 +11,7 @@ import lombok.Data;
 //Comments
 
 @Data
+@NoArgsConstructor
 public class StatusDto {
 	
 	private Interest interestInfo;

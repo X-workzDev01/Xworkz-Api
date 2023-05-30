@@ -1,6 +1,6 @@
-sheets:	
-	appName:Dream Api
-	credentialsPath:src/main/resources/META-INF
-	
-	
-	
+sheets:
+  appName: Dream Api
+  credentialsPath: src/main/resources/META-INF/credentials.json
+  range: A3:M
+  emailRange: B3:B
+  contactNumberRange: C3:C

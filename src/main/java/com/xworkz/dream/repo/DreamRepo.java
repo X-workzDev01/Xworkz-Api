@@ -8,6 +8,7 @@ import java.util.Collections;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Repository;
 
 import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
@@ -19,7 +20,7 @@ import com.google.api.services.sheets.v4.SheetsScopes;
 import com.google.api.services.sheets.v4.model.ValueRange;
 import com.google.auth.http.HttpCredentialsAdapter;
 import com.google.auth.oauth2.GoogleCredentials;
-import com.xworkz.dream.dto.Student_InfoDto;
+import com.xworkz.dream.dto.TraineeDto;
 import com.xworkz.dream.wrapper.DreamWrapper;
 
 
@@ -33,11 +34,17 @@ public class DreamRepo {
 	    private static final JsonFactory JSON_FACTORY = GsonFactory.getDefaultInstance();
 	    private static final List<String> SCOPES = Collections.singletonList(SheetsScopes.SPREADSHEETS);
 	    private  Sheets sheetsService;
+	    @Value("${sheets.range}")
+	    private String range;
+	    @Value("${sheets.emailRange}")
+	    private String emailRange;
+	    @Value("${sheets.contactNumberRange}")
+	    private String contactNumberRange;
 	    
 	    
 	    public DreamRepo() throws IOException, GeneralSecurityException {
 	    	
-			GoogleCredentials credentials = GoogleCredentials.fromStream(new FileInputStream(credentialsPath))
+			GoogleCredentials credentials = GoogleCredentials.fromStream(new FileInputStream("src/main/resources/META-INF/credentials.json"))
 	                .createScoped(SCOPES);
 			
 			 HttpRequestInitializer requestInitializer = new HttpCredentialsAdapter(
@@ -47,7 +54,7 @@ public class DreamRepo {
 		            .build();
 	    }
 	    
-	    public void writeData(String spreadsheetId, String range,  Student_InfoDto dto) throws IOException {
+	    public boolean writeData(String spreadsheetId,  TraineeDto dto) throws IOException {
 	        List<List<Object>> values = new ArrayList<>();
 	        List<Object> row = DreamWrapper.dtoToList(dto);
 	        values.add(row);
@@ -56,7 +63,22 @@ public class DreamRepo {
 	                .append(spreadsheetId, range, body)
 	                .setValueInputOption("USER_ENTERED")
 	                .execute();
+	        return true;
 	    }
+
+		public ValueRange getEmails(String spreadsheetId) throws IOException {
+			ValueRange response = sheetsService.spreadsheets().values()
+                    .get(spreadsheetId, emailRange)
+                    .execute();
+					return response;
+		}
+		
+		public ValueRange getContactNumbers(String spreadsheetId) throws IOException {
+			ValueRange response = sheetsService.spreadsheets().values()
+                    .get(spreadsheetId, contactNumberRange)
+                    .execute();
+					return response;
+		}
 	    
 	    
 	    
