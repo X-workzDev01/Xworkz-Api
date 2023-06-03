@@ -1,9 +1,10 @@
 plugins {
-	id 'java'
-	id 'war'
-	id 'org.springframework.boot' version '2.7.5'
-	id 'io.spring.dependency-management' version '1.0.15.RELEASE'
+    id 'java'
+    id 'war'
+    id 'org.springframework.boot' version '2.7.5'
+    id 'io.spring.dependency-management' version '1.0.15.RELEASE'
 }
+
 sourceSets {
     main {
         java {
@@ -20,38 +21,38 @@ version = '0.0.1-SNAPSHOT'
 sourceCompatibility = '1.8'
 
 repositories {
-	mavenCentral()
-}
-ext {
-	set('springCloudVersion', "2021.0.5")
+    mavenCentral()
 }
 
+ext {
+    set('springCloudVersion', '2021.0.3')
+}
 
 dependencies {
-	implementation 'org.springframework.boot:spring-boot-starter-web'
-	developmentOnly 'org.springframework.boot:spring-boot-devtools'
-	providedRuntime 'org.springframework.boot:spring-boot-starter-tomcat'
-	compileOnly 'org.projectlombok:lombok'
-  	annotationProcessor 'org.projectlombok:lombok'
-	testImplementation 'org.springframework.boot:spring-boot-starter-test'	
-	
-	implementation group: 'io.springfox', name: 'springfox-boot-starter', version: '3.0.0'
-
-	implementation group: 'io.springfox', name: 'springfox-swagger-ui', version: '3.0.0'
-	implementation group: 'io.springfox', name: 'springfox-swagger2', version: '3.0.0'
-	implementation group: 'com.google.apis', name: 'google-api-services-sheets', version: 'v4-rev612-1.25.0'
-	implementation group: 'com.google.api-client', name: 'google-api-client', version: '1.31.2'
-	implementation group: 'com.google.auth', name: 'google-auth-library-oauth2-http', version: '1.16.0'
-	implementation group: 'com.google.auth', name: 'google-auth-library-credentials', version: '1.16.0'
-
+    implementation 'org.springframework.boot:spring-boot-starter-web'
+    developmentOnly 'org.springframework.boot:spring-boot-devtools'
+    providedRuntime 'org.springframework.boot:spring-boot-starter-tomcat'
+    compileOnly 'org.projectlombok:lombok'
+    annotationProcessor 'org.projectlombok:lombok'
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+	 
+	implementation group: 'com.sun.mail', name: 'javax.mail', version: '1.4.7'
+    implementation group: 'io.springfox', name: 'springfox-boot-starter', version: '3.0.0'
+    implementation group: 'io.springfox', name: 'springfox-swagger-ui', version: '3.0.0'
+	implementation group: 'com.fasterxml.jackson.dataformat', name: 'jackson-dataformat-yaml', version: '2.1.2'
+    implementation group: 'com.google.apis', name: 'google-api-services-sheets', version: 'v4-rev612-1.25.0'
+    implementation group: 'com.google.api-client', name: 'google-api-client', version: '1.31.2'
+    implementation group: 'com.google.auth', name: 'google-auth-library-oauth2-http', version: '1.16.0'
+    implementation group: 'com.google.auth', name: 'google-auth-library-credentials', version: '1.16.0'
 }
 
 dependencyManagement {
-	imports {
-		mavenBom "org.springframework.cloud:spring-cloud-dependencies:${springCloudVersion}"
-	}
+    imports {
+        mavenBom "org.springframework.cloud:spring-cloud-dependencies:${springCloudVersion}"
+    }
 }
 
 tasks.named('test') {
-	useJUnitPlatform()
+    useJUnitPlatform()
 }
+

@@ -1,11 +1,14 @@
 package com.xworkz.dream.repo;
 
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+
+import javax.annotation.PostConstruct;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
@@ -42,9 +45,10 @@ public class DreamRepo {
 	    private String contactNumberRange;
 	    
 	    
-	    public DreamRepo() throws IOException, GeneralSecurityException {
-	    	
-			GoogleCredentials credentials = GoogleCredentials.fromStream(new FileInputStream("src/main/resources/META-INF/credentials.json"))
+	   
+	    @PostConstruct
+		private void setSheetsService() throws IOException, FileNotFoundException, GeneralSecurityException {
+			GoogleCredentials credentials = GoogleCredentials.fromStream(new FileInputStream(credentialsPath))
 	                .createScoped(SCOPES);
 			
 			 HttpRequestInitializer requestInitializer = new HttpCredentialsAdapter(
@@ -52,7 +56,7 @@ public class DreamRepo {
 			sheetsService = new Sheets.Builder(GoogleNetHttpTransport.newTrustedTransport(), JSON_FACTORY, requestInitializer)
 		            .setApplicationName(applicationName)
 		            .build();
-	    }
+		}
 	    
 	    public boolean writeData(String spreadsheetId,  TraineeDto dto) throws IOException {
 	        List<List<Object>> values = new ArrayList<>();

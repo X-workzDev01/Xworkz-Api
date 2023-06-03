@@ -9,7 +9,7 @@ public class DreamWrapper {
 	
 	public static List<Object> dtoToList(TraineeDto dto){
 		List<Object> row = new ArrayList<>();
-		row.add(dto.getBasicInfo().getName());
+		row.add(dto.getBasicInfo().getTraineeName());
 		row.add(dto.getBasicInfo().getEmail());
 		row.add(dto.getBasicInfo().getContactNumber());
 		row.add(dto.getEducationInfo().getQualification());

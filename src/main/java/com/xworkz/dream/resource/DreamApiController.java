@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -28,9 +29,10 @@ public class DreamApiController {
 	
 	
 	
+	
 	@ApiOperation(value = "To register the trainee details in the google sheets")
 	@PostMapping("/register")
-	public ResponseEntity<String> register(@RequestParam String spreadsheetId, @RequestBody TraineeDto values)
+	public ResponseEntity<String> register(@RequestHeader String spreadsheetId, @RequestBody TraineeDto values)
 			throws IOException {
 		System.out.println(values);
 		service.writeData(spreadsheetId, values);
@@ -49,7 +51,6 @@ public class DreamApiController {
 	public ResponseEntity<String> contactNumberCheck(@RequestParam String spreadsheetId , @RequestParam Long contactNumber){
 		return service.contactNumberCheck(spreadsheetId, contactNumber);
 	}
-	
 	
 	
 

@@ -6,20 +6,12 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 
-//name
-//contactNumber
-//emailAddress
-//qualification
-//stream
-//yearOfPassout
-
-
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 public class BasicInfoDto {
 	
-	private String name;
+	private String traineeName;
 	private Long contactNumber;
 	private String email;
 

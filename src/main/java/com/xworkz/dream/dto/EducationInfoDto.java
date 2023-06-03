@@ -11,7 +11,7 @@ public class EducationInfoDto {
 	
 	private String qualification;
 	private String stream;
-	private Integer yearOfPassout;
+	private String yearOfPassout;
 	private String collegeName;
 
 }

@@ -4,3 +4,11 @@ sheets:
   range: A3:M
   emailRange: B3:B
   contactNumberRange: C3:C
+mail:
+   smtpHost: smtp.office365.com
+   smtpPort: 587
+   userName: xworkzdev@outlook.com
+   password: KeepIT@Temp789
+    
+login: 
+  userFile: src/main/resources/users.yml

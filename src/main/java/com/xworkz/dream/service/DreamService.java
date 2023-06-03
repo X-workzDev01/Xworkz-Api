@@ -26,7 +26,6 @@ public class DreamService {
 		try {
 			return repo.writeData(spreadsheetId, dto);
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		return false;
@@ -36,18 +35,18 @@ public class DreamService {
 
 
 	public ResponseEntity<String> emailCheck( String spreadsheetId , String email) {
-		// TODO Auto-generated method stub
+
 		try {
 			ValueRange values = repo.getEmails(spreadsheetId);
 		    if (values.getValues() != null) {
 		    	System.out.println(values);
                 for (List<Object> row : values.getValues()) {
                     if (row.get(0).toString().equalsIgnoreCase(email)) {
-                        return ResponseEntity.ok("Email exists");
+                    	 return ResponseEntity.status(HttpStatus.FOUND).body("Email exist");
                     }
                 }
             }
-		    return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Email does not exist");
+		    return ResponseEntity.ok("Email Does not exists");
 			
 		} catch (Exception e) {
 			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("An error occurred");			
@@ -59,15 +58,15 @@ public class DreamService {
 		// TODO Auto-generated method stub
 		try {
 			ValueRange values = repo.getContactNumbers(spreadsheetId);
-		    if (values.getValues() != null) {
+		    if (values.getValues() != null){
 		    	System.out.println(values);
                 for (List<Object> row : values.getValues()) {
                     if (row.get(0).toString().equals(String.valueOf(contactNumber))){
-                        return ResponseEntity.ok("Contact Number exists");
+                        return ResponseEntity.status(HttpStatus.FOUND).body("Contact Number  exist");
                     }
                 }
             }
-		    return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Contact Number Does not exist");
+		    return ResponseEntity.ok("Contact Number Does not exists");
 			
 		} catch (Exception e) {
 			e.printStackTrace();
