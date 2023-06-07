@@ -8,9 +8,9 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class ReferalInfoDto {
-	
+
 	private String referalName;
 	private Long referalContactNumber;
-	private String comments; 
+	private String comments;
 
 }

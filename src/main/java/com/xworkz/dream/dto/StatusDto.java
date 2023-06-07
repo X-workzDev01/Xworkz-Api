@@ -13,12 +13,10 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 public class StatusDto {
-	
+
 	private Interest interestInfo;
 	private boolean joinedWhatsapp;
 	private Status status;
 	private String otherComments;
-	
-	
 
 }

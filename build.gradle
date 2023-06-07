@@ -12,9 +12,13 @@ sourceSets {
         }
         resources {
             srcDirs = ['src/main/resources']
+           
+            
         }
     }
 }
+
+
 
 group = 'com.xworkz'
 version = '0.0.1-SNAPSHOT'

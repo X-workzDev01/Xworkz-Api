@@ -18,12 +18,9 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class CourseDto {
-	
+
 	private String course;
 	private String branch;
 	private String batch;
-	
-	
-	
 
 }

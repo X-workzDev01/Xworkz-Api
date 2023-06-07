@@ -8,7 +8,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class EducationInfoDto {
-	
+
 	private String qualification;
 	private String stream;
 	private String yearOfPassout;

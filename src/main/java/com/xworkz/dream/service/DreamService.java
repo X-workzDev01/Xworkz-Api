@@ -14,15 +14,11 @@ import com.xworkz.dream.repo.DreamRepo;
 
 @Service
 public class DreamService {
-	
-	
+
 	@Autowired
 	private DreamRepo repo;
-	
-	
-	
-	
-	public boolean writeData(String spreadsheetId,TraineeDto dto) {
+
+	public boolean writeData(String spreadsheetId, TraineeDto dto) {
 		try {
 			return repo.writeData(spreadsheetId, dto);
 		} catch (IOException e) {
@@ -31,48 +27,45 @@ public class DreamService {
 		return false;
 	}
 
-
-
-
-	public ResponseEntity<String> emailCheck( String spreadsheetId , String email) {
+	public ResponseEntity<String> emailCheck(String spreadsheetId, String email) {
 
 		try {
 			ValueRange values = repo.getEmails(spreadsheetId);
-		    if (values.getValues() != null) {
-		    	System.out.println(values);
-                for (List<Object> row : values.getValues()) {
-                    if (row.get(0).toString().equalsIgnoreCase(email)) {
-                    	 return ResponseEntity.status(HttpStatus.FOUND).body("Email exist");
-                    }
-                }
-            }
-		    return ResponseEntity.ok("Email Does not exists");
-			
+			if (values.getValues() != null) {
+
+				for (List<Object> row : values.getValues()) {
+					if (row.get(0).toString().equalsIgnoreCase(email)) {
+						return ResponseEntity.status(HttpStatus.FOUND).body("Email exist");
+					}
+				}
+			}
+			return ResponseEntity.ok("Email Does not exists");
+
 		} catch (Exception e) {
-			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("An error occurred");			
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("An error occurred");
 		}
-		
+
 	}
-	
-	public ResponseEntity<String> contactNumberCheck( String spreadsheetId , Long contactNumber) {
+
+	public ResponseEntity<String> contactNumberCheck(String spreadsheetId, Long contactNumber) {
 		// TODO Auto-generated method stub
 		try {
 			ValueRange values = repo.getContactNumbers(spreadsheetId);
-		    if (values.getValues() != null){
-		    	System.out.println(values);
-                for (List<Object> row : values.getValues()) {
-                    if (row.get(0).toString().equals(String.valueOf(contactNumber))){
-                        return ResponseEntity.status(HttpStatus.FOUND).body("Contact Number  exist");
-                    }
-                }
-            }
-		    return ResponseEntity.ok("Contact Number Does not exists");
-			
+			if (values.getValues() != null) {
+
+				for (List<Object> row : values.getValues()) {
+					if (row.get(0).toString().equals(String.valueOf(contactNumber))) {
+						return ResponseEntity.status(HttpStatus.FOUND).body("Contact Number  exist");
+					}
+				}
+			}
+			return ResponseEntity.ok("Contact Number Does not exists");
+
 		} catch (Exception e) {
 			e.printStackTrace();
-			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("An error occurred");			
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("An error occurred");
 		}
-		
+
 	}
 
 }

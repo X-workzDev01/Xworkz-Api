@@ -1,4 +1,4 @@
-package com.xworkz.dream.util;
+package com.xworkz.dream.dto.utils;
 
 import java.time.Instant;
 import java.time.LocalDateTime;

@@ -6,8 +6,8 @@ import java.util.List;
 import com.xworkz.dream.dto.TraineeDto;
 
 public class DreamWrapper {
-	
-	public static List<Object> dtoToList(TraineeDto dto){
+
+	public static List<Object> dtoToList(TraineeDto dto) {
 		List<Object> row = new ArrayList<>();
 		row.add(dto.getBasicInfo().getTraineeName());
 		row.add(dto.getBasicInfo().getEmail());
@@ -22,12 +22,9 @@ public class DreamWrapper {
 		row.add(dto.getReferralInfo().getReferalName());
 		row.add(dto.getReferralInfo().getReferalContactNumber());
 		row.add(dto.getReferralInfo().getComments());
-		
-		
-		
-		
+
 		return row;
-		
+
 	}
 
 }
