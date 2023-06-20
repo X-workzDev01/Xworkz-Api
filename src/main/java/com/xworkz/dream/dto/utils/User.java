@@ -21,10 +21,13 @@ public class User {
 	private String name;
 	private int otp;
 	private LocalDateTime otpExpiration;
-//	
+	private String loginTime;
+
 	public User( String email , String name) {
 	this.name=name;
 	this.email=email;
 	}
+	
+	
 	
 }

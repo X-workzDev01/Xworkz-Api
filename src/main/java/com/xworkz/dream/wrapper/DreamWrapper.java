@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.xworkz.dream.dto.TraineeDto;
+import com.xworkz.dream.dto.utils.User;
 
 public class DreamWrapper {
 
@@ -26,5 +27,15 @@ public class DreamWrapper {
 		return row;
 
 	}
+	
+	public static List<Object> userToList(User user) {
+		List<Object> row = new ArrayList<>();
+		row.add(user.getEmail());
+		row.add(user.getLoginTime());
+		return row;
+		
+	}
+	
+	
 
 }

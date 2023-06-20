@@ -13,6 +13,7 @@ import javax.annotation.PostConstruct;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.ResourceLoader;
 import org.springframework.http.ResponseEntity;
@@ -48,6 +49,10 @@ public class DreamRepo {
 	private String contactNumberRange;
 	@Value("${sheets.dropdownRange}")
 	private String dropdownRange;
+	@Value("${sheets.loginInfoRange}")
+	private String loginInfoRange;
+	
+	
 
 	@Autowired
 	private ResourceLoader resourceLoader;
@@ -64,31 +69,44 @@ public class DreamRepo {
 		sheetsService = new Sheets.Builder(GoogleNetHttpTransport.newTrustedTransport(), JSON_FACTORY,
 				requestInitializer).setApplicationName(applicationName).build();
 	}
-
-	public boolean writeData(String spreadsheetId, TraineeDto dto) throws IOException {
+	@Cacheable(value = "sheetsData", key = "#spreadsheetId" , unless = "#result == null")
+	public boolean writeData(String spreadsheetId, List<Object> row) throws IOException {
 		List<List<Object>> values = new ArrayList<>();
-		List<Object> row = DreamWrapper.dtoToList(dto);
 		values.add(row);
 		ValueRange body = new ValueRange().setValues(values);
 		sheetsService.spreadsheets().values().append(spreadsheetId, range, body).setValueInputOption("USER_ENTERED")
 				.execute();
 		return true;
 	}
-
+	@Cacheable(value = "emailData", key = "#spreadsheetId" , unless = "#result == null")
 	public ValueRange getEmails(String spreadsheetId) throws IOException {
 		ValueRange response = sheetsService.spreadsheets().values().get(spreadsheetId, emailRange).execute();
 		return response;
 	}
-
+	@Cacheable(value = "contactData", key = "#spreadsheetId" , unless = "#result == null")
 	public ValueRange getContactNumbers(String spreadsheetId) throws IOException {
+		System.out.println("contact get");
 		ValueRange response = sheetsService.spreadsheets().values().get(spreadsheetId, contactNumberRange).execute();
 		return response;
 	}
-
+	
+	@Cacheable(value = "getDropdowns", key = "#spreadsheetId" , unless = "#result == null")
 	public List<List<Object>> getDropdown(String spreadsheetId) throws IOException {
-
+		System.out.println("running dropDown");
 		ValueRange response = sheetsService.spreadsheets().values().get(spreadsheetId, dropdownRange).execute();
 		return response.getValues();
+	}
+
+	public boolean updateLoginInfo(String spreadsheetId , List<Object> row) throws IOException {
+		List<List<Object>> values = new ArrayList<>();
+		values.add(row);
+		ValueRange body = new ValueRange().setValues(values);
+		
+		sheetsService.spreadsheets().values().append(spreadsheetId, loginInfoRange, body).setValueInputOption("USER_ENTERED")
+				.execute();
+		return true;
+		
+		
 	}
 
 }
