@@ -1,22 +1,36 @@
 package com.xworkz.dream.service;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
+import java.util.ListIterator;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.Cache;
+import org.springframework.cache.Cache.ValueWrapper;
+import org.springframework.cache.CacheManager;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
 
 import com.google.api.services.sheets.v4.model.ValueRange;
+import com.xworkz.dream.dto.BasicInfoDto;
+import com.xworkz.dream.dto.CourseDto;
+import com.xworkz.dream.dto.EducationInfoDto;
+import com.xworkz.dream.dto.ReferalInfoDto;
+import com.xworkz.dream.dto.SheetsDto;
 import com.xworkz.dream.dto.TraineeDto;
 import com.xworkz.dream.repo.DreamRepo;
 import com.xworkz.dream.wrapper.DreamWrapper;
@@ -26,7 +40,10 @@ public class DreamService {
 
 	@Autowired
 	private DreamRepo repo;
-	
+	@Autowired 
+	private DreamWrapper wrapper;
+	@Autowired
+	private CacheManager cacheManager;
 
 	 private static final Logger logger = LoggerFactory.getLogger(DreamService.class);
 
@@ -34,7 +51,7 @@ public class DreamService {
 	 public ResponseEntity<String> writeData(String spreadsheetId, TraineeDto dto, HttpServletRequest request) {
 		    try {
 		        if (isCookieValid(request)) {
-		            List<Object> list = DreamWrapper.dtoToList(dto);
+		            List<Object> list = wrapper.dtoToList(dto);
 		            boolean writeStatus = repo.writeData(spreadsheetId, list);
 		            if (writeStatus) {
 		                logger.info("Data written successfully to spreadsheetId: {}", spreadsheetId);
@@ -118,7 +135,12 @@ public class DreamService {
 	            e.printStackTrace();
 	            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("An error occurred");
 	        }
-	    }
+	    } 
+	    
+	    
+	    
+	    
+	    
 	    
 
 	    @CacheEvict(value = {"sheetsData", "emailData" , "contactData" , "getDropdowns"}, allEntries = true)
@@ -127,5 +149,53 @@ public class DreamService {
 	        // This method will be scheduled to run every 12 hours
 	        // and will evict all entries in the specified caches
 	    }
+
+		public ResponseEntity<SheetsDto> readData(String spreadsheetId, int startingIndex, int maxRows) {
+		try {
+			List<List<Object>> data = repo.readData(spreadsheetId);
+			List<TraineeDto> dtos = getLimitedRows(data, startingIndex, maxRows);
+			HttpServletResponse response = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes())
+					.getResponse();
+			String cacheName = "sheetsData";
+			Cache cache = cacheManager.getCache(cacheName);
+			
+			ValueWrapper valueWrapper = cache.get(spreadsheetId);
+			int listSize=0;
+			if (valueWrapper != null) {
+				List<List<Object>> cachedList = (List<List<Object>>) valueWrapper.get();
+				listSize = cachedList.size();
+			    System.out.println(listSize);
+			}
+			response.addIntHeader("totalSize", listSize);
+			SheetsDto dto = new SheetsDto(dtos , listSize);
+			return ResponseEntity.ok(dto);
+		} catch (IOException e) {
+
+			e.printStackTrace();
+			
+		}
+		return null;
+			
+		}
+		
+		public List<TraineeDto> getLimitedRows(List<List<Object>> values, int startingIndex, int maxRows) {
+		    List<TraineeDto> traineeDtos = new ArrayList<>();
+
+		    int endIndex = startingIndex + maxRows;
+		    int rowCount = values.size();
+
+		    ListIterator<List<Object>> iterator = values.listIterator(startingIndex);
+
+		    while (iterator.hasNext() && iterator.nextIndex() < endIndex) {
+		        List<Object> row = iterator.next();
+		    
+		        if (row != null && !row.isEmpty()) {
+		            TraineeDto traineeDto = wrapper.listToDto(row);
+		            traineeDtos.add(traineeDto);
+		        }
+		    }
+
+		    return traineeDtos;
+		}
 }
 

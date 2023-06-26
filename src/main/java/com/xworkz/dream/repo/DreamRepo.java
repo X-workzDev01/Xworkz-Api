@@ -69,7 +69,7 @@ public class DreamRepo {
 		sheetsService = new Sheets.Builder(GoogleNetHttpTransport.newTrustedTransport(), JSON_FACTORY,
 				requestInitializer).setApplicationName(applicationName).build();
 	}
-	@Cacheable(value = "sheetsData", key = "#spreadsheetId" , unless = "#result == null")
+	
 	public boolean writeData(String spreadsheetId, List<Object> row) throws IOException {
 		List<List<Object>> values = new ArrayList<>();
 		values.add(row);
@@ -107,6 +107,12 @@ public class DreamRepo {
 		return true;
 		
 		
+	}
+	
+	@Cacheable(value = "sheetsData", key = "#spreadsheetId" , unless = "#result == null")
+	public List<List<Object>> readData(String spreadsheetId) throws IOException {
+		ValueRange response = sheetsService.spreadsheets().values().get(spreadsheetId, range).execute();
+		return response.getValues();
 	}
 
 }
