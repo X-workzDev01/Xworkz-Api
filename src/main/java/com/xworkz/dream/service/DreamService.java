@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.ListIterator;
+import java.util.stream.Collectors;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServlet;
@@ -196,6 +197,19 @@ public class DreamService {
 		    }
 
 		    return traineeDtos;
+		}
+
+		public List<TraineeDto> filterData(String spreadsheetId , String searchValue) throws IOException {
+			List<List<Object>> data = repo.readData(spreadsheetId);
+			 List<List<Object>> filteredLists = data.stream()
+		                .filter(list -> list.stream().anyMatch(value -> value.toString().toLowerCase().contains(searchValue)))
+		                .collect(Collectors.toList());
+			 List<TraineeDto> flist = new ArrayList<TraineeDto>();
+		            for (List<Object> list2 : filteredLists) {
+						TraineeDto dto = wrapper.listToDto(list2);
+						flist.add(dto);
+					}  
+			return flist;
 		}
 }
 

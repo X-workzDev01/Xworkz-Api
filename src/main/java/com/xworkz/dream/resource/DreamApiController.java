@@ -62,6 +62,21 @@ public class DreamApiController {
 			@RequestParam int maxRows) {
 		return service.readData(spreadsheetId , startingIndex , maxRows);
 		
-	}	
+	}
+	
+	@GetMapping("/filterData")
+	public List<TraineeDto> filterData(@RequestHeader String spreadsheetId, @RequestParam String searchValue) {
+		try {
+			return service.filterData(spreadsheetId , searchValue);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return null;
+		
+	}
+	
+	
+	
 
 }
