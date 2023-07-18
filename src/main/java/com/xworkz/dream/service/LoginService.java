@@ -104,10 +104,10 @@ public class LoginService {
 
 		HttpServletResponse response = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes())
 				.getResponse();
-		Cookie cookie = new Cookie("Xworkz", null);
+		Cookie cookie = new Cookie("Xworkz", util.generateToken());
 		cookie.setMaxAge(0);
-		
-		cookie.setDomain(cookieDomain);
+//		cookie.setSecure(false);
+//		cookie.setDomain(cookieDomain);
 	    cookie.setPath("/");
 		
 		response.addCookie(cookie);

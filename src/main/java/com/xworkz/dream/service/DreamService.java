@@ -2,6 +2,7 @@ package com.xworkz.dream.service;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 import java.util.ListIterator;
@@ -15,6 +16,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cache.Cache;
 import org.springframework.cache.Cache.ValueWrapper;
 import org.springframework.cache.CacheManager;
@@ -26,6 +28,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
+import com.google.api.services.sheets.v4.model.UpdateValuesResponse;
 import com.google.api.services.sheets.v4.model.ValueRange;
 import com.xworkz.dream.dto.BasicInfoDto;
 import com.xworkz.dream.dto.CourseDto;
@@ -45,15 +48,27 @@ public class DreamService {
 	private DreamWrapper wrapper;
 	@Autowired
 	private CacheManager cacheManager;
+	@Value("${sheets.rowStartRange}")
+	private String rowStartRange;
+	@Value("${sheets.rowEndRange}")
+	private String rowEndRange;
 
 	 private static final Logger logger = LoggerFactory.getLogger(DreamService.class);
 
 	    // Rest of your code...
 	 public ResponseEntity<String> writeData(String spreadsheetId, TraineeDto dto, HttpServletRequest request) {
 		    try {
-		        if (isCookieValid(request)) {
+		    	if (true) {// isCookieValid(request)
+		    		List<List<Object>> data =  repo.readData(spreadsheetId);
+		            int size = data.size();
+		            System.out.println(size);
+		            
+		            dto.setId(size+=1);
+		            System.out.println(dto.getId());
 		            List<Object> list = wrapper.dtoToList(dto);
+		            
 		            boolean writeStatus = repo.writeData(spreadsheetId, list);
+		            
 		            if (writeStatus) {
 		                logger.info("Data written successfully to spreadsheetId: {}", spreadsheetId);
 		                return ResponseEntity.ok("Data written successfully");
@@ -75,7 +90,7 @@ public class DreamService {
 
 	    public ResponseEntity<String> emailCheck(String spreadsheetId, String email, HttpServletRequest request) {
 	        try {
-	            if (isCookieValid(request)) {
+	        	if (true) {// isCookieValid(request)
 	                ValueRange values = repo.getEmails(spreadsheetId);
 	                if (values.getValues() != null) {
 	                    for (List<Object> row : values.getValues()) {
@@ -97,7 +112,8 @@ public class DreamService {
 	            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("An error occurred");
 	        }
 	    }
-
+	    
+	    
 	    private boolean isCookieValid(HttpServletRequest request) {
 	        Cookie[] cookies = request.getCookies();
 	        if (cookies != null) {
@@ -114,7 +130,7 @@ public class DreamService {
 	    
 	    public ResponseEntity<String> contactNumberCheck(String spreadsheetId, Long contactNumber, HttpServletRequest request) {
 	        try {
-	            if (isCookieValid(request)) {
+	            if (true) {// isCookieValid(request)
 	                ValueRange values = repo.getContactNumbers(spreadsheetId);
 	                if (values.getValues() != null) {
 	                    for (List<Object> row : values.getValues()) {
@@ -155,23 +171,14 @@ public class DreamService {
 		try {
 			List<List<Object>> data = repo.readData(spreadsheetId);
 			List<TraineeDto> dtos = getLimitedRows(data, startingIndex, maxRows);
+			
 			HttpServletResponse response = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes())
 					.getResponse();
-			String cacheName = "sheetsData";
-			Cache cache = cacheManager.getCache(cacheName);
 			
-			ValueWrapper valueWrapper = cache.get(spreadsheetId);
-			int listSize=0;
-			if (valueWrapper != null) {
-				List<List<Object>> cachedList = (List<List<Object>>) valueWrapper.get();
-				listSize = cachedList.size();
-			    System.out.println(listSize);
-			}
-			response.addIntHeader("totalSize", listSize);
-			SheetsDto dto = new SheetsDto(dtos , listSize);
+			SheetsDto dto = new SheetsDto(dtos , dtos.size());
 			return ResponseEntity.ok(dto);
 		} catch (IOException e) {
-
+			
 			e.printStackTrace();
 			
 		}
@@ -200,16 +207,62 @@ public class DreamService {
 		}
 
 		public List<TraineeDto> filterData(String spreadsheetId , String searchValue) throws IOException {
-			List<List<Object>> data = repo.readData(spreadsheetId);
-			 List<List<Object>> filteredLists = data.stream()
-		                .filter(list -> list.stream().anyMatch(value -> value.toString().toLowerCase().contains(searchValue)))
-		                .collect(Collectors.toList());
-			 List<TraineeDto> flist = new ArrayList<TraineeDto>();
-		            for (List<Object> list2 : filteredLists) {
-						TraineeDto dto = wrapper.listToDto(list2);
-						flist.add(dto);
-					}  
-			return flist;
+			if(searchValue!=null && !searchValue.isEmpty()) {
+				List<List<Object>> data = repo.readData(spreadsheetId);
+				 List<List<Object>> filteredLists = data.stream()
+			                .filter(list -> list.stream().anyMatch(value -> value.toString().toLowerCase().contains(searchValue)))
+			                .collect(Collectors.toList());
+				 List<TraineeDto> flist = new ArrayList<TraineeDto>();
+			            for (List<Object> list2 : filteredLists) {
+							TraineeDto dto = wrapper.listToDto(list2);
+							flist.add(dto);
+						}  
+				return flist;
+			}
+			else {
+				return null;
+			}
 		}
+
+		public ResponseEntity<String> updateFollowUps(String spreadsheetId) {
+			
+			return null;
+		}
+		
+		public ResponseEntity<String> update(String spreadsheetId, String email , TraineeDto dto){
+			try {
+				int rowIndex = findRowIndexByEmail(spreadsheetId, email);
+				String range = "xworkzApi!" + rowStartRange + rowIndex + ":"+ rowEndRange + rowIndex;
+				 List<List<Object>> values = Arrays.asList(wrapper.dtoToList(dto));
+
+			        ValueRange valueRange = new ValueRange();
+			        valueRange.setValues(values);
+			        UpdateValuesResponse updated = repo.update(spreadsheetId , range , valueRange);
+			       return ResponseEntity.ok("Updated Successfully");
+			       
+			} catch (IOException e) {
+				e.printStackTrace();
+				return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("An error occurred ");
+				
+			}
+			
+		}
+		
+		 private int findRowIndexByEmail(String spreadsheetId, String email) throws IOException{
+		     
+				ValueRange data = repo.getEmails(spreadsheetId); 
+		        List<List<Object>> values = data.getValues();
+		        if (values != null) {
+		            for (int i = 0; i < values.size(); i++) {
+		                List<Object> row = values.get(i);
+		                if (row.size() > 0 && row.get(0).toString().equalsIgnoreCase(email)) {
+		                    return i + 3;
+		                }
+		            }
+		        }
+		        return -1;
+		    }
+		 
+		
 }
 

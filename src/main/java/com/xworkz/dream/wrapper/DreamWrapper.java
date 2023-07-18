@@ -17,6 +17,7 @@ public class DreamWrapper {
 
 	public  List<Object> dtoToList(TraineeDto dto) {
 		List<Object> row = new ArrayList<>();
+		row.add(dto.getId());
 		row.add(dto.getBasicInfo().getTraineeName());
 		row.add(dto.getBasicInfo().getEmail());
 		row.add(dto.getBasicInfo().getContactNumber());
@@ -36,49 +37,54 @@ public class DreamWrapper {
 	}
 	
 	public TraineeDto listToDto(List<Object> row) {
-	    TraineeDto traineeDto = new TraineeDto(new BasicInfoDto(), new EducationInfoDto(), new CourseDto(), new ReferalInfoDto());
+	    TraineeDto traineeDto = new TraineeDto(0 ,new BasicInfoDto(), new EducationInfoDto(), new CourseDto(), new ReferalInfoDto());
 
-	    // Assuming the list follows this order: traineeName, email, contactNumber, qualification, stream,
+	    // Assuming the list follows this order: id ,traineeName, email, contactNumber, qualification, stream,
 	    // yearOfPassout, collegeName, batch, branch, course, referalName, referalContactNumber, comments
-
+	    // if there any changes in table, please make sure right changes are done here also
+	    
 	    if (row.get(0) != null && !row.get(0).toString().isEmpty()) {
-	        traineeDto.getBasicInfo().setTraineeName((String) row.get(0));
+	        traineeDto.setId(Integer.valueOf((String) row.get(0)));
 	    }
+
 	    if (row.get(1) != null && !row.get(1).toString().isEmpty()) {
-	        traineeDto.getBasicInfo().setEmail((String) row.get(1));
+	        traineeDto.getBasicInfo().setTraineeName((String) row.get(1));
 	    }
 	    if (row.get(2) != null && !row.get(2).toString().isEmpty()) {
-	        traineeDto.getBasicInfo().setContactNumber(Long.parseLong(row.get(2).toString()));
+	        traineeDto.getBasicInfo().setEmail((String) row.get(2));
 	    }
 	    if (row.get(3) != null && !row.get(3).toString().isEmpty()) {
-	        traineeDto.getEducationInfo().setQualification((String) row.get(3));
+	        traineeDto.getBasicInfo().setContactNumber(Long.parseLong(row.get(3).toString()));
 	    }
 	    if (row.get(4) != null && !row.get(4).toString().isEmpty()) {
-	        traineeDto.getEducationInfo().setStream((String) row.get(4));
+	        traineeDto.getEducationInfo().setQualification((String) row.get(4));
 	    }
 	    if (row.get(5) != null && !row.get(5).toString().isEmpty()) {
-	        traineeDto.getEducationInfo().setYearOfPassout((String) row.get(5));
+	        traineeDto.getEducationInfo().setStream((String) row.get(5));
 	    }
 	    if (row.get(6) != null && !row.get(6).toString().isEmpty()) {
-	        traineeDto.getEducationInfo().setCollegeName((String) row.get(6));
+	        traineeDto.getEducationInfo().setYearOfPassout((String) row.get(6));
 	    }
 	    if (row.get(7) != null && !row.get(7).toString().isEmpty()) {
-	        traineeDto.getCourseInfo().setBatch((String) row.get(7));
+	        traineeDto.getEducationInfo().setCollegeName((String) row.get(7));
 	    }
 	    if (row.get(8) != null && !row.get(8).toString().isEmpty()) {
-	        traineeDto.getCourseInfo().setBranch((String) row.get(8));
+	        traineeDto.getCourseInfo().setBatch((String) row.get(8));
 	    }
 	    if (row.get(9) != null && !row.get(9).toString().isEmpty()) {
-	        traineeDto.getCourseInfo().setCourse((String) row.get(9));
+	        traineeDto.getCourseInfo().setBranch((String) row.get(9));
 	    }
 	    if (row.get(10) != null && !row.get(10).toString().isEmpty()) {
-	        traineeDto.getReferralInfo().setReferalName((String) row.get(10));
+	        traineeDto.getCourseInfo().setCourse((String) row.get(10));
 	    }
 	    if (row.get(11) != null && !row.get(11).toString().isEmpty()) {
-	        traineeDto.getReferralInfo().setReferalContactNumber(Long.parseLong(row.get(11).toString()));
+	        traineeDto.getReferralInfo().setReferalName((String) row.get(11));
 	    }
 	    if (row.get(12) != null && !row.get(12).toString().isEmpty()) {
-	        traineeDto.getReferralInfo().setComments((String) row.get(12));
+	        traineeDto.getReferralInfo().setReferalContactNumber(Long.parseLong(row.get(12).toString()));
+	    }
+	    if (row.get(13) != null && !row.get(13).toString().isEmpty()) {
+	        traineeDto.getReferralInfo().setComments((String) row.get(13));
 	    }
 
 	    return traineeDto;

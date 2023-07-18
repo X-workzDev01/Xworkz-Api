@@ -25,6 +25,7 @@ import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.gson.GsonFactory;
 import com.google.api.services.sheets.v4.Sheets;
 import com.google.api.services.sheets.v4.SheetsScopes;
+import com.google.api.services.sheets.v4.model.UpdateValuesResponse;
 import com.google.api.services.sheets.v4.model.ValueRange;
 import com.google.auth.http.HttpCredentialsAdapter;
 import com.google.auth.oauth2.GoogleCredentials;
@@ -85,14 +86,12 @@ public class DreamRepo {
 	}
 	@Cacheable(value = "contactData", key = "#spreadsheetId" , unless = "#result == null")
 	public ValueRange getContactNumbers(String spreadsheetId) throws IOException {
-		System.out.println("contact get");
 		ValueRange response = sheetsService.spreadsheets().values().get(spreadsheetId, contactNumberRange).execute();
 		return response;
 	}
 	
 	@Cacheable(value = "getDropdowns", key = "#spreadsheetId" , unless = "#result == null")
 	public List<List<Object>> getDropdown(String spreadsheetId) throws IOException {
-		System.out.println("running dropDown");
 		ValueRange response = sheetsService.spreadsheets().values().get(spreadsheetId, dropdownRange).execute();
 		return response.getValues();
 	}
@@ -111,8 +110,16 @@ public class DreamRepo {
 	
 	@Cacheable(value = "sheetsData", key = "#spreadsheetId" , unless = "#result == null")
 	public List<List<Object>> readData(String spreadsheetId) throws IOException {
+		System.out.println(range);
 		ValueRange response = sheetsService.spreadsheets().values().get(spreadsheetId, range).execute();
 		return response.getValues();
+	}
+
+	public UpdateValuesResponse update(String spreadsheetId, String range2, ValueRange valueRange) throws IOException {
+        return sheetsService.spreadsheets().values()
+                .update(spreadsheetId, range2, valueRange)
+                .setValueInputOption("RAW")
+                .execute();
 	}
 
 }

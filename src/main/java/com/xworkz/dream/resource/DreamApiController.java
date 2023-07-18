@@ -12,6 +12,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -69,12 +70,33 @@ public class DreamApiController {
 		try {
 			return service.filterData(spreadsheetId , searchValue);
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
+
 			e.printStackTrace();
 		}
 		return null;
 		
 	}
+	
+	@ApiOperation(value = "To Update Registrated Details of Trainee")
+	@PutMapping("/update")
+	public ResponseEntity<String> update(@RequestHeader String spreadsheetId,
+			@RequestParam String email , @RequestBody  TraineeDto dto) {
+		
+		return service.update(spreadsheetId, email , dto);
+	}
+	
+	
+	
+	
+	@ApiOperation(value = "To Update Registration Follow Up")
+	@PutMapping("/updateFollowUps")
+	public ResponseEntity<String> updateFollowUps(@RequestHeader String spreadsheetId,
+			String email) {
+		logger.info("Checking contact number: {}");
+		return service.updateFollowUps(spreadsheetId);
+	}	
+	
+	
 	
 	
 	

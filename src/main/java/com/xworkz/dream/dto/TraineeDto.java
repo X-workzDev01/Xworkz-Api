@@ -11,6 +11,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class TraineeDto {
 	
+	private Integer id;
 	@JsonProperty("basicInfo")
 	private BasicInfoDto basicInfo;
 	@JsonProperty("educationInfo")

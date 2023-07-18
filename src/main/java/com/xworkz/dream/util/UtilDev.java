@@ -50,7 +50,7 @@ public class UtilDev implements DreamUtil{
 	
 	public boolean sendOtptoEmail(String email, int otp) {
 		String subject = "OTP for Login";
-		String body = "Hi , Your Otp is" + otp + "/n Thank You!";
+		String body = "Hi , Your Otp is  " + otp + "   Thank You!";
 		logger.debug("Sending email to {}: Subject: {},", email, subject);
 		return sendEmail(email, subject, body);
 	}

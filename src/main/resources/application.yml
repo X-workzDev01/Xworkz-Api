@@ -1,15 +1,18 @@
 spring:
    profiles:
-      active: dev
+      active: local
 
 sheets:
   appName: Dream Api
   credentialsPath: classpath:META-INF/credentials.json
-  range: A3:M
+  range: A3:N
   emailRange: B3:B
   contactNumberRange: C3:C
   dropdownRange: dropDowns!A2:E
   loginInfoRange: loginInfo!A2:B
+  rowStartRange: A
+  rowEndRange: M
+  
 mail:
    smtpHost: smtp.office365.com
    smtpPort: 587
