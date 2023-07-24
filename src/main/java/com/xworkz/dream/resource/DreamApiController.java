@@ -19,7 +19,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.xworkz.dream.dto.FollowUpDto;
 import com.xworkz.dream.dto.SheetsDto;
+import com.xworkz.dream.dto.StatusDto;
 import com.xworkz.dream.dto.TraineeDto;
 import com.xworkz.dream.service.DreamService;
 
@@ -49,6 +51,16 @@ public class DreamApiController {
 		logger.info("Checking email: {}", email);
 		return service.emailCheck(spreadsheetId, email, request);
 	}
+	
+	@ApiOperation(value = "To get Suggestions while search")
+	@GetMapping("register/suggestion")
+	public ResponseEntity<List<Object>> getSearchSuggestion(@RequestHeader String spreadsheetId, @RequestParam String value,
+			HttpServletRequest request) {
+		logger.info("Getting suggesstions: {}", value);
+		return service.getSearchSuggestion(spreadsheetId, value, request);
+		
+	}
+
 
 	@ApiOperation(value = "To register Check whether contact number already exist while registering")
 	@GetMapping("/contactNumberCheck")
@@ -88,13 +100,23 @@ public class DreamApiController {
 	
 	
 	
-	@ApiOperation(value = "To Update Registration Follow Up")
-	@PutMapping("/updateFollowUps")
-	public ResponseEntity<String> updateFollowUps(@RequestHeader String spreadsheetId,
-			String email) {
-		logger.info("Checking contact number: {}");
-		return service.updateFollowUps(spreadsheetId);
-	}	
+
+	
+	@ApiOperation(value = "To Update the follow Up status using ID")
+	@PostMapping("/updateFollowStatus")
+	public ResponseEntity<String> updateFollowUpStatus(@RequestHeader String spreadsheetId, @RequestBody StatusDto statusDto,
+			HttpServletRequest request) throws IOException {
+		logger.info("updating follow up status : {}", statusDto);
+		return service.updateFollowUpStatus(spreadsheetId, statusDto, request);
+	}
+	
+	
+//	public <ResponseEntity<FollowUpDto>> getFollowUpData(@RequestHeader String spreadsheetId , star)
+	
+	
+
+	
+	
 	
 	
 	

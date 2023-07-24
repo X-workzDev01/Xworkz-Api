@@ -1,6 +1,9 @@
 package com.xworkz.dream.service;
 
+import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Iterator;
@@ -13,6 +16,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.logging.log4j.status.StatusData;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,9 +37,12 @@ import com.google.api.services.sheets.v4.model.ValueRange;
 import com.xworkz.dream.dto.BasicInfoDto;
 import com.xworkz.dream.dto.CourseDto;
 import com.xworkz.dream.dto.EducationInfoDto;
+import com.xworkz.dream.dto.FollowUpDto;
 import com.xworkz.dream.dto.ReferalInfoDto;
 import com.xworkz.dream.dto.SheetsDto;
+import com.xworkz.dream.dto.StatusDto;
 import com.xworkz.dream.dto.TraineeDto;
+import com.xworkz.dream.dto.utils.User;
 import com.xworkz.dream.repo.DreamRepo;
 import com.xworkz.dream.wrapper.DreamWrapper;
 
@@ -46,12 +53,22 @@ public class DreamService {
 	private DreamRepo repo;
 	@Autowired 
 	private DreamWrapper wrapper;
-	@Autowired
-	private CacheManager cacheManager;
+	
 	@Value("${sheets.rowStartRange}")
 	private String rowStartRange;
 	@Value("${sheets.rowEndRange}")
 	private String rowEndRange;
+	@Value("${sheets.followUpRowCurrentStartRange}")
+	private String followUpRowCurrentStartRange;
+	@Value("${sheets.followUpRowCurrentEndRange}")
+	private String followUpRowCurrentEndRange;
+	@Value("${sheets.traineeSheetName}")
+	private String traineeSheetName;
+	@Value("${sheets.followUpSheetName}")
+	private String followUpSheetName;
+	
+	
+	
 
 	 private static final Logger logger = LoggerFactory.getLogger(DreamService.class);
 
@@ -59,19 +76,27 @@ public class DreamService {
 	 public ResponseEntity<String> writeData(String spreadsheetId, TraineeDto dto, HttpServletRequest request) {
 		    try {
 		    	if (true) {// isCookieValid(request)
-		    		List<List<Object>> data =  repo.readData(spreadsheetId);
+		    		List<List<Object>> data =  repo.getIds(spreadsheetId).getValues();
 		            int size = data.size();
 		            System.out.println(size);
 		            
 		            dto.setId(size+=1);
 		            System.out.println(dto.getId());
-		            List<Object> list = wrapper.dtoToList(dto);
+		            List<Object> list = wrapper.extractDtoDetails(dto);
+		            for (Object object : list) {
+						System.out.println(object);
+					}
 		            
 		            boolean writeStatus = repo.writeData(spreadsheetId, list);
 		            
 		            if (writeStatus) {
 		                logger.info("Data written successfully to spreadsheetId: {}", spreadsheetId);
-		                return ResponseEntity.ok("Data written successfully");
+		                boolean status = addToFollowUp(dto, spreadsheetId);
+		                if(status) {
+		                	logger.info("Data written successfully to spreadsheetId and Added to Follow Up: {}", spreadsheetId);
+		                	 return ResponseEntity.ok("Data written successfully , Added to follow Up");
+		                }
+		                return ResponseEntity.ok("Data written successfully , not added to Follow Up");
 		            } else {
 		                logger.warn("Failed to write data to spreadsheetId: {}", spreadsheetId);
 		                return ResponseEntity.badRequest().body("Failed to write data");
@@ -85,8 +110,26 @@ public class DreamService {
 		        logger.error("Error occurred while writing data to spreadsheetId: {}", spreadsheetId, e);
 		        e.printStackTrace();
 		        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("An error occurred");
-		    }
+		    } catch (IllegalAccessException e) {
+		    	e.printStackTrace();
+		    	return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Data mapping error");
+				
+			}
 		}
+	 
+	 	public boolean addToFollowUp( TraineeDto traineeDto, String spreadSheetId ) throws IOException, IllegalAccessException {
+	 		FollowUpDto followUpDto =  new FollowUpDto();
+	 		followUpDto.setBasicInfo(traineeDto.getBasicInfo());
+	 		followUpDto.setCourseName(traineeDto.getCourseInfo().getCourse());
+	 		followUpDto.setRegistrationDate(LocalDate.now().toString());
+	 		followUpDto.setId(traineeDto.getId());
+	 		followUpDto.setCurrentlyFollowedBy("None");
+	 		followUpDto.setCurrentStatus("New");
+	 		List<Object> data = wrapper.extractDtoDetails(followUpDto);
+	 		repo.saveToFollowUp(spreadSheetId, data);
+			return true;
+	 		
+	 	}
 
 	    public ResponseEntity<String> emailCheck(String spreadsheetId, String email, HttpServletRequest request) {
 	        try {
@@ -152,7 +195,7 @@ public class DreamService {
 	            e.printStackTrace();
 	            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("An error occurred");
 	        }
-	    } 
+	    }
 	    
 	    
 	    
@@ -175,7 +218,7 @@ public class DreamService {
 			HttpServletResponse response = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes())
 					.getResponse();
 			
-			SheetsDto dto = new SheetsDto(dtos , dtos.size());
+			SheetsDto dto = new SheetsDto(dtos , data.size());
 			return ResponseEntity.ok(dto);
 		} catch (IOException e) {
 			
@@ -185,6 +228,8 @@ public class DreamService {
 		return null;
 			
 		}
+		
+		
 		
 		public List<TraineeDto> getLimitedRows(List<List<Object>> values, int startingIndex, int maxRows) {
 		    List<TraineeDto> traineeDtos = new ArrayList<>();
@@ -224,21 +269,26 @@ public class DreamService {
 			}
 		}
 
-		public ResponseEntity<String> updateFollowUps(String spreadsheetId) {
-			
-			return null;
-		}
+	
+		
 		
 		public ResponseEntity<String> update(String spreadsheetId, String email , TraineeDto dto){
 			try {
 				int rowIndex = findRowIndexByEmail(spreadsheetId, email);
-				String range = "xworkzApi!" + rowStartRange + rowIndex + ":"+ rowEndRange + rowIndex;
-				 List<List<Object>> values = Arrays.asList(wrapper.dtoToList(dto));
+				String range = traineeSheetName + rowStartRange + rowIndex + ":"+ rowEndRange + rowIndex;
+				 try {
+					List<List<Object>> values = Arrays.asList(wrapper.extractDtoDetails(dto));
 
-			        ValueRange valueRange = new ValueRange();
-			        valueRange.setValues(values);
-			        UpdateValuesResponse updated = repo.update(spreadsheetId , range , valueRange);
-			       return ResponseEntity.ok("Updated Successfully");
+					    ValueRange valueRange = new ValueRange();
+					    valueRange.setValues(values);
+					    UpdateValuesResponse updated = repo.update(spreadsheetId , range , valueRange);
+					   return ResponseEntity.ok("Updated Successfully");
+				} catch (IllegalAccessException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+					return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("An error occurred ");
+					
+				}
 			       
 			} catch (IOException e) {
 				e.printStackTrace();
@@ -263,6 +313,79 @@ public class DreamService {
 		        return -1;
 		    }
 		 
+		 private int findFollowUpRowIndexById(String spreadsheetId, int id) throws IOException{
+		     
+				 
+		        List<List<Object>> values = repo.getFollowUpDetails(spreadsheetId);
+		        
+		        if (values != null) {
+		            for (int i = 0; i < values.size(); i++) {
+		                List<Object> row = values.get(i);
+		                if (row.size() > 0 && row.get(0).equals(String.valueOf(id))) {
+		                    return i + 2;
+		                }
+		            }
+		        }
+		        return -1;
+		    }
 		
+		
+		public boolean updateCurrentFollowUp(String spreadsheetId , int id , String currentlyFollowedBy , String currentStatus) throws IOException {
+			List<List<Object>> followUpData = repo.getFollowUpDetails(spreadsheetId);
+			int rowIndex = findFollowUpRowIndexById(spreadsheetId, id);
+			String range = followUpSheetName + followUpRowCurrentStartRange + rowIndex + ":"+ followUpRowCurrentEndRange + rowIndex;
+			System.out.println(rowIndex);
+			System.out.println(range);
+			List<Object> updateData = Arrays.asList(currentlyFollowedBy , currentStatus);
+			repo.updateCurrentFollowUpStatus(spreadsheetId, range, updateData);
+			return true;
+			
+		}
+		public ResponseEntity<String> updateFollowUpStatus(String spreadsheetId, StatusDto statusDto,
+				HttpServletRequest request) {
+				try {
+					statusDto.setAttemptedOn(LocalDateTime.now().toString());
+					List<Object> statusData = wrapper.extractDtoDetails(statusDto);
+					boolean status = repo.updateFollowUpStatus(spreadsheetId , statusData);
+					updateCurrentFollowUp(spreadsheetId, statusDto.getId(), statusDto.getAttemptedBy(), statusDto.getAttemptStatus());
+					return ResponseEntity.ok("Follow Status Updated for ID :  " + statusDto.getId());
+				} catch (IllegalAccessException e) {
+					e.printStackTrace();
+					return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("An error occurred in Mapping data");
+					
+				} catch (IOException e) {
+
+					e.printStackTrace();
+					return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("An error occurred with credentials file ");
+				}
+			
+		}
+
+		public ResponseEntity<List<Object>> getSearchSuggestion(String spreadsheetId, String value,
+				HttpServletRequest request) {
+				if(value!=null) {
+					try {
+						List<List<Object>> list = repo.getEmailsAndNames(spreadsheetId , value);
+						List<Object> result = getSuggestions(value, list);
+						return ResponseEntity.ok(result);
+					} catch (IOException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+					return null;
+				}
+			return null;
+		}
+		
+		 public static List<Object> getSuggestions(String dataToMatch, List<List<Object>> data) {
+			
+			 return data.stream()
+					 .flatMap(List::stream)
+		                .filter(value -> value.toString().toLowerCase().contains(dataToMatch.toLowerCase()))
+		                .collect(Collectors.toList());
+		 }
+
+			
+				
 }
 

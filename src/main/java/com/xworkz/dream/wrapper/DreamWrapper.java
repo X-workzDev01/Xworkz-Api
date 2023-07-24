@@ -1,43 +1,47 @@
 package com.xworkz.dream.wrapper;
 
+import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.stereotype.Component;
 
+import com.xworkz.dream.dto.AdminDto;
 import com.xworkz.dream.dto.BasicInfoDto;
 import com.xworkz.dream.dto.CourseDto;
 import com.xworkz.dream.dto.EducationInfoDto;
+import com.xworkz.dream.dto.FollowUpDto;
 import com.xworkz.dream.dto.ReferalInfoDto;
+import com.xworkz.dream.dto.StatusDto;
 import com.xworkz.dream.dto.TraineeDto;
 import com.xworkz.dream.dto.utils.User;
 
 @Component
 public class DreamWrapper {
 
-	public  List<Object> dtoToList(TraineeDto dto) {
-		List<Object> row = new ArrayList<>();
-		row.add(dto.getId());
-		row.add(dto.getBasicInfo().getTraineeName());
-		row.add(dto.getBasicInfo().getEmail());
-		row.add(dto.getBasicInfo().getContactNumber());
-		row.add(dto.getEducationInfo().getQualification());
-		row.add(dto.getEducationInfo().getStream());
-		row.add(dto.getEducationInfo().getYearOfPassout());
-		row.add(dto.getEducationInfo().getCollegeName());
-		row.add(dto.getCourseInfo().getBatch());
-		row.add(dto.getCourseInfo().getBranch());
-		row.add(dto.getCourseInfo().getCourse());
-		row.add(dto.getReferralInfo().getReferalName());
-		row.add(dto.getReferralInfo().getReferalContactNumber());
-		row.add(dto.getReferralInfo().getComments());
-
-		return row;
-
-	}
+//	public  List<Object> dtoToList(TraineeDto dto) {
+//		List<Object> row = new ArrayList<>();
+//		row.add(dto.getId());
+//		row.add(dto.getBasicInfo().getTraineeName());
+//		row.add(dto.getBasicInfo().getEmail());
+//		row.add(dto.getBasicInfo().getContactNumber());
+//		row.add(dto.getEducationInfo().getQualification());
+//		row.add(dto.getEducationInfo().getStream());
+//		row.add(dto.getEducationInfo().getYearOfPassout());
+//		row.add(dto.getEducationInfo().getCollegeName());
+//		row.add(dto.getCourseInfo().getBatch());
+//		row.add(dto.getCourseInfo().getBranch());
+//		row.add(dto.getCourseInfo().getCourse());
+//		row.add(dto.getReferralInfo().getReferalName());
+//		row.add(dto.getReferralInfo().getReferalContactNumber());
+//		row.add(dto.getReferralInfo().getComments());
+//
+//		return row;
+//
+//	}
 	
 	public TraineeDto listToDto(List<Object> row) {
-	    TraineeDto traineeDto = new TraineeDto(0 ,new BasicInfoDto(), new EducationInfoDto(), new CourseDto(), new ReferalInfoDto());
+	    TraineeDto traineeDto = new TraineeDto(0 ,new BasicInfoDto(), new EducationInfoDto(), new CourseDto(), new ReferalInfoDto() , new AdminDto());
 
 	    // Assuming the list follows this order: id ,traineeName, email, contactNumber, qualification, stream,
 	    // yearOfPassout, collegeName, batch, branch, course, referalName, referalContactNumber, comments
@@ -100,6 +104,51 @@ public class DreamWrapper {
 		
 	}
 	
+//	public List<Object> followUpToList(FollowUpDto dto){
+//		
+//		List<Object> row = new ArrayList<>();
+//		row.add(dto.getId());
+//		row.add(dto.getBasicInfo().getTraineeName());
+//		row.add(dto.getBasicInfo().getEmail());
+//		row.add(dto.getBasicInfo().getContactNumber());
+//		row.add(dto.getRegistrationDate());
+//		row.add(dto.getCourseName());
+//		row.add(dto.getJoiningDate());
+//		row.add(dto.getCurrentlyFollowedBy());
+//		row.add(dto.getCurrentStatus());
+//		
+//		return row;
+//		
+//	}
+	public List<Object> extractDtoDetails(Object dto) throws IllegalAccessException {
+        List<Object> detailsList = new ArrayList<>();
+
+        // Get all fields of the DTO class, including inherited fields
+        Class<?> dtoClass = dto.getClass();
+        Field[] fields = dtoClass.getDeclaredFields();
+
+        for (Field field : fields) {
+            // Make private fields accessible
+            field.setAccessible(true);
+
+            // Extract the value of the field from the DTO object
+            Object fieldValue = field.get(dto);
+
+            if (fieldValue != null && !field.getType().isPrimitive() && !field.getType().getName().startsWith("java")) {
+                // Handle association with another DTO
+                List<Object> subDtoDetails = extractDtoDetails(fieldValue);
+                detailsList.addAll(subDtoDetails);
+            } else {
+                // Add the value to the list
+                detailsList.add(fieldValue);
+            }
+        }
+
+        return detailsList;
+    }
+
+
+
 	
 
 }

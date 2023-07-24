@@ -10,7 +10,8 @@ import lombok.NoArgsConstructor;
 public class BasicInfoDto {
 
 	private String traineeName;
-	private Long contactNumber;
 	private String email;
+	private Long contactNumber;
+	
 
 }

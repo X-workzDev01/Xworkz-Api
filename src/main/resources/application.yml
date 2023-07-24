@@ -10,8 +10,16 @@ sheets:
   contactNumberRange: C3:C
   dropdownRange: dropDowns!A2:E
   loginInfoRange: loginInfo!A2:B
+  followUpRange: followUp!A2:H
+  followUpStatus: followUpStatus!A2:H
   rowStartRange: A
   rowEndRange: M
+  traineeSheetName: xworkzApi!
+  followUpSheetName: followUp!
+  idRange: xworkzApi!A3:A
+  followUpRowCurrentStartRange: G
+  followUpRowCurrentEndRange: H
+  emailAndNameRange: xworkzApi!B3:C
   
 mail:
    smtpHost: smtp.office365.com

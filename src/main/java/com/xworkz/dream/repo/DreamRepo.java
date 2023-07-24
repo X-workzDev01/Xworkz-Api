@@ -50,8 +50,19 @@ public class DreamRepo {
 	private String contactNumberRange;
 	@Value("${sheets.dropdownRange}")
 	private String dropdownRange;
+	@Value("${sheets.idRange}")
+	private String idRange;
 	@Value("${sheets.loginInfoRange}")
 	private String loginInfoRange;
+	@Value("${sheets.followUpRange}")
+	private String followUpRange;
+	@Value("${sheets.followUpStatus}")
+	private String followUpStatus;
+	@Value("${sheets.emailAndNameRange}")
+	private String emailAndNameRange;
+	
+	
+	
 	
 	
 
@@ -76,7 +87,7 @@ public class DreamRepo {
 		values.add(row);
 		ValueRange body = new ValueRange().setValues(values);
 		sheetsService.spreadsheets().values().append(spreadsheetId, range, body).setValueInputOption("USER_ENTERED")
-				.execute();
+			.execute();
 		return true;
 	}
 	@Cacheable(value = "emailData", key = "#spreadsheetId" , unless = "#result == null")
@@ -84,9 +95,15 @@ public class DreamRepo {
 		ValueRange response = sheetsService.spreadsheets().values().get(spreadsheetId, emailRange).execute();
 		return response;
 	}
+	
 	@Cacheable(value = "contactData", key = "#spreadsheetId" , unless = "#result == null")
 	public ValueRange getContactNumbers(String spreadsheetId) throws IOException {
 		ValueRange response = sheetsService.spreadsheets().values().get(spreadsheetId, contactNumberRange).execute();
+		return response;
+	}
+	
+	public ValueRange getIds(String spreadsheetId) throws IOException {
+		ValueRange response = sheetsService.spreadsheets().values().get(spreadsheetId, idRange).execute();
 		return response;
 	}
 	
@@ -121,5 +138,52 @@ public class DreamRepo {
                 .setValueInputOption("RAW")
                 .execute();
 	}
+	
+	public boolean saveToFollowUp(String spreadsheetId, List<Object> row) throws IOException {
+		List<List<Object>> list = new ArrayList<List<Object>>();
+ 		list.add(row);
+		ValueRange body = new ValueRange().setValues(list);
+		sheetsService.spreadsheets().values().append(spreadsheetId, followUpRange, body).setValueInputOption("USER_ENTERED")
+				.execute();
+		return true;
+	}
+	
+	
+
+	public boolean updateFollowUpStatus(String spreadsheetId, List<Object> statusData) throws IOException {
+		List<List<Object>> list = new ArrayList<List<Object>>();
+ 		list.add(statusData);
+ 		ValueRange body = new ValueRange().setValues(list);
+		sheetsService.spreadsheets().values().append(spreadsheetId, followUpStatus, body).setValueInputOption("USER_ENTERED")
+				.execute();
+		return true;
+	}
+	
+	public List<List<Object>> getFollowUpDetails(String spreadsheetId) throws IOException{
+		ValueRange response = sheetsService.spreadsheets().values().get(spreadsheetId, followUpRange).execute();
+		return response.getValues();
+	}
+	
+	
+	
+	public boolean updateCurrentFollowUpStatus(String spreadsheetId , String currentFollowRange , List<Object> data) throws IOException {
+		List<List<Object>> list = new ArrayList<List<Object>>();
+ 		list.add(data);
+ 		ValueRange body = new ValueRange().setValues(list);
+		sheetsService.spreadsheets().values().update(spreadsheetId, currentFollowRange, body).setValueInputOption("USER_ENTERED")
+				.execute();
+		return true;
+		
+	}
+
+	public List<List<Object>> getEmailsAndNames(String spreadsheetId, String value) throws IOException {
+		ValueRange response = sheetsService.spreadsheets().values().get(spreadsheetId, emailAndNameRange).execute();
+		
+		return response.getValues();
+	}
+	
+	
+	
+	
 
 }

@@ -12,16 +12,16 @@ import lombok.ToString;
 public class FollowUpDto {
 	
 	
-	private String email;
-	private String name;
-	private Long phoneNumber;
-	private String status;
-	private String comments;
-	private String updatedBy;
-	private String updatedOn;
+	private Integer id;
+	private BasicInfoDto basicInfo;
+	private String RegistrationDate;
+	private String courseName;
+	private String joiningDate;
+	private String currentlyFollowedBy;
+	private String currentStatus;
+	
+	
+	
 
-
-
- 
 
 }
