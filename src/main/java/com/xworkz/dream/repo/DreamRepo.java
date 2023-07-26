@@ -110,6 +110,7 @@ public class DreamRepo {
 	@Cacheable(value = "getDropdowns", key = "#spreadsheetId" , unless = "#result == null")
 	public List<List<Object>> getDropdown(String spreadsheetId) throws IOException {
 		ValueRange response = sheetsService.spreadsheets().values().get(spreadsheetId, dropdownRange).execute();
+
 		return response.getValues();
 	}
 

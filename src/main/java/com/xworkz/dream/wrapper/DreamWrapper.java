@@ -41,7 +41,7 @@ public class DreamWrapper {
 //	}
 	
 	public TraineeDto listToDto(List<Object> row) {
-	    TraineeDto traineeDto = new TraineeDto(0 ,new BasicInfoDto(), new EducationInfoDto(), new CourseDto(), new ReferalInfoDto() , new AdminDto());
+	    TraineeDto traineeDto = new TraineeDto(0 ,new BasicInfoDto(), new EducationInfoDto(), new CourseDto(), new ReferalInfoDto());
 
 	    // Assuming the list follows this order: id ,traineeName, email, contactNumber, qualification, stream,
 	    // yearOfPassout, collegeName, batch, branch, course, referalName, referalContactNumber, comments

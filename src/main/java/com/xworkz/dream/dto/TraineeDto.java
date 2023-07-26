@@ -20,7 +20,7 @@ public class TraineeDto {
 	private CourseDto courseInfo;
 	@JsonProperty("referralInfo")
 	private ReferalInfoDto referralInfo;
-	private AdminDto adminDto;
+//	private AdminDto adminDto;
 	
 
 }
