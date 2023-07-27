@@ -109,14 +109,11 @@ public class DreamApiController {
 	
 //	public <ResponseEntity<FollowUpDto>> getFollowUpData(@RequestHeader String spreadsheetId , star)
 	
+	@ApiOperation(value="To get Registration details by email")
+	@GetMapping("/readByEmail")
+	public ResponseEntity<TraineeDto> getDataByEmail(@RequestHeader String spreadsheetId, @RequestParam String email,HttpServletRequest request) throws IOException{
+		System.out.println("get Details by email");
+		return service.getDetailsByEmail(spreadsheetId,email,request);
+	}
 	
-
-	
-	
-	
-	
-	
-	
-	
-
 }

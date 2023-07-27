@@ -373,7 +373,18 @@ public class DreamService {
 				.filter(value -> value.toString().toLowerCase().contains(dataToMatch.toLowerCase()))
 				.collect(Collectors.toList());
 	}
-	
-	
+
+	public ResponseEntity<TraineeDto> getDetailsByEmail(String spreadsheetId, String email, HttpServletRequest request)
+			throws IOException {
+		System.out.println("getting data by email");
+		List<List<Object>> data = repo.readData(spreadsheetId);
+		TraineeDto trainee =null;
+		for (List<Object> list : data) {
+			if (list.contains(email)) {
+				trainee = wrapper.listToDto(list);
+			}
+		}
+		return ResponseEntity.ok(trainee);
+	}
 
 }
