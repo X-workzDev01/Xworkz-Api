@@ -139,7 +139,7 @@ public class DreamService {
 	                    for (List<Object> row : values.getValues()) {
 	                        if (row.get(0).toString().equalsIgnoreCase(email)) {
 	                            logger.info("Email exists in spreadsheetId: {}", spreadsheetId);
-	                            return ResponseEntity.status(HttpStatus.FOUND).body("Email exists");
+	                            return ResponseEntity.status(HttpStatus.CREATED).body("Email exists");
 	                        }
 	                    }
 	                }
@@ -179,7 +179,7 @@ public class DreamService {
 	                    for (List<Object> row : values.getValues()) {
 	                        if (row.get(0).toString().equals(String.valueOf(contactNumber))) {
 	                            logger.info("Contact Number exists in spreadsheetId: {}", spreadsheetId);
-	                            return ResponseEntity.status(HttpStatus.FOUND).body("Contact Number exists");
+	                            return ResponseEntity.status(HttpStatus.CREATED).body("Contact Number exists");
 	                        }
 	                    }
 	                }

@@ -83,6 +83,7 @@ public class UtilDev implements DreamUtil{
 			logger.info("Email sent to {}: Subject: {}", email, subject);
 			return true; // Email sent successfully
 		} catch (MessagingException e) {
+			System.out.println("");
 			logger.error("Failed to send email ", e);
 			e.printStackTrace();
 			return false; // Failed to send email

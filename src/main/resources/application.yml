@@ -1,13 +1,13 @@
 spring:
    profiles:
-      active: local
+      active: dev
 
 sheets:
   appName: Dream Api
   credentialsPath: classpath:META-INF/credentials.json
   range: A3:N
-  emailRange: B3:B
-  contactNumberRange: C3:C
+  emailRange: C3:C
+  contactNumberRange: D3:D
   dropdownRange: dropDowns!A2:E
   loginInfoRange: loginInfo!A2:B
   followUpRange: followUp!A2:H
