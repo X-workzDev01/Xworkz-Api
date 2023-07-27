@@ -6,8 +6,4 @@ public interface DreamUtil {
 	public int generateOTP();
 	public String generateToken();
 	
-	
-	
-	
-
 }

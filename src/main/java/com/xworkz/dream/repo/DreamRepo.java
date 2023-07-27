@@ -13,10 +13,12 @@ import javax.annotation.PostConstruct;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.ResourceLoader;
 import org.springframework.http.ResponseEntity;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Repository;
 
 import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
@@ -61,11 +63,6 @@ public class DreamRepo {
 	@Value("${sheets.emailAndNameRange}")
 	private String emailAndNameRange;
 	
-	
-	
-	
-	
-
 	@Autowired
 	private ResourceLoader resourceLoader;
 
@@ -183,8 +180,10 @@ public class DreamRepo {
 		return response.getValues();
 	}
 	
+	@CacheEvict(value = { "sheetsData", "emailData", "contactData"}, allEntries = true)
+	public void evictAllCachesOnTraineeDetails() {
+		// will evict all entries in the specified caches
+       	System.out.println("evictAllCachesOnTraineeDetails running");
+	}
 	
-	
-	
-
 }
