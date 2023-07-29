@@ -122,13 +122,13 @@ public class DreamService {
 		followUpDto.setBasicInfo(traineeDto.getBasicInfo());
 		followUpDto.setCourseName(traineeDto.getCourseInfo().getCourse());
 		followUpDto.setRegistrationDate(LocalDate.now().toString());
+		followUpDto.setJoiningDate("Not Confirmed");
 		followUpDto.setId(traineeDto.getId());
 		followUpDto.setCurrentlyFollowedBy("None");
 		followUpDto.setCurrentStatus("New");
 		List<Object> data = wrapper.extractDtoDetails(followUpDto);
 		repo.saveToFollowUp(spreadSheetId, data);
 		return true;
-
 	}
 
 	public ResponseEntity<String> emailCheck(String spreadsheetId, String email, HttpServletRequest request) {
@@ -374,17 +374,55 @@ public class DreamService {
 				.collect(Collectors.toList());
 	}
 
-	public ResponseEntity<TraineeDto> getDetailsByEmail(String spreadsheetId, String email, HttpServletRequest request)
+	public ResponseEntity<?> getDetailsByEmail(String spreadsheetId, String email, HttpServletRequest request)
 			throws IOException {
-		System.out.println("getting data by email");
 		List<List<Object>> data = repo.readData(spreadsheetId);
-		TraineeDto trainee =null;
+		TraineeDto trainee = null;
 		for (List<Object> list : data) {
 			if (list.contains(email)) {
 				trainee = wrapper.listToDto(list);
 			}
 		}
-		return ResponseEntity.ok(trainee);
+		if (trainee != null) {
+			return ResponseEntity.ok(trainee);
+		} else {
+	        return new ResponseEntity<>("Email Not Found", HttpStatus.NOT_FOUND);
+		}
+	}
+
+
+	public List<FollowUpDto> getFollowUpDetails(String spreadsheetId, int startingIndex, int maxRows, String status)
+			throws IOException {
+		List<FollowUpDto> followUpDto = new ArrayList<FollowUpDto>();
+		//String traineeStatus=status.toLowerCase();
+		if (status != null && !status.isEmpty()) {
+			
+			List<List<Object>> lists = repo.getFollowUpDetails(spreadsheetId);
+
+			List<List<Object>> data = lists.stream()
+					.filter(list -> list.stream().anyMatch(value -> value.toString().equalsIgnoreCase(status)))
+					.collect(Collectors.toList());
+			followUpDto = getFollowUpRows(data, startingIndex, maxRows);
+			//return followUpDto;
+		}
+		return followUpDto;
+	}
+
+	public List<FollowUpDto> getFollowUpRows(List<List<Object>> values, int startingIndex, int maxRows) {
+		List<FollowUpDto> followUpDtos = new ArrayList<>();
+		int endIndex = startingIndex + maxRows;
+		// int rowCount = values.size();
+		ListIterator<List<Object>> iterator = values.listIterator(startingIndex);
+		while (iterator.hasNext() && iterator.nextIndex() < endIndex) {
+			List<Object> row = iterator.next();
+
+			if (row != null && !row.isEmpty()) {
+				FollowUpDto followupDto = wrapper.listToFollowUpDTO(row);
+
+				followUpDtos.add(followupDto);
+			}
+		}
+		return followUpDtos;
 	}
 
 }

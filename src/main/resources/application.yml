@@ -10,7 +10,7 @@ sheets:
   contactNumberRange: D3:D
   dropdownRange: dropDowns!A2:H
   loginInfoRange: loginInfo!A2:B
-  followUpRange: followUp!A2:H
+  followUpRange: followUp!A2:I
   followUpStatus: followUpStatus!A2:H
   rowStartRange: A
   rowEndRange: M
