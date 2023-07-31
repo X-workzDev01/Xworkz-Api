@@ -179,6 +179,11 @@ public class DreamRepo {
 		return response.getValues();
 	}
 	
+	public List<List<Object>> getFollowUpStatusDetails(String spreadsheetId) throws IOException{
+		ValueRange response = sheetsService.spreadsheets().values().get(spreadsheetId, followUpStatus).execute();
+		return response.getValues();
+	}
+	
 	@CacheEvict(value = { "sheetsData", "emailData", "contactData"}, allEntries = true)
 	public void evictAllCachesOnTraineeDetails() {
 		// will evict all entries in the specified caches

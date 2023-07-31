@@ -74,6 +74,40 @@ public class DreamWrapper {
 		return followUpDto;
 	}
 
+	public StatusDto listToStatusDto(List<Object> rows) {
+		StatusDto statusDto = new StatusDto(0,null,null,null,null,null, null, null, null);
+		
+		int rowSize = rows.size();
+		if (rowSize > 0 && rows.get(0) != null && !rows.get(0).toString().isEmpty()) {
+			statusDto.setId(Integer.valueOf(rows.get(0).toString()));
+		}
+		if (rowSize > 1 && rows.get(1) != null && !rows.get(1).toString().isEmpty()) {
+			statusDto.setName((String)rows.get(1));
+		}
+		if (rowSize > 2 && rows.get(2) != null && !rows.get(2).toString().isEmpty()) {
+			statusDto.setEmail((String)rows.get(2));
+		}
+		if (rowSize > 3 && rows.get(3) != null && !rows.get(3).toString().isEmpty()) {
+			statusDto.setAttemptedOn((String)rows.get(3));
+		}
+		if (rowSize > 4 && rows.get(4) != null && !rows.get(4).toString().isEmpty()) {
+			statusDto.setAttemptedBy((String)rows.get(4));
+		}
+		if (rowSize > 5 && rows.get(5) != null && !rows.get(5).toString().isEmpty()) {
+			statusDto.setAttemptStatus((String)rows.get(5));
+		}
+		if (rowSize > 6 && rows.get(6) != null && !rows.get(6).toString().isEmpty()) {
+			statusDto.setComments((String)rows.get(6));
+		}
+		if (rowSize > 7 && rows.get(7) != null && !rows.get(7).toString().isEmpty()) {
+			statusDto.setCallDuration((String)rows.get(7));
+		}
+		if (rowSize > 8 && rows.get(8) != null && !rows.get(8).toString().isEmpty()) {
+			statusDto.setCallBack((String)rows.get(8));
+		}
+		return statusDto;
+	}
+	
 	public TraineeDto listToDto(List<Object> row) {
 		TraineeDto traineeDto = new TraineeDto(0, new BasicInfoDto(), new EducationInfoDto(), new CourseDto(),
 				new ReferalInfoDto());

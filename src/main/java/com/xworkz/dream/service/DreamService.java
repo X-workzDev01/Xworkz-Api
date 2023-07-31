@@ -386,24 +386,23 @@ public class DreamService {
 		if (trainee != null) {
 			return ResponseEntity.ok(trainee);
 		} else {
-	        return new ResponseEntity<>("Email Not Found", HttpStatus.NOT_FOUND);
+			return new ResponseEntity<>("Email Not Found", HttpStatus.NOT_FOUND);
 		}
 	}
-
 
 	public List<FollowUpDto> getFollowUpDetails(String spreadsheetId, int startingIndex, int maxRows, String status)
 			throws IOException {
 		List<FollowUpDto> followUpDto = new ArrayList<FollowUpDto>();
-		//String traineeStatus=status.toLowerCase();
+		// String traineeStatus=status.toLowerCase();
 		if (status != null && !status.isEmpty()) {
-			
+
 			List<List<Object>> lists = repo.getFollowUpDetails(spreadsheetId);
 
 			List<List<Object>> data = lists.stream()
 					.filter(list -> list.stream().anyMatch(value -> value.toString().equalsIgnoreCase(status)))
 					.collect(Collectors.toList());
 			followUpDto = getFollowUpRows(data, startingIndex, maxRows);
-			//return followUpDto;
+			// return followUpDto;
 		}
 		return followUpDto;
 	}
@@ -423,6 +422,37 @@ public class DreamService {
 			}
 		}
 		return followUpDtos;
+	}
+
+	public List<StatusDto> getStatusDetails(String spreadsheetId, int startingIndex, int maxRows, String email,
+			HttpServletRequest request) throws IOException {
+		List<StatusDto> statusDto = new ArrayList<>();
+		List<List<Object>> dataList = repo.getFollowUpStatusDetails(spreadsheetId);
+		System.out.println(dataList.toString());
+		List<List<Object>> data = dataList.stream()
+				.filter(list -> list.stream().anyMatch(value -> value.toString().equalsIgnoreCase(email)))
+				.collect(Collectors.toList());
+		statusDto = getFollowUpStatusData(data, startingIndex, maxRows);
+
+		return statusDto;
+	}
+
+	public List<StatusDto> getFollowUpStatusData(List<List<Object>> values, int startingIndex, int maxRows) {
+		List<StatusDto> statusDtos = new ArrayList<>();
+
+		int endIndex = startingIndex + maxRows;
+		ListIterator<List<Object>> iterator = values.listIterator(startingIndex);
+
+		while (iterator.hasNext() && iterator.nextIndex() < endIndex) {
+			List<Object> row = iterator.next();
+
+			if (row != null && !row.isEmpty()) {
+				StatusDto statusDto = wrapper.listToStatusDto(row);
+				statusDtos.add(statusDto);
+			}
+		}
+
+		return statusDtos;
 	}
 
 }
