@@ -22,6 +22,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.xworkz.dream.dto.FollowUpDto;
 import com.xworkz.dream.dto.SheetsDto;
 import com.xworkz.dream.dto.StatusDto;
+import com.xworkz.dream.dto.SuggestionDto;
 import com.xworkz.dream.dto.TraineeDto;
 import com.xworkz.dream.service.DreamService;
 
@@ -54,7 +55,7 @@ public class DreamApiController {
 
 	@ApiOperation(value = "To get Suggestions while search")
 	@GetMapping("register/suggestion")
-	public ResponseEntity<List<Object>> getSearchSuggestion(@RequestHeader String spreadsheetId,
+	public ResponseEntity<List<SuggestionDto>> getSearchSuggestion(@RequestHeader String spreadsheetId,
 			@RequestParam String value, HttpServletRequest request) {
 		logger.info("Getting suggesstions: {}", value);
 		return service.getSearchSuggestion(spreadsheetId, value, request);

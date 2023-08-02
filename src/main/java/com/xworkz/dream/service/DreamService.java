@@ -41,9 +41,11 @@ import com.xworkz.dream.dto.FollowUpDto;
 import com.xworkz.dream.dto.ReferalInfoDto;
 import com.xworkz.dream.dto.SheetsDto;
 import com.xworkz.dream.dto.StatusDto;
+import com.xworkz.dream.dto.SuggestionDto;
 import com.xworkz.dream.dto.TraineeDto;
 import com.xworkz.dream.dto.utils.User;
 import com.xworkz.dream.repo.DreamRepo;
+import com.xworkz.dream.util.DreamUtil;
 import com.xworkz.dream.wrapper.DreamWrapper;
 
 @Service
@@ -53,6 +55,8 @@ public class DreamService {
 	private DreamRepo repo;
 	@Autowired
 	private DreamWrapper wrapper;
+	@Autowired
+	private DreamUtil util;
 
 	@Value("${sheets.rowStartRange}")
 	private String rowStartRange;
@@ -92,8 +96,15 @@ public class DreamService {
 					if (status) {
 						logger.info("Data written successfully to spreadsheetId and Added to Follow Up: {}",
 								spreadsheetId);
+
+						boolean sent = util.sendCourseContent(dto.getBasicInfo().getEmail(),
+								dto.getBasicInfo().getTraineeName());
 						repo.evictAllCachesOnTraineeDetails();
-						return ResponseEntity.ok("Data written successfully , Added to follow Up");
+						if (sent == true) {
+							return ResponseEntity.ok("Data written successfully , Added to follow Up");
+						} else {
+							return ResponseEntity.ok("Email not sent, Data written successfully , Added to follow Up");
+						}
 					}
 					return ResponseEntity.ok("Data written successfully , not added to Follow Up");
 				} else {
@@ -246,7 +257,7 @@ public class DreamService {
 		if (searchValue != null && !searchValue.isEmpty()) {
 			List<List<Object>> data = repo.readData(spreadsheetId);
 			List<List<Object>> filteredLists = data.stream().filter(
-					list -> list.stream().anyMatch(value -> value.toString().toLowerCase().contains(searchValue)))
+					list -> list.stream().anyMatch(value -> value.toString().toLowerCase().contains(searchValue.toLowerCase())))
 					.collect(Collectors.toList());
 			List<TraineeDto> flist = new ArrayList<TraineeDto>();
 			for (List<Object> list2 : filteredLists) {
@@ -351,15 +362,23 @@ public class DreamService {
 
 	}
 
-	public ResponseEntity<List<Object>> getSearchSuggestion(String spreadsheetId, String value,
+	public ResponseEntity<List<SuggestionDto>> getSearchSuggestion(String spreadsheetId, String value,
 			HttpServletRequest request) {
+		SuggestionDto sDto = new SuggestionDto();
+		List<SuggestionDto> suggestionDto = new ArrayList<>();
 		if (value != null) {
 			try {
-				List<List<Object>> list = repo.getEmailsAndNames(spreadsheetId, value);
-				List<Object> result = getSuggestions(value, list);
-				return ResponseEntity.ok(result);
+				List<List<Object>> dataList = repo.getEmailsAndNames(spreadsheetId, value);
+				List<List<Object>> filteredData = dataList.stream()
+						.filter(list -> list.stream().anyMatch(val -> val.toString().equalsIgnoreCase(value)))
+						.collect(Collectors.toList());
+				for (List<Object> list : filteredData) {
+					sDto = wrapper.listToSuggestionDTO(list);
+					suggestionDto.add(sDto);
+				}
+				
+				return ResponseEntity.ok(suggestionDto);
 			} catch (IOException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 			return null;
@@ -367,11 +386,13 @@ public class DreamService {
 		return null;
 	}
 
-	public static List<Object> getSuggestions(String dataToMatch, List<List<Object>> data) {
+	public static List<SuggestionDto> getSuggestions(String dataToMatch, List<List<Object>> data) {
 
-		return data.stream().flatMap(List::stream)
-				.filter(value -> value.toString().toLowerCase().contains(dataToMatch.toLowerCase()))
-				.collect(Collectors.toList());
+		List<Object> list = data.stream().flatMap(List::stream)
+				.filter(value -> value.toString().equalsIgnoreCase(dataToMatch)).collect(Collectors.toList());
+
+		System.out.println(list.toString());
+		return null;
 	}
 
 	public ResponseEntity<?> getDetailsByEmail(String spreadsheetId, String email, HttpServletRequest request)
