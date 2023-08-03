@@ -9,6 +9,7 @@ import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 import java.util.ListIterator;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 import javax.servlet.http.Cookie;
@@ -365,16 +366,26 @@ public class DreamService {
 	public ResponseEntity<List<SuggestionDto>> getSearchSuggestion(String spreadsheetId, String value,
 			HttpServletRequest request) {
 		SuggestionDto sDto = new SuggestionDto();
+		//String values=value.toLowerCase();
+		  String pattern = ".{3}";
 		List<SuggestionDto> suggestionDto = new ArrayList<>();
 		if (value != null) {
 			try {
+				System.out.println(value);
 				List<List<Object>> dataList = repo.getEmailsAndNames(spreadsheetId, value);
-				List<List<Object>> filteredData = dataList.stream()
-						.filter(list -> list.stream().anyMatch(val -> val.toString().equalsIgnoreCase(value)))
-						.collect(Collectors.toList());
+				System.out.println(dataList.toString());
+				 List<List<Object>> filteredData = dataList.stream()
+			                .filter(list -> list.stream().anyMatch(val -> {
+			                    String strVal = val.toString();
+			                    return strVal.toLowerCase().startsWith(value.toLowerCase());
+			                }))
+			                .collect(Collectors.toList());
+				System.out.println(filteredData.toString());
+				
 				for (List<Object> list : filteredData) {
 					sDto = wrapper.listToSuggestionDTO(list);
 					suggestionDto.add(sDto);
+					System.out.println(sDto);
 				}
 				
 				return ResponseEntity.ok(suggestionDto);
@@ -386,14 +397,13 @@ public class DreamService {
 		return null;
 	}
 
-	public static List<SuggestionDto> getSuggestions(String dataToMatch, List<List<Object>> data) {
-
-		List<Object> list = data.stream().flatMap(List::stream)
-				.filter(value -> value.toString().equalsIgnoreCase(dataToMatch)).collect(Collectors.toList());
-
-		System.out.println(list.toString());
-		return null;
-	}
+//	public static List<SuggestionDto> getSuggestions(String dataToMatch, List<List<Object>> data) {
+//
+//		List<Object> list = data.stream().flatMap(List::stream)
+//				.filter(value -> value.toString().equalsIgnoreCase(dataToMatch)).collect(Collectors.toList());
+//		System.out.println(list.toString());
+//		return null;
+//	}
 
 	public ResponseEntity<?> getDetailsByEmail(String spreadsheetId, String email, HttpServletRequest request)
 			throws IOException {

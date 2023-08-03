@@ -122,7 +122,7 @@ public class DreamApiController {
 	}
 
 	@ApiOperation(value = "To get status details by email ")
-	@GetMapping("/followStatus")
+	@GetMapping("/followUpStatus")
 	public List<StatusDto> getStatusByEmail(@RequestHeader String spreadsheetId, @RequestParam int startingIndex,
 			@RequestParam int maxRows, @RequestParam String email, HttpServletRequest request) throws IOException {
 		System.out.println("this is getStatusdetails method");
