@@ -20,7 +20,8 @@ sheets:
   followUpRowCurrentStartRange: G
   followUpRowCurrentEndRange: H
   emailAndNameRange: xworkzApi!B3:C
-  
+  batchDetailsRange: batchDetails!A2:G 
+  batchIdRange: batchDetails!A2:A
 mail:
    smtpHost: smtp.office365.com
    smtpPort: 587
@@ -34,5 +35,7 @@ login:
   userFile: classpath:users.yml
   sheetId: 1p3G4et36vkzSDs3W63cj6qnUFEWljLos2HHXIZd78Gg
 
+server:
+  port : 8081
 ---
 

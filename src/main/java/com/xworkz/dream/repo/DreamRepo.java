@@ -62,7 +62,11 @@ public class DreamRepo {
 	private String followUpStatus;
 	@Value("${sheets.emailAndNameRange}")
 	private String emailAndNameRange;
-	
+	@Value("${sheets.batchDetailsRange}")
+	private String batchDetailsRange;
+	@Value("${sheets.batchIdRange}")
+	private String batchIdRange;
+
 	@Autowired
 	private ResourceLoader resourceLoader;
 
@@ -78,52 +82,52 @@ public class DreamRepo {
 		sheetsService = new Sheets.Builder(GoogleNetHttpTransport.newTrustedTransport(), JSON_FACTORY,
 				requestInitializer).setApplicationName(applicationName).build();
 	}
-	
+
 	public boolean writeData(String spreadsheetId, List<Object> row) throws IOException {
 		List<List<Object>> values = new ArrayList<>();
 		values.add(row);
 		ValueRange body = new ValueRange().setValues(values);
 		sheetsService.spreadsheets().values().append(spreadsheetId, range, body).setValueInputOption("USER_ENTERED")
-			.execute();
+				.execute();
 		return true;
 	}
-	@Cacheable(value = "emailData", key = "#spreadsheetId" , unless = "#result == null")
+
+	@Cacheable(value = "emailData", key = "#spreadsheetId", unless = "#result == null")
 	public ValueRange getEmails(String spreadsheetId) throws IOException {
 		ValueRange response = sheetsService.spreadsheets().values().get(spreadsheetId, emailRange).execute();
 		return response;
 	}
-	
-	@Cacheable(value = "contactData", key = "#spreadsheetId" , unless = "#result == null")
+
+	@Cacheable(value = "contactData", key = "#spreadsheetId", unless = "#result == null")
 	public ValueRange getContactNumbers(String spreadsheetId) throws IOException {
 		ValueRange response = sheetsService.spreadsheets().values().get(spreadsheetId, contactNumberRange).execute();
 		return response;
 	}
-	
+
 	public ValueRange getIds(String spreadsheetId) throws IOException {
 		ValueRange response = sheetsService.spreadsheets().values().get(spreadsheetId, idRange).execute();
 		return response;
 	}
-	
-	@Cacheable(value = "getDropdowns", key = "#spreadsheetId" , unless = "#result == null")
+
+	@Cacheable(value = "getDropdowns", key = "#spreadsheetId", unless = "#result == null")
 	public List<List<Object>> getDropdown(String spreadsheetId) throws IOException {
 		ValueRange response = sheetsService.spreadsheets().values().get(spreadsheetId, dropdownRange).execute();
 
 		return response.getValues();
 	}
 
-	public boolean updateLoginInfo(String spreadsheetId , List<Object> row) throws IOException {
+	public boolean updateLoginInfo(String spreadsheetId, List<Object> row) throws IOException {
 		List<List<Object>> values = new ArrayList<>();
 		values.add(row);
 		ValueRange body = new ValueRange().setValues(values);
-		
-		sheetsService.spreadsheets().values().append(spreadsheetId, loginInfoRange, body).setValueInputOption("USER_ENTERED")
-				.execute();
+
+		sheetsService.spreadsheets().values().append(spreadsheetId, loginInfoRange, body)
+				.setValueInputOption("USER_ENTERED").execute();
 		return true;
-		
-		
+
 	}
-	
-	@Cacheable(value = "sheetsData", key = "#spreadsheetId" , unless = "#result == null")
+
+	@Cacheable(value = "sheetsData", key = "#spreadsheetId", unless = "#result == null")
 	public List<List<Object>> readData(String spreadsheetId) throws IOException {
 		System.out.println(range);
 		ValueRange response = sheetsService.spreadsheets().values().get(spreadsheetId, range).execute();
@@ -131,63 +135,73 @@ public class DreamRepo {
 	}
 
 	public UpdateValuesResponse update(String spreadsheetId, String range2, ValueRange valueRange) throws IOException {
-        return sheetsService.spreadsheets().values()
-                .update(spreadsheetId, range2, valueRange)
-                .setValueInputOption("RAW")
-                .execute();
+		return sheetsService.spreadsheets().values().update(spreadsheetId, range2, valueRange)
+				.setValueInputOption("RAW").execute();
 	}
-	
+
 	public boolean saveToFollowUp(String spreadsheetId, List<Object> row) throws IOException {
 		List<List<Object>> list = new ArrayList<List<Object>>();
- 		list.add(row);
+		list.add(row);
 		ValueRange body = new ValueRange().setValues(list);
-		sheetsService.spreadsheets().values().append(spreadsheetId, followUpRange, body).setValueInputOption("USER_ENTERED")
-				.execute();
+		sheetsService.spreadsheets().values().append(spreadsheetId, followUpRange, body)
+				.setValueInputOption("USER_ENTERED").execute();
 		return true;
 	}
-	
-	
 
 	public boolean updateFollowUpStatus(String spreadsheetId, List<Object> statusData) throws IOException {
 		List<List<Object>> list = new ArrayList<List<Object>>();
- 		list.add(statusData);
- 		ValueRange body = new ValueRange().setValues(list);
-		sheetsService.spreadsheets().values().append(spreadsheetId, followUpStatus, body).setValueInputOption("USER_ENTERED")
-				.execute();
+		list.add(statusData);
+		ValueRange body = new ValueRange().setValues(list);
+		sheetsService.spreadsheets().values().append(spreadsheetId, followUpStatus, body)
+				.setValueInputOption("USER_ENTERED").execute();
 		return true;
 	}
-	
-	public List<List<Object>> getFollowUpDetails(String spreadsheetId) throws IOException{
+
+	public List<List<Object>> getFollowUpDetails(String spreadsheetId) throws IOException {
 		ValueRange response = sheetsService.spreadsheets().values().get(spreadsheetId, followUpRange).execute();
 		return response.getValues();
 	}
-	
-	
-	public boolean updateCurrentFollowUpStatus(String spreadsheetId , String currentFollowRange , List<Object> data) throws IOException {
+
+	public boolean updateCurrentFollowUpStatus(String spreadsheetId, String currentFollowRange, List<Object> data)
+			throws IOException {
 		List<List<Object>> list = new ArrayList<List<Object>>();
- 		list.add(data);
- 		ValueRange body = new ValueRange().setValues(list);
-		sheetsService.spreadsheets().values().update(spreadsheetId, currentFollowRange, body).setValueInputOption("USER_ENTERED")
-				.execute();
+		list.add(data);
+		ValueRange body = new ValueRange().setValues(list);
+		sheetsService.spreadsheets().values().update(spreadsheetId, currentFollowRange, body)
+				.setValueInputOption("USER_ENTERED").execute();
 		return true;
-		
+
 	}
 
 	public List<List<Object>> getEmailsAndNames(String spreadsheetId, String value) throws IOException {
 		ValueRange response = sheetsService.spreadsheets().values().get(spreadsheetId, emailAndNameRange).execute();
-		
+
 		return response.getValues();
 	}
-	
-	public List<List<Object>> getFollowUpStatusDetails(String spreadsheetId) throws IOException{
+
+	public List<List<Object>> getFollowUpStatusDetails(String spreadsheetId) throws IOException {
 		ValueRange response = sheetsService.spreadsheets().values().get(spreadsheetId, followUpStatus).execute();
 		return response.getValues();
 	}
-	
-	@CacheEvict(value = { "sheetsData", "emailData", "contactData"}, allEntries = true)
-	public void evictAllCachesOnTraineeDetails() {
-		// will evict all entries in the specified caches
-       	System.out.println("evictAllCachesOnTraineeDetails running");
+
+	public ValueRange getBatchId(String spreadsheetId) throws IOException {
+		ValueRange response = sheetsService.spreadsheets().values().get(spreadsheetId, batchIdRange).execute();
+		return response;
 	}
 	
+	public boolean saveBatchDetails(String spreadsheetId,List<Object> row) throws IOException {
+		List<List<Object>> values = new ArrayList<>();
+		values.add(row);
+		ValueRange body = new ValueRange().setValues(values);
+		sheetsService.spreadsheets().values().append(spreadsheetId, batchDetailsRange, body).setValueInputOption("USER_ENTERED")
+				.execute();
+		return true;
+	}
+
+	@CacheEvict(value = { "sheetsData", "emailData", "contactData" }, allEntries = true)
+	public void evictAllCachesOnTraineeDetails() {
+		// will evict all entries in the specified caches
+		System.out.println("evictAllCachesOnTraineeDetails running");
+	}
+
 }

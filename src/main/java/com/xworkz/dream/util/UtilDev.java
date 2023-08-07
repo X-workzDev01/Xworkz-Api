@@ -123,7 +123,6 @@ public class UtilDev implements DreamUtil {
 				return new PasswordAuthentication(userName, password);
 			}
 		});
-
 		try {
 			// Create email message
 			Message message = new MimeMessage(session);
@@ -131,7 +130,7 @@ public class UtilDev implements DreamUtil {
 			message.setRecipients(Message.RecipientType.TO, InternetAddress.parse(email));
 			message.setSubject(subject);
 			message.setText(body);
-
+			
 			// Send email
 			Transport.send(message);
 			logger.info("Email sent to {}: Subject: {}", email, subject);
@@ -142,5 +141,6 @@ public class UtilDev implements DreamUtil {
 			e.printStackTrace();
 			return false; // Failed to send email
 		}
+		
 	}
 }
