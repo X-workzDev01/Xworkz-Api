@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.xworkz.dream.dto.BatchDetailsDto;
+import com.xworkz.dream.dto.FollowUpDataDto;
 import com.xworkz.dream.dto.FollowUpDto;
 import com.xworkz.dream.dto.SheetsDto;
 import com.xworkz.dream.dto.StatusDto;
@@ -117,7 +118,7 @@ public class DreamApiController {
 
 	@ApiOperation(value = "To get follow up details by pagination")
 	@GetMapping("/followUp")
-	public List<FollowUpDto> getFollowUpData(@RequestHeader String spreadsheetId, @RequestParam int startingIndex,
+	public ResponseEntity<FollowUpDataDto> getFollowUpData(@RequestHeader String spreadsheetId, @RequestParam int startingIndex,
 			@RequestParam int maxRows, @RequestParam String status) throws IOException {
 		return service.getFollowUpDetails(spreadsheetId, startingIndex, maxRows, status);
 	}
