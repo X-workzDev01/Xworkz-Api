@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.xworkz.dream.dto.BatchDetailsDto;
 import com.xworkz.dream.dto.FollowUpDto;
 import com.xworkz.dream.dto.SheetsDto;
 import com.xworkz.dream.dto.StatusDto;
@@ -128,4 +129,6 @@ public class DreamApiController {
 		System.out.println("this is getStatusdetails method");
 		return service.getStatusDetails(spreadsheetId, startingIndex, maxRows, email, request);
 	}
+	
+	
 }

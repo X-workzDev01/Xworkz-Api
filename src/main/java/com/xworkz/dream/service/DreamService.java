@@ -36,6 +36,7 @@ import org.springframework.web.context.request.ServletRequestAttributes;
 import com.google.api.services.sheets.v4.model.UpdateValuesResponse;
 import com.google.api.services.sheets.v4.model.ValueRange;
 import com.xworkz.dream.dto.BasicInfoDto;
+import com.xworkz.dream.dto.BatchDetailsDto;
 import com.xworkz.dream.dto.CourseDto;
 import com.xworkz.dream.dto.EducationInfoDto;
 import com.xworkz.dream.dto.FollowUpDto;
@@ -371,21 +372,17 @@ public class DreamService {
 		List<SuggestionDto> suggestionDto = new ArrayList<>();
 		if (value != null) {
 			try {
-				System.out.println(value);
 				List<List<Object>> dataList = repo.getEmailsAndNames(spreadsheetId, value);
-				System.out.println(dataList.toString());
 				 List<List<Object>> filteredData = dataList.stream()
 			                .filter(list -> list.stream().anyMatch(val -> {
 			                    String strVal = val.toString();
 			                    return strVal.toLowerCase().startsWith(value.toLowerCase());
 			                }))
 			                .collect(Collectors.toList());
-				System.out.println(filteredData.toString());
 				
 				for (List<Object> list : filteredData) {
 					sDto = wrapper.listToSuggestionDTO(list);
 					suggestionDto.add(sDto);
-					System.out.println(sDto);
 				}
 				
 				return ResponseEntity.ok(suggestionDto);
@@ -484,6 +481,20 @@ public class DreamService {
 		}
 
 		return statusDtos;
+	}
+
+	public ResponseEntity<String> saveDetails(String spreadsheetId, BatchDetailsDto dto,
+			HttpServletRequest request) throws IOException, IllegalAccessException {
+		List<List<Object>> data = repo.getBatchId(spreadsheetId).getValues();
+		int size = data.size();
+		dto.setId(size += 1);
+		List<Object> list=wrapper.extractDtoDetails(dto);
+		boolean save=repo.saveBatchDetails(spreadsheetId,list);
+		if (save == true) {
+			return ResponseEntity.ok("Batch details added successfully");
+		} else {
+			return ResponseEntity.ok("Batch details Not added");
+		}
 	}
 
 }

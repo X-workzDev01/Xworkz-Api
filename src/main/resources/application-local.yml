@@ -7,6 +7,7 @@ sheets:
   contactNumberRange: D3:D
   dropdownRange: dropDowns!A2:H
   loginInfoRange: loginInfo!A2:B
+  batchDetailsRange: batchDetails!A2:G
 mail:
    smtpHost: smtp.office365.com
    smtpPort: 587
