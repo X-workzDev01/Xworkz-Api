@@ -1,6 +1,6 @@
 spring:
    profiles:
-      active: dev
+      active: local
 
 sheets:
   appName: Dream Api
@@ -13,14 +13,14 @@ sheets:
   followUpRange: followUp!A2:I
   followUpStatus: followUpStatus!A2:I
   rowStartRange: A
-  rowEndRange: M
+  rowEndRange: N
   traineeSheetName: xworkzApi!
   followUpSheetName: followUp!
   idRange: xworkzApi!A3:A
   followUpRowCurrentStartRange: G
   followUpRowCurrentEndRange: H
   emailAndNameRange: xworkzApi!B3:C
-  batchDetailsRange: batchDetails!A2:G 
+  batchDetailsRange: batchDetails!A2:H 
   batchIdRange: batchDetails!A2:A
 mail:
    smtpHost: smtp.office365.com

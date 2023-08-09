@@ -12,5 +12,6 @@ public class BatchDetailsDto {
 	private String batchType;
 	private String startTime;
 	private String branchName;
+	private String batchStatus;
 
 }
