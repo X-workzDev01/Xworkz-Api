@@ -57,7 +57,7 @@ public class DreamApiController {
 
 	@ApiOperation(value = "To get Suggestions while search")
 	@GetMapping("register/suggestion")
-	public ResponseEntity<List<SuggestionDto>> getSearchSuggestion(@RequestHeader String spreadsheetId,
+	public ResponseEntity<List<String>> getSearchSuggestion(@RequestHeader String spreadsheetId,
 			@RequestParam String value, HttpServletRequest request) {
 		logger.info("Getting suggesstions: {}", value);
 		return service.getSearchSuggestion(spreadsheetId, value, request);

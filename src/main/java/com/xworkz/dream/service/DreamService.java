@@ -373,12 +373,12 @@ public class DreamService {
 
 	}
 
-	public ResponseEntity<List<SuggestionDto>> getSearchSuggestion(String spreadsheetId, String value,
+	public ResponseEntity<List<String>> getSearchSuggestion(String spreadsheetId, String value,
 			HttpServletRequest request) {
-		SuggestionDto sDto = new SuggestionDto();
+		//SuggestionDto sDto = new SuggestionDto();
 		// String values=value.toLowerCase();
 		String pattern = ".{3}";
-		List<SuggestionDto> suggestionDto = new ArrayList<>();
+		List<String> suggestion = new ArrayList<>();
 		if (value != null) {
 			try {
 				List<List<Object>> dataList = repo.getEmailsAndNames(spreadsheetId, value);
@@ -388,11 +388,13 @@ public class DreamService {
 				})).collect(Collectors.toList());
 
 				for (List<Object> list : filteredData) {
-					sDto = wrapper.listToSuggestionDTO(list);
-					suggestionDto.add(sDto);
+					//sDto = wrapper.listToSuggestionDTO(list);
+				
+					suggestion.add((String)list.get(0).toString());
+					suggestion.add((String)list.get(1).toString());
 				}
 
-				return ResponseEntity.ok(suggestionDto);
+				return ResponseEntity.ok(suggestion);
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
