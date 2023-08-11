@@ -66,7 +66,11 @@ public class DreamRepo {
 	private String batchDetailsRange;
 	@Value("${sheets.batchIdRange}")
 	private String batchIdRange;
-
+	@Value("${sheets.dateOfBirthDetailsRange}")
+	private String dateOfBirthDetailsRange;
+	@Value("${sheets.birthdayRange}")
+	private String birthdayRange;
+	
 	@Autowired
 	private ResourceLoader resourceLoader;
 
@@ -188,12 +192,33 @@ public class DreamRepo {
 		ValueRange response = sheetsService.spreadsheets().values().get(spreadsheetId, batchIdRange).execute();
 		return response;
 	}
-	
-	public boolean saveBatchDetails(String spreadsheetId,List<Object> row) throws IOException {
+
+	public boolean saveBatchDetails(String spreadsheetId, List<Object> row) throws IOException {
 		List<List<Object>> values = new ArrayList<>();
 		values.add(row);
 		ValueRange body = new ValueRange().setValues(values);
-		sheetsService.spreadsheets().values().append(spreadsheetId, batchDetailsRange, body).setValueInputOption("USER_ENTERED")
+		sheetsService.spreadsheets().values().append(spreadsheetId, batchDetailsRange, body)
+				.setValueInputOption("USER_ENTERED").execute();
+		return true;
+	}
+
+	public ValueRange getBirthDayId(String spreadsheetId) throws IOException {
+		ValueRange response = sheetsService.spreadsheets().values().get(spreadsheetId, birthdayRange).execute();
+		return response;
+	}
+
+	
+	public boolean saveBirthDayDetails(String spreadsheetId,List<Object> row) throws IOException {
+		
+		System.out.println("this is save method");
+		System.out.println(row.toString());
+		System.out.println();
+
+		List<List<Object>> values = new ArrayList<>();
+		values.add(row);
+		System.out.println(values.toString());
+		ValueRange body = new ValueRange().setValues(values);
+		sheetsService.spreadsheets().values().append(spreadsheetId, dateOfBirthDetailsRange, body).setValueInputOption("USER_ENTERED")
 				.execute();
 		return true;
 	}
@@ -203,5 +228,6 @@ public class DreamRepo {
 		// will evict all entries in the specified caches
 		System.out.println("evictAllCachesOnTraineeDetails running");
 	}
-
+	
+	
 }
