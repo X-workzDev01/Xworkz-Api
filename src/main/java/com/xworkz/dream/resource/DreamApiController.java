@@ -143,10 +143,12 @@ public class DreamApiController {
 	}
 	@ApiOperation("to update the followup data")
 	@PutMapping("/updateFollowUp")
-	public ResponseEntity<String> updateFollowUp(@RequestHeader String spreadsheetId,@RequestBody FollowUpDto dto,HttpServletRequest request){
+	public ResponseEntity<String> updateFollowUp(@RequestHeader String spreadsheetId,@RequestParam String email,@RequestBody FollowUpDto dto,HttpServletRequest request) throws IOException, IllegalAccessException{
 		System.out.println("this is update Method");
+		System.out.println(email);
 		System.out.println("Dto:"+dto);
-		return null;
+		
+		return service.updateFollowUp(spreadsheetId,email,dto);
 	}
 	
 }

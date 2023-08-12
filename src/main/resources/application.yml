@@ -16,6 +16,8 @@ sheets:
   rowEndRange: P
   traineeSheetName: xworkzApi!
   followUpSheetName: followUp!
+  followUprowStartRange: A2
+  followUprowEndRange: I2
   idRange: xworkzApi!A3:A
   followUpRowCurrentStartRange: G
   followUpRowCurrentEndRange: H

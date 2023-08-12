@@ -216,6 +216,12 @@ public class DreamRepo {
 				.execute();
 		return true;
 	}
+	public UpdateValuesResponse updateFollow(String spreadsheetId, String range2, ValueRange valueRange) throws IOException {
+		System.out.println(spreadsheetId+" " +range2+ " " + valueRange);
+		
+		return sheetsService.spreadsheets().values().update(spreadsheetId, range2, valueRange)
+				.setValueInputOption("RAW").execute();
+	}
 
 	@CacheEvict(value = { "sheetsData", "emailData", "contactData" }, allEntries = true)
 	public void evictAllCachesOnTraineeDetails() {
