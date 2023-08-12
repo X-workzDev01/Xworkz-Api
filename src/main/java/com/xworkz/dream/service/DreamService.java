@@ -90,9 +90,9 @@ public class DreamService {
 				System.out.println(dto.getId());
 				
 				List<Object> list = wrapper.extractDtoDetails(dto);
-				for (Object object : list) {
-					System.out.println(object);
-				}
+//				for (Object object : list) {
+//					System.out.println(object);
+//				}
 
 				boolean writeStatus = repo.writeData(spreadsheetId, list);
 				//calling method to store date of birth details
@@ -137,7 +137,15 @@ public class DreamService {
 	public boolean addToFollowUp(TraineeDto traineeDto, String spreadSheetId)
 			throws IOException, IllegalAccessException {
 		FollowUpDto followUpDto = new FollowUpDto();
-		followUpDto.setBasicInfo(traineeDto.getBasicInfo());
+	
+		BasicInfoDto basicInfo = new BasicInfoDto();
+		basicInfo.setTraineeName(traineeDto.getBasicInfo().getTraineeName());
+		basicInfo.setEmail(traineeDto.getBasicInfo().getEmail());
+		basicInfo.setContactNumber(traineeDto.getBasicInfo().getContactNumber());
+
+		// Set the initialized BasicInfo object to followUpDto
+		followUpDto.setBasicInfo(basicInfo);
+		
 		followUpDto.setCourseName(traineeDto.getCourseInfo().getCourse());
 		followUpDto.setRegistrationDate(LocalDate.now().toString());
 		followUpDto.setJoiningDate("Not Confirmed");
@@ -521,9 +529,9 @@ public class DreamService {
 		birthday.setDto(dto.getBasicInfo());
 		birthday.setId(size += 1);
 		List<Object> list = wrapper.extractDtoDetails(birthday);
-		for (Object object : list) {
-			System.out.println(object);
-		}
+//		for (Object object : list) {
+//			System.out.println(object);
+//		}
 		boolean save=repo.saveBirthDayDetails(spreadsheetId,list);
 		if(save!=false) {
 			return ResponseEntity.ok("Birth day information added successfully");

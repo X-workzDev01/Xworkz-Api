@@ -141,5 +141,12 @@ public class DreamApiController {
 		System.out.println(dto);
 		return service.saveBirthDayInfo(spreadsheetId, dto, request);
 	}
+	@ApiOperation("to update the followup data")
+	@PutMapping("/updateFollowUp")
+	public ResponseEntity<String> updateFollowUp(@RequestHeader String spreadsheetId,@RequestBody FollowUpDto dto,HttpServletRequest request){
+		System.out.println("this is update Method");
+		System.out.println("Dto:"+dto);
+		return null;
+	}
 	
 }

@@ -209,14 +209,8 @@ public class DreamRepo {
 
 	
 	public boolean saveBirthDayDetails(String spreadsheetId,List<Object> row) throws IOException {
-		
-		System.out.println("this is save method");
-		System.out.println(row.toString());
-		System.out.println();
-
 		List<List<Object>> values = new ArrayList<>();
 		values.add(row);
-		System.out.println(values.toString());
 		ValueRange body = new ValueRange().setValues(values);
 		sheetsService.spreadsheets().values().append(spreadsheetId, dateOfBirthDetailsRange, body).setValueInputOption("USER_ENTERED")
 				.execute();
