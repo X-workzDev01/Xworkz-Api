@@ -186,14 +186,15 @@ public class DreamWrapper {
 			traineeDto.getCourseInfo().setOfferedAs((String)(row.get(12).toString()));
 		}
 
+		if (rowSize > 13 && row.get(13) != null && !row.get(13).toString().isEmpty()) {
+			traineeDto.getReferralInfo().setReferalName((String) row.get(13));
+		}
 		if (rowSize > 14 && row.get(14) != null && !row.get(14).toString().isEmpty()) {
-			traineeDto.getReferralInfo().setReferalName((String) row.get(14));
+			Long referalContactNumber = Long.parseLong(row.get(14).toString());
+			traineeDto.getReferralInfo().setReferalContactNumber(referalContactNumber);
 		}
 		if (rowSize > 15 && row.get(15) != null && !row.get(15).toString().isEmpty()) {
-			traineeDto.getReferralInfo().setReferalContactNumber((Long.parseLong(row.get(15).toString())));
-		}
-		if (rowSize > 16 && row.get(16) != null && !row.get(16).toString().isEmpty()) {
-			traineeDto.getReferralInfo().setComments((String) row.get(16));
+			traineeDto.getReferralInfo().setComments((String) row.get(15).toString());
 		}
 
 		return traineeDto;

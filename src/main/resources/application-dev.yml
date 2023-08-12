@@ -1,6 +1,6 @@
 
 sheets:
-  range: A3:N
+  range: A3:P
   emailRange: C3:C
   contactNumberRange: D3:D
   loginInfoRange: loginInfo!A2:B
