@@ -13,7 +13,7 @@ public class FollowUpDto {
 
 	private Integer id;
 	private BasicInfoDto basicInfo;
-	private String RegistrationDate;
+	private String registrationDate;
 	private String joiningDate;
 	private String courseName;
 	private String currentlyFollowedBy;

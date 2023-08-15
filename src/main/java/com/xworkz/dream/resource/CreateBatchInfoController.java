@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.xworkz.dream.dto.BatchDetailsDto;
+import com.xworkz.dream.dto.TraineeDto;
 import com.xworkz.dream.service.DreamService;
 
 import io.swagger.annotations.ApiOperation;
@@ -36,5 +37,7 @@ public class CreateBatchInfoController {
 		logger.info("Registering trainee details: {}",dto);
 		return service.saveDetails(spreadsheetId, dto, request);
 	}
+	
 
+	
 }

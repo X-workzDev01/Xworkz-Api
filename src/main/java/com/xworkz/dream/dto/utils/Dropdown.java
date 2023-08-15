@@ -15,6 +15,7 @@ public class Dropdown {
 	private List<String> yearofpass;
 	private List<String> offered;
 	private List<String> branchname;
+	private List<String> status;
 
 	public Dropdown() {
 		super();
@@ -26,7 +27,7 @@ public class Dropdown {
 		this.yearofpass = new ArrayList<String>();
 		this.offered = new ArrayList<String>();
 		this.branchname = new ArrayList<String>();
-
+		this.status = new ArrayList<String>();
 	}
 
 }

@@ -143,4 +143,10 @@ public class UtilDev implements DreamUtil {
 		}
 		
 	}
+	
+	public boolean sendMail(String name,String email) {
+		String subject = "Java Full Stack Course Content";
+		
+		return false;
+	}
 }

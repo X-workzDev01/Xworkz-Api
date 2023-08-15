@@ -12,6 +12,5 @@ public class BasicInfoDto {
 	private String traineeName;
 	private String email;
 	private Long contactNumber;
-	
-
+	private String dateOfBirth;
 }

@@ -37,6 +37,7 @@ import com.google.api.services.sheets.v4.model.UpdateValuesResponse;
 import com.google.api.services.sheets.v4.model.ValueRange;
 import com.xworkz.dream.dto.BasicInfoDto;
 import com.xworkz.dream.dto.BatchDetailsDto;
+import com.xworkz.dream.dto.BirthDayInfoDto;
 import com.xworkz.dream.dto.CourseDto;
 import com.xworkz.dream.dto.EducationInfoDto;
 import com.xworkz.dream.dto.FollowUpDataDto;
@@ -73,7 +74,8 @@ public class DreamService {
 	private String traineeSheetName;
 	@Value("${sheets.followUpSheetName}")
 	private String followUpSheetName;
-
+	
+	
 	private static final Logger logger = LoggerFactory.getLogger(DreamService.class);
 
 	// Rest of your code...
@@ -86,13 +88,15 @@ public class DreamService {
 
 				dto.setId(size += 1);
 				System.out.println(dto.getId());
+				
 				List<Object> list = wrapper.extractDtoDetails(dto);
 				for (Object object : list) {
 					System.out.println(object);
 				}
 
 				boolean writeStatus = repo.writeData(spreadsheetId, list);
-
+				//calling method to store date of birth details
+				saveBirthDayInfo(spreadsheetId,dto, request);
 				if (writeStatus) {
 					logger.info("Data written successfully to spreadsheetId: {}", spreadsheetId);
 					boolean status = addToFollowUp(dto, spreadsheetId);
@@ -226,8 +230,9 @@ public class DreamService {
 	public ResponseEntity<SheetsDto> readData(String spreadsheetId, int startingIndex, int maxRows) {
 		try {
 			List<List<Object>> data = repo.readData(spreadsheetId);
+			//System.out.println(data.toString());
 			List<TraineeDto> dtos = getLimitedRows(data, startingIndex, maxRows);
-
+			//System.out.println(dtos.toString());
 			HttpServletResponse response = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes())
 					.getResponse();
 
@@ -258,7 +263,6 @@ public class DreamService {
 				traineeDtos.add(traineeDto);
 			}
 		}
-
 		return traineeDtos;
 	}
 
@@ -343,8 +347,8 @@ public class DreamService {
 		int rowIndex = findFollowUpRowIndexById(spreadsheetId, id);
 		String range = followUpSheetName + followUpRowCurrentStartRange + rowIndex + ":" + followUpRowCurrentEndRange
 				+ rowIndex;
-		System.out.println(rowIndex);
-		System.out.println(range);
+		System.out.println("----"+rowIndex);
+		System.out.println(" ---"+range);
 		List<Object> updateData = Arrays.asList(currentlyFollowedBy, currentStatus);
 		repo.updateCurrentFollowUpStatus(spreadsheetId, range, updateData);
 		return true;
@@ -353,9 +357,12 @@ public class DreamService {
 
 	public ResponseEntity<String> updateFollowUpStatus(String spreadsheetId, StatusDto statusDto,
 			HttpServletRequest request) {
+		System.out.println("--------Service--------------");
 		try {
 			statusDto.setAttemptedOn(LocalDateTime.now().toString());
+			System.out.println(statusDto.toString());
 			List<Object> statusData = wrapper.extractDtoDetails(statusDto);
+			System.out.println(statusData.toString());
 			boolean status = repo.updateFollowUpStatus(spreadsheetId, statusData);
 			updateCurrentFollowUp(spreadsheetId, statusDto.getId(), statusDto.getAttemptedBy(),
 					statusDto.getAttemptStatus());
@@ -388,8 +395,6 @@ public class DreamService {
 				})).collect(Collectors.toList());
 
 				for (List<Object> list : filteredData) {
-					//sDto = wrapper.listToSuggestionDTO(list);
-				
 					suggestion.add((String)list.get(0).toString());
 					suggestion.add((String)list.get(1).toString());
 				}
@@ -507,4 +512,24 @@ public class DreamService {
 		}
 	}
 
+	public ResponseEntity<String> saveBirthDayInfo(String spreadsheetId, TraineeDto dto,
+			HttpServletRequest request) throws IllegalAccessException, IOException {
+		BirthDayInfoDto birthday = new BirthDayInfoDto();
+		List<List<Object>> data = repo.getBirthDayId(spreadsheetId).getValues();
+		int size = data.size();
+		birthday.setDto(dto.getBasicInfo());
+		birthday.setId(size += 1);
+		List<Object> list = wrapper.extractDtoDetails(birthday);
+		for (Object object : list) {
+			System.out.println(object);
+		}
+		boolean save=repo.saveBirthDayDetails(spreadsheetId,list);
+		if(save!=false) {
+			return ResponseEntity.ok("Birth day information added successfully");
+		}
+		return ResponseEntity.ok("Birth day information Not added");
+	}
+	
+
+	
 }

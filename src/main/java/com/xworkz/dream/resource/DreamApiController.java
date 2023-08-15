@@ -19,7 +19,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.xworkz.dream.dto.BasicInfoDto;
 import com.xworkz.dream.dto.BatchDetailsDto;
+import com.xworkz.dream.dto.BirthDayInfoDto;
 import com.xworkz.dream.dto.FollowUpDataDto;
 import com.xworkz.dream.dto.FollowUpDto;
 import com.xworkz.dream.dto.SheetsDto;
@@ -44,8 +46,7 @@ public class DreamApiController {
 	public ResponseEntity<String> register(@RequestHeader String spreadsheetId, @RequestBody TraineeDto values,
 			HttpServletRequest request) throws IOException {
 		logger.info("Registering trainee details: {}", values);
-		return service.writeData(spreadsheetId, values, request);
-	}
+		return service.writeData(spreadsheetId, values, request);	}
 
 	@ApiOperation(value = "To register Check whether email already exist while registering")
 	@GetMapping("/emailCheck")
@@ -104,8 +105,11 @@ public class DreamApiController {
 	public ResponseEntity<String> updateFollowUpStatus(@RequestHeader String spreadsheetId,
 			@RequestBody StatusDto statusDto, HttpServletRequest request) throws IOException {
 		logger.info("updating follow up status : {}", statusDto);
+		System.out.println(statusDto+"------controller---------");
 		return service.updateFollowUpStatus(spreadsheetId, statusDto, request);
 	}
+	
+	
 
 //	public <ResponseEntity<FollowUpDto>> getFollowUpData(@RequestHeader String spreadsheetId , star)
 
@@ -131,5 +135,11 @@ public class DreamApiController {
 		return service.getStatusDetails(spreadsheetId, startingIndex, maxRows, email, request);
 	}
 	
+	@ApiOperation(value="To update Birth day info while registering")
+	@PostMapping("/birthDayInfo")
+	public ResponseEntity<String> updateBirthDayInfo(@RequestHeader String spreadsheetId,@RequestBody TraineeDto dto,HttpServletRequest request) throws IllegalAccessException, IOException{
+		System.out.println(dto);
+		return service.saveBirthDayInfo(spreadsheetId, dto, request);
+	}
 	
 }
