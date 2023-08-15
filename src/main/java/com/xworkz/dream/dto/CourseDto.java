@@ -22,5 +22,6 @@ public class CourseDto {
 	private String course;
 	private String branch;
 	private String batch;
+	private String offeredAs;
 
 }

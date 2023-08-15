@@ -30,7 +30,6 @@ public class OptionController {
 		Dropdown body = service.getDropdown(spreadsheetId);
 		logger.info("Getting Dropddown data");
 		return body;
-
 	}
 
 }

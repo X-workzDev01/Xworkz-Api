@@ -5,9 +5,6 @@ public interface DreamUtil {
 	public boolean sendOtptoEmail(String email, int otp);
 	public int generateOTP();
 	public String generateToken();
+	public boolean sendCourseContent(String email,String name);
 	
-	
-	
-	
-
 }

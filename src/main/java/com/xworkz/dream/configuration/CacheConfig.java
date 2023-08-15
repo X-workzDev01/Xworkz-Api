@@ -18,19 +18,21 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 @EnableScheduling
 public class CacheConfig {
 
-    @Bean
-    public CacheManager cacheManager() {
-        SimpleCacheManager cacheManager = new SimpleCacheManager();
+	@Bean
+	public CacheManager cacheManager() {
+		SimpleCacheManager cacheManager = new SimpleCacheManager();
 
-        List<Cache> caches = new ArrayList<>();
-        caches.add(new ConcurrentMapCache("sheetsData"));
-        caches.add(new ConcurrentMapCache("emailData"));
-        caches.add(new ConcurrentMapCache("contactData"));
-        caches.add(new ConcurrentMapCache("getDropdowns"));
-        
-        // Add more caches for other method names if needed
+		List<Cache> caches = new ArrayList<>();
+		caches.add(new ConcurrentMapCache("sheetsData"));
+		caches.add(new ConcurrentMapCache("emailData"));
+		caches.add(new ConcurrentMapCache("contactData"));
+		caches.add(new ConcurrentMapCache("getDropdowns"));
+		caches.add(new ConcurrentMapCache("getFollowUpStatusData"));
+		caches.add(new ConcurrentMapCache("getFollowUpData"));
 
-        cacheManager.setCaches(caches);
-        return cacheManager;
-    }
+		// Add more caches for other method names if needed
+
+		cacheManager.setCaches(caches);
+		return cacheManager;
+	}
 }
