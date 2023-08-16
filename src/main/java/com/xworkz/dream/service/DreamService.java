@@ -115,7 +115,7 @@ public class DreamService {
 								dto.getBasicInfo().getTraineeName());
 						repo.evictAllCachesOnTraineeDetails();
 						if (sent == true) {
-							return ResponseEntity.ok("Data written successfully , Added to follow Up");
+							return ResponseEntity.ok("Data written successfully , Added to follow Up , sended course content ");
 						} else {
 							return ResponseEntity.ok("Email not sent, Data written successfully , Added to follow Up");
 						}

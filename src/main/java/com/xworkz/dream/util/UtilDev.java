@@ -117,16 +117,34 @@ public class UtilDev implements DreamUtil {
 	@Override
 	public boolean sendCourseContent(String email, String recipientName)
 			throws MessagingException, IOException, TemplateException {
-		
-		MimeMessage message = mailSender.createMimeMessage();
-		MimeMessageHelper helper = new MimeMessageHelper(message, true);
-		helper.setFrom(userName);
-		helper.setTo(email);
-		helper.setSubject("Course Content");
-		String content = renderJspTemplate("CourseContentTemplate", recipientName);
-		helper.setText(content, true);
-		mailSender.send(message);
-		return false;
+		 try {
+			 Properties props = new Properties();
+				props.put("mail.smtp.auth", "true");
+				props.put("mail.smtp.starttls.enable", "true");
+				props.put("mail.smtp.host", "smtp.office365.com");
+				props.put("mail.smtp.port", smtpPort);
+
+		        Session session = Session.getInstance(props, new javax.mail.Authenticator() {
+		            protected PasswordAuthentication getPasswordAuthentication() {
+		                return new PasswordAuthentication(userName, password);
+		            }
+		        });
+		        MimeMessage message = new MimeMessage(session);
+		        message.setFrom(new InternetAddress(userName)); // Replace with your email address
+		        message.setRecipients(Message.RecipientType.TO, InternetAddress.parse(email)); // Use the provided email parameter
+		        message.setSubject("Course Content");
+
+		        // Assuming renderFreemarkerTemplate correctly generates the content
+		        String content = renderJspTemplate("CourseContentTemplate", recipientName);
+		        message.setContent(content, "text/html; charset=UTF-8");
+		        Transport.send(message);
+
+		        return true; // Email sent successfully
+		    } catch (MessagingException e) {
+		        // Handle the messaging exception appropriately
+		        e.printStackTrace();
+		        throw e;
+		    }
 	}
 
 	private String renderJspTemplate(String templateName, String recipientName) throws IOException, TemplateException {
