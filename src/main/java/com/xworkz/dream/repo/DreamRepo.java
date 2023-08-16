@@ -70,7 +70,8 @@ public class DreamRepo {
 	private String dateOfBirthDetailsRange;
 	@Value("${sheets.birthdayRange}")
 	private String birthdayRange;
-	
+	@Value ("${sheets.followUpEmailRange}")
+	private String followUpEmailRange;
 	@Autowired
 	private ResourceLoader resourceLoader;
 
@@ -218,9 +219,13 @@ public class DreamRepo {
 	}
 	public UpdateValuesResponse updateFollow(String spreadsheetId, String range2, ValueRange valueRange) throws IOException {
 		System.out.println(spreadsheetId+" " +range2+ " " + valueRange);
-		
 		return sheetsService.spreadsheets().values().update(spreadsheetId, range2, valueRange)
 				.setValueInputOption("RAW").execute();
+	}
+	
+	public ValueRange getEmailList(String spreadsheetId) throws IOException {
+		ValueRange response = sheetsService.spreadsheets().values().get(spreadsheetId, followUpEmailRange).execute();
+		return response;
 	}
 
 	@CacheEvict(value = { "sheetsData", "emailData", "contactData" }, allEntries = true)

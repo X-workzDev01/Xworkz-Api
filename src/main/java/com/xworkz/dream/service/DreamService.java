@@ -12,6 +12,7 @@ import java.util.ListIterator;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
+import javax.mail.MessagingException;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -53,6 +54,8 @@ import com.xworkz.dream.repo.DreamRepo;
 import com.xworkz.dream.util.DreamUtil;
 import com.xworkz.dream.wrapper.DreamWrapper;
 
+import freemarker.template.TemplateException;
+
 @Service
 public class DreamService {
 
@@ -83,7 +86,7 @@ public class DreamService {
 	private static final Logger logger = LoggerFactory.getLogger(DreamService.class);
 
 	// Rest of your code...
-	public ResponseEntity<String> writeData(String spreadsheetId, TraineeDto dto, HttpServletRequest request) {
+	public ResponseEntity<String> writeData(String spreadsheetId, TraineeDto dto, HttpServletRequest request) throws MessagingException, TemplateException {
 		try {
 			if (true) {// isCookieValid(request)
 				List<List<Object>> data = repo.getIds(spreadsheetId).getValues();
@@ -547,9 +550,12 @@ public class DreamService {
 			throws IOException, IllegalAccessException {
 		System.out.println("this is service method....:" + dto);
 		FollowUpDto followUpDto = getFollowUpDetailsByEmail(spreadsheetId, email);
-	
-		int rowIndex = findRowIndexByEmail(spreadsheetId, email);
+		System.out.println(followUpDto);
+		int rowIndex = findByEmailForUpdate(spreadsheetId, email);
+		
+		//System.out.println(rowIndex);
 		String range = followUpSheetName + followUprowStartRange + rowIndex + ":" + followUprowEndRange + rowIndex;
+		System.out.println(range);
 		List<List<Object>> values = Arrays.asList(wrapper.extractDtoDetails(dto));
 		ValueRange valueRange = new ValueRange();
 		valueRange.setValues(values);
@@ -577,7 +583,7 @@ public class DreamService {
 	}
 	private int findByEmailForUpdate(String spreadsheetId, String email) throws IOException {
 
-		ValueRange data = repo.getEmails(spreadsheetId);
+		ValueRange data = repo.getEmailList(spreadsheetId);
 		List<List<Object>> values = data.getValues();
 		if (values != null) {
 			for (int i = 0; i < values.size(); i++) {

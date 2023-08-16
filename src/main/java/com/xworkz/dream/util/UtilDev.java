@@ -1,7 +1,10 @@
 package com.xworkz.dream.util;
 
+import java.io.IOException;
 import java.security.SecureRandom;
 import java.util.Base64;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Properties;
 import java.util.Random;
 
@@ -19,11 +22,17 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Profile;
+import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.mail.javamail.JavaMailSenderImpl;
+import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Component;
-import org.thymeleaf.TemplateEngine;
-import org.thymeleaf.context.Context;
-import org.thymeleaf.templatemode.TemplateMode;
-import org.thymeleaf.templateresolver.ClassLoaderTemplateResolver;
+import org.springframework.ui.Model;
+import org.springframework.ui.freemarker.FreeMarkerTemplateUtils;
+import org.springframework.web.servlet.view.freemarker.FreeMarkerConfigurer;
+
+import freemarker.template.Configuration;
+import freemarker.template.Template;
+import freemarker.template.TemplateException;
 
 @Component
 @Profile("dev")
@@ -38,7 +47,12 @@ public class UtilDev implements DreamUtil {
 	@Value("${mail.password}")
 	private String password;
 
-	
+	@Autowired
+	private JavaMailSender mailSender;
+
+	@Autowired
+	private Configuration freemarkerConfig;
+
 	private static final Logger logger = LoggerFactory.getLogger(UtilLocal.class);
 
 	public int generateOTP() {
@@ -101,9 +115,27 @@ public class UtilDev implements DreamUtil {
 	}
 
 	@Override
-	public boolean sendCourseContent(String email, String name) {
-	
+	public boolean sendCourseContent(String email, String recipientName)
+			throws MessagingException, IOException, TemplateException {
+		
+		MimeMessage message = mailSender.createMimeMessage();
+		MimeMessageHelper helper = new MimeMessageHelper(message, true);
+		helper.setFrom(userName);
+		helper.setTo(email);
+		helper.setSubject("Course Content");
+		String content = renderJspTemplate("CourseContentTemplate", recipientName);
+		helper.setText(content, true);
+		mailSender.send(message);
 		return false;
+	}
+
+	private String renderJspTemplate(String templateName, String recipientName) throws IOException, TemplateException {
+		 Template template = freemarkerConfig.getTemplate(templateName + ".html"); // Use .ftl extension
+
+		Map<String, Object> model = new HashMap<>();
+		model.put("recipientName", recipientName);
+
+		return FreeMarkerTemplateUtils.processTemplateIntoString(template, model);
 	}
 
 }
