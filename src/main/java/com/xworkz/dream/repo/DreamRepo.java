@@ -162,11 +162,12 @@ public class DreamRepo {
 		return true;
 	}
 
+	@Cacheable(value = "followUpDetails", key = "#spreadsheetId", unless = "#result == null")
 	public List<List<Object>> getFollowUpDetails(String spreadsheetId) throws IOException {
 		ValueRange response = sheetsService.spreadsheets().values().get(spreadsheetId, followUpRange).execute();
 		return response.getValues();
 	}
-
+	
 	public boolean updateCurrentFollowUpStatus(String spreadsheetId, String currentFollowRange, List<Object> data)
 			throws IOException {
 		List<List<Object>> list = new ArrayList<List<Object>>();
@@ -184,6 +185,7 @@ public class DreamRepo {
 		return response.getValues();
 	}
 
+	@Cacheable(value = "followUpStatusDetails", key = "#spreadsheetId", unless = "#result == null")
 	public List<List<Object>> getFollowUpStatusDetails(String spreadsheetId) throws IOException {
 		ValueRange response = sheetsService.spreadsheets().values().get(spreadsheetId, followUpStatus).execute();
 		return response.getValues();
@@ -228,11 +230,15 @@ public class DreamRepo {
 		return response;
 	}
 
-	@CacheEvict(value = { "sheetsData", "emailData", "contactData" }, allEntries = true)
+	@CacheEvict(value = { "sheetsData", "emailData", "contactData", "followUpStatusDetails", "followUpDetails"}, allEntries = true)
 	public void evictAllCachesOnTraineeDetails() {
 		// will evict all entries in the specified caches
 		System.out.println("evictAllCachesOnTraineeDetails running");
 	}
-	
+	@CacheEvict(value = { "sheetsData", "emailData", "contactData", "followUpStatusDetails", "followUpDetails" }, allEntries = true)
+	public void evictSheetsDataCaches() {
+		// This method will be scheduled to run every 12 hours
+		// and will evict all entries in the specified caches
+	}	
 	
 }

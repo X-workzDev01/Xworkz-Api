@@ -229,18 +229,14 @@ public class DreamService {
 		}
 	}
 
-	@CacheEvict(value = { "sheetsData", "emailData", "contactData", "getDropdowns" }, allEntries = true)
+	@CacheEvict(value = { "sheetsData", "emailData", "contactData", "getDropdowns","followUpStatusDetails", "followUpDetails" }, allEntries = true)
 	@Scheduled(fixedDelay = 43200000) // 12 hours in milliseconds
 	public void evictAllCaches() {
 		// This method will be scheduled to run every 12 hours
 		// and will evict all entries in the specified caches
 	}
 
-	@CacheEvict(value = { "sheetsData", "emailData", "contactData" }, allEntries = true)
-	public void evictSheetsDataCaches() {
-		// This method will be scheduled to run every 12 hours
-		// and will evict all entries in the specified caches
-	}
+	
 
 	public ResponseEntity<SheetsDto> readData(String spreadsheetId, int startingIndex, int maxRows) {
 		try {
@@ -309,8 +305,13 @@ public class DreamService {
 				ValueRange valueRange = new ValueRange();
 				valueRange.setValues(values);
 				UpdateValuesResponse updated = repo.update(spreadsheetId, range, valueRange);
-				evictSheetsDataCaches();
-				return ResponseEntity.ok("Updated Successfully");
+				if(updated.isEmpty()) {
+					return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("An error occurred ");
+				}else {
+					repo.evictAllCachesOnTraineeDetails();
+					return ResponseEntity.ok("Updated Successfully");
+				}
+				
 			} catch (IllegalAccessException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -326,6 +327,29 @@ public class DreamService {
 
 	}
 
+	public ResponseEntity<String> updateFollowUp(String spreadsheetId, String email, FollowUpDto followDto)
+			throws IOException, IllegalAccessException {
+		FollowUpDto followUpDto = getFollowUpDetailsByEmail(spreadsheetId, email);
+	
+		int rowIndex = findByEmailForUpdate(spreadsheetId, email);
+		
+		
+		String range = followUpSheetName + followUprowStartRange + rowIndex + ":" + followUprowEndRange + rowIndex;
+		
+		List<List<Object>> values = Arrays.asList(wrapper.extractDtoDetails(followDto));
+		
+		ValueRange valueRange = new ValueRange();
+		valueRange.setValues(values);
+		
+		UpdateValuesResponse updated = repo.updateFollow(spreadsheetId, range, valueRange);
+		if(updated.isEmpty()) {
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("An error occurred ");
+		}else {
+			repo.evictAllCachesOnTraineeDetails();
+			return ResponseEntity.ok("Updated Successfully");
+		}
+		
+	}
 	private int findRowIndexByEmail(String spreadsheetId, String email) throws IOException {
 
 		ValueRange data = repo.getEmails(spreadsheetId);
@@ -546,23 +570,7 @@ public class DreamService {
 		return ResponseEntity.ok("Birth day information Not added");
 	}
 
-	public ResponseEntity<String> updateFollowUp(String spreadsheetId, String email, FollowUpDto dto)
-			throws IOException, IllegalAccessException {
-		System.out.println("this is service method....:" + dto);
-		FollowUpDto followUpDto = getFollowUpDetailsByEmail(spreadsheetId, email);
-		System.out.println(followUpDto);
-		int rowIndex = findByEmailForUpdate(spreadsheetId, email);
-		
-		//System.out.println(rowIndex);
-		String range = followUpSheetName + followUprowStartRange + rowIndex + ":" + followUprowEndRange + rowIndex;
-		System.out.println(range);
-		List<List<Object>> values = Arrays.asList(wrapper.extractDtoDetails(dto));
-		ValueRange valueRange = new ValueRange();
-		valueRange.setValues(values);
-		UpdateValuesResponse updated = repo.updateFollow(spreadsheetId, range, valueRange);
-		return ResponseEntity.ok("Updated Successfully");	
-		
-	}
+	
 
 	public FollowUpDto getFollowUpDetailsByEmail(String spreadsheetId, String email) throws IOException {
 		// List<FollowUpDto> followUpDto = new ArrayList<FollowUpDto>();
@@ -574,7 +582,7 @@ public class DreamService {
 					.filter(list -> list.stream().anyMatch(value -> value.toString().equalsIgnoreCase(email)))
 					.collect(Collectors.toList());
 			for (List<Object> list : data) {
-				// System.out.println(list.toString());
+				//System.out.println(list.toString());
 				followUpDto = wrapper.listToFollowUpDTO(list);
 			}
 			return followUpDto;
@@ -589,7 +597,7 @@ public class DreamService {
 			for (int i = 0; i < values.size(); i++) {
 				List<Object> row = values.get(i);
 				if (row.size() > 0 && row.get(0).toString().equalsIgnoreCase(email)) {
-					return i + 3;
+					return i + 2;
 				}
 			}
 		}

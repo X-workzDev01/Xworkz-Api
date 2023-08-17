@@ -20,7 +20,7 @@ sheets:
   followUpSheetName: followUp!
   followUprowStartRange: A2
   followUprowEndRange: I
-  followUpEmailRange: C2:C
+  followUpEmailRange: followUp!C2:C
   idRange: xworkzApi!A3:A
   followUpRowCurrentStartRange: G
   followUpRowCurrentEndRange: H
