@@ -7,7 +7,7 @@ spring:
 sheets:
   appName: Dream Api
   credentialsPath: classpath:META-INF/credentials.json
-  range: A3:P
+  range: A3:Q
   emailRange: C3:C
   contactNumberRange: D3:D
   dropdownRange: dropDowns!A2:I
