@@ -421,7 +421,7 @@ public class DreamService {
 
 	public ResponseEntity<List<String>> getSearchSuggestion(String spreadsheetId, String value,
 			HttpServletRequest request) {
-		SuggestionDto sDto = new SuggestionDto();
+		//SuggestionDto sDto = new SuggestionDto();
 		// String values=value.toLowerCase();
 		String pattern = ".{3}";
 		List<String> suggestion = new ArrayList<>();
@@ -434,9 +434,9 @@ public class DreamService {
 				})).collect(Collectors.toList());
 
 				for (List<Object> list : filteredData) {
-					// sDto = wrapper.listToSuggestionDTO(list);
-					suggestion.add(list.get(0).toString());
-					suggestion.add(list.get(1).toString());
+
+					suggestion.add((String)list.get(0).toString());
+					suggestion.add((String)list.get(1).toString());
 				}
 
 				return ResponseEntity.ok(suggestion);
