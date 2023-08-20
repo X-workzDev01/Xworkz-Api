@@ -20,6 +20,7 @@ sheets:
   followUpRowCurrentStartRange: G
   followUpRowCurrentEndRange: H
   emailAndNameRange: xworkzApi!B3:C
+  batchDetails: batchDetails!A2:H
   
 mail:
    smtpHost: smtp.office365.com

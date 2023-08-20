@@ -27,6 +27,8 @@ public class CacheConfig {
         caches.add(new ConcurrentMapCache("emailData"));
         caches.add(new ConcurrentMapCache("contactData"));
         caches.add(new ConcurrentMapCache("getDropdowns"));
+        caches.add(new ConcurrentMapCache("batchDetails"));
+        
         
         // Add more caches for other method names if needed
 

@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.xworkz.dream.dto.BatchDetails;
 import com.xworkz.dream.dto.FollowUpDto;
 import com.xworkz.dream.dto.SheetsDto;
 import com.xworkz.dream.dto.StatusDto;
@@ -109,9 +110,19 @@ public class DreamApiController {
 	
 //	public <ResponseEntity<FollowUpDto>> getFollowUpData(@RequestHeader String spreadsheetId , star)
 	
-	
+	//suhas
+	@GetMapping("/getCourseName")
+	public ResponseEntity<List<Object>> getCourseName(@RequestHeader String spreadsheetId,@RequestParam String status) throws IOException{
+		logger.info("Getting CourseName : {}", status);
+		return service.getCourseNameByStatus(spreadsheetId, status);
+	}
 
-	
+	//suhas
+	@GetMapping("/getCourseDetails")
+	public ResponseEntity<BatchDetails> getBatchDetails(@RequestHeader String spreadsheetId,@RequestParam String courseName) throws IOException {
+		logger.info("Getting CourseDetails : {}", courseName);
+		return service.getBatchDetailsByCourseName(spreadsheetId, courseName);
+	}
 	
 	
 	
