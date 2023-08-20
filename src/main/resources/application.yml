@@ -1,27 +1,32 @@
 spring:
    profiles:
-      active: dev
+      active: local
 
 sheets:
   appName: Dream Api
   credentialsPath: classpath:META-INF/credentials.json
-  range: A3:N
+  range: A3:P
   emailRange: C3:C
   contactNumberRange: D3:D
-  dropdownRange: dropDowns!A2:H
+  dropdownRange: dropDowns!A2:I
   loginInfoRange: loginInfo!A2:B
-  followUpRange: followUp!A2:H
-  followUpStatus: followUpStatus!A2:H
+  followUpRange: followUp!A2:I
+  followUpStatus: followUpStatus!A2:I
   rowStartRange: A
-  rowEndRange: M
+  rowEndRange: P
   traineeSheetName: xworkzApi!
   followUpSheetName: followUp!
   idRange: xworkzApi!A3:A
   followUpRowCurrentStartRange: G
   followUpRowCurrentEndRange: H
   emailAndNameRange: xworkzApi!B3:C
+
   batchDetails: batchDetails!A2:H
-  
+   batchDetailsRange: batchDetails!A2:H 
+  batchIdRange: batchDetails!A2:A
+  dateOfBirthDetailsSheetName: dateOfBirthDetails!
+  dateOfBirthDetailsRange: dateOfBirthDetails!A2:D
+  birthdayRange: dateOfBirthDetails!A2:A
 mail:
    smtpHost: smtp.office365.com
    smtpPort: 587
@@ -35,5 +40,7 @@ login:
   userFile: classpath:users.yml
   sheetId: 1p3G4et36vkzSDs3W63cj6qnUFEWljLos2HHXIZd78Gg
 
+server:
+  port : 8081
 ---
 

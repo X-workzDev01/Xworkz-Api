@@ -1,12 +1,10 @@
 
 sheets:
-  appName: Dream Api
-  credentialsPath: classpath:META-INF/credentials.json
-  range: A3:N
+  range: A3:P
   emailRange: C3:C
   contactNumberRange: D3:D
-  dropdownRange: dropDowns!A2:H
   loginInfoRange: loginInfo!A2:B
+  
 mail:
    smtpHost: smtp.office365.com
    smtpPort: 587

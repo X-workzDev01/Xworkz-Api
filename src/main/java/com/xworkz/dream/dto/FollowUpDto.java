@@ -10,18 +10,13 @@ import lombok.ToString;
 @AllArgsConstructor
 @ToString
 public class FollowUpDto {
-	
-	
+
 	private Integer id;
 	private BasicInfoDto basicInfo;
-	private String RegistrationDate;
-	private String courseName;
+	private String registrationDate;
 	private String joiningDate;
+	private String courseName;
 	private String currentlyFollowedBy;
 	private String currentStatus;
-	
-	
-	
-
 
 }

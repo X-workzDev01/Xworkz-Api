@@ -62,6 +62,13 @@ public class UtilLocal implements DreamUtil{
 	}
 
 
+	@Override
+	public boolean sendCourseContent(String email,String name) {
+		
+		return false;
+	}
+
+
     
 
 }

@@ -65,6 +65,14 @@ public class DreamRepo {
 	private String emailAndNameRange;
 	@Value("${sheets.batchDetails}")
 	private String batchDetailsRange;
+  @Value("${sheets.batchDetailsRange}")
+	private String batchDetailsRange;
+	@Value("${sheets.batchIdRange}")
+	private String batchIdRange;
+	@Value("${sheets.dateOfBirthDetailsRange}")
+	private String dateOfBirthDetailsRange;
+	@Value("${sheets.birthdayRange}")
+	private String birthdayRange;
 
 	@Autowired
 	private ResourceLoader resourceLoader;
@@ -175,14 +183,54 @@ public class DreamRepo {
 	public List<List<Object>> getEmailsAndNames(String spreadsheetId, String value) throws IOException {
 		ValueRange response = sheetsService.spreadsheets().values().get(spreadsheetId, emailAndNameRange).execute();
 
+
 		return response.getValues();
+	}
+
+  public List<List<Object>> getFollowUpStatusDetails(String spreadsheetId) throws IOException {
+		ValueRange response = sheetsService.spreadsheets().values().get(spreadsheetId, followUpStatus).execute();
+		return response.getValues();
+	}
+
+	public ValueRange getBatchId(String spreadsheetId) throws IOException {
+		ValueRange response = sheetsService.spreadsheets().values().get(spreadsheetId, batchIdRange).execute();
+		return response;
+	}
+
+	public boolean saveBatchDetails(String spreadsheetId, List<Object> row) throws IOException {
+		List<List<Object>> values = new ArrayList<>();
+		values.add(row);
+		ValueRange body = new ValueRange().setValues(values);
+		sheetsService.spreadsheets().values().append(spreadsheetId, batchDetailsRange, body)
+				.setValueInputOption("USER_ENTERED").execute();
+		return true;
+	}
+
+	public ValueRange getBirthDayId(String spreadsheetId) throws IOException {
+		ValueRange response = sheetsService.spreadsheets().values().get(spreadsheetId, birthdayRange).execute();
+		return response;
+	}
+
+	
+	public boolean saveBirthDayDetails(String spreadsheetId,List<Object> row) throws IOException {
+		
+		System.out.println("this is save method");
+		System.out.println(row.toString());
+		System.out.println();
+
+		List<List<Object>> values = new ArrayList<>();
+		values.add(row);
+		System.out.println(values.toString());
+		ValueRange body = new ValueRange().setValues(values);
+		sheetsService.spreadsheets().values().append(spreadsheetId, dateOfBirthDetailsRange, body).setValueInputOption("USER_ENTERED")
+				.execute();
+		return true;
 	}
 
 	@CacheEvict(value = { "sheetsData", "emailData", "contactData" }, allEntries = true)
 	public void evictAllCachesOnTraineeDetails() {
 		// will evict all entries in the specified caches
 		System.out.println("evictAllCachesOnTraineeDetails running");
-	}
 
 	// suhas
 	@Cacheable(value = "batchDetails", key = "#spreadsheetId", unless = "#result == null")
@@ -191,5 +239,9 @@ public class DreamRepo {
 
 		return response.getValues();
 	}
+
+
+	}
+	
 
 }

@@ -30,9 +30,9 @@ public class UtilService {
 			List<String> yearofpass = dropdown.getYearofpass();
 			List<String> offered = dropdown.getOffered();
 			List<String> branchname = dropdown.getBranchname();
-
+			List<String> status = dropdown.getStatus();
 			for (List<Object> list : data) {
-				System.out.println("size" + list);
+				//System.out.println("size" + list);
 
 				// Check if the list has at least 1 element before accessing it
 				if (list.size() > 0 && !list.get(0).toString().isEmpty()) {
@@ -63,8 +63,12 @@ public class UtilService {
 				if (list.size() > 7 && !list.get(7).toString().isEmpty()) {
 					branchname.add((String) list.get(7));
 				}
+				if (list.size() > 8 && !list.get(8).toString().isEmpty()) {
+					status.add((String) list.get(8));
+				}
 			}
 
+			//sorting
 			Collections.sort(course);
 			course.add("Others");
 			Collections.sort(qualifications);
@@ -81,6 +85,9 @@ public class UtilService {
 			offered.add("Others");
 			Collections.sort(branchname);
 			branchname.add("Others");
+			Collections.sort(status);
+			status.add("Others");
+			
 			return dropdown;
 
 		} catch (IOException e) {

@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.ListIterator;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 import javax.servlet.http.Cookie;
@@ -29,11 +30,19 @@ import com.google.api.services.sheets.v4.model.UpdateValuesResponse;
 import com.google.api.services.sheets.v4.model.ValueRange;
 import com.xworkz.dream.dto.BatchDetails;
 import com.xworkz.dream.dto.CourseDto;
+import com.xworkz.dream.dto.BasicInfoDto;
+import com.xworkz.dream.dto.BatchDetailsDto;
+import com.xworkz.dream.dto.BirthDayInfoDto;
+import com.xworkz.dream.dto.CourseDto;
+import com.xworkz.dream.dto.EducationInfoDto;
+import com.xworkz.dream.dto.FollowUpDataDto;
 import com.xworkz.dream.dto.FollowUpDto;
 import com.xworkz.dream.dto.SheetsDto;
 import com.xworkz.dream.dto.StatusDto;
+import com.xworkz.dream.dto.SuggestionDto;
 import com.xworkz.dream.dto.TraineeDto;
 import com.xworkz.dream.repo.DreamRepo;
+import com.xworkz.dream.util.DreamUtil;
 import com.xworkz.dream.wrapper.DreamWrapper;
 
 @Service
@@ -43,6 +52,8 @@ public class DreamService {
 	private DreamRepo repo;
 	@Autowired
 	private DreamWrapper wrapper;
+	@Autowired
+	private DreamUtil util;
 
 	@Value("${sheets.rowStartRange}")
 	private String rowStartRange;
@@ -56,7 +67,8 @@ public class DreamService {
 	private String traineeSheetName;
 	@Value("${sheets.followUpSheetName}")
 	private String followUpSheetName;
-
+	
+	
 	private static final Logger logger = LoggerFactory.getLogger(DreamService.class);
 
 	// Rest of your code...
@@ -69,21 +81,30 @@ public class DreamService {
 
 				dto.setId(size += 1);
 				System.out.println(dto.getId());
+				
 				List<Object> list = wrapper.extractDtoDetails(dto);
 				for (Object object : list) {
 					System.out.println(object);
 				}
 
 				boolean writeStatus = repo.writeData(spreadsheetId, list);
-
+				//calling method to store date of birth details
+				saveBirthDayInfo(spreadsheetId,dto, request);
 				if (writeStatus) {
 					logger.info("Data written successfully to spreadsheetId: {}", spreadsheetId);
 					boolean status = addToFollowUp(dto, spreadsheetId);
 					if (status) {
 						logger.info("Data written successfully to spreadsheetId and Added to Follow Up: {}",
 								spreadsheetId);
+
+						boolean sent = util.sendCourseContent(dto.getBasicInfo().getEmail(),
+								dto.getBasicInfo().getTraineeName());
 						repo.evictAllCachesOnTraineeDetails();
-						return ResponseEntity.ok("Data written successfully , Added to follow Up");
+						if (sent == true) {
+							return ResponseEntity.ok("Data written successfully , Added to follow Up");
+						} else {
+							return ResponseEntity.ok("Email not sent, Data written successfully , Added to follow Up");
+						}
 					}
 					return ResponseEntity.ok("Data written successfully , not added to Follow Up");
 				} else {
@@ -112,13 +133,13 @@ public class DreamService {
 		followUpDto.setBasicInfo(traineeDto.getBasicInfo());
 		followUpDto.setCourseName(traineeDto.getCourseInfo().getCourse());
 		followUpDto.setRegistrationDate(LocalDate.now().toString());
+		followUpDto.setJoiningDate("Not Confirmed");
 		followUpDto.setId(traineeDto.getId());
 		followUpDto.setCurrentlyFollowedBy("None");
 		followUpDto.setCurrentStatus("New");
 		List<Object> data = wrapper.extractDtoDetails(followUpDto);
 		repo.saveToFollowUp(spreadSheetId, data);
 		return true;
-
 	}
 
 	public ResponseEntity<String> emailCheck(String spreadsheetId, String email, HttpServletRequest request) {
@@ -193,11 +214,18 @@ public class DreamService {
 		// and will evict all entries in the specified caches
 	}
 
+	@CacheEvict(value = { "sheetsData","emailData", "contactData"}, allEntries = true)
+	public void evictSheetsDataCaches() {
+		// This method will be scheduled to run every 12 hours
+		// and will evict all entries in the specified caches
+	}
+	
 	public ResponseEntity<SheetsDto> readData(String spreadsheetId, int startingIndex, int maxRows) {
 		try {
 			List<List<Object>> data = repo.readData(spreadsheetId);
+			//System.out.println(data.toString());
 			List<TraineeDto> dtos = getLimitedRows(data, startingIndex, maxRows);
-
+			//System.out.println(dtos.toString());
 			HttpServletResponse response = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes())
 					.getResponse();
 
@@ -228,15 +256,15 @@ public class DreamService {
 				traineeDtos.add(traineeDto);
 			}
 		}
-
 		return traineeDtos;
 	}
 
 	public List<TraineeDto> filterData(String spreadsheetId, String searchValue) throws IOException {
 		if (searchValue != null && !searchValue.isEmpty()) {
 			List<List<Object>> data = repo.readData(spreadsheetId);
-			List<List<Object>> filteredLists = data.stream().filter(
-					list -> list.stream().anyMatch(value -> value.toString().toLowerCase().contains(searchValue)))
+			List<List<Object>> filteredLists = data.stream()
+					.filter(list -> list.stream()
+							.anyMatch(value -> value.toString().toLowerCase().contains(searchValue.toLowerCase())))
 					.collect(Collectors.toList());
 			List<TraineeDto> flist = new ArrayList<TraineeDto>();
 			for (List<Object> list2 : filteredLists) {
@@ -259,6 +287,7 @@ public class DreamService {
 				ValueRange valueRange = new ValueRange();
 				valueRange.setValues(values);
 				UpdateValuesResponse updated = repo.update(spreadsheetId, range, valueRange);
+				evictSheetsDataCaches();
 				return ResponseEntity.ok("Updated Successfully");
 			} catch (IllegalAccessException e) {
 				// TODO Auto-generated catch block
@@ -311,8 +340,8 @@ public class DreamService {
 		int rowIndex = findFollowUpRowIndexById(spreadsheetId, id);
 		String range = followUpSheetName + followUpRowCurrentStartRange + rowIndex + ":" + followUpRowCurrentEndRange
 				+ rowIndex;
-		System.out.println(rowIndex);
-		System.out.println(range);
+		System.out.println("----"+rowIndex);
+		System.out.println(" ---"+range);
 		List<Object> updateData = Arrays.asList(currentlyFollowedBy, currentStatus);
 		repo.updateCurrentFollowUpStatus(spreadsheetId, range, updateData);
 		return true;
@@ -321,9 +350,12 @@ public class DreamService {
 
 	public ResponseEntity<String> updateFollowUpStatus(String spreadsheetId, StatusDto statusDto,
 			HttpServletRequest request) {
+		System.out.println("--------Service--------------");
 		try {
 			statusDto.setAttemptedOn(LocalDateTime.now().toString());
+			System.out.println(statusDto.toString());
 			List<Object> statusData = wrapper.extractDtoDetails(statusDto);
+			System.out.println(statusData.toString());
 			boolean status = repo.updateFollowUpStatus(spreadsheetId, statusData);
 			updateCurrentFollowUp(spreadsheetId, statusDto.getId(), statusDto.getAttemptedBy(),
 					statusDto.getAttemptStatus());
@@ -341,15 +373,27 @@ public class DreamService {
 
 	}
 
-	public ResponseEntity<List<Object>> getSearchSuggestion(String spreadsheetId, String value,
+	public ResponseEntity<List<String>> getSearchSuggestion(String spreadsheetId, String value,
 			HttpServletRequest request) {
+		//SuggestionDto sDto = new SuggestionDto();
+		// String values=value.toLowerCase();
+		String pattern = ".{3}";
+		List<String> suggestion = new ArrayList<>();
 		if (value != null) {
 			try {
-				List<List<Object>> list = repo.getEmailsAndNames(spreadsheetId, value);
-				List<Object> result = getSuggestions(value, list);
-				return ResponseEntity.ok(result);
+				List<List<Object>> dataList = repo.getEmailsAndNames(spreadsheetId, value);
+				List<List<Object>> filteredData = dataList.stream().filter(list -> list.stream().anyMatch(val -> {
+					String strVal = val.toString();
+					return strVal.toLowerCase().startsWith(value.toLowerCase());
+				})).collect(Collectors.toList());
+
+				for (List<Object> list : filteredData) {
+					suggestion.add((String)list.get(0).toString());
+					suggestion.add((String)list.get(1).toString());
+				}
+
+				return ResponseEntity.ok(suggestion);
 			} catch (IOException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 			return null;
@@ -357,12 +401,128 @@ public class DreamService {
 		return null;
 	}
 
-	public static List<Object> getSuggestions(String dataToMatch, List<List<Object>> data) {
+//	public static List<SuggestionDto> getSuggestions(String dataToMatch, List<List<Object>> data) {
+//
+//		List<Object> list = data.stream().flatMap(List::stream)
+//				.filter(value -> value.toString().equalsIgnoreCase(dataToMatch)).collect(Collectors.toList());
+//		System.out.println(list.toString());
+//		return null;
+//	}
 
-		return data.stream().flatMap(List::stream)
-				.filter(value -> value.toString().toLowerCase().contains(dataToMatch.toLowerCase()))
-				.collect(Collectors.toList());
+	public ResponseEntity<?> getDetailsByEmail(String spreadsheetId, String email, HttpServletRequest request)
+			throws IOException {
+		List<List<Object>> data = repo.readData(spreadsheetId);
+		TraineeDto trainee = null;
+		for (List<Object> list : data) {
+			if (list.contains(email)) {
+				trainee = wrapper.listToDto(list);
+			}
+		}
+		if (trainee != null) {
+			return ResponseEntity.ok(trainee);
+		} else {
+			return new ResponseEntity<>("Email Not Found", HttpStatus.NOT_FOUND);
+		}
 	}
+
+	public ResponseEntity<FollowUpDataDto> getFollowUpDetails(String spreadsheetId, int startingIndex, int maxRows,
+			String status) throws IOException {
+		List<FollowUpDto> followUpDto = new ArrayList<FollowUpDto>();
+		// String traineeStatus=status.toLowerCase();
+		if (status != null && !status.isEmpty()) {
+
+			List<List<Object>> lists = repo.getFollowUpDetails(spreadsheetId);
+
+			List<List<Object>> data = lists.stream()
+					.filter(list -> list.stream().anyMatch(value -> value.toString().equalsIgnoreCase(status)))
+					.collect(Collectors.toList());
+			followUpDto = getFollowUpRows(data, startingIndex, maxRows);
+			FollowUpDataDto followUpDataDto = new FollowUpDataDto(followUpDto, data.size());
+			return ResponseEntity.ok(followUpDataDto);
+		}
+		return null;
+	}
+
+	public List<FollowUpDto> getFollowUpRows(List<List<Object>> values, int startingIndex, int maxRows) {
+		List<FollowUpDto> followUpDtos = new ArrayList<>();
+		int endIndex = startingIndex + maxRows;
+		// int rowCount = values.size();
+		ListIterator<List<Object>> iterator = values.listIterator(startingIndex);
+		while (iterator.hasNext() && iterator.nextIndex() < endIndex) {
+			List<Object> row = iterator.next();
+
+			if (row != null && !row.isEmpty()) {
+				FollowUpDto followupDto = wrapper.listToFollowUpDTO(row);
+
+				followUpDtos.add(followupDto);
+			}
+		}
+		return followUpDtos;
+	}
+
+	public List<StatusDto> getStatusDetails(String spreadsheetId, int startingIndex, int maxRows, String email,
+			HttpServletRequest request) throws IOException {
+		List<StatusDto> statusDto = new ArrayList<>();
+		List<List<Object>> dataList = repo.getFollowUpStatusDetails(spreadsheetId);
+		System.out.println(dataList.toString());
+		List<List<Object>> data = dataList.stream()
+				.filter(list -> list.stream().anyMatch(value -> value.toString().equalsIgnoreCase(email)))
+				.collect(Collectors.toList());
+		statusDto = getFollowUpStatusData(data, startingIndex, maxRows);
+
+		return statusDto;
+	}
+
+	public List<StatusDto> getFollowUpStatusData(List<List<Object>> values, int startingIndex, int maxRows) {
+		List<StatusDto> statusDtos = new ArrayList<>();
+
+		int endIndex = startingIndex + maxRows;
+		ListIterator<List<Object>> iterator = values.listIterator(startingIndex);
+
+		while (iterator.hasNext() && iterator.nextIndex() < endIndex) {
+			List<Object> row = iterator.next();
+
+			if (row != null && !row.isEmpty()) {
+				StatusDto statusDto = wrapper.listToStatusDto(row);
+				statusDtos.add(statusDto);
+			}
+		}
+
+		return statusDtos;
+	}
+
+	public ResponseEntity<String> saveDetails(String spreadsheetId, BatchDetailsDto dto, HttpServletRequest request)
+			throws IOException, IllegalAccessException {
+		List<List<Object>> data = repo.getBatchId(spreadsheetId).getValues();
+		int size = data.size();
+		dto.setId(size += 1);
+		List<Object> list = wrapper.extractDtoDetails(dto);
+		boolean save = repo.saveBatchDetails(spreadsheetId, list);
+		if (save == true) {
+			return ResponseEntity.ok("Batch details added successfully");
+		} else {
+			return ResponseEntity.ok("Batch details Not added");
+		}
+	}
+
+	public ResponseEntity<String> saveBirthDayInfo(String spreadsheetId, TraineeDto dto,
+			HttpServletRequest request) throws IllegalAccessException, IOException {
+		BirthDayInfoDto birthday = new BirthDayInfoDto();
+		List<List<Object>> data = repo.getBirthDayId(spreadsheetId).getValues();
+		int size = data.size();
+		birthday.setDto(dto.getBasicInfo());
+		birthday.setId(size += 1);
+		List<Object> list = wrapper.extractDtoDetails(birthday);
+		for (Object object : list) {
+			System.out.println(object);
+		}
+		boolean save=repo.saveBirthDayDetails(spreadsheetId,list);
+		if(save!=false) {
+			return ResponseEntity.ok("Birth day information added successfully");
+		}
+		return ResponseEntity.ok("Birth day information Not added");
+	}
+
 
 	// suhas
 	public ResponseEntity<List<Object>> getCourseNameByStatus(String spreadsheetId, String status) {
@@ -417,4 +577,6 @@ public class DreamService {
 		
 	}
 
+
+	
 }
