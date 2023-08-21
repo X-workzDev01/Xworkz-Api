@@ -73,6 +73,8 @@ public class DreamRepo {
 	private String dateOfBirthDetailsRange;
 	@Value("${sheets.birthdayRange}")
 	private String birthdayRange;
+	@Value ("${sheets.followUpEmailRange}")
+	private String followUpEmailRange;
 
 	@Autowired
 	private ResourceLoader resourceLoader;
@@ -164,11 +166,12 @@ public class DreamRepo {
 		return true;
 	}
 
+	@Cacheable(value = "followUpDetails", key = "#spreadsheetId", unless = "#result == null")
 	public List<List<Object>> getFollowUpDetails(String spreadsheetId) throws IOException {
 		ValueRange response = sheetsService.spreadsheets().values().get(spreadsheetId, followUpRange).execute();
 		return response.getValues();
 	}
-
+	
 	public boolean updateCurrentFollowUpStatus(String spreadsheetId, String currentFollowRange, List<Object> data)
 			throws IOException {
 		List<List<Object>> list = new ArrayList<List<Object>>();
@@ -179,6 +182,10 @@ public class DreamRepo {
 		return true;
 
 	}
+	
+	
+	
+	
 
 	public List<List<Object>> getEmailsAndNames(String spreadsheetId, String value) throws IOException {
 		ValueRange response = sheetsService.spreadsheets().values().get(spreadsheetId, emailAndNameRange).execute();
@@ -187,7 +194,11 @@ public class DreamRepo {
 		return response.getValues();
 	}
 
-  public List<List<Object>> getFollowUpStatusDetails(String spreadsheetId) throws IOException {
+
+
+	@Cacheable(value = "followUpStatusDetails", key = "#spreadsheetId", unless = "#result == null")
+	public List<List<Object>> getFollowUpStatusDetails(String spreadsheetId) throws IOException {
+
 		ValueRange response = sheetsService.spreadsheets().values().get(spreadsheetId, followUpStatus).execute();
 		return response.getValues();
 	}
@@ -213,21 +224,25 @@ public class DreamRepo {
 
 	
 	public boolean saveBirthDayDetails(String spreadsheetId,List<Object> row) throws IOException {
-		
-		System.out.println("this is save method");
-		System.out.println(row.toString());
-		System.out.println();
-
 		List<List<Object>> values = new ArrayList<>();
 		values.add(row);
-		System.out.println(values.toString());
 		ValueRange body = new ValueRange().setValues(values);
 		sheetsService.spreadsheets().values().append(spreadsheetId, dateOfBirthDetailsRange, body).setValueInputOption("USER_ENTERED")
 				.execute();
 		return true;
 	}
+	public UpdateValuesResponse updateFollow(String spreadsheetId, String range2, ValueRange valueRange) throws IOException {
+		System.out.println(spreadsheetId+" " +range2+ " " + valueRange);
+		return sheetsService.spreadsheets().values().update(spreadsheetId, range2, valueRange)
+				.setValueInputOption("RAW").execute();
+	}
+	
+	public ValueRange getEmailList(String spreadsheetId) throws IOException {
+		ValueRange response = sheetsService.spreadsheets().values().get(spreadsheetId, followUpEmailRange).execute();
+		return response;
+	}
 
-	@CacheEvict(value = { "sheetsData", "emailData", "contactData" }, allEntries = true)
+	@CacheEvict(value = { "sheetsData", "emailData", "contactData", "followUpStatusDetails", "followUpDetails"}, allEntries = true)
 	public void evictAllCachesOnTraineeDetails() {
 		// will evict all entries in the specified caches
 		System.out.println("evictAllCachesOnTraineeDetails running");
@@ -242,6 +257,11 @@ public class DreamRepo {
 
 
 	}
-	
 
+	@CacheEvict(value = { "sheetsData", "emailData", "contactData", "followUpStatusDetails", "followUpDetails" }, allEntries = true)
+	public void evictSheetsDataCaches() {
+		// This method will be scheduled to run every 12 hours
+		// and will evict all entries in the specified caches
+	}	
+	
 }

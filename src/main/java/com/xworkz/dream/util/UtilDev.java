@@ -1,7 +1,10 @@
 package com.xworkz.dream.util;
 
+import java.io.IOException;
 import java.security.SecureRandom;
 import java.util.Base64;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Properties;
 import java.util.Random;
 
@@ -13,13 +16,23 @@ import javax.mail.Session;
 import javax.mail.Transport;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Profile;
+import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.mail.javamail.JavaMailSenderImpl;
+import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Component;
+import org.springframework.ui.Model;
+import org.springframework.ui.freemarker.FreeMarkerTemplateUtils;
+import org.springframework.web.servlet.view.freemarker.FreeMarkerConfigurer;
+
+import freemarker.template.Configuration;
+import freemarker.template.Template;
+import freemarker.template.TemplateException;
 
 @Component
 @Profile("dev")
@@ -33,6 +46,12 @@ public class UtilDev implements DreamUtil {
 	private String userName;
 	@Value("${mail.password}")
 	private String password;
+
+	@Autowired
+	private JavaMailSender mailSender;
+
+	@Autowired
+	private Configuration freemarkerConfig;
 
 	private static final Logger logger = LoggerFactory.getLogger(UtilLocal.class);
 
@@ -95,58 +114,46 @@ public class UtilDev implements DreamUtil {
 		return Base64.getEncoder().encodeToString(tokenBytes);
 	}
 
-	public boolean sendCourseContent(String email,String name) {
-		String subject = "Java Full Stack Course Content";
-		String body = "Dear Candidate,\n\n"
-				+ "Please find the attached Java Full Stack Course Content for your reference.\n\n"
-				+ "The attached file contains the overview of the course. Apart from the mentioned course, "
-				+ "you will be learning a total of 15 Technologies and Placement activities, technical aptitude, "
-				+ "Resume Building, Mocks, Presentation, etc.\n\n"
-				+ "For any queries, feel free to reach me at 9886971483/9886971480.\n\n"
-				+ "Follow us on Facebook and Instagram for more updates regarding new batches and placement details:\n"
-				+ "Facebook: https://www.facebook.com/xworkzdevelopmentcenter/\n"
-				+ "Instagram: https://www.instagram.com/xworkzodc1?r=nametag\n"
-				+ "Google Reviews Link: https://g.page/xworkzodc/review?av\n\n" + "Thanks and Regards,\n"
-				+ "HR Team\n" + "M.No: 9845958884\n\n"
-				+ "Find us on Google Maps: https://goo.gl/maps/LSgLsZ6oqRu\n\n" + "https://www.x-workz.in\n"
-				+ "080-48669257/9845958884\n" + "RAJAJINAGAR||BTM";
-		// Email properties
-		Properties props = new Properties();
-		props.put("mail.smtp.auth", "true");
-		props.put("mail.smtp.starttls.enable", "true");
-		props.put("mail.smtp.host", "smtp.office365.com");
-		props.put("mail.smtp.port", smtpPort);
+	@Override
+	public boolean sendCourseContent(String email, String recipientName)
+			throws MessagingException, IOException, TemplateException {
+		 try {
+			 Properties props = new Properties();
+				props.put("mail.smtp.auth", "true");
+				props.put("mail.smtp.starttls.enable", "true");
+				props.put("mail.smtp.host", "smtp.office365.com");
+				props.put("mail.smtp.port", smtpPort);
 
-		// Create session with authentication
-		Session session = Session.getInstance(props, new Authenticator() {
-			protected PasswordAuthentication getPasswordAuthentication() {
-				return new PasswordAuthentication(userName, password);
-			}
-		});
-		try {
-			// Create email message
-			Message message = new MimeMessage(session);
-			message.setFrom(new InternetAddress(userName));
-			message.setRecipients(Message.RecipientType.TO, InternetAddress.parse(email));
-			message.setSubject(subject);
-			message.setText(body);
-			
-			// Send email
-			Transport.send(message);
-			logger.info("Email sent to {}: Subject: {}", email, subject);
-			return true; // Email sent successfully
-		} catch (MessagingException e) {
-			System.out.println("");
-			logger.error("Failed to send email ", e);
-			e.printStackTrace();
-			return false; // Failed to send email
-		}
-		
+		        Session session = Session.getInstance(props, new javax.mail.Authenticator() {
+		            protected PasswordAuthentication getPasswordAuthentication() {
+		                return new PasswordAuthentication(userName, password);
+		            }
+		        });
+		        MimeMessage message = new MimeMessage(session);
+		        message.setFrom(new InternetAddress(userName)); // Replace with your email address
+		        message.setRecipients(Message.RecipientType.TO, InternetAddress.parse(email)); // Use the provided email parameter
+		        message.setSubject("Course Content");
+
+		        // Assuming renderFreemarkerTemplate correctly generates the content
+		        String content = renderJspTemplate("CourseContentTemplate", recipientName);
+		        message.setContent(content, "text/html; charset=UTF-8");
+		        Transport.send(message);
+
+		        return true; // Email sent successfully
+		    } catch (MessagingException e) {
+		        // Handle the messaging exception appropriately
+		        e.printStackTrace();
+		        throw e;
+		    }
 	}
-	
-	public boolean sendMail(String name,String email) {
-		String subject = "Java Full Stack Course Content";
-		
-		return false;
+
+	private String renderJspTemplate(String templateName, String recipientName) throws IOException, TemplateException {
+		 Template template = freemarkerConfig.getTemplate(templateName + ".html"); // Use .ftl extension
+
+		Map<String, Object> model = new HashMap<>();
+		model.put("recipientName", recipientName);
+
+		return FreeMarkerTemplateUtils.processTemplateIntoString(template, model);
 	}
+
 }

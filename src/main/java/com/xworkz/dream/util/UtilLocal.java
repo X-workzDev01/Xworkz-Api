@@ -63,12 +63,10 @@ public class UtilLocal implements DreamUtil{
 
 
 	@Override
-	public boolean sendCourseContent(String email,String name) {
-		
+	public boolean sendCourseContent(String email, String name) {
+		// TODO Auto-generated method stub
 		return false;
 	}
-
-
     
 
 }

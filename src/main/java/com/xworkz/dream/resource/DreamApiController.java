@@ -3,6 +3,7 @@ package com.xworkz.dream.resource;
 import java.io.IOException;
 import java.util.List;
 
+import javax.mail.MessagingException;
 import javax.servlet.http.HttpServletRequest;
 
 import org.slf4j.Logger;
@@ -32,6 +33,7 @@ import com.xworkz.dream.dto.SuggestionDto;
 import com.xworkz.dream.dto.TraineeDto;
 import com.xworkz.dream.service.DreamService;
 
+import freemarker.template.TemplateException;
 import io.swagger.annotations.ApiOperation;
 
 @RestController
@@ -46,7 +48,7 @@ public class DreamApiController {
 	@ApiOperation(value = "To register the trainee details in the google sheets")
 	@PostMapping("/register")
 	public ResponseEntity<String> register(@RequestHeader String spreadsheetId, @RequestBody TraineeDto values,
-			HttpServletRequest request) throws IOException {
+			HttpServletRequest request) throws IOException, MessagingException, TemplateException {
 		logger.info("Registering trainee details: {}", values);
 		return service.writeData(spreadsheetId, values, request);	}
 
@@ -79,7 +81,6 @@ public class DreamApiController {
 	public ResponseEntity<SheetsDto> readData(@RequestHeader String spreadsheetId, @RequestParam int startingIndex,
 			@RequestParam int maxRows) {
 		return service.readData(spreadsheetId, startingIndex, maxRows);
-
 	}
 
 	@GetMapping("/filterData")
@@ -150,6 +151,21 @@ public class DreamApiController {
 		return service.getStatusDetails(spreadsheetId, startingIndex, maxRows, email, request);
 	}
 	
+	@ApiOperation(value = "To get Registration details by email")
+	@GetMapping("/getFollowUpEmail/{email}")
+	public ResponseEntity<FollowUpDto> getFollowUpEmail(@RequestHeader String spreadsheetId, @PathVariable String email,
+			HttpServletRequest request) throws IOException {
+		return service.getFollowUpByEmail(spreadsheetId, email, request);
+	}
+	
+	@ApiOperation(value = "To get Registration details by email")
+	@GetMapping("/getFollowUpStatusByEmail/{email}")
+	public ResponseEntity<List<StatusDto>> getFollowUpStatusByEmail(@RequestHeader String spreadsheetId, @PathVariable String email,
+			HttpServletRequest request) throws IOException {
+		List<StatusDto> list = service.getStatusDetailsByEmail(spreadsheetId, email, request);
+		return ResponseEntity.ok(list);
+	}
+	
 	@ApiOperation(value="To update Birth day info while registering")
 	@PostMapping("/birthDayInfo")
 	public ResponseEntity<String> updateBirthDayInfo(@RequestHeader String spreadsheetId,@RequestBody TraineeDto dto,HttpServletRequest request) throws IllegalAccessException, IOException{
@@ -158,5 +174,16 @@ public class DreamApiController {
     
 
 	}
+	@ApiOperation("to update the followup data")
+	@PutMapping("/updateFollowUp")
+	public ResponseEntity<String> updateFollowUp(@RequestHeader String spreadsheetId,@RequestParam String email,@RequestBody FollowUpDto dto,HttpServletRequest request) throws IOException, IllegalAccessException{
+		System.out.println("this is update Method");
+		System.out.println(email);
+		System.out.println("Dto:"+dto);
+		
+		return service.updateFollowUp(spreadsheetId,email,dto);
+	}
+	
+	
 	
 }

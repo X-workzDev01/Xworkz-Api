@@ -1,6 +1,8 @@
 spring:
    profiles:
-      active: local
+      active: dev
+   freemarker:
+    template-loader-path: classpath:/templates/
 
 sheets:
   appName: Dream Api
@@ -16,6 +18,9 @@ sheets:
   rowEndRange: P
   traineeSheetName: xworkzApi!
   followUpSheetName: followUp!
+  followUprowStartRange: A2
+  followUprowEndRange: I
+  followUpEmailRange: followUp!C2:C
   idRange: xworkzApi!A3:A
   followUpRowCurrentStartRange: G
   followUpRowCurrentEndRange: H
@@ -42,5 +47,6 @@ login:
 
 server:
   port : 8081
+
 ---
 
