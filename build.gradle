@@ -39,9 +39,11 @@ dependencies {
     compileOnly 'org.projectlombok:lombok'
     annotationProcessor 'org.projectlombok:lombok'
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
-	 
-	implementation group: 'com.sun.mail', name: 'javax.mail', version: '1.4.7'
-//	implementation group: 'org.springframework.boot', name: 'spring-boot-starter-mail', version: '3.1.2'
+    
+    implementation group: 'org.springframework.boot', name: 'spring-boot-starter-freemarker', version: '2.6.0' 
+	implementation group: 'org.springframework.boot', name: 'spring-boot-starter-mail', version: '2.6.0' 
+    
+    implementation group: 'com.sun.mail', name: 'javax.mail', version: '1.4.7'
     implementation group: 'io.springfox', name: 'springfox-boot-starter', version: '3.0.0'
     implementation group: 'io.springfox', name: 'springfox-swagger-ui', version: '3.0.0'
 	implementation group: 'com.fasterxml.jackson.dataformat', name: 'jackson-dataformat-yaml', version: '2.1.2'
