@@ -15,6 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
+import org.springframework.cache.annotation.Caching;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.ResourceLoader;
 import org.springframework.http.ResponseEntity;
@@ -32,7 +33,7 @@ import com.google.api.services.sheets.v4.model.ValueRange;
 import com.google.auth.http.HttpCredentialsAdapter;
 import com.google.auth.oauth2.GoogleCredentials;
 import com.xworkz.dream.dto.TraineeDto;
-import com.xworkz.dream.wrapper.DreamWrapper;
+//import com.xworkz.dream.wrapper.DreamWrapper;
 
 @Repository
 public class DreamRepo {
@@ -62,7 +63,9 @@ public class DreamRepo {
 	private String followUpStatus;
 	@Value("${sheets.emailAndNameRange}")
 	private String emailAndNameRange;
-	@Value("${sheets.batchDetailsRange}")
+	@Value("${sheets.batchDetails}")
+	private String batchDetailsRange;
+  @Value("${sheets.batchDetailsRange}")
 	private String batchDetailsRange;
 	@Value("${sheets.batchIdRange}")
 	private String batchIdRange;
@@ -72,6 +75,7 @@ public class DreamRepo {
 	private String birthdayRange;
 	@Value ("${sheets.followUpEmailRange}")
 	private String followUpEmailRange;
+
 	@Autowired
 	private ResourceLoader resourceLoader;
 
@@ -186,11 +190,15 @@ public class DreamRepo {
 	public List<List<Object>> getEmailsAndNames(String spreadsheetId, String value) throws IOException {
 		ValueRange response = sheetsService.spreadsheets().values().get(spreadsheetId, emailAndNameRange).execute();
 
+
 		return response.getValues();
 	}
 
+
+
 	@Cacheable(value = "followUpStatusDetails", key = "#spreadsheetId", unless = "#result == null")
 	public List<List<Object>> getFollowUpStatusDetails(String spreadsheetId) throws IOException {
+
 		ValueRange response = sheetsService.spreadsheets().values().get(spreadsheetId, followUpStatus).execute();
 		return response.getValues();
 	}
@@ -238,7 +246,18 @@ public class DreamRepo {
 	public void evictAllCachesOnTraineeDetails() {
 		// will evict all entries in the specified caches
 		System.out.println("evictAllCachesOnTraineeDetails running");
+
+	// suhas
+	@Cacheable(value = "batchDetails", key = "#spreadsheetId", unless = "#result == null")
+	public List<List<Object>> getCourseDetails(String spreadsheetId) throws IOException {
+		ValueRange response = sheetsService.spreadsheets().values().get(spreadsheetId, batchDetailsRange).execute();
+
+		return response.getValues();
 	}
+
+
+	}
+
 	@CacheEvict(value = { "sheetsData", "emailData", "contactData", "followUpStatusDetails", "followUpDetails" }, allEntries = true)
 	public void evictSheetsDataCaches() {
 		// This method will be scheduled to run every 12 hours

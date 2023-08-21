@@ -22,15 +22,22 @@ public class CacheConfig {
 	public CacheManager cacheManager() {
 		SimpleCacheManager cacheManager = new SimpleCacheManager();
 
-		List<Cache> caches = new ArrayList<>();
-		caches.add(new ConcurrentMapCache("sheetsData"));
-		caches.add(new ConcurrentMapCache("emailData"));
-		caches.add(new ConcurrentMapCache("contactData"));
-		caches.add(new ConcurrentMapCache("getDropdowns"));
-		caches.add(new ConcurrentMapCache("followUpDetails"));
-		caches.add(new ConcurrentMapCache("followUpStatusDetails"));
 
-		// Add more caches for other method names if needed
+
+        List<Cache> caches = new ArrayList<>();
+        caches.add(new ConcurrentMapCache("sheetsData"));
+        caches.add(new ConcurrentMapCache("emailData"));
+        caches.add(new ConcurrentMapCache("contactData"));
+        caches.add(new ConcurrentMapCache("getDropdowns"));
+        caches.add(new ConcurrentMapCache("getFollowUpStatusData"));
+		    caches.add(new ConcurrentMapCache("getFollowUpData"));
+        caches.add(new ConcurrentMapCache("batchDetails"));
+        
+        
+    
+
+		
+	
 
 		cacheManager.setCaches(caches);
 		return cacheManager;

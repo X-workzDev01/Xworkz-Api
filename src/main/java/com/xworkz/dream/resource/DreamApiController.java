@@ -20,6 +20,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+
+import com.xworkz.dream.dto.BatchDetails;
 import com.xworkz.dream.dto.BasicInfoDto;
 import com.xworkz.dream.dto.BatchDetailsDto;
 import com.xworkz.dream.dto.BirthDayInfoDto;
@@ -113,8 +115,21 @@ public class DreamApiController {
 	
 
 //	public <ResponseEntity<FollowUpDto>> getFollowUpData(@RequestHeader String spreadsheetId , star)
+	
+	//suhas
+	@GetMapping("/getCourseName")
+	public ResponseEntity<List<Object>> getCourseName(@RequestHeader String spreadsheetId,@RequestParam String status) throws IOException{
+		logger.info("Getting CourseName : {}", status);
+		return service.getCourseNameByStatus(spreadsheetId, status);
+	}
 
-	@ApiOperation(value = "To get Registration details by email")
+	//suhas
+	@GetMapping("/getCourseDetails")
+	public ResponseEntity<BatchDetails> getBatchDetails(@RequestHeader String spreadsheetId,@RequestParam String courseName) throws IOException {
+		logger.info("Getting CourseDetails : {}", courseName);
+		return service.getBatchDetailsByCourseName(spreadsheetId, courseName);
+    
+    	@ApiOperation(value = "To get Registration details by email")
 	@GetMapping("/readByEmail")
 	public ResponseEntity<?> getDataByEmail(@RequestHeader String spreadsheetId, @RequestParam String email,
 			HttpServletRequest request) throws IOException {
@@ -156,6 +171,8 @@ public class DreamApiController {
 	public ResponseEntity<String> updateBirthDayInfo(@RequestHeader String spreadsheetId,@RequestBody TraineeDto dto,HttpServletRequest request) throws IllegalAccessException, IOException{
 		System.out.println(dto);
 		return service.saveBirthDayInfo(spreadsheetId, dto, request);
+    
+
 	}
 	@ApiOperation("to update the followup data")
 	@PutMapping("/updateFollowUp")

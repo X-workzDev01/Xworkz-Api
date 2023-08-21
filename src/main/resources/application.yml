@@ -25,12 +25,13 @@ sheets:
   followUpRowCurrentStartRange: G
   followUpRowCurrentEndRange: H
   emailAndNameRange: xworkzApi!B3:C
-  batchDetailsRange: batchDetails!A2:H 
+
+  batchDetails: batchDetails!A2:H
+   batchDetailsRange: batchDetails!A2:H 
   batchIdRange: batchDetails!A2:A
   dateOfBirthDetailsSheetName: dateOfBirthDetails!
   dateOfBirthDetailsRange: dateOfBirthDetails!A2:D
   birthdayRange: dateOfBirthDetails!A2:A
-
 mail:
    smtpHost: smtp.office365.com
    smtpPort: 587

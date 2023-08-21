@@ -1,12 +1,10 @@
 package com.xworkz.dream.service;
 
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Iterator;
 import java.util.List;
 import java.util.ListIterator;
 import java.util.regex.Pattern;
@@ -14,19 +12,12 @@ import java.util.stream.Collectors;
 
 import javax.mail.MessagingException;
 import javax.servlet.http.Cookie;
-import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-
-import org.apache.catalina.startup.ClassLoaderFactory.Repository;
-import org.apache.logging.log4j.status.StatusData;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.cache.Cache;
-import org.springframework.cache.Cache.ValueWrapper;
-import org.springframework.cache.CacheManager;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -37,6 +28,8 @@ import org.springframework.web.context.request.ServletRequestAttributes;
 
 import com.google.api.services.sheets.v4.model.UpdateValuesResponse;
 import com.google.api.services.sheets.v4.model.ValueRange;
+import com.xworkz.dream.dto.BatchDetails;
+import com.xworkz.dream.dto.CourseDto;
 import com.xworkz.dream.dto.BasicInfoDto;
 import com.xworkz.dream.dto.BatchDetailsDto;
 import com.xworkz.dream.dto.BirthDayInfoDto;
@@ -44,12 +37,10 @@ import com.xworkz.dream.dto.CourseDto;
 import com.xworkz.dream.dto.EducationInfoDto;
 import com.xworkz.dream.dto.FollowUpDataDto;
 import com.xworkz.dream.dto.FollowUpDto;
-import com.xworkz.dream.dto.ReferalInfoDto;
 import com.xworkz.dream.dto.SheetsDto;
 import com.xworkz.dream.dto.StatusDto;
 import com.xworkz.dream.dto.SuggestionDto;
 import com.xworkz.dream.dto.TraineeDto;
-import com.xworkz.dream.dto.utils.User;
 import com.xworkz.dream.repo.DreamRepo;
 import com.xworkz.dream.util.DreamUtil;
 import com.xworkz.dream.wrapper.DreamWrapper;
@@ -607,8 +598,59 @@ public class DreamService {
 		}
 		return ResponseEntity.ok("Birth day information Not added");
 	}
+  
+	// suhas
+	public ResponseEntity<List<Object>> getCourseNameByStatus(String spreadsheetId, String status) {
+		List<List<Object>> courseNameByStatus;
+		try {
+			courseNameByStatus = repo.getCourseDetails(spreadsheetId);
+			List<Object> coursename = new ArrayList<Object>();
+			if (courseNameByStatus != null) {
+				for (List<Object> row : courseNameByStatus) {
+					if (((String) row.get(7)).equalsIgnoreCase(status)) {
+						coursename.add(row.get(1));
 
+					}
+				}
+			}
+			return ResponseEntity.ok(coursename);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		return null;
+		
+
+	}
 	
+	//suhas
+	public ResponseEntity<BatchDetails> getBatchDetailsByCourseName(String spreadsheetId,String courseName) {
+		List<List<Object>> detailsByCourseName;
+		try {
+			detailsByCourseName = repo.getCourseDetails(spreadsheetId);
+			BatchDetails batch = new BatchDetails();
+			if(detailsByCourseName !=null) {
+				for (List<Object> row:detailsByCourseName) {
+					if(row.get(1).toString().equalsIgnoreCase(courseName)) {
+						batch.setId(Integer.valueOf(row.get(0).toString()));
+						batch.setCourseName(String.valueOf(row.get(1)));
+						batch.setTrainerName(String.valueOf(row.get(2)));
+						batch.setStartTime(String.valueOf(row.get(3)));
+						batch.setBatchType(String.valueOf(row.get(4)));
+						batch.setTiming(String.valueOf(row.get(5)));
+						batch.setBranch(String.valueOf(row.get(6)));
+						batch.setStatus(String.valueOf(row.get(7)));
+					}
+					
+				}
+				return ResponseEntity.ok(batch);
+			}
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		
+		return null;
+		
+	}
 
 	public FollowUpDto getFollowUpDetailsByEmail(String spreadsheetId, String email) throws IOException {
 		// List<FollowUpDto> followUpDto = new ArrayList<FollowUpDto>();
