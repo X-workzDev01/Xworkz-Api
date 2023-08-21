@@ -509,8 +509,11 @@ public class DreamService {
 
 	public List<FollowUpDto> getFollowUpRows(List<List<Object>> values, int startingIndex, int maxRows) {
 		List<FollowUpDto> followUpDtos = new ArrayList<>();
+		
 		int endIndex = startingIndex + maxRows;
+		System.out.println("end row:"+endIndex+" "+" Start Index:"+" "+startingIndex+" " + " max index:"+maxRows);
 		// int rowCount = values.size();
+		
 		ListIterator<List<Object>> iterator = values.listIterator(startingIndex);
 		while (iterator.hasNext() && iterator.nextIndex() < endIndex) {
 			List<Object> row = iterator.next();
@@ -557,8 +560,8 @@ public class DreamService {
 
 	public List<StatusDto> getFollowUpStatusData(List<List<Object>> values, int startingIndex, int maxRows) {
 		List<StatusDto> statusDtos = new ArrayList<>();
-
-		int endIndex = startingIndex + maxRows;
+		
+		int endIndex = startingIndex +maxRows;
 		ListIterator<List<Object>> iterator = values.listIterator(startingIndex);
 
 		while (iterator.hasNext() && iterator.nextIndex() < endIndex) {

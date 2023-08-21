@@ -97,7 +97,7 @@ public class DreamApiController {
 	@PutMapping("/update")
 	public ResponseEntity<String> update(@RequestHeader String spreadsheetId, @RequestParam String email,
 			@RequestBody TraineeDto dto) {
-
+		System.out.println(dto);
 		return service.update(spreadsheetId, email, dto);
 	}
 
@@ -166,7 +166,6 @@ public class DreamApiController {
 		
 		return service.updateFollowUp(spreadsheetId,email,dto);
 	}
-	
-	
+
 	
 }
