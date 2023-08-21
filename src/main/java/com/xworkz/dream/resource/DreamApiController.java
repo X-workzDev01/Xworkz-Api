@@ -135,11 +135,28 @@ public class DreamApiController {
 		return service.getStatusDetails(spreadsheetId, startingIndex, maxRows, email, request);
 	}
 	
+	@ApiOperation(value = "To get Registration details by email")
+	@GetMapping("/getFollowUpEmail/{email}")
+	public ResponseEntity<FollowUpDto> getFollowUpEmail(@RequestHeader String spreadsheetId, @PathVariable String email,
+			HttpServletRequest request) throws IOException {
+		return service.getFollowUpByEmail(spreadsheetId, email, request);
+	}
+	
+	@ApiOperation(value = "To get Registration details by email")
+	@GetMapping("/getFollowUpStatusByEmail/{email}")
+	public ResponseEntity<List<StatusDto>> getFollowUpStatusByEmail(@RequestHeader String spreadsheetId, @PathVariable String email,
+			HttpServletRequest request) throws IOException {
+		List<StatusDto> list = service.getStatusDetailsByEmail(spreadsheetId, email, request);
+		return ResponseEntity.ok(list);
+	}
+	
 	@ApiOperation(value="To update Birth day info while registering")
 	@PostMapping("/birthDayInfo")
 	public ResponseEntity<String> updateBirthDayInfo(@RequestHeader String spreadsheetId,@RequestBody TraineeDto dto,HttpServletRequest request) throws IllegalAccessException, IOException{
 		System.out.println(dto);
 		return service.saveBirthDayInfo(spreadsheetId, dto, request);
 	}
+	
+	
 	
 }
