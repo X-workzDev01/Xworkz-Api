@@ -241,6 +241,7 @@ public class DreamService {
 		} catch (IOException e) {
 
 			e.printStackTrace();
+			
 
 		}
 		return null;
@@ -297,7 +298,7 @@ public class DreamService {
 				evictSheetsDataCaches();
 				return ResponseEntity.ok("Updated Successfully");
 			} catch (IllegalAccessException e) {
-				// TODO Auto-generated catch block
+
 				e.printStackTrace();
 				return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("An error occurred ");
 
@@ -431,6 +432,22 @@ public class DreamService {
 			return new ResponseEntity<>("Email Not Found", HttpStatus.NOT_FOUND);
 		}
 	}
+	
+	public ResponseEntity<FollowUpDto> getFollowUpByEmail(String spreadsheetId, String email, HttpServletRequest request)
+			throws IOException {
+		List<List<Object>> data = repo.getFollowUpDetails(spreadsheetId);
+		FollowUpDto followUp = null;
+		for (List<Object> list : data) {
+			if (list.get(2).toString().equalsIgnoreCase(email)) {
+				followUp = wrapper.listToFollowUpDTO(list);
+			}
+		}
+		if (followUp != null) {
+			return ResponseEntity.ok(followUp);
+		} else {
+			return ResponseEntity.ok(followUp);
+		}
+	}
 
 	public ResponseEntity<FollowUpDataDto> getFollowUpDetails(String spreadsheetId, int startingIndex, int maxRows,
 			String status) throws IOException {
@@ -479,6 +496,24 @@ public class DreamService {
 
 		return statusDto;
 	}
+	
+	public List<StatusDto> getStatusDetailsByEmail(String spreadsheetId,  String email,
+			HttpServletRequest request) throws IOException {
+		List<StatusDto> statusDto = new ArrayList<>();
+		List<List<Object>> dataList = repo.getFollowUpStatusDetails(spreadsheetId);
+		System.out.println(dataList.toString());
+		List<List<Object>> data = dataList.stream()
+				.filter(list -> list.stream().anyMatch(value -> value.toString().equalsIgnoreCase(email)))
+				.collect(Collectors.toList());
+		for (List<Object> row : data) {
+			StatusDto dto = wrapper.listToStatusDto(row);
+			statusDto.add(dto);
+		}
+
+		return statusDto;
+	}
+	
+	
 
 	public List<StatusDto> getFollowUpStatusData(List<List<Object>> values, int startingIndex, int maxRows) {
 		List<StatusDto> statusDtos = new ArrayList<>();
