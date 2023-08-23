@@ -291,6 +291,8 @@ public class DreamService {
 		try {
 			int rowIndex = findRowIndexByEmail(spreadsheetId, email);
 			String range = traineeSheetName + rowStartRange + rowIndex + ":" + rowEndRange + rowIndex;
+			System.out.println(range);
+			System.out.println(dto);
 			try {
 				List<List<Object>> values = Arrays.asList(wrapper.extractDtoDetails(dto));
 
