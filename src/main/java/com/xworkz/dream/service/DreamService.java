@@ -392,13 +392,34 @@ public class DreamService {
 			HttpServletRequest request) {
 		System.out.println("--------Service--------------");
 		try {
-			statusDto.setAttemptedOn(LocalDateTime.now().toString());
-			System.out.println(statusDto.toString());
-			List<Object> statusData = wrapper.extractDtoDetails(statusDto);
-			System.out.println(statusData.toString());
+			
+			BasicInfoDto basicInfo = new BasicInfoDto();
+			basicInfo.setTraineeName(statusDto.getBasicInfo().getTraineeName());
+			basicInfo.setEmail(statusDto.getBasicInfo().getEmail());
+			
+			
+			StatusDto sdto = new StatusDto();
+			sdto.setId(statusDto.getId());
+			sdto.setBasicInfo(basicInfo);
+			sdto.setAttemptedOn(LocalDateTime.now().toString());
+			sdto.setAttemptedBy(statusDto.getAttemptedBy());
+			sdto.setAttemptStatus(statusDto.getAttemptStatus());
+			sdto.setComments(statusDto.getComments());
+			sdto.setCallDuration(statusDto.getCallDuration());
+			sdto.setCallBack(statusDto.getCallBack());
+			sdto.setCallBackTime(statusDto.getCallBackTime());
+			
+			
+			List<Object> statusData = wrapper.extractDtoDetails(sdto);
+			
 			boolean status = repo.updateFollowUpStatus(spreadsheetId, statusData);
-			updateCurrentFollowUp(spreadsheetId, statusDto.getId(), statusDto.getAttemptedBy(),
-					statusDto.getAttemptStatus());
+			if(status==true) {
+				System.out.println("this is current follow up");
+				updateCurrentFollowUp(spreadsheetId, statusDto.getId(), statusDto.getAttemptedBy(),
+						statusDto.getAttemptStatus());
+				
+			}
+			
 			return ResponseEntity.ok("Follow Status Updated for ID :  " + statusDto.getId());
 		} catch (IllegalAccessException e) {
 			e.printStackTrace();

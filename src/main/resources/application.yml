@@ -1,6 +1,6 @@
 spring:
    profiles:
-      active: dev
+      active: local
    freemarker:
     template-loader-path: classpath:/templates/
 
@@ -13,7 +13,7 @@ sheets:
   dropdownRange: dropDowns!A2:I
   loginInfoRange: loginInfo!A2:B
   followUpRange: followUp!A2:I
-  followUpStatus: followUpStatus!A2:I
+  followUpStatus: followUpStatus!A2:J
   rowStartRange: A
   rowEndRange: Q
   traineeSheetName: xworkzApi!
@@ -27,7 +27,7 @@ sheets:
   emailAndNameRange: xworkzApi!B3:C
 
   batchDetails: batchDetails!A2:H
-   batchDetailsRange: batchDetails!A2:H 
+  batchDetailsRange: batchDetails!A2:H 
   batchIdRange: batchDetails!A2:A
   dateOfBirthDetailsSheetName: dateOfBirthDetails!
   dateOfBirthDetailsRange: dateOfBirthDetails!A2:D

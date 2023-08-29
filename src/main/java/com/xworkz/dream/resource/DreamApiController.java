@@ -128,6 +128,7 @@ public class DreamApiController {
 	public ResponseEntity<BatchDetails> getBatchDetails(@RequestHeader String spreadsheetId,@RequestParam String courseName) throws IOException {
 		logger.info("Getting CourseDetails : {}", courseName);
 		return service.getBatchDetailsByCourseName(spreadsheetId, courseName);
+	}
     
     	@ApiOperation(value = "To get Registration details by email")
 	@GetMapping("/readByEmail")
