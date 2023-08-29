@@ -65,8 +65,6 @@ public class DreamRepo {
 	private String emailAndNameRange;
 	@Value("${sheets.batchDetails}")
 	private String batchDetailsRange;
-  @Value("${sheets.batchDetailsRange}")
-	private String batchDetailsRange;
 	@Value("${sheets.batchIdRange}")
 	private String batchIdRange;
 	@Value("${sheets.dateOfBirthDetailsRange}")
@@ -242,10 +240,6 @@ public class DreamRepo {
 		return response;
 	}
 
-	@CacheEvict(value = { "sheetsData", "emailData", "contactData", "followUpStatusDetails", "followUpDetails"}, allEntries = true)
-	public void evictAllCachesOnTraineeDetails() {
-		// will evict all entries in the specified caches
-		System.out.println("evictAllCachesOnTraineeDetails running");
 
 	// suhas
 	@Cacheable(value = "batchDetails", key = "#spreadsheetId", unless = "#result == null")
@@ -255,13 +249,16 @@ public class DreamRepo {
 		return response.getValues();
 	}
 
-
-	}
-
 	@CacheEvict(value = { "sheetsData", "emailData", "contactData", "followUpStatusDetails", "followUpDetails" }, allEntries = true)
 	public void evictSheetsDataCaches() {
 		// This method will be scheduled to run every 12 hours
 		// and will evict all entries in the specified caches
 	}	
+	@CacheEvict(value = { "sheetsData", "emailData", "contactData", "followUpStatusDetails", "followUpDetails"}, allEntries = true)
+	public void evictAllCachesOnTraineeDetails() {
+		// will evict all entries in the specified caches
+		System.out.println("evictAllCachesOnTraineeDetails running");
+		
+	}
 	
 }

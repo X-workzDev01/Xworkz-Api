@@ -15,10 +15,8 @@ public class StatusDto {
 	
 	@JsonProperty("id")
 	private int id;
-	@JsonProperty("name")
-	private String name;
-	@JsonProperty("email")
-	private String email;
+	@JsonProperty("basicInfo")
+	private BasicInfoDto basicInfo;
 	@JsonProperty("attemptedOn")
 	private String attemptedOn;
 	@JsonProperty("attemptedBy")
@@ -31,4 +29,6 @@ public class StatusDto {
 	private String callDuration;
 	@JsonProperty("callBack")
 	private String callBack;
+	@JsonProperty("callBackTime")
+	private String callBackTime;
 }
