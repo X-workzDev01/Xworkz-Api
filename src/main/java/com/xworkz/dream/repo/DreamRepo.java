@@ -174,6 +174,7 @@ public class DreamRepo {
 			throws IOException {
 		List<List<Object>> list = new ArrayList<List<Object>>();
 		list.add(data);
+		System.out.println(data.toString());
 		ValueRange body = new ValueRange().setValues(list);
 		sheetsService.spreadsheets().values().update(spreadsheetId, currentFollowRange, body)
 				.setValueInputOption("USER_ENTERED").execute();
