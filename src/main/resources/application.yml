@@ -32,6 +32,8 @@ sheets:
   dateOfBirthDetailsSheetName: dateOfBirthDetails!
   dateOfBirthDetailsRange: dateOfBirthDetails!A2:D
   birthdayRange: dateOfBirthDetails!A2:A
+
+  followUpStatusIdRange: followUpStatus!A2:A
 mail:
    smtpHost: smtp.office365.com
    smtpPort: 587

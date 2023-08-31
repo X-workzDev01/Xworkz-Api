@@ -73,7 +73,9 @@ public class DreamRepo {
 	private String birthdayRange;
 	@Value ("${sheets.followUpEmailRange}")
 	private String followUpEmailRange;
-
+	@Value ("${sheets.followUpStatusIdRange}")
+	private String followUpStatusIdRange;
+	
 	@Autowired
 	private ResourceLoader resourceLoader;
 
@@ -181,9 +183,10 @@ public class DreamRepo {
 		return true;
 
 	}
-	
-	
-	
+	public ValueRange getStatusId(String spreadsheetId) throws IOException {
+		ValueRange response = sheetsService.spreadsheets().values().get(spreadsheetId, followUpStatusIdRange).execute();
+		return response;
+	}
 	
 
 	public List<List<Object>> getEmailsAndNames(String spreadsheetId, String value) throws IOException {
