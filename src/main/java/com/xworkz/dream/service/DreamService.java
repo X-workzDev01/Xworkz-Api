@@ -7,9 +7,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.ListIterator;
-import java.util.regex.Pattern;
 import java.util.stream.Collectors;
-
 import javax.mail.MessagingException;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
@@ -25,23 +23,21 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
-
 import com.google.api.services.sheets.v4.model.UpdateValuesResponse;
 import com.google.api.services.sheets.v4.model.ValueRange;
 import com.xworkz.dream.dto.BatchDetails;
 import com.xworkz.dream.dto.CourseDto;
 import com.xworkz.dream.constants.FollowUp;
 import com.xworkz.dream.dto.BasicInfoDto;
+import com.xworkz.dream.dto.BatchDetails;
 import com.xworkz.dream.dto.BatchDetailsDto;
 import com.xworkz.dream.dto.BirthDayInfoDto;
-import com.xworkz.dream.dto.CourseDto;
-import com.xworkz.dream.dto.EducationInfoDto;
 import com.xworkz.dream.dto.FollowUpDataDto;
 import com.xworkz.dream.dto.FollowUpDto;
 import com.xworkz.dream.dto.SheetsDto;
 import com.xworkz.dream.dto.StatusDto;
-import com.xworkz.dream.dto.SuggestionDto;
 import com.xworkz.dream.dto.TraineeDto;
+import com.xworkz.dream.interfaces.EmailableClient;
 import com.xworkz.dream.repo.DreamRepo;
 import com.xworkz.dream.util.DreamUtil;
 import com.xworkz.dream.wrapper.DreamWrapper;
@@ -57,6 +53,8 @@ public class DreamService {
 	private DreamWrapper wrapper;
 	@Autowired
 	private DreamUtil util;
+	@Autowired
+	private EmailableClient emailableClient;
 
 	@Value("${sheets.rowStartRange}")
 	private String rowStartRange;
@@ -74,8 +72,14 @@ public class DreamService {
 	private String followUprowStartRange;
 	@Value("${sheets.followUprowEndRange}")
 	private String followUprowEndRange;
+	private static final String API_KEY = "live_ace635e7c497dc70359f";
 
 	private static final Logger logger = LoggerFactory.getLogger(DreamService.class);
+
+//	@Autowired
+//    public DreamService(EmailableClient emailableClient) {
+//        this.emailableClient = emailableClient;
+//    }
 
 	// Rest of your code...
 	public ResponseEntity<String> writeData(String spreadsheetId, TraineeDto dto, HttpServletRequest request)
@@ -159,11 +163,13 @@ public class DreamService {
 	}
 
 	public ResponseEntity<String> emailCheck(String spreadsheetId, String email, HttpServletRequest request) {
+
 		try {
 			if (true) {// isCookieValid(request)
 				ValueRange values = repo.getEmails(spreadsheetId);
 				if (values.getValues() != null) {
 					for (List<Object> row : values.getValues()) {
+
 						if (row.get(0).toString().equalsIgnoreCase(email)) {
 							logger.info("Email exists in spreadsheetId: {}", spreadsheetId);
 							return ResponseEntity.status(HttpStatus.CREATED).body("Email exists");
@@ -325,6 +331,7 @@ public class DreamService {
 	public ResponseEntity<String> updateFollowUp(String spreadsheetId, String email, FollowUpDto followDto)
 			throws IOException, IllegalAccessException {
 		FollowUpDto followUpDto = getFollowUpDetailsByEmail(spreadsheetId, email);
+
 		int rowIndex = findByEmailForUpdate(spreadsheetId, email);
 		String range = followUpSheetName + followUprowStartRange + rowIndex + ":" + followUprowEndRange + rowIndex;
 		List<List<Object>> values = Arrays.asList(wrapper.extractDtoDetails(followDto));
@@ -714,5 +721,11 @@ public class DreamService {
 		}
 		return -1;
 	}
+
+	// suhas
+	public String verifyEmails(String email) {
+		return emailableClient.verifyEmail(email, API_KEY);
+	}
+
 
 }
