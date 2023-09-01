@@ -82,20 +82,17 @@ public class UtilDev implements DreamUtil {
 		return sendEmail(email, subject, body);
 	}
 
-	List<String> body = new ArrayList<String>();
-
 	public boolean sendNotificationToEmail(List<Team> teamList, List<String> candidateName,
 			List<String> candidateEmail) {
+		List<String> body = new ArrayList<String>();
 		for (int i = 0; i < candidateName.size(); i++) {
 			body.add(" Candidate name  :" + candidateName.get(i) + "\tEmail :" + candidateEmail.get(i) + "\n");
 		}
-
 		String subject = "Follow Up Candidate Detiles";
 		logger.debug("Sending email to {}: Subject: {},", teamList, subject);
-		teamList.stream().forEach(e -> {
-			sendEmail(e.getEmail().toString(), subject, body.toString());
-
-		});
+		List<String> reciepents = new ArrayList<String>();
+		teamList.stream().forEach(e -> reciepents.add(e.getEmail()));
+		bulkSendMail(reciepents, subject, body.toString());
 
 		return true;
 	}
@@ -183,6 +180,38 @@ public class UtilDev implements DreamUtil {
 		model.put("recipientName", recipientName);
 
 		return FreeMarkerTemplateUtils.processTemplateIntoString(template, model);
+	}
+
+	public boolean bulkSendMail(List<String> recipients, String subject, String body) {
+
+		Properties properties = new Properties();
+		properties.put("mail.smtp.auth", "true");
+		properties.put("mail.smtp.starttls.enable", "true");
+		properties.put("mail.smtp.host", "smtp.office365.com");
+		properties.put("mail.smtp.port", "587"); // SMTP port (587 for TLS)
+
+		Session session = Session.getInstance(properties, new javax.mail.Authenticator() {
+			protected PasswordAuthentication getPasswordAuthentication() {
+				return new PasswordAuthentication(userName, password);
+			}
+		});
+
+		try {
+			MimeMessage message = new MimeMessage(session);
+			message.setFrom(new InternetAddress(userName));
+			for (String recipient : recipients) {
+				message.addRecipient(Message.RecipientType.TO, new InternetAddress(recipient));
+			}
+			message.setSubject(subject);
+			message.setText(body);
+
+			Transport.send(message);
+			System.out.println("Emails sent successfully.");
+		} catch (MessagingException e) {
+			e.printStackTrace();
+		}
+		return false;
+
 	}
 
 }
