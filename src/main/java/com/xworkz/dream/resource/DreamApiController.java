@@ -2,6 +2,7 @@ package com.xworkz.dream.resource;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.Map;
 
 import javax.mail.MessagingException;
 import javax.servlet.http.HttpServletRequest;
@@ -22,6 +23,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.xworkz.dream.dto.BatchDetails;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.xworkz.dream.dto.BasicInfoDto;
 import com.xworkz.dream.dto.BatchDetailsDto;
 import com.xworkz.dream.dto.BirthDayInfoDto;
@@ -43,8 +45,12 @@ public class DreamApiController {
 
 	Logger logger = LoggerFactory.getLogger(DreamApiController.class);
 
-	@Autowired
 	private DreamService service;
+
+	@Autowired
+	public DreamApiController(DreamService service) {
+		this.service = service;
+	}
 
 	@ApiOperation(value = "To register the trainee details in the google sheets")
 	@PostMapping("/register")
@@ -101,7 +107,7 @@ public class DreamApiController {
 	@PutMapping("/update")
 	public ResponseEntity<String> update(@RequestHeader String spreadsheetId, @RequestParam String email,
 			@RequestBody TraineeDto dto) {
-
+		System.out.println(dto);
 		return service.update(spreadsheetId, email, dto);
 	}
 
@@ -131,9 +137,8 @@ public class DreamApiController {
 		logger.info("Getting CourseDetails : {}", courseName);
 		return service.getBatchDetailsByCourseName(spreadsheetId, courseName);
 
-	}
-
-	@ApiOperation(value = "To get Registration details by email")
+	}  
+   @ApiOperation(value = "To get Registration details by email")
 	@GetMapping("/readByEmail")
 	public ResponseEntity<?> getDataByEmail(@RequestHeader String spreadsheetId, @RequestParam String email,
 			HttpServletRequest request) throws IOException {
@@ -196,6 +201,33 @@ public class DreamApiController {
 	public ResponseEntity<List<StatusDto>> getFollowupNotification(@RequestParam String email,
 			HttpServletRequest request) throws IOException {
 		return service.setNotification(email, request);
+}
+	@ApiOperation(value = "To verifay the email")
+	@GetMapping("/verify-email")
+	public String verifydEmails(@RequestParam String email) {
+		String verifyEmails = service.verifyEmails(email);
+		System.out.println("verifyEmails = " + verifyEmails);
+		try {
+			// Initialize the ObjectMapper
+			ObjectMapper objectMapper = new ObjectMapper();
+
+			// Parse the JSON data into a Map
+			Map<String, Object> jsonMap = objectMapper.readValue(verifyEmails, Map.class);
+			System.out.println("jsonMap : " + jsonMap);
+			// Retrieve a single data item, for example, the "email" field
+			String reasons = (String) jsonMap.get("reason");
+			if (reasons.equals("accepted_email")) {
+				System.out.println("reason: " + reasons);
+				return reasons;
+			} else {
+				// Print the result
+				System.out.println("reason: " + reasons);
+				return reasons;
+			}
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		return verifyEmails;
 
 	}
 

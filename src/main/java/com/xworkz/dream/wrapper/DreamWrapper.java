@@ -88,17 +88,17 @@ public class DreamWrapper {
 	}
 
 	public StatusDto listToStatusDto(List<Object> rows) {
-		StatusDto statusDto = new StatusDto(0, null, null, null, null, null, null, null, null);
+		StatusDto statusDto = new StatusDto(0, new BasicInfoDto(), null, null, null, null, null, null,null);
 
 		int rowSize = rows.size();
 		if (rowSize > 0 && rows.get(0) != null && !rows.get(0).toString().isEmpty()) {
 			statusDto.setId(Integer.valueOf(rows.get(0).toString()));
 		}
 		if (rowSize > 1 && rows.get(1) != null && !rows.get(1).toString().isEmpty()) {
-			statusDto.setName((String) rows.get(1));
+			statusDto.getBasicInfo().setTraineeName((String) rows.get(1));
 		}
 		if (rowSize > 2 && rows.get(2) != null && !rows.get(2).toString().isEmpty()) {
-			statusDto.setEmail((String) rows.get(2));
+			statusDto.getBasicInfo().setEmail((String) rows.get(2));
 		}
 		if (rowSize > 3 && rows.get(3) != null && !rows.get(3).toString().isEmpty()) {
 			statusDto.setAttemptedOn((String) rows.get(3));
