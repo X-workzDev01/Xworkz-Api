@@ -13,9 +13,9 @@ sheets:
   dropdownRange: dropDowns!A2:I
   loginInfoRange: loginInfo!A2:B
   followUpRange: followUp!A2:I
-  followUpStatus: followUpStatus!A2:I
+  followUpStatus: followUpStatus!A2:J
   rowStartRange: A
-  rowEndRange: P
+  rowEndRange: Q
   traineeSheetName: xworkzApi!
   followUpSheetName: followUp!
   followUprowStartRange: A2
@@ -31,6 +31,8 @@ sheets:
   dateOfBirthDetailsSheetName: dateOfBirthDetails!
   dateOfBirthDetailsRange: dateOfBirthDetails!A2:D
   birthdayRange: dateOfBirthDetails!A2:A
+
+  followUpStatusIdRange: followUpStatus!A2:A
 mail:
    smtpHost: smtp.office365.com
    smtpPort: 587

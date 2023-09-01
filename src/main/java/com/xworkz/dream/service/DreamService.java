@@ -8,12 +8,10 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.ListIterator;
 import java.util.stream.Collectors;
-
 import javax.mail.MessagingException;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,9 +23,11 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
-
 import com.google.api.services.sheets.v4.model.UpdateValuesResponse;
 import com.google.api.services.sheets.v4.model.ValueRange;
+import com.xworkz.dream.dto.BatchDetails;
+import com.xworkz.dream.dto.CourseDto;
+import com.xworkz.dream.constants.FollowUp;
 import com.xworkz.dream.dto.BasicInfoDto;
 import com.xworkz.dream.dto.BatchDetails;
 import com.xworkz.dream.dto.BatchDetailsDto;
@@ -153,10 +153,10 @@ public class DreamService {
 
 		followUpDto.setCourseName(traineeDto.getCourseInfo().getCourse());
 		followUpDto.setRegistrationDate(LocalDate.now().toString());
-		followUpDto.setJoiningDate("Not Confirmed");
+		followUpDto.setJoiningDate(FollowUp.NOT_CONFIRMED.toString());
 		followUpDto.setId(traineeDto.getId());
-		followUpDto.setCurrentlyFollowedBy("None");
-		followUpDto.setCurrentStatus("New");
+		followUpDto.setCurrentlyFollowedBy(FollowUp.NONE.toString());
+		followUpDto.setCurrentStatus(FollowUp.NEW.toString());
 		List<Object> data = wrapper.extractDtoDetails(followUpDto);
 		repo.saveToFollowUp(spreadSheetId, data);
 		return true;
@@ -298,6 +298,8 @@ public class DreamService {
 		try {
 			int rowIndex = findRowIndexByEmail(spreadsheetId, email);
 			String range = traineeSheetName + rowStartRange + rowIndex + ":" + rowEndRange + rowIndex;
+			System.out.println(range);
+			System.out.println(dto);
 			try {
 				List<List<Object>> values = Arrays.asList(wrapper.extractDtoDetails(dto));
 
@@ -331,14 +333,10 @@ public class DreamService {
 		FollowUpDto followUpDto = getFollowUpDetailsByEmail(spreadsheetId, email);
 
 		int rowIndex = findByEmailForUpdate(spreadsheetId, email);
-
 		String range = followUpSheetName + followUprowStartRange + rowIndex + ":" + followUprowEndRange + rowIndex;
-
 		List<List<Object>> values = Arrays.asList(wrapper.extractDtoDetails(followDto));
-
 		ValueRange valueRange = new ValueRange();
 		valueRange.setValues(values);
-
 		UpdateValuesResponse updated = repo.updateFollow(spreadsheetId, range, valueRange);
 		if (updated.isEmpty()) {
 			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("An error occurred ");
@@ -372,38 +370,70 @@ public class DreamService {
 			for (int i = 0; i < values.size(); i++) {
 				List<Object> row = values.get(i);
 				if (row.size() > 0 && row.get(0).equals(String.valueOf(id))) {
-					return i + 2;
+					return i + 3;
 				}
 			}
 		}
 		return -1;
 	}
 
-	public boolean updateCurrentFollowUp(String spreadsheetId, int id, String currentlyFollowedBy, String currentStatus)
-			throws IOException {
-		List<List<Object>> followUpData = repo.getFollowUpDetails(spreadsheetId);
-		int rowIndex = findFollowUpRowIndexById(spreadsheetId, id);
-		String range = followUpSheetName + followUpRowCurrentStartRange + rowIndex + ":" + followUpRowCurrentEndRange
-				+ rowIndex;
-		System.out.println("----" + rowIndex);
-		System.out.println(" ---" + range);
-		List<Object> updateData = Arrays.asList(currentlyFollowedBy, currentStatus);
-		repo.updateCurrentFollowUpStatus(spreadsheetId, range, updateData);
-		return true;
-
+	public boolean updateCurrentFollowUp(String spreadsheetId, String email, String currentStatus,
+			String currentlyFollowedBy) throws IOException, IllegalAccessException {
+		// List<List<Object>> followUpData = repo.getFollowUpDetails(spreadsheetId);
+		FollowUpDto followUpDto = getFollowUpDetailsByEmail(spreadsheetId, email);
+		System.out.println(followUpDto);
+		int rowIndex = findByEmailForUpdate(spreadsheetId, email);
+		String range = followUpSheetName + followUprowStartRange + rowIndex + ":" + followUprowEndRange + rowIndex;
+		followUpDto.setCurrentStatus(currentStatus);
+		// followUpDto.setCurrentlyFollowedBy(currentlyFollowedBy);;
+		List<List<Object>> values = Arrays.asList(wrapper.extractDtoDetails(followUpDto));
+		ValueRange valueRange = new ValueRange();
+		valueRange.setValues(values);
+		UpdateValuesResponse updated = repo.updateFollow(spreadsheetId, range, valueRange);
+		if (updated.isEmpty()) {
+			// repo.evictAllCachesOnTraineeDetails();
+			return false;
+		} else {
+			// repo.evictAllCachesOnTraineeDetails();
+			return true;
+		}
 	}
 
 	public ResponseEntity<String> updateFollowUpStatus(String spreadsheetId, StatusDto statusDto,
 			HttpServletRequest request) {
 		System.out.println("--------Service--------------");
 		try {
-			statusDto.setAttemptedOn(LocalDateTime.now().toString());
-			System.out.println(statusDto.toString());
-			List<Object> statusData = wrapper.extractDtoDetails(statusDto);
-			System.out.println(statusData.toString());
+			
+			List<List<Object>> data = repo.getStatusId(spreadsheetId).getValues();
+			int size = data.size();
+			System.out.println(size);
+			BasicInfoDto basicInfo = new BasicInfoDto();
+			basicInfo.setTraineeName(statusDto.getBasicInfo().getTraineeName());
+			basicInfo.setEmail(statusDto.getBasicInfo().getEmail());
+
+			StatusDto sdto = new StatusDto();
+			sdto.setId(size+=1);
+			sdto.setBasicInfo(basicInfo);
+			sdto.setAttemptedOn(LocalDateTime.now().toString());
+			sdto.setAttemptedBy(statusDto.getAttemptedBy());
+			sdto.setAttemptStatus(statusDto.getAttemptStatus());
+			sdto.setComments(statusDto.getComments());
+			sdto.setCallDuration(statusDto.getCallDuration());
+			sdto.setCallBack(statusDto.getCallBack());
+			sdto.setCallBackTime(statusDto.getCallBackTime());
+
+			List<Object> statusData = wrapper.extractDtoDetails(sdto);
+
 			boolean status = repo.updateFollowUpStatus(spreadsheetId, statusData);
-			updateCurrentFollowUp(spreadsheetId, statusDto.getId(), statusDto.getAttemptedBy(),
-					statusDto.getAttemptStatus());
+			if (status == true) {
+				System.out.println("this is current follow up");
+				System.out.println(statusDto.getId());
+				boolean update = updateCurrentFollowUp(spreadsheetId, statusDto.getBasicInfo().getEmail(),
+						statusDto.getAttemptStatus(), statusDto.getAttemptedBy());
+				System.out.println("update status:" + update);
+				repo.evictAllCachesOnTraineeDetails();
+			}
+
 			return ResponseEntity.ok("Follow Status Updated for ID :  " + statusDto.getId());
 		} catch (IllegalAccessException e) {
 			e.printStackTrace();
@@ -500,6 +530,7 @@ public class DreamService {
 					.collect(Collectors.toList());
 			followUpDto = getFollowUpRows(data, startingIndex, maxRows);
 			FollowUpDataDto followUpDataDto = new FollowUpDataDto(followUpDto, data.size());
+			repo.evictAllCachesOnTraineeDetails();
 			return ResponseEntity.ok(followUpDataDto);
 		}
 		return null;
@@ -550,8 +581,9 @@ public class DreamService {
 		for (List<Object> row : data) {
 			StatusDto dto = wrapper.listToStatusDto(row);
 			statusDto.add(dto);
+			System.out.println(dto);
 		}
-
+		repo.evictAllCachesOnTraineeDetails();
 		return statusDto;
 	}
 
@@ -694,5 +726,6 @@ public class DreamService {
 	public String verifyEmails(String email) {
 		return emailableClient.verifyEmail(email, API_KEY);
 	}
+
 
 }

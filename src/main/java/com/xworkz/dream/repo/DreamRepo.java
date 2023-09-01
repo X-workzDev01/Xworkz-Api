@@ -73,7 +73,9 @@ public class DreamRepo {
 	private String birthdayRange;
 	@Value("${sheets.followUpEmailRange}")
 	private String followUpEmailRange;
-
+	@Value ("${sheets.followUpStatusIdRange}")
+	private String followUpStatusIdRange;
+	
 	@Autowired
 	private ResourceLoader resourceLoader;
 
@@ -174,12 +176,19 @@ public class DreamRepo {
 			throws IOException {
 		List<List<Object>> list = new ArrayList<List<Object>>();
 		list.add(data);
+		System.out.println(data.toString());
 		ValueRange body = new ValueRange().setValues(list);
 		sheetsService.spreadsheets().values().update(spreadsheetId, currentFollowRange, body)
 				.setValueInputOption("USER_ENTERED").execute();
 		return true;
 
 	}
+
+	public ValueRange getStatusId(String spreadsheetId) throws IOException {
+		ValueRange response = sheetsService.spreadsheets().values().get(spreadsheetId, followUpStatusIdRange).execute();
+		return response;
+	}
+
 
 	public List<List<Object>> getEmailsAndNames(String spreadsheetId, String value) throws IOException {
 		ValueRange response = sheetsService.spreadsheets().values().get(spreadsheetId, emailAndNameRange).execute();
@@ -234,12 +243,7 @@ public class DreamRepo {
 		return response;
 	}
 
-	@CacheEvict(value = { "sheetsData", "emailData", "contactData", "followUpStatusDetails",
-			"followUpDetails" }, allEntries = true)
-	public void evictAllCachesOnTraineeDetails() {
-		// will evict all entries in the specified caches
-		System.out.println("evictAllCachesOnTraineeDetails running");
-	}
+
 
 	// suhas
 	@Cacheable(value = "batchDetails", key = "#spreadsheetId", unless = "#result == null")
@@ -249,10 +253,17 @@ public class DreamRepo {
 		return response.getValues();
 	}
 
-	@CacheEvict(value = { "sheetsData", "emailData", "contactData", "followUpStatusDetails",
-			"followUpDetails" }, allEntries = true)
+
+	@CacheEvict(value = { "sheetsData", "emailData", "contactData", "followUpStatusDetails", "followUpDetails" }, allEntries = true)
 	public void evictSheetsDataCaches() {
 		// This method will be scheduled to run every 12 hours
 		// and will evict all entries in the specified caches
+	}	
+	@CacheEvict(value = { "sheetsData", "emailData", "contactData", "followUpStatusDetails", "followUpDetails"}, allEntries = true)
+	public void evictAllCachesOnTraineeDetails() {
+		// will evict all entries in the specified caches
+		System.out.println("evictAllCachesOnTraineeDetails running");
+		
 	}
+
 }

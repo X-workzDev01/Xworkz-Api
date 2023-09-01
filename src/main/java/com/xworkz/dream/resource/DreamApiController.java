@@ -114,7 +114,7 @@ public class DreamApiController {
 	public ResponseEntity<String> updateFollowUpStatus(@RequestHeader String spreadsheetId,
 			@RequestBody StatusDto statusDto, HttpServletRequest request) throws IOException {
 		logger.info("updating follow up status : {}", statusDto);
-		System.out.println(statusDto + "------controller---------");
+
 		return service.updateFollowUpStatus(spreadsheetId, statusDto, request);
 	}
 
@@ -136,7 +136,8 @@ public class DreamApiController {
 		return service.getBatchDetailsByCourseName(spreadsheetId, courseName);
 	}
 
-	@ApiOperation(value = "To get Registration details by email")
+    
+    	@ApiOperation(value = "To get Registration details by email")
 	@GetMapping("/readByEmail")
 	public ResponseEntity<?> getDataByEmail(@RequestHeader String spreadsheetId, @RequestParam String email,
 			HttpServletRequest request) throws IOException {
