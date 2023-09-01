@@ -32,8 +32,9 @@ import com.google.api.services.sheets.v4.model.UpdateValuesResponse;
 import com.google.api.services.sheets.v4.model.ValueRange;
 import com.google.auth.http.HttpCredentialsAdapter;
 import com.google.auth.oauth2.GoogleCredentials;
+import com.xworkz.dream.dto.StatusDto;
 import com.xworkz.dream.dto.TraineeDto;
-//import com.xworkz.dream.wrapper.DreamWrapper;
+import com.xworkz.dream.wrapper.DreamWrapper;
 
 @Repository
 public class DreamRepo {
@@ -64,8 +65,8 @@ public class DreamRepo {
 	@Value("${sheets.emailAndNameRange}")
 	private String emailAndNameRange;
 	@Value("${sheets.batchDetails}")
-	private String batchDetailsRange;
-  @Value("${sheets.batchDetailsRange}")
+	private String batchDetails;
+	@Value("${sheets.batchDetailsRange}")
 	private String batchDetailsRange;
 	@Value("${sheets.batchIdRange}")
 	private String batchIdRange;
@@ -73,7 +74,7 @@ public class DreamRepo {
 	private String dateOfBirthDetailsRange;
 	@Value("${sheets.birthdayRange}")
 	private String birthdayRange;
-	@Value ("${sheets.followUpEmailRange}")
+	@Value("${sheets.followUpEmailRange}")
 	private String followUpEmailRange;
 
 	@Autowired
@@ -171,7 +172,7 @@ public class DreamRepo {
 		ValueRange response = sheetsService.spreadsheets().values().get(spreadsheetId, followUpRange).execute();
 		return response.getValues();
 	}
-	
+
 	public boolean updateCurrentFollowUpStatus(String spreadsheetId, String currentFollowRange, List<Object> data)
 			throws IOException {
 		List<List<Object>> list = new ArrayList<List<Object>>();
@@ -182,19 +183,12 @@ public class DreamRepo {
 		return true;
 
 	}
-	
-	
-	
-	
 
 	public List<List<Object>> getEmailsAndNames(String spreadsheetId, String value) throws IOException {
 		ValueRange response = sheetsService.spreadsheets().values().get(spreadsheetId, emailAndNameRange).execute();
 
-
 		return response.getValues();
 	}
-
-
 
 	@Cacheable(value = "followUpStatusDetails", key = "#spreadsheetId", unless = "#result == null")
 	public List<List<Object>> getFollowUpStatusDetails(String spreadsheetId) throws IOException {
@@ -222,46 +216,54 @@ public class DreamRepo {
 		return response;
 	}
 
-	
-	public boolean saveBirthDayDetails(String spreadsheetId,List<Object> row) throws IOException {
+	public boolean saveBirthDayDetails(String spreadsheetId, List<Object> row) throws IOException {
 		List<List<Object>> values = new ArrayList<>();
 		values.add(row);
 		ValueRange body = new ValueRange().setValues(values);
-		sheetsService.spreadsheets().values().append(spreadsheetId, dateOfBirthDetailsRange, body).setValueInputOption("USER_ENTERED")
-				.execute();
+		sheetsService.spreadsheets().values().append(spreadsheetId, dateOfBirthDetailsRange, body)
+				.setValueInputOption("USER_ENTERED").execute();
 		return true;
 	}
-	public UpdateValuesResponse updateFollow(String spreadsheetId, String range2, ValueRange valueRange) throws IOException {
-		System.out.println(spreadsheetId+" " +range2+ " " + valueRange);
+
+	public UpdateValuesResponse updateFollow(String spreadsheetId, String range2, ValueRange valueRange)
+			throws IOException {
+		System.out.println(spreadsheetId + " " + range2 + " " + valueRange);
 		return sheetsService.spreadsheets().values().update(spreadsheetId, range2, valueRange)
 				.setValueInputOption("RAW").execute();
 	}
-	
+
 	public ValueRange getEmailList(String spreadsheetId) throws IOException {
 		ValueRange response = sheetsService.spreadsheets().values().get(spreadsheetId, followUpEmailRange).execute();
 		return response;
 	}
 
-	@CacheEvict(value = { "sheetsData", "emailData", "contactData", "followUpStatusDetails", "followUpDetails"}, allEntries = true)
+	@CacheEvict(value = { "sheetsData", "emailData", "contactData", "followUpStatusDetails",
+			"followUpDetails" }, allEntries = true)
 	public void evictAllCachesOnTraineeDetails() {
 		// will evict all entries in the specified caches
 		System.out.println("evictAllCachesOnTraineeDetails running");
+	}
 
 	// suhas
 	@Cacheable(value = "batchDetails", key = "#spreadsheetId", unless = "#result == null")
+
 	public List<List<Object>> getCourseDetails(String spreadsheetId) throws IOException {
 		ValueRange response = sheetsService.spreadsheets().values().get(spreadsheetId, batchDetailsRange).execute();
 
 		return response.getValues();
 	}
 
-
-	}
-
-	@CacheEvict(value = { "sheetsData", "emailData", "contactData", "followUpStatusDetails", "followUpDetails" }, allEntries = true)
+	@CacheEvict(value = { "sheetsData", "emailData", "contactData", "followUpStatusDetails",
+			"followUpDetails" }, allEntries = true)
 	public void evictSheetsDataCaches() {
 		// This method will be scheduled to run every 12 hours
 		// and will evict all entries in the specified caches
-	}	
-	
+	}
+
+	public List<List<Object>> notification(String spreadsheetId) throws IOException {
+
+		ValueRange response = sheetsService.spreadsheets().values().get(spreadsheetId, followUpStatus).execute();
+		return response.getValues();
+	}
+
 }

@@ -20,9 +20,10 @@ public class UtilService {
 
 		try {
 			List<List<Object>> data = repo.getDropdown(spreadsheetId);
-			//System.out.println(data.size());
+			// System.out.println(data.size());
 			Dropdown dropdown = new Dropdown();
 			List<String> course = dropdown.getCourse();
+
 			List<String> qualifications = dropdown.getQualification();
 			List<String> batch = dropdown.getBatch();
 			List<String> stream = dropdown.getStream();
@@ -32,7 +33,7 @@ public class UtilService {
 			List<String> branchname = dropdown.getBranchname();
 			List<String> status = dropdown.getStatus();
 			for (List<Object> list : data) {
-				//System.out.println("size" + list);
+				// System.out.println("size" + list);
 
 				// Check if the list has at least 1 element before accessing it
 				if (list.size() > 0 && !list.get(0).toString().isEmpty()) {
@@ -68,7 +69,7 @@ public class UtilService {
 				}
 			}
 
-			//sorting
+			// sorting
 			Collections.sort(course);
 			course.add("Others");
 			Collections.sort(qualifications);
@@ -87,7 +88,7 @@ public class UtilService {
 			branchname.add("Others");
 			Collections.sort(status);
 			status.add("Others");
-			
+
 			return dropdown;
 
 		} catch (IOException e) {

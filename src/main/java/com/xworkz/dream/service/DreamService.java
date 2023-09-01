@@ -1,35 +1,49 @@
 package com.xworkz.dream.service;
 
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.ListIterator;
+import java.util.Map;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import javax.mail.MessagingException;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
+import org.apache.tomcat.jni.Time;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.core.io.Resource;
+import org.springframework.core.io.ResourceLoader;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.dataformat.yaml.snakeyaml.Yaml;
 import com.google.api.services.sheets.v4.model.UpdateValuesResponse;
 import com.google.api.services.sheets.v4.model.ValueRange;
 import com.xworkz.dream.dto.BatchDetails;
 import com.xworkz.dream.dto.CourseDto;
+import com.xworkz.dream.constants.Status;
 import com.xworkz.dream.dto.BasicInfoDto;
 import com.xworkz.dream.dto.BatchDetailsDto;
 import com.xworkz.dream.dto.BirthDayInfoDto;
@@ -41,6 +55,9 @@ import com.xworkz.dream.dto.SheetsDto;
 import com.xworkz.dream.dto.StatusDto;
 import com.xworkz.dream.dto.SuggestionDto;
 import com.xworkz.dream.dto.TraineeDto;
+import com.xworkz.dream.dto.utils.Dropdown;
+import com.xworkz.dream.dto.utils.Team;
+import com.xworkz.dream.dto.utils.User;
 import com.xworkz.dream.repo.DreamRepo;
 import com.xworkz.dream.util.DreamUtil;
 import com.xworkz.dream.wrapper.DreamWrapper;
@@ -48,6 +65,7 @@ import com.xworkz.dream.wrapper.DreamWrapper;
 import freemarker.template.TemplateException;
 
 @Service
+
 public class DreamService {
 
 	@Autowired
@@ -56,7 +74,16 @@ public class DreamService {
 	private DreamWrapper wrapper;
 	@Autowired
 	private DreamUtil util;
-
+	private String attemptedBy;
+	private String id = "1p3G4et36vkzSDs3W63cj6qnUFEWljLos2HHXIZd78Gg";
+	private HttpServletRequest request;
+	private ResponseEntity<List<StatusDto>> response;
+	private String loginEmail;
+	List<Team> users = new ArrayList<Team>();
+	@Autowired
+	private ResourceLoader resourceLoader;
+	@Value("${login.teamFile}")
+	private String userFile;
 	@Value("${sheets.rowStartRange}")
 	private String rowStartRange;
 	@Value("${sheets.rowEndRange}")
@@ -77,7 +104,8 @@ public class DreamService {
 	private static final Logger logger = LoggerFactory.getLogger(DreamService.class);
 
 	// Rest of your code...
-	public ResponseEntity<String> writeData(String spreadsheetId, TraineeDto dto, HttpServletRequest request) throws MessagingException, TemplateException {
+	public ResponseEntity<String> writeData(String spreadsheetId, TraineeDto dto, HttpServletRequest request)
+			throws MessagingException, TemplateException {
 		try {
 			if (true) {// isCookieValid(request)
 				List<List<Object>> data = repo.getIds(spreadsheetId).getValues();
@@ -102,24 +130,20 @@ public class DreamService {
 						logger.info("Data written successfully to spreadsheetId and Added to Follow Up: {}",
 								spreadsheetId);
 
-						boolean sent = util.sendCourseContent(dto.getBasicInfo().getEmail(),
-								dto.getBasicInfo().getTraineeName());
-						repo.evictAllCachesOnTraineeDetails();
-						if (sent == true) {
-							return ResponseEntity.ok("Data written successfully , Added to follow Up , sended course content ");
-						} else {
-							return ResponseEntity.ok("Email not sent, Data written successfully , Added to follow Up");
-						}
+//						boolean sent = util.sendCourseContent(dto.getBasicInfo().getEmail(),
+//								dto.getBasicInfo().getTraineeName());
+//						repo.evictAllCachesOnTraineeDetails();
+//						if (sent == true) {
+//							return ResponseEntity.ok("Data written successfully , Added to follow Up , sended course content ");
+//						} else {
+//							return ResponseEntity.ok("Email not sent, Data written successfully , Added to follow Up");
+//						}
 					}
 					return ResponseEntity.ok("Data written successfully , not added to Follow Up");
 				} else {
 					logger.warn("Failed to write data to spreadsheetId: {}", spreadsheetId);
 					return ResponseEntity.badRequest().body("Failed to write data");
 				}
-			} else {
-				// Invalid cookie
-				logger.info("Invalid cookie in the request");
-				return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid cookie");
 			}
 		} catch (IOException e) {
 			logger.error("Error occurred while writing data to spreadsheetId: {}", spreadsheetId, e);
@@ -130,6 +154,7 @@ public class DreamService {
 			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Data mapping error");
 
 		}
+		return null;
 	}
 
 	public boolean addToFollowUp(TraineeDto traineeDto, String spreadSheetId)
@@ -146,7 +171,7 @@ public class DreamService {
 
 		followUpDto.setCourseName(traineeDto.getCourseInfo().getCourse());
 		followUpDto.setRegistrationDate(LocalDate.now().toString());
-		followUpDto.setJoiningDate("Not Confirmed");
+		followUpDto.setJoiningDate("Not Confirmed");// DATE
 		followUpDto.setId(traineeDto.getId());
 		followUpDto.setCurrentlyFollowedBy("None");
 		followUpDto.setCurrentStatus("New");
@@ -220,14 +245,12 @@ public class DreamService {
 		}
 	}
 
-	@CacheEvict(value = { "sheetsData", "emailData", "contactData", "getDropdowns","followUpStatusDetails", "followUpDetails" }, allEntries = true)
+	@CacheEvict(value = { "sheetsData", "emailData", "contactData", "getDropdowns" }, allEntries = true)
 	@Scheduled(fixedDelay = 43200000) // 12 hours in milliseconds
 	public void evictAllCaches() {
 		// This method will be scheduled to run every 12 hours
 		// and will evict all entries in the specified caches
 	}
-
-	
 
 	public ResponseEntity<SheetsDto> readData(String spreadsheetId, int startingIndex, int maxRows) {
 		try {
@@ -243,7 +266,6 @@ public class DreamService {
 		} catch (IOException e) {
 
 			e.printStackTrace();
-			
 
 		}
 		return null;
@@ -297,13 +319,13 @@ public class DreamService {
 				ValueRange valueRange = new ValueRange();
 				valueRange.setValues(values);
 				UpdateValuesResponse updated = repo.update(spreadsheetId, range, valueRange);
-				if(updated.isEmpty()) {
+				if (updated.isEmpty()) {
 					return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("An error occurred ");
-				}else {
+				} else {
 					repo.evictAllCachesOnTraineeDetails();
 					return ResponseEntity.ok("Updated Successfully");
 				}
-				
+
 			} catch (IllegalAccessException e) {
 
 				e.printStackTrace();
@@ -322,26 +344,26 @@ public class DreamService {
 	public ResponseEntity<String> updateFollowUp(String spreadsheetId, String email, FollowUpDto followDto)
 			throws IOException, IllegalAccessException {
 		FollowUpDto followUpDto = getFollowUpDetailsByEmail(spreadsheetId, email);
-	
+
 		int rowIndex = findByEmailForUpdate(spreadsheetId, email);
-		
-		
+
 		String range = followUpSheetName + followUprowStartRange + rowIndex + ":" + followUprowEndRange + rowIndex;
-		
+
 		List<List<Object>> values = Arrays.asList(wrapper.extractDtoDetails(followDto));
-		
+
 		ValueRange valueRange = new ValueRange();
 		valueRange.setValues(values);
-		
+
 		UpdateValuesResponse updated = repo.updateFollow(spreadsheetId, range, valueRange);
-		if(updated.isEmpty()) {
+		if (updated.isEmpty()) {
 			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("An error occurred ");
-		}else {
+		} else {
 			repo.evictAllCachesOnTraineeDetails();
 			return ResponseEntity.ok("Updated Successfully");
 		}
-		
+
 	}
+
 	private int findRowIndexByEmail(String spreadsheetId, String email) throws IOException {
 
 		ValueRange data = repo.getEmails(spreadsheetId);
@@ -413,7 +435,7 @@ public class DreamService {
 
 	public ResponseEntity<List<String>> getSearchSuggestion(String spreadsheetId, String value,
 			HttpServletRequest request) {
-		//SuggestionDto sDto = new SuggestionDto();
+		// SuggestionDto sDto = new SuggestionDto();
 		// String values=value.toLowerCase();
 		String pattern = ".{3}";
 		List<String> suggestion = new ArrayList<>();
@@ -427,8 +449,8 @@ public class DreamService {
 
 				for (List<Object> list : filteredData) {
 
-					suggestion.add((String)list.get(0).toString());
-					suggestion.add((String)list.get(1).toString());
+					suggestion.add((String) list.get(0).toString());
+					suggestion.add((String) list.get(1).toString());
 				}
 
 				return ResponseEntity.ok(suggestion);
@@ -463,9 +485,9 @@ public class DreamService {
 			return new ResponseEntity<>("Email Not Found", HttpStatus.NOT_FOUND);
 		}
 	}
-	
-	public ResponseEntity<FollowUpDto> getFollowUpByEmail(String spreadsheetId, String email, HttpServletRequest request)
-			throws IOException {
+
+	public ResponseEntity<FollowUpDto> getFollowUpByEmail(String spreadsheetId, String email,
+			HttpServletRequest request) throws IOException {
 		List<List<Object>> data = repo.getFollowUpDetails(spreadsheetId);
 		FollowUpDto followUp = null;
 		for (List<Object> list : data) {
@@ -527,9 +549,10 @@ public class DreamService {
 
 		return statusDto;
 	}
-	
-	public List<StatusDto> getStatusDetailsByEmail(String spreadsheetId,  String email,
-			HttpServletRequest request) throws IOException {
+
+	public List<StatusDto> getStatusDetailsByEmail(String spreadsheetId, String email, HttpServletRequest request)
+			throws IOException {
+
 		List<StatusDto> statusDto = new ArrayList<>();
 		List<List<Object>> dataList = repo.getFollowUpStatusDetails(spreadsheetId);
 		System.out.println(dataList.toString());
@@ -543,8 +566,6 @@ public class DreamService {
 
 		return statusDto;
 	}
-	
-	
 
 	public List<StatusDto> getFollowUpStatusData(List<List<Object>> values, int startingIndex, int maxRows) {
 		List<StatusDto> statusDtos = new ArrayList<>();
@@ -595,7 +616,7 @@ public class DreamService {
 		}
 		return ResponseEntity.ok("Birth day information Not added");
 	}
-  
+
 	// suhas
 	public ResponseEntity<List<Object>> getCourseNameByStatus(String spreadsheetId, String status) {
 		List<List<Object>> courseNameByStatus;
@@ -615,19 +636,18 @@ public class DreamService {
 			e.printStackTrace();
 		}
 		return null;
-		
 
 	}
-	
-	//suhas
-	public ResponseEntity<BatchDetails> getBatchDetailsByCourseName(String spreadsheetId,String courseName) {
+
+	// suhas
+	public ResponseEntity<BatchDetails> getBatchDetailsByCourseName(String spreadsheetId, String courseName) {
 		List<List<Object>> detailsByCourseName;
 		try {
 			detailsByCourseName = repo.getCourseDetails(spreadsheetId);
 			BatchDetails batch = new BatchDetails();
-			if(detailsByCourseName !=null) {
-				for (List<Object> row:detailsByCourseName) {
-					if(row.get(1).toString().equalsIgnoreCase(courseName)) {
+			if (detailsByCourseName != null) {
+				for (List<Object> row : detailsByCourseName) {
+					if (row.get(1).toString().equalsIgnoreCase(courseName)) {
 						batch.setId(Integer.valueOf(row.get(0).toString()));
 						batch.setCourseName(String.valueOf(row.get(1)));
 						batch.setTrainerName(String.valueOf(row.get(2)));
@@ -636,17 +656,18 @@ public class DreamService {
 						batch.setTiming(String.valueOf(row.get(5)));
 						batch.setBranch(String.valueOf(row.get(6)));
 						batch.setStatus(String.valueOf(row.get(7)));
+
 					}
-					
+
 				}
 				return ResponseEntity.ok(batch);
 			}
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		
+
 		return null;
-		
+
 	}
 
 	public FollowUpDto getFollowUpDetailsByEmail(String spreadsheetId, String email) throws IOException {
@@ -659,13 +680,14 @@ public class DreamService {
 					.filter(list -> list.stream().anyMatch(value -> value.toString().equalsIgnoreCase(email)))
 					.collect(Collectors.toList());
 			for (List<Object> list : data) {
-				//System.out.println(list.toString());
+				// System.out.println(list.toString());
 				followUpDto = wrapper.listToFollowUpDTO(list);
 			}
 			return followUpDto;
 		}
 		return null;
 	}
+
 	private int findByEmailForUpdate(String spreadsheetId, String email) throws IOException {
 
 		ValueRange data = repo.getEmailList(spreadsheetId);
@@ -681,5 +703,110 @@ public class DreamService {
 		return -1;
 	}
 
+	private List<Team> getTeam() throws IOException {
+
+		Yaml yaml = new Yaml();
+		Resource resource = resourceLoader.getResource(userFile);
+		File file = resource.getFile();
+		FileInputStream inputStream = new FileInputStream(file);
+		Map<String, Map<Object, Object>> yamlData = (Map<String, Map<Object, Object>>) yaml.load(inputStream);
+		List<Object> list = (List<Object>) yamlData.get("team");
+		ObjectMapper objectMapper = new ObjectMapper();
+
+		for (Object object : list) {
+			Team user = objectMapper.convertValue(object, Team.class);
+			users.add(user);
+		}
+		return users;
+	}
+
+	@Scheduled(fixedRate = 60 * 5000) // 1000 milliseconds = 1 seconds
+
+	public void notification() {
+		try {
+			List<Team> teamList = getTeam();
+			notification(id, loginEmail, teamList, request);
+
+		} catch (IOException e) {
+			throw new RuntimeException("Exception occurred: " + e.getMessage(), e);
+		}
+
+	}
+
+	public void notification(String spreadsheetId, String email, List<Team> teamList, HttpServletRequest requests)
+			throws IOException {
+
+		List<String> statusCheck = Stream.of(Status.Busy.toString(), Status.New.toString(),
+				Status.Interested.toString(), Status.RNR.toString(), Status.Not_interested.toString().replace('_', ' '),
+				Status.Incomingcall_not_available.toString().replace('_', ' '),
+				Status.Not_reachable.toString().replace('_', ' '), Status.Let_us_know.toString().replace('_', ' '),
+				Status.Need_online.toString().replace('_', ' ')).collect(Collectors.toList());
+
+		List<String> candidateName = new ArrayList<String>();
+		List<String> candidateEmail = new ArrayList<String>();
+		LocalTime time = LocalTime.of(18, 00, 00, 500_000_000);
+		List<StatusDto> notificationStatus = new ArrayList<StatusDto>();
+
+		try {
+
+			if (spreadsheetId != null) {
+				List<List<Object>> list = repo.notification(spreadsheetId);
+				if (email != null) {
+					list.stream().forEach(e -> {
+						StatusDto dto = wrapper.listToStatusDto(e);
+						if (LocalDate.now().isEqual(LocalDate.parse(dto.getCallBack()))
+								&& email.equalsIgnoreCase(dto.getAttemptedBy())
+								&& statusCheck.contains(dto.getAttemptStatus()))
+
+						{
+							notificationStatus.add(dto);
+							response = ResponseEntity.ok(notificationStatus);
+
+						}
+
+					});
+
+				}
+
+				list.stream().forEach(e -> {
+					StatusDto dto = wrapper.listToStatusDto(e);
+					if (LocalDateTime.now().isAfter(LocalDateTime.of((LocalDate.parse(dto.getCallBack())), time))
+							&& LocalDateTime.now().isBefore(
+									LocalDateTime.of((LocalDate.parse(dto.getCallBack())), time.plusMinutes(30)))) {
+
+						if (statusCheck.contains(dto.getAttemptStatus())
+								&& LocalDate.now().isEqual(LocalDate.parse(dto.getCallBack()))) {
+
+							notificationStatus.add(dto);
+							candidateEmail.add(dto.getEmail());
+							candidateName.add(dto.getName());
+							response = ResponseEntity.ok(notificationStatus);
+
+						} else {
+							util.sendNotificationToEmail(teamList, candidateName, candidateEmail);
+
+						}
+
+					}
+				});
+
+			}
+
+		} catch (
+
+		IOException e) {
+			e.printStackTrace();
+		}
+
+	}
+
+	public ResponseEntity<List<StatusDto>> setNotification(@Value("${myapp.scheduled.param}") String email,
+			@Value("${myapp.scheduled.param}") HttpServletRequest requests) throws IOException {
+		this.request = requests;
+		this.loginEmail = email;
+		notification();
+		return response;
+
+	}
 
 }
