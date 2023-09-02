@@ -246,12 +246,7 @@ public class DreamRepo {
 		return response;
 	}
 
-	@CacheEvict(value = { "sheetsData", "emailData", "contactData", "followUpStatusDetails",
-			"followUpDetails" }, allEntries = true)
-	public void evictAllCachesOnTraineeDetails() {
-		// will evict all entries in the specified caches
-		System.out.println("evictAllCachesOnTraineeDetails running");
-	}
+
 
 
 	// suhas
@@ -263,12 +258,6 @@ public class DreamRepo {
 		return response.getValues();
 	}
 
-	@CacheEvict(value = { "sheetsData", "emailData", "contactData", "followUpStatusDetails",
-			"followUpDetails" }, allEntries = true)
-	public void evictSheetsDataCaches() {
-		// This method will be scheduled to run every 12 hours
-		// and will evict all entries in the specified caches
-	}
 
 	public List<List<Object>> notification(String spreadsheetId) throws IOException {
 		ValueRange response = sheetsService.spreadsheets().values().get(spreadsheetId, followUpStatus).execute();

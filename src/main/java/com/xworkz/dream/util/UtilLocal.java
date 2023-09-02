@@ -1,7 +1,9 @@
 package com.xworkz.dream.util;
 
+import java.io.IOException;
 import java.security.SecureRandom;
 import java.util.Base64;
+import java.util.List;
 import java.util.Properties;
 
 import javax.mail.Authenticator;
@@ -19,6 +21,10 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
+
+import com.xworkz.dream.dto.utils.Team;
+
+import freemarker.template.TemplateException;
 
 @Component
 @Profile("local")
@@ -59,6 +65,22 @@ public class UtilLocal implements DreamUtil{
 		byte[] tokenBytes = new byte[32];
 		secureRandom.nextBytes(tokenBytes);
 		return Base64.getEncoder().encodeToString(tokenBytes);
+	}
+
+
+	@Override
+	public boolean sendNotificationToEmail(List<Team> teamList, List<String> candidateName,
+			List<String> candidateEmail) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+
+	@Override
+	public boolean sendCourseContent(String email, String name)
+			throws MessagingException, IOException, TemplateException {
+		// TODO Auto-generated method stub
+		return false;
 	}
 
 

@@ -832,8 +832,8 @@ public class DreamService {
 								&& LocalDate.now().isEqual(LocalDate.parse(dto.getCallBack()))) {
 
 							notificationStatus.add(dto);
-							candidateEmail.add(dto.getEmail());
-							candidateName.add(dto.getName());
+							candidateEmail.add(dto.getBasicInfo().getEmail());	
+							candidateName.add(dto.getBasicInfo().getTraineeName());
 							response = ResponseEntity.ok(notificationStatus);
 
 						}
