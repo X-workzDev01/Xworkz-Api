@@ -108,8 +108,8 @@ public class LoginService {
 		cookie.setMaxAge(0);
 //		cookie.setSecure(false);
 //		cookie.setDomain(cookieDomain);
-	    cookie.setPath("/");
-		
+		cookie.setPath("/");
+
 		response.addCookie(cookie);
 
 		User user = findUser(email);
@@ -193,6 +193,5 @@ public class LoginService {
 
 		return gotUser;
 	}
-	
-	
+
 }

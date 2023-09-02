@@ -20,26 +20,26 @@ import com.xworkz.dream.dto.utils.User;
 @Component
 public class DreamWrapper {
 
-//	public  List<Object> dtoToList(TraineeDto dto) {
-//		List<Object> row = new ArrayList<>();
-//		row.add(dto.getId());
-//		row.add(dto.getBasicInfo().getTraineeName());
-//		row.add(dto.getBasicInfo().getEmail());
-//		row.add(dto.getBasicInfo().getContactNumber());
-//		row.add(dto.getEducationInfo().getQualification());
-//		row.add(dto.getEducationInfo().getStream());
-//		row.add(dto.getEducationInfo().getYearOfPassout());
-//		row.add(dto.getEducationInfo().getCollegeName());
-//		row.add(dto.getCourseInfo().getBatch());
-//		row.add(dto.getCourseInfo().getBranch());
-//		row.add(dto.getCourseInfo().getCourse());
-//		row.add(dto.getReferralInfo().getReferalName());
-//		row.add(dto.getReferralInfo().getReferalContactNumber());
-//		row.add(dto.getReferralInfo().getComments());
-//
-//		return row;
-//
-//	}
+	public  List<Object> dtoToList(TraineeDto dto) {
+		List<Object> row = new ArrayList<>();
+		row.add(dto.getId());
+		row.add(dto.getBasicInfo().getTraineeName());
+		row.add(dto.getBasicInfo().getEmail());
+		row.add(dto.getBasicInfo().getContactNumber());
+		row.add(dto.getEducationInfo().getQualification());
+		row.add(dto.getEducationInfo().getStream());
+		row.add(dto.getEducationInfo().getYearOfPassout());
+		row.add(dto.getEducationInfo().getCollegeName());
+		row.add(dto.getCourseInfo().getBatch());
+		row.add(dto.getCourseInfo().getBranch());
+		row.add(dto.getCourseInfo().getCourse());
+		row.add(dto.getReferralInfo().getReferalName());
+		row.add(dto.getReferralInfo().getReferalContactNumber());
+		row.add(dto.getReferralInfo().getComments());
+
+		return row;
+
+	}
 	public SuggestionDto listToSuggestionDTO(List<Object> row) {
 		SuggestionDto suggestionDto = new SuggestionDto();
 		int rowSize = row.size();
@@ -183,7 +183,7 @@ public class DreamWrapper {
 		}
 
 		if (rowSize > 12 && row.get(12) != null && !row.get(12).toString().isEmpty()) {
-			traineeDto.getCourseInfo().setOfferedAs((String)(row.get(12).toString()));
+			traineeDto.getCourseInfo().setOfferedAs((String) (row.get(12).toString()));
 		}
 
 		if (rowSize > 13 && row.get(13) != null && !row.get(13).toString().isEmpty()) {

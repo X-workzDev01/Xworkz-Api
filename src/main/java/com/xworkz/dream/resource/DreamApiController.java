@@ -11,6 +11,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -38,6 +39,7 @@ import freemarker.template.TemplateException;
 import io.swagger.annotations.ApiOperation;
 
 @RestController
+@EnableScheduling
 @RequestMapping("/api")
 public class DreamApiController {
 
@@ -114,7 +116,7 @@ public class DreamApiController {
 	public ResponseEntity<String> updateFollowUpStatus(@RequestHeader String spreadsheetId,
 			@RequestBody StatusDto statusDto, HttpServletRequest request) throws IOException {
 		logger.info("updating follow up status : {}", statusDto);
-
+		System.out.println(statusDto + "------controller---------");
 		return service.updateFollowUpStatus(spreadsheetId, statusDto, request);
 	}
 
@@ -134,10 +136,9 @@ public class DreamApiController {
 			@RequestParam String courseName) throws IOException {
 		logger.info("Getting CourseDetails : {}", courseName);
 		return service.getBatchDetailsByCourseName(spreadsheetId, courseName);
-	}
 
-    
-    	@ApiOperation(value = "To get Registration details by email")
+	}  
+   @ApiOperation(value = "To get Registration details by email")
 	@GetMapping("/readByEmail")
 	public ResponseEntity<?> getDataByEmail(@RequestHeader String spreadsheetId, @RequestParam String email,
 			HttpServletRequest request) throws IOException {
@@ -195,6 +196,12 @@ public class DreamApiController {
 		return service.updateFollowUp(spreadsheetId, email, dto);
 	}
 
+	@ApiOperation(" Notification API for pending Follow Ups for the Day")
+	@GetMapping("/notification")
+	public ResponseEntity<List<StatusDto>> getFollowupNotification(@RequestParam String email,
+			HttpServletRequest request) throws IOException {
+		return service.setNotification(email, request);
+}
 	@ApiOperation(value = "To verifay the email")
 	@GetMapping("/verify-email")
 	public String verifydEmails(@RequestParam String email) {

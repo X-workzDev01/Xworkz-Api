@@ -12,6 +12,7 @@ mail:
    password: KeepIT@Temp789 
     
 login: 
+  teamFile: classpath:team.yml
   userFile: classpath:users.yml
   sheetId: 1p3G4et36vkzSDs3W63cj6qnUFEWljLos2HHXIZd78Gg
   cookieDomain: ombn.in

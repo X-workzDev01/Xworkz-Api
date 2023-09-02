@@ -4,7 +4,9 @@ import com.xworkz.dream.constants.BatchInfo;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 //course
 //batch
@@ -15,6 +17,8 @@ import lombok.NoArgsConstructor;
 //referenceMobileNumber
 
 @Data
+@Getter
+@Setter
 @NoArgsConstructor
 @AllArgsConstructor
 public class CourseDto {

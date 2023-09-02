@@ -32,8 +32,9 @@ import com.google.api.services.sheets.v4.model.UpdateValuesResponse;
 import com.google.api.services.sheets.v4.model.ValueRange;
 import com.google.auth.http.HttpCredentialsAdapter;
 import com.google.auth.oauth2.GoogleCredentials;
+import com.xworkz.dream.dto.StatusDto;
 import com.xworkz.dream.dto.TraineeDto;
-//import com.xworkz.dream.wrapper.DreamWrapper;
+import com.xworkz.dream.wrapper.DreamWrapper;
 
 @Repository
 public class DreamRepo {
@@ -64,6 +65,8 @@ public class DreamRepo {
 	@Value("${sheets.emailAndNameRange}")
 	private String emailAndNameRange;
 	@Value("${sheets.batchDetails}")
+	private String batchDetails;
+	@Value("${sheets.batchDetailsRange}")
 	private String batchDetailsRange;
 	@Value("${sheets.batchIdRange}")
 	private String batchIdRange;
@@ -243,17 +246,34 @@ public class DreamRepo {
 		return response;
 	}
 
+	@CacheEvict(value = { "sheetsData", "emailData", "contactData", "followUpStatusDetails",
+			"followUpDetails" }, allEntries = true)
+	public void evictAllCachesOnTraineeDetails() {
+		// will evict all entries in the specified caches
+		System.out.println("evictAllCachesOnTraineeDetails running");
+	}
 
 
 	// suhas
 	@Cacheable(value = "batchDetails", key = "#spreadsheetId", unless = "#result == null")
+
 	public List<List<Object>> getCourseDetails(String spreadsheetId) throws IOException {
 		ValueRange response = sheetsService.spreadsheets().values().get(spreadsheetId, batchDetailsRange).execute();
 
 		return response.getValues();
 	}
 
+	@CacheEvict(value = { "sheetsData", "emailData", "contactData", "followUpStatusDetails",
+			"followUpDetails" }, allEntries = true)
+	public void evictSheetsDataCaches() {
+		// This method will be scheduled to run every 12 hours
+		// and will evict all entries in the specified caches
+	}
 
+	public List<List<Object>> notification(String spreadsheetId) throws IOException {
+		ValueRange response = sheetsService.spreadsheets().values().get(spreadsheetId, followUpStatus).execute();
+		return response.getValues();
+  }
 	@CacheEvict(value = { "sheetsData", "emailData", "contactData", "followUpStatusDetails", "followUpDetails" }, allEntries = true)
 	public void evictSheetsDataCaches() {
 		// This method will be scheduled to run every 12 hours
