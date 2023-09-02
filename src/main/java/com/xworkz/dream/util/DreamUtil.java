@@ -16,8 +16,6 @@ public interface DreamUtil {
 	public boolean sendNotificationToEmail(List<Team> teamList, List<String> candidateName,
 			List<String> candidateEmail);
 
-	public boolean bulkSendMail(List<String> recipients, String subject, String body);
-
 	public int generateOTP();
 
 	public String generateToken();
