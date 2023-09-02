@@ -789,8 +789,7 @@ public class DreamService {
 
 	}
 
-	public void notification(String spreadsheetId, String email, List<Team> teamList, HttpServletRequest requests)
-			throws IOException {
+	public void notification(String spreadsheetId, String email, List<Team> teamList, HttpServletRequest requests) {
 
 		List<String> statusCheck = Stream.of(Status.Busy.toString(), Status.New.toString(),
 				Status.Interested.toString(), Status.RNR.toString(), Status.Not_interested.toString().replace('_', ' '),
@@ -800,9 +799,8 @@ public class DreamService {
 
 		List<String> candidateName = new ArrayList<String>();
 		List<String> candidateEmail = new ArrayList<String>();
-		LocalTime time = LocalTime.of(18, 00, 00, 500_000_000);
+		LocalTime time = LocalTime.of(18, 00, 01, 500_000_000);
 		List<StatusDto> notificationStatus = new ArrayList<StatusDto>();
-
 		try {
 
 			if (spreadsheetId != null) {
@@ -838,10 +836,9 @@ public class DreamService {
 							candidateName.add(dto.getName());
 							response = ResponseEntity.ok(notificationStatus);
 
-						} else {
-							util.sendNotificationToEmail(teamList, candidateName, candidateEmail);
-
 						}
+
+						util.sendNotificationToEmail(teamList, candidateName, candidateEmail);
 
 					}
 				});

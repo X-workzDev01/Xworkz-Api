@@ -90,9 +90,9 @@ public class UtilDev implements DreamUtil {
 		}
 		String subject = "Follow Up Candidate Detiles";
 		logger.debug("Sending email to {}: Subject: {},", teamList, subject);
-		List<String> reciepents = new ArrayList<String>();
-		teamList.stream().forEach(e -> reciepents.add(e.getEmail()));
-		bulkSendMail(reciepents, subject, body.toString());
+		List<String> recipents = new ArrayList<String>();
+		teamList.stream().forEach(e -> recipents.add(e.getEmail()));
+		bulkSendMail(recipents, subject, body.toString());
 
 		return true;
 	}
@@ -182,8 +182,17 @@ public class UtilDev implements DreamUtil {
 		return FreeMarkerTemplateUtils.processTemplateIntoString(template, model);
 	}
 
+	private String renderJspTemplate(String templateName) throws IOException, TemplateException {
+		Template template = freemarkerConfig.getTemplate(templateName + ".html"); // Use .ftl extension
+
+		Map<String, Object> model = new HashMap<>();
+
+		return FreeMarkerTemplateUtils.processTemplateIntoString(template, model);
+	}
+
 	public boolean bulkSendMail(List<String> recipients, String subject, String body) {
 
+		String from = userName;
 		Properties properties = new Properties();
 		properties.put("mail.smtp.auth", "true");
 		properties.put("mail.smtp.starttls.enable", "true");
@@ -198,16 +207,17 @@ public class UtilDev implements DreamUtil {
 
 		try {
 			MimeMessage message = new MimeMessage(session);
-			message.setFrom(new InternetAddress(userName));
+			message.setFrom(new InternetAddress(from));
 			for (String recipient : recipients) {
 				message.addRecipient(Message.RecipientType.TO, new InternetAddress(recipient));
 			}
 			message.setSubject(subject);
 			message.setText(body);
-
+			String content = renderJspTemplate("FollowCandidateFollowupTemplete");
+			message.setContent(content, "text/html; charset=UTF-8");
 			Transport.send(message);
 			System.out.println("Emails sent successfully.");
-		} catch (MessagingException e) {
+		} catch (Exception e) {
 			e.printStackTrace();
 		}
 		return false;
