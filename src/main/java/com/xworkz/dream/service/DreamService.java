@@ -775,7 +775,7 @@ public class DreamService {
 		return users;
 	}
 
-	@Scheduled(fixedRate = 30 * 60 * 1000) // 1000 milliseconds = 1 seconds
+	@Scheduled(fixedRate = 60 * 1000) // 1000 milliseconds = 1 seconds
 
 	public void notification() {
 		try {
@@ -796,12 +796,14 @@ public class DreamService {
 				Status.Not_reachable.toString().replace('_', ' '), Status.Let_us_know.toString().replace('_', ' '),
 				Status.Need_online.toString().replace('_', ' ')).collect(Collectors.toList());
 
-		LocalTime time = LocalTime.of(18, 01, 01, 500_000_000);
+		LocalTime time = LocalTime.of(16, 05, 01, 500_000_000);
 		List<StatusDto> notificationStatus = new ArrayList<StatusDto>();
+		List<StatusDto> notificationStatusBymail = new ArrayList<StatusDto>();
+
 		try {
 			if (spreadsheetId != null) {
 				List<List<Object>> list = repo.notification(spreadsheetId);
-				;
+
 				if (email != null) {
 					list.stream().forEach(e -> {
 						StatusDto dto = wrapper.listToStatusDto(e);
@@ -810,42 +812,47 @@ public class DreamService {
 								&& statusCheck.contains(dto.getAttemptStatus()))
 
 						{
-							notificationStatus.add(dto);
-							response = ResponseEntity.ok(notificationStatus);
+							notificationStatusBymail.add(dto);
+							response = ResponseEntity.ok(notificationStatusBymail);
 
 						}
 
 					});
 
 				}
-
 				list.stream().forEach(e -> {
 					StatusDto dto = wrapper.listToStatusDto(e);
 
 					if (LocalDateTime.now().isAfter(LocalDateTime.of((LocalDate.parse(dto.getCallBack())), time))
 							&& LocalDateTime.now().isBefore(
-									LocalDateTime.of((LocalDate.parse(dto.getCallBack())), time.plusMinutes(30)))) {
+									LocalDateTime.of((LocalDate.parse(dto.getCallBack())), time.plusMinutes(1)))) {
+
 						if (statusCheck.contains(dto.getAttemptStatus())
 								&& LocalDate.now().isEqual(LocalDate.parse(dto.getCallBack()))) {
-							notificationStatus.add(dto);
+//							notificationStatus.add(dto);
 							response = ResponseEntity.ok(notificationStatus);
-
-						} else {
-							System.out.println("===================");
-
-							util.sendNotificationToEmail(teamList, notificationStatus);
 
 						}
 
 					}
-				});
 
+				});
+				if (LocalTime.now().isAfter(time) && LocalTime.now().isBefore(time.plusMinutes(1))) {
+
+					if (!notificationStatus.isEmpty()) {
+
+						util.sendNotificationToEmail(teamList, notificationStatus);
+					} else {
+						System.out.println("notification is not there");
+
+					}
+
+				}
 			}
 
-		} catch (
-
-		IOException e) {
+		} catch (IOException e) {
 			e.printStackTrace();
+
 		}
 
 	}
