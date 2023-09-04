@@ -263,7 +263,6 @@ public class DreamService {
 		}
 	}
 
-
 	@CacheEvict(value = { "sheetsData", "emailData", "contactData", "getDropdowns", "followUpStatusDetails",
 			"followUpDetails" }, allEntries = true)
 	@Scheduled(fixedDelay = 43200000) // 12 hours in milliseconds
@@ -439,7 +438,7 @@ public class DreamService {
 			HttpServletRequest request) {
 		System.out.println("--------Service--------------");
 		try {
-			
+
 			List<List<Object>> data = repo.getStatusId(spreadsheetId).getValues();
 			int size = data.size();
 			System.out.println(size);
@@ -448,7 +447,7 @@ public class DreamService {
 			basicInfo.setEmail(statusDto.getBasicInfo().getEmail());
 
 			StatusDto sdto = new StatusDto();
-			sdto.setId(size+=1);
+			sdto.setId(size += 1);
 			sdto.setBasicInfo(basicInfo);
 			sdto.setAttemptedOn(LocalDateTime.now().toString());
 			sdto.setAttemptedBy(statusDto.getAttemptedBy());
@@ -776,7 +775,7 @@ public class DreamService {
 		return users;
 	}
 
-	@Scheduled(fixedRate = 60 * 5000) // 1000 milliseconds = 1 seconds
+	@Scheduled(fixedRate = 30 * 60 * 1000) // 1000 milliseconds = 1 seconds
 
 	public void notification() {
 		try {
@@ -797,14 +796,12 @@ public class DreamService {
 				Status.Not_reachable.toString().replace('_', ' '), Status.Let_us_know.toString().replace('_', ' '),
 				Status.Need_online.toString().replace('_', ' ')).collect(Collectors.toList());
 
-		List<String> candidateName = new ArrayList<String>();
-		List<String> candidateEmail = new ArrayList<String>();
-		LocalTime time = LocalTime.of(18, 00, 01, 500_000_000);
+		LocalTime time = LocalTime.of(18, 01, 01, 500_000_000);
 		List<StatusDto> notificationStatus = new ArrayList<StatusDto>();
 		try {
-
 			if (spreadsheetId != null) {
 				List<List<Object>> list = repo.notification(spreadsheetId);
+				;
 				if (email != null) {
 					list.stream().forEach(e -> {
 						StatusDto dto = wrapper.listToStatusDto(e);
@@ -824,21 +821,21 @@ public class DreamService {
 
 				list.stream().forEach(e -> {
 					StatusDto dto = wrapper.listToStatusDto(e);
+
 					if (LocalDateTime.now().isAfter(LocalDateTime.of((LocalDate.parse(dto.getCallBack())), time))
 							&& LocalDateTime.now().isBefore(
 									LocalDateTime.of((LocalDate.parse(dto.getCallBack())), time.plusMinutes(30)))) {
-
 						if (statusCheck.contains(dto.getAttemptStatus())
 								&& LocalDate.now().isEqual(LocalDate.parse(dto.getCallBack()))) {
-
 							notificationStatus.add(dto);
-							candidateEmail.add(dto.getBasicInfo().getEmail());	
-							candidateName.add(dto.getBasicInfo().getTraineeName());
 							response = ResponseEntity.ok(notificationStatus);
 
-						}
+						} else {
+							System.out.println("===================");
 
-						util.sendNotificationToEmail(teamList, candidateName, candidateEmail);
+							util.sendNotificationToEmail(teamList, notificationStatus);
+
+						}
 
 					}
 				});
@@ -861,10 +858,10 @@ public class DreamService {
 		return response;
 
 	}
+
 	// suhas
 	public String verifyEmails(String email) {
 		return emailableClient.verifyEmail(email, API_KEY);
 	}
-
 
 }

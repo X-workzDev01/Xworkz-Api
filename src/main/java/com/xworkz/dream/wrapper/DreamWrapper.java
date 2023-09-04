@@ -20,7 +20,7 @@ import com.xworkz.dream.dto.utils.User;
 @Component
 public class DreamWrapper {
 
-	public  List<Object> dtoToList(TraineeDto dto) {
+	public List<Object> dtoToList(TraineeDto dto) {
 		List<Object> row = new ArrayList<>();
 		row.add(dto.getId());
 		row.add(dto.getBasicInfo().getTraineeName());
@@ -40,6 +40,7 @@ public class DreamWrapper {
 		return row;
 
 	}
+
 	public SuggestionDto listToSuggestionDTO(List<Object> row) {
 		SuggestionDto suggestionDto = new SuggestionDto();
 		int rowSize = row.size();
@@ -88,7 +89,7 @@ public class DreamWrapper {
 	}
 
 	public StatusDto listToStatusDto(List<Object> rows) {
-		StatusDto statusDto = new StatusDto(0, new BasicInfoDto(), null, null, null, null, null, null,null);
+		StatusDto statusDto = new StatusDto(0, new BasicInfoDto(), null, null, null, null, null, null, null);
 
 		int rowSize = rows.size();
 		if (rowSize > 0 && rows.get(0) != null && !rows.get(0).toString().isEmpty()) {
@@ -118,6 +119,10 @@ public class DreamWrapper {
 		if (rowSize > 8 && rows.get(8) != null && !rows.get(8).toString().isEmpty()) {
 			statusDto.setCallBack((String) rows.get(8));
 		}
+		if (rowSize > 9 && rows.get(9) != null && !rows.get(9).toString().isEmpty()) {
+			statusDto.setCallBackTime((String) rows.get(9));
+		}
+
 		return statusDto;
 	}
 
