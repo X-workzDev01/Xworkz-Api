@@ -775,7 +775,7 @@ public class DreamService {
 		return users;
 	}
 
-	@Scheduled(fixedRate = 60 * 1000) // 1000 milliseconds = 1 seconds
+	@Scheduled(fixedRate = 30 * 60 * 1000) // 1000 milliseconds = 1 seconds
 
 	public void notification() {
 		try {
@@ -796,7 +796,7 @@ public class DreamService {
 				Status.Not_reachable.toString().replace('_', ' '), Status.Let_us_know.toString().replace('_', ' '),
 				Status.Need_online.toString().replace('_', ' ')).collect(Collectors.toList());
 
-		LocalTime time = LocalTime.of(16, 05, 01, 500_000_000);
+		LocalTime time = LocalTime.of(18, 00, 01, 500_000_000);
 		List<StatusDto> notificationStatus = new ArrayList<StatusDto>();
 		List<StatusDto> notificationStatusBymail = new ArrayList<StatusDto>();
 
@@ -825,11 +825,11 @@ public class DreamService {
 
 					if (LocalDateTime.now().isAfter(LocalDateTime.of((LocalDate.parse(dto.getCallBack())), time))
 							&& LocalDateTime.now().isBefore(
-									LocalDateTime.of((LocalDate.parse(dto.getCallBack())), time.plusMinutes(1)))) {
+									LocalDateTime.of((LocalDate.parse(dto.getCallBack())), time.plusMinutes(30)))) {
 
 						if (statusCheck.contains(dto.getAttemptStatus())
 								&& LocalDate.now().isEqual(LocalDate.parse(dto.getCallBack()))) {
-//							notificationStatus.add(dto);
+							notificationStatus.add(dto);
 							response = ResponseEntity.ok(notificationStatus);
 
 						}
@@ -837,7 +837,7 @@ public class DreamService {
 					}
 
 				});
-				if (LocalTime.now().isAfter(time) && LocalTime.now().isBefore(time.plusMinutes(1))) {
+				if (LocalTime.now().isAfter(time) && LocalTime.now().isBefore(time.plusMinutes(30))) {
 
 					if (!notificationStatus.isEmpty()) {
 
