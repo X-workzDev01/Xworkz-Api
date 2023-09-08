@@ -71,6 +71,8 @@ public class DreamService {
 	private DreamRepo repo;
 	@Autowired
 	private DreamWrapper wrapper;
+	private FollowUpDto followUpDto;
+
 	@Autowired
 	private DreamUtil util;
 	private String attemptedBy;
@@ -483,24 +485,24 @@ public class DreamService {
 
 	}
 
-	public ResponseEntity<List<String>> getSearchSuggestion(String spreadsheetId, String value,
+	public ResponseEntity<List<TraineeDto>> getSearchSuggestion(String spreadsheetId, String value,
 			HttpServletRequest request) {
 		// SuggestionDto sDto = new SuggestionDto();
 		// String values=value.toLowerCase();
 		String pattern = ".{3}";
-		List<String> suggestion = new ArrayList<>();
+		List<TraineeDto> suggestion = new ArrayList<>();
 		if (value != null) {
 			try {
 				List<List<Object>> dataList = repo.getEmailsAndNames(spreadsheetId, value);
+				System.out.println(dataList);
 				List<List<Object>> filteredData = dataList.stream().filter(list -> list.stream().anyMatch(val -> {
 					String strVal = val.toString();
 					return strVal.toLowerCase().startsWith(value.toLowerCase());
 				})).collect(Collectors.toList());
 
 				for (List<Object> list : filteredData) {
-
-					suggestion.add((String) list.get(0).toString());
-					suggestion.add((String) list.get(1).toString());
+					TraineeDto dto = wrapper.listToDto(list);
+					suggestion.add(dto);
 				}
 
 				return ResponseEntity.ok(suggestion);
@@ -788,7 +790,8 @@ public class DreamService {
 
 	}
 
-	public void notification(String spreadsheetId, String email, List<Team> teamList, HttpServletRequest requests) {
+	public void notification(String spreadsheetId, String email, List<Team> teamList, HttpServletRequest requests)
+			throws IOException {
 
 		List<String> statusCheck = Stream.of(Status.Busy.toString(), Status.New.toString(),
 				Status.Interested.toString(), Status.RNR.toString(), Status.Not_interested.toString().replace('_', ' '),
@@ -796,10 +799,13 @@ public class DreamService {
 				Status.Not_reachable.toString().replace('_', ' '), Status.Let_us_know.toString().replace('_', ' '),
 				Status.Need_online.toString().replace('_', ' ')).collect(Collectors.toList());
 
-		LocalTime time = LocalTime.of(18, 00, 01, 500_000_000);
+		LocalTime time = LocalTime.of(18, 01, 01, 500_000_000);
 		List<StatusDto> notificationStatus = new ArrayList<StatusDto>();
-		List<StatusDto> notificationStatusBymail = new ArrayList<StatusDto>();
-
+		List<StatusDto> notificationStatusBymail = new ArrayList<StatusDto>();  
+		List<List<Object>> followup = repo.getFollowUpDetailsByid(spreadsheetId);
+		followup.stream().forEach(f -> {
+			followUpDto = wrapper.listToFollowUpDTO(f);
+		});
 		try {
 			if (spreadsheetId != null) {
 				List<List<Object>> list = repo.notification(spreadsheetId);
@@ -807,16 +813,14 @@ public class DreamService {
 				if (email != null) {
 					list.stream().forEach(e -> {
 						StatusDto dto = wrapper.listToStatusDto(e);
-						if (LocalDate.now().isEqual(LocalDate.parse(dto.getCallBack()))
-								&& email.equalsIgnoreCase(dto.getAttemptedBy())
-								&& statusCheck.contains(dto.getAttemptStatus()))
 
-						{
+						if (LocalDate.now().isEqual(LocalDate.parse(dto.getCallBack()))
+								&& email.equalsIgnoreCase(dto.getAttemptedBy()) 
+								&& statusCheck.contains(dto.getAttemptStatus())) {
+
 							notificationStatusBymail.add(dto);
 							response = ResponseEntity.ok(notificationStatusBymail);
-
 						}
-
 					});
 
 				}
@@ -829,6 +833,7 @@ public class DreamService {
 
 						if (statusCheck.contains(dto.getAttemptStatus())
 								&& LocalDate.now().isEqual(LocalDate.parse(dto.getCallBack()))) {
+
 							notificationStatus.add(dto);
 							response = ResponseEntity.ok(notificationStatus);
 
@@ -850,7 +855,9 @@ public class DreamService {
 				}
 			}
 
-		} catch (IOException e) {
+		} catch (
+
+		IOException e) {
 			e.printStackTrace();
 
 		}
@@ -860,7 +867,7 @@ public class DreamService {
 	public ResponseEntity<List<StatusDto>> setNotification(@Value("${myapp.scheduled.param}") String email,
 			@Value("${myapp.scheduled.param}") HttpServletRequest requests) throws IOException {
 		this.request = requests;
-		this.loginEmail = email;
+		this.loginEmail = email;  
 		notification();
 		return response;
 

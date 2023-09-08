@@ -16,13 +16,14 @@
 				<th>Email</th>
 				<th>Call Back Date</th>
 				<th>Call Back Time</th>
+				<th>Contact No</th>
 			</tr>
 		</thead>
 		<tbody>
 
 			<tr th:each="dto : ${listDto}">
 				<td th:text="${dto.id}"></td>
-				<td th:text="${dto.basicInfo.traineeName}"></td>
+				<td th:text=${dto.basicInfo.traineeName}></td>
 				<td th:text="${dto.basicInfo.email}"></td>
 				<td th:text="${dto.callBack}"></td>
 				<td th:text="${dto.callBackTime}"></td>

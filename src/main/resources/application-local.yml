@@ -10,7 +10,6 @@ mail:
    smtpPort: 587
    userName: xworkzdev@outlook.com
    password: KeepIT@Temp789 
-    
 login: 
   teamFile: classpath:team.yml
   userFile: classpath:users.yml
