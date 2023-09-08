@@ -1,18 +1,46 @@
 <!DOCTYPE html>
-<html>
+<html xmlns:th="http://www.thymeleaf.org">
 <head>
-<meta charset="ISO-8859-1">
 <title>Candidate FollowUP Content</title>
 </head>
 <body>
 	<h3>Hi Team ,</h3>
-	
+
 	<p>Plese arrange followup below candidate</p>
-	
+
+	<table border="1">
+		<thead style="background-color: yellow;">
+			<tr>
+				<th>Id</th>
+				<th>Candidate Name</th>
+				<th>Email</th>
+				<th>Call Back Date</th>
+				<th>Call Back Time</th>
+				<th>Contact No</th>
+			</tr>
+		</thead>
+		<tbody>
+
+			<tr th:each="dto : ${listDto}">
+				<td th:text="${dto.id}"></td>
+				<td th:text=${dto.basicInfo.traineeName}></td>
+				<td th:text="${dto.basicInfo.email}"></td>
+				<td th:text="${dto.callBack}"></td>
+				<td th:text="${dto.callBackTime}"></td>
+
+
+
+			</tr>
+		</tbody>
+	</table>
+
+
+
+
 	<p>This is Auto generated email Don't replay Please updated status
 		below link</p>
 	<p>
-		Link is: <a href="https://ombn.in/x-workz/login">https://ombn.in/x-workz/login</a>
+		Link is: <a href="ombn.in/x-workz">https://ombn.in/x-workz/login</a>
 	</p>
 
 	<h3>Thank You</h3>

@@ -23,5 +23,6 @@ public class BasicInfoDto {
 	private Long contactNumber;
 	@JsonProperty("dateOfBirth")
 	private String dateOfBirth;
-	
+
+
 }

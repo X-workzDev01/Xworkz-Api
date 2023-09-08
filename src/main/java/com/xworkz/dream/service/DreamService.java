@@ -71,6 +71,8 @@ public class DreamService {
 	private DreamRepo repo;
 	@Autowired
 	private DreamWrapper wrapper;
+	private FollowUpDto followUpDto;
+
 	@Autowired
 	private DreamUtil util;
 	private String attemptedBy;
@@ -263,7 +265,6 @@ public class DreamService {
 		}
 	}
 
-
 	@CacheEvict(value = { "sheetsData", "emailData", "contactData", "getDropdowns", "followUpStatusDetails",
 			"followUpDetails" }, allEntries = true)
 	@Scheduled(fixedDelay = 43200000) // 12 hours in milliseconds
@@ -439,7 +440,7 @@ public class DreamService {
 			HttpServletRequest request) {
 		System.out.println("--------Service--------------");
 		try {
-			
+
 			List<List<Object>> data = repo.getStatusId(spreadsheetId).getValues();
 			int size = data.size();
 			System.out.println(size);
@@ -448,7 +449,7 @@ public class DreamService {
 			basicInfo.setEmail(statusDto.getBasicInfo().getEmail());
 
 			StatusDto sdto = new StatusDto();
-			sdto.setId(size+=1);
+			sdto.setId(size += 1);
 			sdto.setBasicInfo(basicInfo);
 			sdto.setAttemptedOn(LocalDateTime.now().toString());
 			sdto.setAttemptedBy(statusDto.getAttemptedBy());
@@ -484,24 +485,24 @@ public class DreamService {
 
 	}
 
-	public ResponseEntity<List<String>> getSearchSuggestion(String spreadsheetId, String value,
+	public ResponseEntity<List<TraineeDto>> getSearchSuggestion(String spreadsheetId, String value,
 			HttpServletRequest request) {
 		// SuggestionDto sDto = new SuggestionDto();
 		// String values=value.toLowerCase();
 		String pattern = ".{3}";
-		List<String> suggestion = new ArrayList<>();
+		List<TraineeDto> suggestion = new ArrayList<>();
 		if (value != null) {
 			try {
 				List<List<Object>> dataList = repo.getEmailsAndNames(spreadsheetId, value);
+				System.out.println(dataList);
 				List<List<Object>> filteredData = dataList.stream().filter(list -> list.stream().anyMatch(val -> {
 					String strVal = val.toString();
 					return strVal.toLowerCase().startsWith(value.toLowerCase());
 				})).collect(Collectors.toList());
 
 				for (List<Object> list : filteredData) {
-
-					suggestion.add((String) list.get(0).toString());
-					suggestion.add((String) list.get(1).toString());
+					TraineeDto dto = wrapper.listToDto(list);
+					suggestion.add(dto);
 				}
 
 				return ResponseEntity.ok(suggestion);
@@ -776,7 +777,7 @@ public class DreamService {
 		return users;
 	}
 
-	@Scheduled(fixedRate = 60 * 5000) // 1000 milliseconds = 1 seconds
+	@Scheduled(fixedRate = 30 * 60 * 1000) // 1000 milliseconds = 1 seconds
 
 	public void notification() {
 		try {
@@ -789,7 +790,8 @@ public class DreamService {
 
 	}
 
-	public void notification(String spreadsheetId, String email, List<Team> teamList, HttpServletRequest requests) {
+	public void notification(String spreadsheetId, String email, List<Team> teamList, HttpServletRequest requests)
+			throws IOException {
 
 		List<String> statusCheck = Stream.of(Status.Busy.toString(), Status.New.toString(),
 				Status.Interested.toString(), Status.RNR.toString(), Status.Not_interested.toString().replace('_', ' '),
@@ -797,33 +799,34 @@ public class DreamService {
 				Status.Not_reachable.toString().replace('_', ' '), Status.Let_us_know.toString().replace('_', ' '),
 				Status.Need_online.toString().replace('_', ' ')).collect(Collectors.toList());
 
-		List<String> candidateName = new ArrayList<String>();
-		List<String> candidateEmail = new ArrayList<String>();
-		LocalTime time = LocalTime.of(18, 00, 01, 500_000_000);
+		LocalTime time = LocalTime.of(18, 01, 01, 500_000_000);
 		List<StatusDto> notificationStatus = new ArrayList<StatusDto>();
+		List<StatusDto> notificationStatusBymail = new ArrayList<StatusDto>();  
+		List<List<Object>> followup = repo.getFollowUpDetailsByid(spreadsheetId);
+		followup.stream().forEach(f -> {
+			followUpDto = wrapper.listToFollowUpDTO(f);
+		});
 		try {
-
 			if (spreadsheetId != null) {
 				List<List<Object>> list = repo.notification(spreadsheetId);
+
 				if (email != null) {
 					list.stream().forEach(e -> {
 						StatusDto dto = wrapper.listToStatusDto(e);
+
 						if (LocalDate.now().isEqual(LocalDate.parse(dto.getCallBack()))
-								&& email.equalsIgnoreCase(dto.getAttemptedBy())
-								&& statusCheck.contains(dto.getAttemptStatus()))
+								&& email.equalsIgnoreCase(dto.getAttemptedBy()) 
+								&& statusCheck.contains(dto.getAttemptStatus())) {
 
-						{
-							notificationStatus.add(dto);
-							response = ResponseEntity.ok(notificationStatus);
-
+							notificationStatusBymail.add(dto);
+							response = ResponseEntity.ok(notificationStatusBymail);
 						}
-
 					});
 
 				}
-
 				list.stream().forEach(e -> {
 					StatusDto dto = wrapper.listToStatusDto(e);
+
 					if (LocalDateTime.now().isAfter(LocalDateTime.of((LocalDate.parse(dto.getCallBack())), time))
 							&& LocalDateTime.now().isBefore(
 									LocalDateTime.of((LocalDate.parse(dto.getCallBack())), time.plusMinutes(30)))) {
@@ -832,23 +835,31 @@ public class DreamService {
 								&& LocalDate.now().isEqual(LocalDate.parse(dto.getCallBack()))) {
 
 							notificationStatus.add(dto);
-							candidateEmail.add(dto.getBasicInfo().getEmail());	
-							candidateName.add(dto.getBasicInfo().getTraineeName());
 							response = ResponseEntity.ok(notificationStatus);
 
 						}
 
-						util.sendNotificationToEmail(teamList, candidateName, candidateEmail);
+					}
+
+				});
+				if (LocalTime.now().isAfter(time) && LocalTime.now().isBefore(time.plusMinutes(30))) {
+
+					if (!notificationStatus.isEmpty()) {
+
+						util.sendNotificationToEmail(teamList, notificationStatus);
+					} else {
+						System.out.println("notification is not there");
 
 					}
-				});
 
+				}
 			}
 
 		} catch (
 
 		IOException e) {
 			e.printStackTrace();
+
 		}
 
 	}
@@ -856,15 +867,15 @@ public class DreamService {
 	public ResponseEntity<List<StatusDto>> setNotification(@Value("${myapp.scheduled.param}") String email,
 			@Value("${myapp.scheduled.param}") HttpServletRequest requests) throws IOException {
 		this.request = requests;
-		this.loginEmail = email;
+		this.loginEmail = email;  
 		notification();
 		return response;
 
 	}
+
 	// suhas
 	public String verifyEmails(String email) {
 		return emailableClient.verifyEmail(email, API_KEY);
 	}
-
 
 }
