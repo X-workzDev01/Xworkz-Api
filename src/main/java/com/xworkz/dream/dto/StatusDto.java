@@ -35,4 +35,8 @@ public class StatusDto {
 	private String callBack;
 	@JsonProperty("callBackTime")
 	private String callBackTime;
+	@JsonProperty("preferredLocation")
+	private String preferredLocation;
+	@JsonProperty("preferredClassType")
+	private String preferredClassType;
 }

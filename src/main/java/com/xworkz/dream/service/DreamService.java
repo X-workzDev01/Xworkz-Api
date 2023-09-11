@@ -437,7 +437,6 @@ public class DreamService {
 
 	public ResponseEntity<String> updateFollowUpStatus(String spreadsheetId, StatusDto statusDto,
 			HttpServletRequest request) {
-		System.out.println("--------Service--------------");
 		try {
 			
 			List<List<Object>> data = repo.getStatusId(spreadsheetId).getValues();
@@ -457,8 +456,10 @@ public class DreamService {
 			sdto.setCallDuration(statusDto.getCallDuration());
 			sdto.setCallBack(statusDto.getCallBack());
 			sdto.setCallBackTime(statusDto.getCallBackTime());
-
+			sdto.setPreferredLocation(statusDto.getPreferredLocation());
+			sdto.setPreferredClassType(statusDto.getPreferredClassType());
 			List<Object> statusData = wrapper.extractDtoDetails(sdto);
+			System.out.println(statusData.toString());
 
 			boolean status = repo.updateFollowUpStatus(spreadsheetId, statusData);
 			if (status == true) {
