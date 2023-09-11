@@ -122,8 +122,12 @@ public class DreamService {
 				System.out.println(size);
 
 				dto.setId(size += 1);
+				dto.getReferralInfo().setXworkzEmail(Status.NA.toString());
+				dto.getReferralInfo().setWorking(Status.NO.toString());
+				dto.getReferralInfo().setPreferredLocation(Status.NA.toString());
+				dto.getReferralInfo().setPreferredClassType(Status.NA.toString());
+				dto.getAdminDto().setCreatedOn(LocalDateTime.now().toString());
 				System.out.println(dto.getId());
-
 				List<Object> list = wrapper.extractDtoDetails(dto);
 //				for (Object object : list) {
 //					System.out.println(object);
@@ -315,6 +319,7 @@ public class DreamService {
 	public List<TraineeDto> filterData(String spreadsheetId, String searchValue) throws IOException {
 		if (searchValue != null && !searchValue.isEmpty()) {
 			List<List<Object>> data = repo.readData(spreadsheetId);
+			System.err.println(data);
 			List<List<Object>> filteredLists = data.stream()
 					.filter(list -> list.stream()
 							.anyMatch(value -> value.toString().toLowerCase().contains(searchValue.toLowerCase())))
@@ -701,6 +706,8 @@ public class DreamService {
 		List<List<Object>> detailsByCourseName;
 		try {
 			detailsByCourseName = repo.getCourseDetails(spreadsheetId);
+			System.err.println(detailsByCourseName);
+
 			BatchDetails batch = new BatchDetails();
 			if (detailsByCourseName != null) {
 				for (List<Object> row : detailsByCourseName) {
@@ -801,7 +808,7 @@ public class DreamService {
 
 		LocalTime time = LocalTime.of(18, 01, 01, 500_000_000);
 		List<StatusDto> notificationStatus = new ArrayList<StatusDto>();
-		List<StatusDto> notificationStatusBymail = new ArrayList<StatusDto>();  
+		List<StatusDto> notificationStatusBymail = new ArrayList<StatusDto>();
 		List<List<Object>> followup = repo.getFollowUpDetailsByid(spreadsheetId);
 		followup.stream().forEach(f -> {
 			followUpDto = wrapper.listToFollowUpDTO(f);
@@ -815,12 +822,13 @@ public class DreamService {
 						StatusDto dto = wrapper.listToStatusDto(e);
 
 						if (LocalDate.now().isEqual(LocalDate.parse(dto.getCallBack()))
-								&& email.equalsIgnoreCase(dto.getAttemptedBy()) 
+								&& email.equalsIgnoreCase(dto.getAttemptedBy())
 								&& statusCheck.contains(dto.getAttemptStatus())) {
 
 							notificationStatusBymail.add(dto);
 							response = ResponseEntity.ok(notificationStatusBymail);
 						}
+
 					});
 
 				}
@@ -867,7 +875,7 @@ public class DreamService {
 	public ResponseEntity<List<StatusDto>> setNotification(@Value("${myapp.scheduled.param}") String email,
 			@Value("${myapp.scheduled.param}") HttpServletRequest requests) throws IOException {
 		this.request = requests;
-		this.loginEmail = email;  
+		this.loginEmail = email;
 		notification();
 		return response;
 

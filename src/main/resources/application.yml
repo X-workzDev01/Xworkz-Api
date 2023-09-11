@@ -15,7 +15,7 @@ sheets:
   followUpRange: followUp!A2:I
   followUpStatus: followUpStatus!A2:J
   rowStartRange: A
-  rowEndRange: Q
+  rowEndRange: X
   traineeSheetName: xworkzApi!
   followUpSheetName: followUp!
   followUprowStartRange: A2
