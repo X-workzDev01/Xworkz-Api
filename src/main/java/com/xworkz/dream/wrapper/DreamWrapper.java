@@ -137,7 +137,6 @@ public class DreamWrapper {
 		// if there any changes in the table, please make sure the right changes are
 		// done here also
 
-
 		int rowSize = row.size();
 
 		if (rowSize > 0 && row.get(0) != null && !row.get(0).toString().isEmpty()) {
@@ -213,6 +212,21 @@ public class DreamWrapper {
 		}
 		if (rowSize > 19 && row.get(19) != null && !row.get(19).toString().isEmpty()) {
 			traineeDto.getReferralInfo().setXworkzEmail((String) row.get(19).toString());
+		}
+		if (rowSize > 20 && row.get(20) != null && !row.get(20).toString().isEmpty()) {
+			traineeDto.getReferralInfo().setWorking((String) row.get(20).toString());
+		}
+		if (rowSize > 21 && row.get(21) != null && !row.get(21).toString().isEmpty()) {
+			traineeDto.getReferralInfo().setPreferredLocation((String) row.get(21).toString());
+		}
+		if (rowSize > 22 && row.get(22) != null && !row.get(22).toString().isEmpty()) {
+			traineeDto.getReferralInfo().setPreferredClassType((String) row.get(22).toString());
+		}
+		if (rowSize > 23 && row.get(23) != null && !row.get(23).toString().isEmpty()) {
+			traineeDto.getAdminDto().setCreatedBy((String) row.get(23).toString());
+		}
+		if (rowSize > 24 && row.get(22) != null && !row.get(24).toString().isEmpty()) {
+			traineeDto.getAdminDto().setCreatedOn((String) row.get(24).toString());
 		}
 
 		return traineeDto;

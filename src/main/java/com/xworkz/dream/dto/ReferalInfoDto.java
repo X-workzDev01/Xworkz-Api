@@ -17,5 +17,9 @@ public class ReferalInfoDto {
 	private Long referalContactNumber;
 	private String comments;
 	private String xworkzEmail;
+	private String working;
+	private String PreferredLocation;
+	private String PreferredClassType;
+
 
 }

@@ -122,7 +122,10 @@ public class DreamService {
 				System.out.println(size);
 
 				dto.setId(size += 1);
-				dto.getReferralInfo().setXworkzEmail("NA");
+				dto.getReferralInfo().setXworkzEmail(Status.NA.toString());
+				dto.getReferralInfo().setWorking(Status.NO.toString());
+				dto.getReferralInfo().setPreferredLocation(Status.NA.toString());
+				dto.getReferralInfo().setPreferredClassType(Status.NA.toString());
 				dto.getAdminDto().setCreatedOn(LocalDateTime.now().toString());
 				System.out.println(dto.getId());
 				List<Object> list = wrapper.extractDtoDetails(dto);
@@ -703,6 +706,8 @@ public class DreamService {
 		List<List<Object>> detailsByCourseName;
 		try {
 			detailsByCourseName = repo.getCourseDetails(spreadsheetId);
+			System.err.println(detailsByCourseName);
+
 			BatchDetails batch = new BatchDetails();
 			if (detailsByCourseName != null) {
 				for (List<Object> row : detailsByCourseName) {
