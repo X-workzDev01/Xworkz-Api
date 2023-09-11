@@ -89,7 +89,10 @@ public class DreamWrapper {
 	}
 
 	public StatusDto listToStatusDto(List<Object> rows) {
-		StatusDto statusDto = new StatusDto(0, new BasicInfoDto(), null, null, null, null, null, null, null);
+
+		StatusDto statusDto = new StatusDto(0, new BasicInfoDto(), null, null, null, null, null, null, null, null,
+				null);
+
 
 		int rowSize = rows.size();
 		if (rowSize > 0 && rows.get(0) != null && !rows.get(0).toString().isEmpty()) {
@@ -119,8 +122,17 @@ public class DreamWrapper {
 		if (rowSize > 8 && rows.get(8) != null && !rows.get(8).toString().isEmpty()) {
 			statusDto.setCallBack((String) rows.get(8));
 		}
+
+
 		if (rowSize > 9 && rows.get(9) != null && !rows.get(9).toString().isEmpty()) {
-			statusDto.setCallBackTime((String) rows.get(9));
+			statusDto.setCallBackTime((String) rows.get(9)); // Corrected field name
+		}
+		if (rowSize > 10 && rows.get(10) != null && !rows.get(10).toString().isEmpty()) {
+			statusDto.setPreferredLocation((String) rows.get(10)); // Corrected field name
+		}
+
+		if (rowSize > 11 && rows.get(11) != null && !rows.get(11).toString().isEmpty()) {
+			statusDto.setPreferredClassType((String) rows.get(11));
 		}
 
 		return statusDto;

@@ -13,7 +13,7 @@ sheets:
   dropdownRange: dropDowns!A2:I
   loginInfoRange: loginInfo!A2:B
   followUpRange: followUp!A2:I
-  followUpStatus: followUpStatus!A2:J
+  followUpStatus: followUpStatus!A2:L
   rowStartRange: A
   rowEndRange: X
   traineeSheetName: xworkzApi!
