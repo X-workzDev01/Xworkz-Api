@@ -24,7 +24,7 @@ sheets:
   idRange: xworkzApi!A3:A
   followUpRowCurrentStartRange: G
   followUpRowCurrentEndRange: H
-  emailAndNameRange: xworkzApi!B3:C
+  emailAndNameRange: xworkzApi!A2:C
   batchDetails: batchDetails!A2:H
   batchDetailsRange: batchDetails!A2:H 
   batchIdRange: batchDetails!A2:A
@@ -37,7 +37,7 @@ mail:
    smtpHost: smtp.office365.com
    smtpPort: 587
    userName: xworkzdev@outlook.com
-   password: KeepIT@Temp789
+   password: KeepIT@Temp789 
 logging:
   level:
     root: INFO
