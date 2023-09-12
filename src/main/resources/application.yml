@@ -7,7 +7,7 @@ spring:
 sheets:
   appName: Dream Api
   credentialsPath: classpath:META-INF/credentials.json
-  range: A3:Q
+  range: A3:Y
   emailRange: C3:C
   contactNumberRange: D3:D
   dropdownRange: dropDowns!A2:I
@@ -15,7 +15,11 @@ sheets:
   followUpRange: followUp!A2:I
   followUpStatus: followUpStatus!A2:L
   rowStartRange: A
+<<<<<<< Updated upstream
   rowEndRange: Q
+=======
+  rowEndRange: Y
+>>>>>>> Stashed changes
   traineeSheetName: xworkzApi!
   followUpSheetName: followUp!
   followUprowStartRange: A2

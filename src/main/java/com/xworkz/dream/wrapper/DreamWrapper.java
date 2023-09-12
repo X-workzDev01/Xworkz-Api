@@ -89,8 +89,13 @@ public class DreamWrapper {
 	}
 
 	public StatusDto listToStatusDto(List<Object> rows) {
+<<<<<<< Updated upstream
 		StatusDto statusDto = new StatusDto(0, new BasicInfoDto(), null, null, null, null, null, null, null, null,
 				null);
+=======
+
+		StatusDto statusDto = new StatusDto(0, new BasicInfoDto(), null, null, null, null, null, null, null, null);
+>>>>>>> Stashed changes
 
 		int rowSize = rows.size();
 		if (rowSize > 0 && rows.get(0) != null && !rows.get(0).toString().isEmpty()) {
@@ -120,6 +125,7 @@ public class DreamWrapper {
 		if (rowSize > 8 && rows.get(8) != null && !rows.get(8).toString().isEmpty()) {
 			statusDto.setCallBack((String) rows.get(8));
 		}
+<<<<<<< Updated upstream
 
 		if (rowSize > 9 && rows.get(9) != null && !rows.get(9).toString().isEmpty()) {
 			statusDto.setCallBackTime((String) rows.get(9)); // Corrected field name
@@ -131,6 +137,13 @@ public class DreamWrapper {
 		if (rowSize > 11 && rows.get(11) != null && !rows.get(11).toString().isEmpty()) {
 			statusDto.setPreferredClassType((String) rows.get(11));
 		}
+=======
+		if (rowSize > 9 && rows.get(9) != null && !rows.get(9).toString().isEmpty()) {
+			statusDto.setCallBackTime((String) rows.get(9)); // Corrected field name
+		}
+		
+
+>>>>>>> Stashed changes
 		return statusDto;
 	}
 
