@@ -15,5 +15,5 @@ public class XworkzApiApplication {
 
 		SpringApplication.run(XworkzApiApplication.class, args);
 
-	}
+	} 
 }

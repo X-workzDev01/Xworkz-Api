@@ -1,6 +1,6 @@
 
 sheets:
-  range: A3:P
+  range: A3:Y
   emailRange: C3:C
   contactNumberRange: D3:D
   loginInfoRange: loginInfo!A2:B
@@ -9,8 +9,7 @@ mail:
    smtpHost: smtp.office365.com
    smtpPort: 587
    userName: xworkzdev@outlook.com
-   password: KeepIT@Temp789
-    
+   password: KeepIT@Temp789 
 login: 
   teamFile: classpath:team.yml
   userFile: classpath:users.yml

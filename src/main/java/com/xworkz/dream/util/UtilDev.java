@@ -1,6 +1,7 @@
 package com.xworkz.dream.util;
 
 import java.io.IOException;
+import java.io.StringWriter;
 import java.security.KeyPair;
 import java.security.SecureRandom;
 import java.util.ArrayList;
@@ -34,6 +35,8 @@ import org.springframework.stereotype.Component;
 import org.springframework.ui.Model;
 import org.springframework.ui.freemarker.FreeMarkerTemplateUtils;
 import org.springframework.web.servlet.view.freemarker.FreeMarkerConfigurer;
+import org.thymeleaf.TemplateEngine;
+import org.thymeleaf.context.Context;
 
 import com.google.api.client.util.ArrayMap;
 import com.xworkz.dream.dto.StatusDto;
@@ -47,6 +50,8 @@ import freemarker.template.TemplateException;
 @Profile("dev")
 public class UtilDev implements DreamUtil {
 
+	@Autowired
+	private TemplateEngine templateEngine;
 	@Value("${mail.smtpHost}")
 	private String smtpHost;
 	@Value("${mail.smtpPort}")
@@ -82,17 +87,18 @@ public class UtilDev implements DreamUtil {
 		return sendEmail(email, subject, body);
 	}
 
-	public boolean sendNotificationToEmail(List<Team> teamList, List<String> candidateName,
-			List<String> candidateEmail) {
+	public boolean sendNotificationToEmail(List<Team> teamList, List<StatusDto> notificationStatus) {
 		List<String> body = new ArrayList<String>();
-		for (int i = 0; i < candidateName.size(); i++) {
-			body.add(" Candidate name  :" + candidateName.get(i) + "\tEmail :" + candidateEmail.get(i) + "\n");
+		for (int i = 0; i < notificationStatus.size(); i++) {
+			body.add(" Candidate name  :" + notificationStatus.get(i).getBasicInfo().getTraineeName() + "\tEmail :"
+					+ notificationStatus.get(i).getBasicInfo().getEmail() + "Contactt No :"
+					+ notificationStatus.get(i).getBasicInfo().getContactNumber() + "\n");
 		}
 		String subject = "Follow Up Candidate Detiles";
 		logger.debug("Sending email to {}: Subject: {},", teamList, subject);
 		List<String> recipents = new ArrayList<String>();
 		teamList.stream().forEach(e -> recipents.add(e.getEmail()));
-		bulkSendMail(recipents, subject, body.toString());
+		bulkSendMail(recipents, subject, notificationStatus);
 
 		return true;
 	}
@@ -182,15 +188,7 @@ public class UtilDev implements DreamUtil {
 		return FreeMarkerTemplateUtils.processTemplateIntoString(template, model);
 	}
 
-	private String renderJspTemplate(String templateName) throws IOException, TemplateException {
-		Template template = freemarkerConfig.getTemplate(templateName + ".html"); // Use .ftl extension
-
-		Map<String, Object> model = new HashMap<>();
-
-		return FreeMarkerTemplateUtils.processTemplateIntoString(template, model);
-	}
-
-	public boolean bulkSendMail(List<String> recipients, String subject, String body) {
+	public boolean bulkSendMail(List<String> recipients, String subject, List<StatusDto> body) {
 
 		String from = userName;
 		Properties properties = new Properties();
@@ -211,10 +209,14 @@ public class UtilDev implements DreamUtil {
 			for (String recipient : recipients) {
 				message.addRecipient(Message.RecipientType.TO, new InternetAddress(recipient));
 			}
+			Context context = new Context();
+			context.setVariable("listDto", body);
+			String emailContent = templateEngine.process("FollowCandidateFollowupTemplete", context);
+			MimeMessageHelper helper = new MimeMessageHelper(message, true);
+			helper.setText(emailContent);
 			message.setSubject(subject);
-			message.setText(body);
-			String content = renderJspTemplate("FollowCandidateFollowupTemplete");
-			message.setContent(content, "text/html; charset=UTF-8");
+			message.setText(body.toString());
+			message.setContent(emailContent, "text/html; charset=UTF-8");
 			Transport.send(message);
 			System.out.println("Emails sent successfully.");
 		} catch (Exception e) {

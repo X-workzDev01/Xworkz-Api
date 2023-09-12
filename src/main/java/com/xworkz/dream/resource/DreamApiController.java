@@ -33,6 +33,7 @@ import com.xworkz.dream.dto.SheetsDto;
 import com.xworkz.dream.dto.StatusDto;
 import com.xworkz.dream.dto.SuggestionDto;
 import com.xworkz.dream.dto.TraineeDto;
+import com.xworkz.dream.dto.utils.User;
 import com.xworkz.dream.service.DreamService;
 
 import freemarker.template.TemplateException;
@@ -54,9 +55,11 @@ public class DreamApiController {
 
 	@ApiOperation(value = "To register the trainee details in the google sheets")
 	@PostMapping("/register")
-	public ResponseEntity<String> register(@RequestHeader String spreadsheetId, @RequestBody TraineeDto values,
+	public ResponseEntity<String> register( @RequestHeader String spreadsheetId, @RequestBody TraineeDto values,
 			HttpServletRequest request) throws IOException, MessagingException, TemplateException {
 		logger.info("Registering trainee details: {}", values);
+		System.out.println(values);
+		
 		return service.writeData(spreadsheetId, values, request);
 	}
 
@@ -70,7 +73,7 @@ public class DreamApiController {
 
 	@ApiOperation(value = "To get Suggestions while search")
 	@GetMapping("register/suggestion")
-	public ResponseEntity<List<String>> getSearchSuggestion(@RequestHeader String spreadsheetId,
+	public ResponseEntity<List<TraineeDto>> getSearchSuggestion(@RequestHeader String spreadsheetId,
 			@RequestParam String value, HttpServletRequest request) {
 		logger.info("Getting suggesstions: {}", value);
 		return service.getSearchSuggestion(spreadsheetId, value, request);

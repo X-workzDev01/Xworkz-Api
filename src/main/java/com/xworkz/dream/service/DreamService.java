@@ -71,6 +71,8 @@ public class DreamService {
 	private DreamRepo repo;
 	@Autowired
 	private DreamWrapper wrapper;
+	private FollowUpDto followUpDto;
+
 	@Autowired
 	private DreamUtil util;
 	private String attemptedBy;
@@ -120,8 +122,12 @@ public class DreamService {
 				System.out.println(size);
 
 				dto.setId(size += 1);
+				dto.getReferralInfo().setXworkzEmail(Status.NA.toString());
+				dto.getReferralInfo().setWorking(Status.NO.toString());
+				dto.getReferralInfo().setPreferredLocation(Status.NA.toString());
+				dto.getReferralInfo().setPreferredClassType(Status.NA.toString());
+				dto.getAdminDto().setCreatedOn(LocalDateTime.now().toString());
 				System.out.println(dto.getId());
-
 				List<Object> list = wrapper.extractDtoDetails(dto);
 //				for (Object object : list) {
 //					System.out.println(object);
@@ -263,7 +269,6 @@ public class DreamService {
 		}
 	}
 
-
 	@CacheEvict(value = { "sheetsData", "emailData", "contactData", "getDropdowns", "followUpStatusDetails",
 			"followUpDetails" }, allEntries = true)
 	@Scheduled(fixedDelay = 43200000) // 12 hours in milliseconds
@@ -314,6 +319,7 @@ public class DreamService {
 	public List<TraineeDto> filterData(String spreadsheetId, String searchValue) throws IOException {
 		if (searchValue != null && !searchValue.isEmpty()) {
 			List<List<Object>> data = repo.readData(spreadsheetId);
+			System.err.println(data);
 			List<List<Object>> filteredLists = data.stream()
 					.filter(list -> list.stream()
 							.anyMatch(value -> value.toString().toLowerCase().contains(searchValue.toLowerCase())))
@@ -438,7 +444,7 @@ public class DreamService {
 	public ResponseEntity<String> updateFollowUpStatus(String spreadsheetId, StatusDto statusDto,
 			HttpServletRequest request) {
 		try {
-			
+
 			List<List<Object>> data = repo.getStatusId(spreadsheetId).getValues();
 			int size = data.size();
 			System.out.println(size);
@@ -447,7 +453,7 @@ public class DreamService {
 			basicInfo.setEmail(statusDto.getBasicInfo().getEmail());
 			basicInfo.setContactNumber(statusDto.getBasicInfo().getContactNumber());
 			StatusDto sdto = new StatusDto();
-			sdto.setId(size+=1);
+			sdto.setId(size += 1);
 			sdto.setBasicInfo(basicInfo);
 			sdto.setAttemptedOn(LocalDateTime.now().toString());
 			sdto.setAttemptedBy(statusDto.getAttemptedBy());
@@ -483,24 +489,24 @@ public class DreamService {
 
 	}
 
-	public ResponseEntity<List<String>> getSearchSuggestion(String spreadsheetId, String value,
+	public ResponseEntity<List<TraineeDto>> getSearchSuggestion(String spreadsheetId, String value,
 			HttpServletRequest request) {
 		// SuggestionDto sDto = new SuggestionDto();
 		// String values=value.toLowerCase();
 		String pattern = ".{3}";
-		List<String> suggestion = new ArrayList<>();
+		List<TraineeDto> suggestion = new ArrayList<>();
 		if (value != null) {
 			try {
 				List<List<Object>> dataList = repo.getEmailsAndNames(spreadsheetId, value);
+				System.out.println(dataList);
 				List<List<Object>> filteredData = dataList.stream().filter(list -> list.stream().anyMatch(val -> {
 					String strVal = val.toString();
 					return strVal.toLowerCase().startsWith(value.toLowerCase());
 				})).collect(Collectors.toList());
 
 				for (List<Object> list : filteredData) {
-
-					suggestion.add((String) list.get(0).toString());
-					suggestion.add((String) list.get(1).toString());
+					TraineeDto dto = wrapper.listToDto(list);
+					suggestion.add(dto);
 				}
 
 				return ResponseEntity.ok(suggestion);
@@ -699,6 +705,8 @@ public class DreamService {
 		List<List<Object>> detailsByCourseName;
 		try {
 			detailsByCourseName = repo.getCourseDetails(spreadsheetId);
+			System.err.println(detailsByCourseName);
+
 			BatchDetails batch = new BatchDetails();
 			if (detailsByCourseName != null) {
 				for (List<Object> row : detailsByCourseName) {
@@ -775,7 +783,7 @@ public class DreamService {
 		return users;
 	}
 
-	@Scheduled(fixedRate = 60 * 5000) // 1000 milliseconds = 1 seconds
+	@Scheduled(fixedRate = 30 * 60 * 1000) // 1000 milliseconds = 1 seconds
 
 	public void notification() {
 		try {
@@ -788,7 +796,8 @@ public class DreamService {
 
 	}
 
-	public void notification(String spreadsheetId, String email, List<Team> teamList, HttpServletRequest requests) {
+	public void notification(String spreadsheetId, String email, List<Team> teamList, HttpServletRequest requests)
+			throws IOException {
 
 		List<String> statusCheck = Stream.of(Status.Busy.toString(), Status.New.toString(),
 				Status.Interested.toString(), Status.RNR.toString(), Status.Not_interested.toString().replace('_', ' '),
@@ -796,33 +805,35 @@ public class DreamService {
 				Status.Not_reachable.toString().replace('_', ' '), Status.Let_us_know.toString().replace('_', ' '),
 				Status.Need_online.toString().replace('_', ' ')).collect(Collectors.toList());
 
-		List<String> candidateName = new ArrayList<String>();
-		List<String> candidateEmail = new ArrayList<String>();
-		LocalTime time = LocalTime.of(18, 00, 01, 500_000_000);
+		LocalTime time = LocalTime.of(18, 01, 01, 500_000_000);
 		List<StatusDto> notificationStatus = new ArrayList<StatusDto>();
+		List<StatusDto> notificationStatusBymail = new ArrayList<StatusDto>();
+		List<List<Object>> followup = repo.getFollowUpDetailsByid(spreadsheetId);
+		followup.stream().forEach(f -> {
+			followUpDto = wrapper.listToFollowUpDTO(f);
+		});
 		try {
-
 			if (spreadsheetId != null) {
 				List<List<Object>> list = repo.notification(spreadsheetId);
+
 				if (email != null) {
 					list.stream().forEach(e -> {
 						StatusDto dto = wrapper.listToStatusDto(e);
+
 						if (LocalDate.now().isEqual(LocalDate.parse(dto.getCallBack()))
 								&& email.equalsIgnoreCase(dto.getAttemptedBy())
-								&& statusCheck.contains(dto.getAttemptStatus()))
+								&& statusCheck.contains(dto.getAttemptStatus())) {
 
-						{
-							notificationStatus.add(dto);
-							response = ResponseEntity.ok(notificationStatus);
-
+							notificationStatusBymail.add(dto);
+							response = ResponseEntity.ok(notificationStatusBymail);
 						}
 
 					});
 
 				}
-
 				list.stream().forEach(e -> {
 					StatusDto dto = wrapper.listToStatusDto(e);
+
 					if (LocalDateTime.now().isAfter(LocalDateTime.of((LocalDate.parse(dto.getCallBack())), time))
 							&& LocalDateTime.now().isBefore(
 									LocalDateTime.of((LocalDate.parse(dto.getCallBack())), time.plusMinutes(30)))) {
@@ -831,23 +842,31 @@ public class DreamService {
 								&& LocalDate.now().isEqual(LocalDate.parse(dto.getCallBack()))) {
 
 							notificationStatus.add(dto);
-							candidateEmail.add(dto.getBasicInfo().getEmail());	
-							candidateName.add(dto.getBasicInfo().getTraineeName());
 							response = ResponseEntity.ok(notificationStatus);
 
 						}
 
-						util.sendNotificationToEmail(teamList, candidateName, candidateEmail);
+					}
+
+				});
+				if (LocalTime.now().isAfter(time) && LocalTime.now().isBefore(time.plusMinutes(30))) {
+
+					if (!notificationStatus.isEmpty()) {
+
+						util.sendNotificationToEmail(teamList, notificationStatus);
+					} else {
+						System.out.println("notification is not there");
 
 					}
-				});
 
+				}
 			}
 
 		} catch (
 
 		IOException e) {
 			e.printStackTrace();
+
 		}
 
 	}
@@ -860,10 +879,10 @@ public class DreamService {
 		return response;
 
 	}
+
 	// suhas
 	public String verifyEmails(String email) {
 		return emailableClient.verifyEmail(email, API_KEY);
 	}
-
 
 }

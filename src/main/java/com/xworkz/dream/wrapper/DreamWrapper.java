@@ -30,7 +30,7 @@ public class DreamWrapper {
 		row.add(dto.getEducationInfo().getStream());
 		row.add(dto.getEducationInfo().getYearOfPassout());
 		row.add(dto.getEducationInfo().getCollegeName());
-		row.add(dto.getCourseInfo().getBatch());
+		row.add(dto.getCourseInfo().getTrainerName());
 		row.add(dto.getCourseInfo().getBranch());
 		row.add(dto.getCourseInfo().getCourse());
 		row.add(dto.getReferralInfo().getReferalName());
@@ -89,13 +89,10 @@ public class DreamWrapper {
 	}
 
 	public StatusDto listToStatusDto(List<Object> rows) {
-<<<<<<< Updated upstream
-		StatusDto statusDto = new StatusDto(0, new BasicInfoDto(), null, null, null, null, null, null, null, null,
-				null);
-=======
+
 
 		StatusDto statusDto = new StatusDto(0, new BasicInfoDto(), null, null, null, null, null, null, null, null);
->>>>>>> Stashed changes
+
 
 		int rowSize = rows.size();
 		if (rowSize > 0 && rows.get(0) != null && !rows.get(0).toString().isEmpty()) {
@@ -125,31 +122,17 @@ public class DreamWrapper {
 		if (rowSize > 8 && rows.get(8) != null && !rows.get(8).toString().isEmpty()) {
 			statusDto.setCallBack((String) rows.get(8));
 		}
-<<<<<<< Updated upstream
 
 		if (rowSize > 9 && rows.get(9) != null && !rows.get(9).toString().isEmpty()) {
 			statusDto.setCallBackTime((String) rows.get(9)); // Corrected field name
 		}
-		if (rowSize > 10 && rows.get(10) != null && !rows.get(10).toString().isEmpty()) {
-			statusDto.setPreferredLocation((String) rows.get(10)); // Corrected field name
-		}
 
-		if (rowSize > 11 && rows.get(11) != null && !rows.get(11).toString().isEmpty()) {
-			statusDto.setPreferredClassType((String) rows.get(11));
-		}
-=======
-		if (rowSize > 9 && rows.get(9) != null && !rows.get(9).toString().isEmpty()) {
-			statusDto.setCallBackTime((String) rows.get(9)); // Corrected field name
-		}
-		
-
->>>>>>> Stashed changes
 		return statusDto;
 	}
 
 	public TraineeDto listToDto(List<Object> row) {
 		TraineeDto traineeDto = new TraineeDto(0, new BasicInfoDto(), new EducationInfoDto(), new CourseDto(),
-				new ReferalInfoDto());
+				new ReferalInfoDto(), new AdminDto());
 
 		// Assuming the list follows this order: id ,traineeName, email, contactNumber,
 		// qualification, stream,
@@ -205,22 +188,49 @@ public class DreamWrapper {
 		}
 
 		if (rowSize > 11 && row.get(11) != null && !row.get(11).toString().isEmpty()) {
-			traineeDto.getCourseInfo().setBatch((String) row.get(11));
+			traineeDto.getCourseInfo().setTrainerName((String) row.get(11));
 		}
-
 		if (rowSize > 12 && row.get(12) != null && !row.get(12).toString().isEmpty()) {
-			traineeDto.getCourseInfo().setOfferedAs((String) (row.get(12).toString()));
+			traineeDto.getCourseInfo().setBatchType((String) row.get(12));
 		}
-
 		if (rowSize > 13 && row.get(13) != null && !row.get(13).toString().isEmpty()) {
-			traineeDto.getReferralInfo().setReferalName((String) row.get(13));
+			traineeDto.getCourseInfo().setBatchTiming((String) row.get(13));
 		}
 		if (rowSize > 14 && row.get(14) != null && !row.get(14).toString().isEmpty()) {
-			Long referalContactNumber = Long.parseLong(row.get(14).toString());
+			traineeDto.getCourseInfo().setStartTime((String) row.get(14));
+		}
+
+		if (rowSize > 15 && row.get(15) != null && !row.get(15).toString().isEmpty()) {
+			traineeDto.getCourseInfo().setOfferedAs((String) (row.get(15).toString()));
+		}
+
+		if (rowSize > 16 && row.get(16) != null && !row.get(16).toString().isEmpty()) {
+			traineeDto.getReferralInfo().setReferalName((String) row.get(16));
+		}
+		if (rowSize > 17 && row.get(17) != null && !row.get(17).toString().isEmpty()) {
+			Long referalContactNumber = Long.parseLong(row.get(17).toString());
 			traineeDto.getReferralInfo().setReferalContactNumber(referalContactNumber);
 		}
-		if (rowSize > 15 && row.get(15) != null && !row.get(15).toString().isEmpty()) {
-			traineeDto.getReferralInfo().setComments((String) row.get(15).toString());
+		if (rowSize > 18 && row.get(18) != null && !row.get(18).toString().isEmpty()) {
+			traineeDto.getReferralInfo().setComments((String) row.get(18).toString());
+		}
+		if (rowSize > 19 && row.get(19) != null && !row.get(19).toString().isEmpty()) {
+			traineeDto.getReferralInfo().setXworkzEmail((String) row.get(19).toString());
+		}
+		if (rowSize > 20 && row.get(20) != null && !row.get(20).toString().isEmpty()) {
+			traineeDto.getReferralInfo().setWorking((String) row.get(20).toString());
+		}
+		if (rowSize > 21 && row.get(21) != null && !row.get(21).toString().isEmpty()) {
+			traineeDto.getReferralInfo().setPreferredLocation((String) row.get(21).toString());
+		}
+		if (rowSize > 22 && row.get(22) != null && !row.get(22).toString().isEmpty()) {
+			traineeDto.getReferralInfo().setPreferredClassType((String) row.get(22).toString());
+		}
+		if (rowSize > 23 && row.get(23) != null && !row.get(23).toString().isEmpty()) {
+			traineeDto.getAdminDto().setCreatedBy((String) row.get(23).toString());
+		}
+		if (rowSize > 24 && row.get(22) != null && !row.get(24).toString().isEmpty()) {
+			traineeDto.getAdminDto().setCreatedOn((String) row.get(24).toString());
 		}
 
 		return traineeDto;
@@ -268,6 +278,7 @@ public class DreamWrapper {
 				// Handle association with another DTO
 				List<Object> subDtoDetails = extractDtoDetails(fieldValue);
 				detailsList.addAll(subDtoDetails);
+
 			} else {
 				// Add the value to the list
 				detailsList.add(fieldValue);

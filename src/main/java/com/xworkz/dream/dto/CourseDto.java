@@ -25,7 +25,10 @@ public class CourseDto {
 
 	private String course;
 	private String branch;
-	private String batch;
+	private String trainerName;
+	private String batchType;
+	private String batchTiming;
+	private String startTime;
 	private String offeredAs;
 
 }
