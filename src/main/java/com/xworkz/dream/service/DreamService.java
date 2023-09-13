@@ -123,7 +123,6 @@ public class DreamService {
 
 				dto.setId(size += 1);
 				dto.getReferralInfo().setXworkzEmail(Status.NA.toString());
-				dto.getReferralInfo().setWorking(Status.NO.toString());
 				dto.getReferralInfo().setPreferredLocation(Status.NA.toString());
 				dto.getReferralInfo().setPreferredClassType(Status.NA.toString());
 				dto.getAdminDto().setCreatedOn(LocalDateTime.now().toString());
