@@ -1,0 +1,54 @@
+spring:
+   profiles:
+      active: local
+   freemarker:
+    template-loader-path: classpath:/templates/
+
+sheets:
+  appName: Dream Api
+  credentialsPath: classpath:META-INF/credentials.json
+  range: A3:Y
+  emailRange: C3:C
+  contactNumberRange: D3:D
+  dropdownRange: dropDowns!A2:I
+  loginInfoRange: loginInfo!A2:B
+  followUpRange: followUp!A2:I
+  followUpStatus: followUpStatus!A2:L
+  rowStartRange: A
+  rowEndRange: Y
+  traineeSheetName: xworkzApi!
+  followUpSheetName: followUp!
+  followUprowStartRange: A2
+  followUprowEndRange: I
+  followUpEmailRange: followUp!C2:C
+  idRange: xworkzApi!A3:A
+  followUpRowCurrentStartRange: G
+  followUpRowCurrentEndRange: H
+  emailAndNameRange: xworkzApi!A2:C
+  batchDetails: batchDetails!A2:H
+  batchDetailsRange: batchDetails!A2:H 
+  batchIdRange: batchDetails!A2:A
+  dateOfBirthDetailsSheetName: dateOfBirthDetails!
+  dateOfBirthDetailsRange: dateOfBirthDetails!A2:D
+  birthdayRange: dateOfBirthDetails!A2:A
+
+  followUpStatusIdRange: followUpStatus!A2:A
+mail:
+   smtpHost: smtp.office365.com
+   smtpPort: 587
+   userName: xworkzdev@outlook.com
+   password: KeepIT@Temp789 
+logging:
+  level:
+    root: INFO
+    
+login:
+  userFile: classpath:users.yml
+  sheetId: 1p3G4et36vkzSDs3W63cj6qnUFEWljLos2HHXIZd78Gg
+
+server:
+  port : 8081
+
+---
+
+
