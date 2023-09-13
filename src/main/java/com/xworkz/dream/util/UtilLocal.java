@@ -22,6 +22,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
 
+import com.xworkz.dream.dto.StatusDto;
 import com.xworkz.dream.dto.utils.Team;
 
 import freemarker.template.TemplateException;
@@ -69,16 +70,15 @@ public class UtilLocal implements DreamUtil{
 
 
 	@Override
-	public boolean sendNotificationToEmail(List<Team> teamList, List<String> candidateName,
-			List<String> candidateEmail) {
+	public boolean sendCourseContent(String email, String name)
+			throws MessagingException, IOException, TemplateException {
 		// TODO Auto-generated method stub
 		return false;
 	}
 
 
 	@Override
-	public boolean sendCourseContent(String email, String name)
-			throws MessagingException, IOException, TemplateException {
+	public boolean sendNotificationToEmail(List<Team> teamList, List<StatusDto> notificationStatus) {
 		// TODO Auto-generated method stub
 		return false;
 	}
