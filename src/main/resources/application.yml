@@ -31,7 +31,8 @@ sheets:
   dateOfBirthDetailsSheetName: dateOfBirthDetails!
   dateOfBirthDetailsRange: dateOfBirthDetails!A2:D
   birthdayRange: dateOfBirthDetails!A2:A
-
+  attendanceInfoRange: attendanceInfo!A3:K
+  attendanceInfoIDRange: attendanceInfo!A2:J
   followUpStatusIdRange: followUpStatus!A2:A
 mail:
    smtpHost: smtp.office365.com

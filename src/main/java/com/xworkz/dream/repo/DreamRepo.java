@@ -5,6 +5,7 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -21,6 +22,7 @@ import org.springframework.core.io.ResourceLoader;
 import org.springframework.http.ResponseEntity;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Repository;
+import org.springframework.util.SystemPropertyUtils;
 
 import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
 import com.google.api.client.http.HttpRequestInitializer;
@@ -28,6 +30,20 @@ import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.gson.GsonFactory;
 import com.google.api.services.sheets.v4.Sheets;
 import com.google.api.services.sheets.v4.SheetsScopes;
+import com.google.api.services.sheets.v4.model.BatchUpdateSpreadsheetRequest;
+import com.google.api.services.sheets.v4.model.CellData;
+import com.google.api.services.sheets.v4.model.DimensionRange;
+import com.google.api.services.sheets.v4.model.ExtendedValue;
+import com.google.api.services.sheets.v4.model.GridCoordinate;
+import com.google.api.services.sheets.v4.model.InsertDimensionRequest;
+import com.google.api.services.sheets.v4.model.Request;
+import com.google.api.services.sheets.v4.model.RowData;
+import com.google.api.services.sheets.v4.model.Sheet;
+import com.google.api.services.sheets.v4.model.SheetProperties;
+import com.google.api.services.sheets.v4.model.Spreadsheet;
+import com.google.api.services.sheets.v4.model.UpdateCellsRequest;
+import com.google.api.services.sheets.v4.model.UpdateSheetPropertiesRequest;
+import com.google.api.services.sheets.v4.model.UpdateSpreadsheetPropertiesRequest;
 import com.google.api.services.sheets.v4.model.UpdateValuesResponse;
 import com.google.api.services.sheets.v4.model.ValueRange;
 import com.google.auth.http.HttpCredentialsAdapter;
@@ -78,6 +94,10 @@ public class DreamRepo {
 	private String followUpEmailRange;
 	@Value("${sheets.followUpStatusIdRange}")
 	private String followUpStatusIdRange;
+	@Value("${sheets.attendanceInfoRange}")
+	private String attendanceInfoRange;
+	@Value("${sheets.attendanceInfoIDRange}")
+	private String attendanceInfoIDRange;
 
 	@Autowired
 	private ResourceLoader resourceLoader;
@@ -142,7 +162,7 @@ public class DreamRepo {
 
 	@Cacheable(value = "sheetsData", key = "#spreadsheetId", unless = "#result == null")
 	public List<List<Object>> readData(String spreadsheetId) throws IOException {
-		System.err.println("hhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhh" + range);
+
 		ValueRange response = sheetsService.spreadsheets().values().get(spreadsheetId, range).execute();
 		return response.getValues();
 	}
@@ -180,7 +200,6 @@ public class DreamRepo {
 			throws IOException {
 		List<List<Object>> list = new ArrayList<List<Object>>();
 		list.add(data);
-		System.out.println(data.toString());
 		ValueRange body = new ValueRange().setValues(list);
 		sheetsService.spreadsheets().values().update(spreadsheetId, currentFollowRange, body)
 				.setValueInputOption("USER_ENTERED").execute();
@@ -236,7 +255,6 @@ public class DreamRepo {
 
 	public UpdateValuesResponse updateFollow(String spreadsheetId, String range2, ValueRange valueRange)
 			throws IOException {
-		System.out.println(spreadsheetId + " " + range2 + " " + valueRange);
 		return sheetsService.spreadsheets().values().update(spreadsheetId, range2, valueRange)
 				.setValueInputOption("RAW").execute();
 	}
@@ -279,6 +297,96 @@ public class DreamRepo {
 	public List<List<Object>> getFollowUpDetailsByid(String spreadsheetId) throws IOException {
 		ValueRange response = sheetsService.spreadsheets().values().get(spreadsheetId, followUpRange).execute();
 		return response.getValues();
+	}
+
+	public boolean writeAttendance(String spreadsheetId, List<Object> row) throws IOException {
+		List<List<Object>> values = new ArrayList<>();
+		values.add(row);
+		ValueRange body = new ValueRange().setValues(values);
+		sheetsService.spreadsheets().values().append(spreadsheetId, attendanceInfoRange, body)
+				.setValueInputOption("USER_ENTERED").execute();
+		return true;
+	}
+
+	public boolean addColumn(String spreadsheetId) throws Exception {
+		int columnIndex = getColumnCount(spreadsheetId);
+		List<Request> requests = new ArrayList<>();
+		requests.add(new Request().setUpdateCells(new UpdateCellsRequest()
+				.setStart(new GridCoordinate().setSheetId(1948817216).setRowIndex(0).setColumnIndex(columnIndex))
+				.setRows(Collections.singletonList(new RowData().setValues(Collections.singletonList(new CellData()
+						.setUserEnteredValue(new ExtendedValue().setStringValue(LocalDate.now().toString()))))))
+				.setFields("userEnteredValue.stringValue")));
+		BatchUpdateSpreadsheetRequest batchUpdateRequest = new BatchUpdateSpreadsheetRequest().setRequests(requests);
+		sheetsService.spreadsheets().batchUpdate(spreadsheetId, batchUpdateRequest).execute();
+
+		return true;
+	}
+
+	public int getColumnCount(String spreadsheetId) throws Exception {
+		String range = "attendanceInfo" + "!1:1";
+		ValueRange response = sheetsService.spreadsheets().values().get(spreadsheetId, range).execute();
+		if (response.getValues() != null && !response.getValues().isEmpty()) {
+			return response.getValues().get(0).size();
+		} else {
+			return 0;
+		}
+	}
+
+	public void updateValueById(String id, String spreadsheetId, String newValue) throws IOException {
+
+		// Define the range in which you want to search for the ID
+
+		// Make the request to the Google Sheets API to get the row with the specified
+		// ID
+		ValueRange response = sheetsService.spreadsheets().values().get(spreadsheetId, attendanceInfoIDRange).execute();
+
+		List<List<Object>> values = response.getValues();
+		if (values != null && !values.isEmpty()) {
+
+			for (int rowIndex = 0; rowIndex < values.size(); rowIndex++) {
+				List<Object> row = values.get(rowIndex);
+				String cellValue = row.get(0).toString(); // Assuming the ID is in the first column
+				if (cellValue.equals(id)) {
+					getSheetRangeByColumnLength(spreadsheetId);
+					// Update the specific cell in the row
+					String updateRange = "attendanceInfo!A3:K10" + (rowIndex + 1); // Assuming you want to update the
+																					// value
+					// in column B
+
+					List<List<Object>> newValues = new ArrayList<>();
+					newValues.add(Collections.singletonList(newValue));
+
+					ValueRange body = new ValueRange().setValues(newValues);
+
+					// Make the request to update the value in the specified cell
+					UpdateValuesResponse result = sheetsService.spreadsheets().values()
+							.update(spreadsheetId, updateRange, body).setValueInputOption("RAW").execute();
+
+					// The value has been updated
+					return;
+				}
+			}
+		}
+
+		// ID not found
+	}
+
+	public List<List<Object>> getSheetRangeByColumnLength(String sheetId) throws IOException {
+
+		String columnRange = calculateColumnRange("A", 10);
+		// Make the request to the Google Sheets API to retrieve values in the
+		// calculated column range
+//		ValueRange response = sheetsService.spreadsheets().values().get(sheetId, columnRange).execute();
+		ValueRange response = sheetsService.spreadsheets().values().get(sheetId, "Hareesha").execute();
+
+		List<List<Object>> values = response.getValues();
+		return values;
+	}
+
+	public static String calculateColumnRange(String columnLetter, int columnLength) {
+		// Calculate the range for the entire column (e.g., column A1:A10 if column
+		// length is 10)
+		return columnLetter + "1:" + columnLength;
 	}
 
 }

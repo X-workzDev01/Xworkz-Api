@@ -1,12 +1,14 @@
 package com.xworkz.dream.wrapper;
 
 import java.lang.reflect.Field;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.stereotype.Component;
 
 import com.xworkz.dream.dto.AdminDto;
+import com.xworkz.dream.dto.AttendanceDto;
 import com.xworkz.dream.dto.BasicInfoDto;
 import com.xworkz.dream.dto.CourseDto;
 import com.xworkz.dream.dto.EducationInfoDto;
@@ -91,8 +93,8 @@ public class DreamWrapper {
 	public StatusDto listToStatusDto(List<Object> rows) {
 
 
-		StatusDto statusDto = new StatusDto(0, new BasicInfoDto(), null, null, null, null, null, null, null, null);
 
+		StatusDto statusDto = new StatusDto(0, new BasicInfoDto(), null, null, null, null, null, null, null, null);
 
 		int rowSize = rows.size();
 		if (rowSize > 0 && rows.get(0) != null && !rows.get(0).toString().isEmpty()) {
@@ -287,5 +289,25 @@ public class DreamWrapper {
 
 		return detailsList;
 	}
+
+	public List<Object> listOfAttendance(AttendanceDto dto) {
+
+		List<Object> row = new ArrayList<Object>();
+
+		row.add(dto.getId());
+		row.add(dto.getBasicInfo().getTraineeName());
+		row.add(dto.getBasicInfo().getEmail());
+		row.add(dto.getBasicInfo().getContactNumber());
+		row.add(dto.getCourseInfo().getCourse());
+		row.add(dto.getPreferredLocation());
+		row.add(dto.getPreferredClassType());
+		row.add(dto.getCourseInfo().getBatchTiming());
+		row.add(LocalDateTime.now().toString());
+		row.add(dto.getCourseInfo().getOfferedAs());
+
+		return row;
+
+	}
+	
 
 }

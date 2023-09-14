@@ -119,18 +119,13 @@ public class DreamService {
 			if (true) {// isCookieValid(request)
 				List<List<Object>> data = repo.getIds(spreadsheetId).getValues();
 				int size = data.size();
-				System.out.println(size);
 
 				dto.setId(size += 1);
 				dto.getReferralInfo().setXworkzEmail(Status.NA.toString());
 				dto.getReferralInfo().setPreferredLocation(Status.NA.toString());
 				dto.getReferralInfo().setPreferredClassType(Status.NA.toString());
 				dto.getAdminDto().setCreatedOn(LocalDateTime.now().toString());
-				System.out.println(dto.getId());
 				List<Object> list = wrapper.extractDtoDetails(dto);
-//				for (Object object : list) {
-//					System.out.println(object);
-//				}
 
 				boolean writeStatus = repo.writeData(spreadsheetId, list);
 				// calling method to store date of birth details
@@ -233,7 +228,6 @@ public class DreamService {
 		if (cookies != null) {
 			for (Cookie cookie : cookies) {
 				if (cookie.getName().equals("Xworkz")) {
-					System.out.println("Cookie Valid");
 					return true;
 				}
 			}
@@ -279,9 +273,7 @@ public class DreamService {
 	public ResponseEntity<SheetsDto> readData(String spreadsheetId, int startingIndex, int maxRows) {
 		try {
 			List<List<Object>> data = repo.readData(spreadsheetId);
-			// System.out.println(data.toString());
 			List<TraineeDto> dtos = getLimitedRows(data, startingIndex, maxRows);
-			// System.out.println(dtos.toString());
 			HttpServletResponse response = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes())
 					.getResponse();
 
@@ -318,7 +310,6 @@ public class DreamService {
 	public List<TraineeDto> filterData(String spreadsheetId, String searchValue) throws IOException {
 		if (searchValue != null && !searchValue.isEmpty()) {
 			List<List<Object>> data = repo.readData(spreadsheetId);
-			System.err.println(data);
 			List<List<Object>> filteredLists = data.stream()
 					.filter(list -> list.stream()
 							.anyMatch(value -> value.toString().toLowerCase().contains(searchValue.toLowerCase())))
@@ -338,8 +329,7 @@ public class DreamService {
 		try {
 			int rowIndex = findRowIndexByEmail(spreadsheetId, email);
 			String range = traineeSheetName + rowStartRange + rowIndex + ":" + rowEndRange + rowIndex;
-			System.out.println(range);
-			System.out.println(dto);
+			
 			try {
 				List<List<Object>> values = Arrays.asList(wrapper.extractDtoDetails(dto));
 
@@ -422,7 +412,6 @@ public class DreamService {
 			String currentlyFollowedBy) throws IOException, IllegalAccessException {
 		// List<List<Object>> followUpData = repo.getFollowUpDetails(spreadsheetId);
 		FollowUpDto followUpDto = getFollowUpDetailsByEmail(spreadsheetId, email);
-		System.out.println(followUpDto);
 		int rowIndex = findByEmailForUpdate(spreadsheetId, email);
 		String range = followUpSheetName + followUprowStartRange + rowIndex + ":" + followUprowEndRange + rowIndex;
 		followUpDto.setCurrentStatus(currentStatus);
@@ -446,7 +435,6 @@ public class DreamService {
 
 			List<List<Object>> data = repo.getStatusId(spreadsheetId).getValues();
 			int size = data.size();
-			System.out.println(size);
 			BasicInfoDto basicInfo = new BasicInfoDto();
 			basicInfo.setTraineeName(statusDto.getBasicInfo().getTraineeName());
 			basicInfo.setEmail(statusDto.getBasicInfo().getEmail());
@@ -462,15 +450,12 @@ public class DreamService {
 			sdto.setCallBack(statusDto.getCallBack());
 			sdto.setCallBackTime(statusDto.getCallBackTime());
 			List<Object> statusData = wrapper.extractDtoDetails(sdto);
-			System.out.println(statusData.toString());
 
 			boolean status = repo.updateFollowUpStatus(spreadsheetId, statusData);
 			if (status == true) {
-				System.out.println("this is current follow up");
-				System.out.println(statusDto.getId());
+			
 				boolean update = updateCurrentFollowUp(spreadsheetId, statusDto.getBasicInfo().getEmail(),
 						statusDto.getAttemptStatus(), statusDto.getAttemptedBy());
-				System.out.println("update status:" + update);
 				repo.evictAllCachesOnTraineeDetails();
 			}
 
@@ -497,7 +482,6 @@ public class DreamService {
 		if (value != null) {
 			try {
 				List<List<Object>> dataList = repo.getEmailsAndNames(spreadsheetId, value);
-				System.out.println(dataList);
 				List<List<Object>> filteredData = dataList.stream().filter(list -> list.stream().anyMatch(val -> {
 					String strVal = val.toString();
 					return strVal.toLowerCase().startsWith(value.toLowerCase());
@@ -517,13 +501,7 @@ public class DreamService {
 		return null;
 	}
 
-//	public static List<SuggestionDto> getSuggestions(String dataToMatch, List<List<Object>> data) {
-//
-//		List<Object> list = data.stream().flatMap(List::stream)
-//				.filter(value -> value.toString().equalsIgnoreCase(dataToMatch)).collect(Collectors.toList());
-//		System.out.println(list.toString());
-//		return null;
-//	}
+
 
 	public ResponseEntity<?> getDetailsByEmail(String spreadsheetId, String email, HttpServletRequest request)
 			throws IOException {
@@ -580,10 +558,7 @@ public class DreamService {
 		List<FollowUpDto> followUpDtos = new ArrayList<>();
 
 		int endIndex = startingIndex + maxRows;
-		System.out.println(
-				"end row:" + endIndex + " " + " Start Index:" + " " + startingIndex + " " + " max index:" + maxRows);
-		// int rowCount = values.size();
-
+	
 		ListIterator<List<Object>> iterator = values.listIterator(startingIndex);
 		while (iterator.hasNext() && iterator.nextIndex() < endIndex) {
 			List<Object> row = iterator.next();
@@ -601,7 +576,6 @@ public class DreamService {
 			HttpServletRequest request) throws IOException {
 		List<StatusDto> statusDto = new ArrayList<>();
 		List<List<Object>> dataList = repo.getFollowUpStatusDetails(spreadsheetId);
-		System.out.println(dataList.toString());
 		List<List<Object>> data = dataList.stream()
 				.filter(list -> list.stream().anyMatch(value -> value.toString().equalsIgnoreCase(email)))
 				.collect(Collectors.toList());
@@ -614,14 +588,12 @@ public class DreamService {
 			throws IOException {
 		List<StatusDto> statusDto = new ArrayList<>();
 		List<List<Object>> dataList = repo.getFollowUpStatusDetails(spreadsheetId);
-		System.out.println(dataList.toString());
 		List<List<Object>> data = dataList.stream()
 				.filter(list -> list.stream().anyMatch(value -> value.toString().equalsIgnoreCase(email)))
 				.collect(Collectors.toList());
 		for (List<Object> row : data) {
 			StatusDto dto = wrapper.listToStatusDto(row);
 			statusDto.add(dto);
-			System.out.println(dto);
 		}
 		repo.evictAllCachesOnTraineeDetails();
 		return statusDto;
@@ -667,9 +639,7 @@ public class DreamService {
 		birthday.setDto(dto.getBasicInfo());
 		birthday.setId(size += 1);
 		List<Object> list = wrapper.extractDtoDetails(birthday);
-//		for (Object object : list) {
-//			System.out.println(object);
-//		}
+
 		boolean save = repo.saveBirthDayDetails(spreadsheetId, list);
 		if (save != false) {
 			return ResponseEntity.ok("Birth day information added successfully");
@@ -677,7 +647,6 @@ public class DreamService {
 		return ResponseEntity.ok("Birth day information Not added");
 	}
 
-	// suhas
 	public ResponseEntity<List<Object>> getCourseNameByStatus(String spreadsheetId, String status) {
 		List<List<Object>> courseNameByStatus;
 		try {
@@ -704,7 +673,6 @@ public class DreamService {
 		List<List<Object>> detailsByCourseName;
 		try {
 			detailsByCourseName = repo.getCourseDetails(spreadsheetId);
-			System.err.println(detailsByCourseName);
 
 			BatchDetails batch = new BatchDetails();
 			if (detailsByCourseName != null) {
@@ -733,8 +701,7 @@ public class DreamService {
 	}
 
 	public FollowUpDto getFollowUpDetailsByEmail(String spreadsheetId, String email) throws IOException {
-		// List<FollowUpDto> followUpDto = new ArrayList<FollowUpDto>();
-		// String traineeStatus=status.toLowerCase();
+		
 		FollowUpDto followUpDto = new FollowUpDto();
 		if (email != null && !email.isEmpty()) {
 			List<List<Object>> lists = repo.getFollowUpDetails(spreadsheetId);
@@ -742,7 +709,6 @@ public class DreamService {
 					.filter(list -> list.stream().anyMatch(value -> value.toString().equalsIgnoreCase(email)))
 					.collect(Collectors.toList());
 			for (List<Object> list : data) {
-				// System.out.println(list.toString());
 				followUpDto = wrapper.listToFollowUpDTO(list);
 			}
 			return followUpDto;
@@ -814,51 +780,54 @@ public class DreamService {
 		try {
 			if (spreadsheetId != null) {
 				List<List<Object>> list = repo.notification(spreadsheetId);
+				if (!list.isEmpty()) {
+					if (email != null) {
+						list.stream().forEach(e -> {
+							StatusDto dto = wrapper.listToStatusDto(e);
 
-				if (email != null) {
+							if (LocalDate.now().isEqual(LocalDate.parse(dto.getCallBack()))
+									&& email.equalsIgnoreCase(dto.getAttemptedBy())
+									&& statusCheck.contains(dto.getAttemptStatus())) {
+
+								notificationStatusBymail.add(dto);
+								response = ResponseEntity.ok(notificationStatusBymail);
+							}
+
+						});
+
+					}
 					list.stream().forEach(e -> {
 						StatusDto dto = wrapper.listToStatusDto(e);
+						if (dto.getCallBack() != null) {
+							if (LocalDateTime.now()
+									.isAfter(LocalDateTime.of((LocalDate.parse(dto.getCallBack())), time))
+									&& LocalDateTime.now().isBefore(LocalDateTime
+											.of((LocalDate.parse(dto.getCallBack())), time.plusMinutes(30)))) {
 
-						if (LocalDate.now().isEqual(LocalDate.parse(dto.getCallBack()))
-								&& email.equalsIgnoreCase(dto.getAttemptedBy())
-								&& statusCheck.contains(dto.getAttemptStatus())) {
+								if (statusCheck.contains(dto.getAttemptStatus())
+										&& LocalDate.now().isEqual(LocalDate.parse(dto.getCallBack()))) {
 
-							notificationStatusBymail.add(dto);
-							response = ResponseEntity.ok(notificationStatusBymail);
+									notificationStatus.add(dto);
+									response = ResponseEntity.ok(notificationStatus);
+
+								}
+
+							}
 						}
 
 					});
-
 				}
-				list.stream().forEach(e -> {
-					StatusDto dto = wrapper.listToStatusDto(e);
-
-					if (LocalDateTime.now().isAfter(LocalDateTime.of((LocalDate.parse(dto.getCallBack())), time))
-							&& LocalDateTime.now().isBefore(
-									LocalDateTime.of((LocalDate.parse(dto.getCallBack())), time.plusMinutes(30)))) {
-
-						if (statusCheck.contains(dto.getAttemptStatus())
-								&& LocalDate.now().isEqual(LocalDate.parse(dto.getCallBack()))) {
-
-							notificationStatus.add(dto);
-							response = ResponseEntity.ok(notificationStatus);
-
-						}
-
-					}
-
-				});
 				if (LocalTime.now().isAfter(time) && LocalTime.now().isBefore(time.plusMinutes(30))) {
 
 					if (!notificationStatus.isEmpty()) {
 
 						util.sendNotificationToEmail(teamList, notificationStatus);
 					} else {
-						System.out.println("notification is not there");
 
 					}
 
 				}
+
 			}
 
 		} catch (
