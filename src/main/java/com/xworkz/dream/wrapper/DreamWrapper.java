@@ -93,8 +93,7 @@ public class DreamWrapper {
 	public StatusDto listToStatusDto(List<Object> rows) {
 
 
-
-		StatusDto statusDto = new StatusDto(0, new BasicInfoDto(), null, null, null, null, null, null, null, null);
+		StatusDto statusDto = new StatusDto(0, new BasicInfoDto(), null, null, null, null, null, null, null, null, null);
 
 		int rowSize = rows.size();
 		if (rowSize > 0 && rows.get(0) != null && !rows.get(0).toString().isEmpty()) {
@@ -107,26 +106,30 @@ public class DreamWrapper {
 			statusDto.getBasicInfo().setEmail((String) rows.get(2));
 		}
 		if (rowSize > 3 && rows.get(3) != null && !rows.get(3).toString().isEmpty()) {
-			statusDto.setAttemptedOn((String) rows.get(3));
+			statusDto.getBasicInfo().setContactNumber(Long.parseLong(rows.get(3).toString()));
 		}
+	
 		if (rowSize > 4 && rows.get(4) != null && !rows.get(4).toString().isEmpty()) {
-			statusDto.setAttemptedBy((String) rows.get(4));
+			statusDto.setAttemptedOn((String) rows.get(4));
 		}
 		if (rowSize > 5 && rows.get(5) != null && !rows.get(5).toString().isEmpty()) {
-			statusDto.setAttemptStatus((String) rows.get(5));
+			statusDto.setAttemptedBy((String) rows.get(5));
 		}
 		if (rowSize > 6 && rows.get(6) != null && !rows.get(6).toString().isEmpty()) {
-			statusDto.setComments((String) rows.get(6));
+			statusDto.setAttemptStatus((String) rows.get(6));
 		}
 		if (rowSize > 7 && rows.get(7) != null && !rows.get(7).toString().isEmpty()) {
-			statusDto.setCallDuration((String) rows.get(7));
+			statusDto.setComments((String) rows.get(7));
 		}
 		if (rowSize > 8 && rows.get(8) != null && !rows.get(8).toString().isEmpty()) {
-			statusDto.setCallBack((String) rows.get(8));
+			statusDto.setCallDuration((String) rows.get(8));
+		}
+		if (rowSize > 9 && rows.get(9) != null && !rows.get(9).toString().isEmpty()) {
+			statusDto.setCallBack((String) rows.get(9));
 		}
 
-		if (rowSize > 9 && rows.get(9) != null && !rows.get(9).toString().isEmpty()) {
-			statusDto.setCallBackTime((String) rows.get(9)); // Corrected field name
+		if (rowSize > 10 && rows.get(10) != null && !rows.get(10).toString().isEmpty()) {
+			statusDto.setCallBackTime((String) rows.get(10)); // Corrected field name
 		}
 
 		return statusDto;
