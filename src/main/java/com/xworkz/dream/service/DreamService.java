@@ -64,7 +64,6 @@ import com.xworkz.dream.wrapper.DreamWrapper;
 import freemarker.template.TemplateException;
 
 @Service
-
 public class DreamService {
 
 	@Autowired

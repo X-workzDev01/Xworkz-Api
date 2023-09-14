@@ -4,6 +4,7 @@ sheets:
   emailRange: C3:C
   contactNumberRange: D3:D
   loginInfoRange: loginInfo!A2:B
+  attendanceInfoRange: attendanceInfo!A3:K
  
 mail:
    smtpHost: smtp.office365.com

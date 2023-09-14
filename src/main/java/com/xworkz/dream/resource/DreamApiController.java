@@ -55,11 +55,10 @@ public class DreamApiController {
 
 	@ApiOperation(value = "To register the trainee details in the google sheets")
 	@PostMapping("/register")
-	public ResponseEntity<String> register( @RequestHeader String spreadsheetId, @RequestBody TraineeDto values,
+	public ResponseEntity<String> register(@RequestHeader String spreadsheetId, @RequestBody TraineeDto values,
 			HttpServletRequest request) throws IOException, MessagingException, TemplateException {
 		logger.info("Registering trainee details: {}", values);
-		System.out.println(values);
-		
+
 		return service.writeData(spreadsheetId, values, request);
 	}
 
@@ -110,7 +109,6 @@ public class DreamApiController {
 	@PutMapping("/update")
 	public ResponseEntity<String> update(@RequestHeader String spreadsheetId, @RequestParam String email,
 			@RequestBody TraineeDto dto) {
-		System.out.println(dto);
 		return service.update(spreadsheetId, email, dto);
 	}
 
@@ -119,7 +117,6 @@ public class DreamApiController {
 	public ResponseEntity<String> updateFollowUpStatus(@RequestHeader String spreadsheetId,
 			@RequestBody StatusDto statusDto, HttpServletRequest request) throws IOException {
 		logger.info("updating follow up status : {}", statusDto);
-		System.out.println(statusDto + "------controller---------");
 		return service.updateFollowUpStatus(spreadsheetId, statusDto, request);
 	}
 
@@ -140,8 +137,9 @@ public class DreamApiController {
 		logger.info("Getting CourseDetails : {}", courseName);
 		return service.getBatchDetailsByCourseName(spreadsheetId, courseName);
 
-	}  
-   @ApiOperation(value = "To get Registration details by email")
+	}
+
+	@ApiOperation(value = "To get Registration details by email")
 	@GetMapping("/readByEmail")
 	public ResponseEntity<?> getDataByEmail(@RequestHeader String spreadsheetId, @RequestParam String email,
 			HttpServletRequest request) throws IOException {
@@ -160,7 +158,6 @@ public class DreamApiController {
 	@GetMapping("/followUpStatus")
 	public List<StatusDto> getStatusByEmail(@RequestHeader String spreadsheetId, @RequestParam int startingIndex,
 			@RequestParam int maxRows, @RequestParam String email, HttpServletRequest request) throws IOException {
-		System.out.println("this is getStatusdetails method");
 		return service.getStatusDetails(spreadsheetId, startingIndex, maxRows, email, request);
 	}
 
@@ -183,7 +180,6 @@ public class DreamApiController {
 	@PostMapping("/birthDayInfo")
 	public ResponseEntity<String> updateBirthDayInfo(@RequestHeader String spreadsheetId, @RequestBody TraineeDto dto,
 			HttpServletRequest request) throws IllegalAccessException, IOException {
-		System.out.println(dto);
 		return service.saveBirthDayInfo(spreadsheetId, dto, request);
 
 	}
@@ -192,9 +188,6 @@ public class DreamApiController {
 	@PutMapping("/updateFollowUp")
 	public ResponseEntity<String> updateFollowUp(@RequestHeader String spreadsheetId, @RequestParam String email,
 			@RequestBody FollowUpDto dto, HttpServletRequest request) throws IOException, IllegalAccessException {
-		System.out.println("this is update Method");
-		System.out.println(email);
-		System.out.println("Dto:" + dto);
 
 		return service.updateFollowUp(spreadsheetId, email, dto);
 	}
@@ -204,33 +197,20 @@ public class DreamApiController {
 	public ResponseEntity<List<StatusDto>> getFollowupNotification(@RequestParam String email,
 			HttpServletRequest request) throws IOException {
 		return service.setNotification(email, request);
-}
+	}
+
 	@ApiOperation(value = "To verifay the email")
 	@GetMapping("/verify-email")
-	public String verifydEmails(@RequestParam String email) {
+	public String verifydEmails(@RequestParam String email) throws IOException {
 		String verifyEmails = service.verifyEmails(email);
-		System.out.println("verifyEmails = " + verifyEmails);
-		try {
-			// Initialize the ObjectMapper
-			ObjectMapper objectMapper = new ObjectMapper();
-
-			// Parse the JSON data into a Map
-			Map<String, Object> jsonMap = objectMapper.readValue(verifyEmails, Map.class);
-			System.out.println("jsonMap : " + jsonMap);
-			// Retrieve a single data item, for example, the "email" field
-			String reasons = (String) jsonMap.get("reason");
-			if (reasons.equals("accepted_email")) {
-				System.out.println("reason: " + reasons);
-				return reasons;
-			} else {
-				// Print the result
-				System.out.println("reason: " + reasons);
-				return reasons;
-			}
-		} catch (IOException e) {
-			e.printStackTrace();
+		ObjectMapper objectMapper = new ObjectMapper();
+		Map<String, Object> jsonMap = objectMapper.readValue(verifyEmails, Map.class);
+		String reasons = (String) jsonMap.get("reason");
+		if (reasons.equals("accepted_email")) {
+			return reasons;
+		} else {
+			return reasons;
 		}
-		return verifyEmails;
 
 	}
 
