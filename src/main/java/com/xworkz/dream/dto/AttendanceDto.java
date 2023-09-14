@@ -1,7 +1,5 @@
 package com.xworkz.dream.dto;
 
-import java.time.Duration;
-
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import lombok.AllArgsConstructor;
@@ -9,13 +7,15 @@ import lombok.Data;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.ToString;
 
 @Data
 @Getter
 @Setter
+@ToString
 @NoArgsConstructor
 @AllArgsConstructor
-public class StatusDto {
+public class AttendanceDto {
 
 	@JsonProperty("id")
 	private int id;
@@ -23,23 +23,11 @@ public class StatusDto {
 	private BasicInfoDto basicInfo;
 	@JsonProperty("courseInfo")
 	private CourseDto courseInfo;
-	@JsonProperty("attemptedOn")
-	private String attemptedOn;
-	@JsonProperty("attemptedBy")
-	private String attemptedBy;
-	@JsonProperty("attemptStatus")
-	private String attemptStatus;
-	@JsonProperty("comments")
-	private String comments;
-	@JsonProperty("callDuration")
-	private String callDuration;
-	@JsonProperty("callBack")
-	private String callBack;
-	@JsonProperty("callBackTime")
-	private String callBackTime;
 	@JsonProperty("preferredLocation")
 	private String preferredLocation;
 	@JsonProperty("preferredClassType")
 	private String preferredClassType;
-	private String registrationDate;
+	@JsonProperty("attemptStatus")
+	private String attemptStatus;
+
 }
