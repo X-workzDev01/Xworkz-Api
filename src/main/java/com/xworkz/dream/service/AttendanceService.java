@@ -4,6 +4,8 @@ import java.io.IOException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import javax.mail.MessagingException;
 import javax.servlet.http.HttpServletRequest;
@@ -11,6 +13,7 @@ import javax.servlet.http.HttpServletRequest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -29,6 +32,10 @@ import freemarker.template.TemplateException;
 public class AttendanceService {
 	@Autowired
 	private DreamRepo repo;
+	@Value("${login.sheetId}")
+	private String sheetId;
+	private AttendanceDto attendanceDto;
+
 	@Autowired
 	private DreamWrapper wrapper;
 
@@ -51,14 +58,37 @@ public class AttendanceService {
 		return null;
 	}
 
-	public ResponseEntity<String> addcolumn(@RequestHeader String spreadsheetId, HttpServletRequest request)
-			throws Exception {
-		
-		
-		if (LocalDate.now().isEqual(LocalDate.now())) {
+	public ResponseEntity<String> everyDayAttendance(AttendanceDto dto, HttpServletRequest request) throws Exception {
+		int present = 0;
+		int absent = 0;
+		if (dto != null) {
+			List<Object> list = wrapper.listOfAddAttendance(dto);
+			System.err.println("Listrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrr" + list);
+			boolean writeStatus = repo.everyDayAttendance(sheetId, list);
+			if (writeStatus == true) {
 
-			repo.addColumn(spreadsheetId);
+				List<List<Object>> attendanceList = repo.attendanceDetilesByEmail(sheetId,
+						dto.getBasicInfo().getEmail());
+				attendanceList.stream().forEach(f -> attendanceDto = wrapper.attendanceListToDto(f));
+				if (attendanceDto.getBasicInfo().getEmail().equalsIgnoreCase(dto.getBasicInfo().getEmail())) {
+
+					if (dto.getMarkAs() == 1)
+						present++;
+					ResponseEntity.ok(present);
+
+				}
+				if (dto.getMarkAs() == 0) {
+					absent++;
+					ResponseEntity.ok(absent);
+				}
+				System.out.println(attendanceList);
+			}
 		}
+
+		else {
+			ResponseEntity.ok("Attendance detiles  has been null");
+		}
+
 		return null;
 
 	}
