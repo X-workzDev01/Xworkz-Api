@@ -122,7 +122,6 @@ public class DreamService {
 
 				dto.setId(size += 1);
 				dto.getReferralInfo().setXworkzEmail(Status.NA.toString());
-				dto.getReferralInfo().setWorking(Status.NO.toString());
 				dto.getReferralInfo().setPreferredLocation(Status.NA.toString());
 				dto.getReferralInfo().setPreferredClassType(Status.NA.toString());
 				dto.getAdminDto().setCreatedOn(LocalDateTime.now().toString());
@@ -439,7 +438,7 @@ public class DreamService {
 			BasicInfoDto basicInfo = new BasicInfoDto();
 			basicInfo.setTraineeName(statusDto.getBasicInfo().getTraineeName());
 			basicInfo.setEmail(statusDto.getBasicInfo().getEmail());
-
+			basicInfo.setContactNumber(statusDto.getBasicInfo().getContactNumber());
 			StatusDto sdto = new StatusDto();
 			sdto.setId(size += 1);
 			sdto.setBasicInfo(basicInfo);
@@ -450,8 +449,6 @@ public class DreamService {
 			sdto.setCallDuration(statusDto.getCallDuration());
 			sdto.setCallBack(statusDto.getCallBack());
 			sdto.setCallBackTime(statusDto.getCallBackTime());
-			sdto.setPreferredLocation(statusDto.getPreferredLocation());
-			sdto.setPreferredClassType(statusDto.getPreferredClassType());
 			List<Object> statusData = wrapper.extractDtoDetails(sdto);
 
 			boolean status = repo.updateFollowUpStatus(spreadsheetId, statusData);

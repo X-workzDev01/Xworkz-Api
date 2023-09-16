@@ -71,6 +71,14 @@ public class UtilLocal implements DreamUtil{
 
 	
 
+
+	@Override
+	public boolean sendNotificationToEmail(List<Team> teamList, List<StatusDto> notificationStatus) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+
 	@Override
 	public boolean sendCourseContent(String email, String name)
 			throws MessagingException, IOException, TemplateException {
@@ -79,12 +87,7 @@ public class UtilLocal implements DreamUtil{
 	}
 
 
-	@Override
-	public boolean sendNotificationToEmail(List<Team> teamList, List<StatusDto> notificationStatus) {
-		// TODO Auto-generated method stub
-		return false;
-	}
-
+	
 
 	
 
