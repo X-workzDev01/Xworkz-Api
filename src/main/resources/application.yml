@@ -34,6 +34,11 @@ sheets:
   attendanceInfoRange: attendanceInfo!A3:K
   attendanceInfoIDRange: attendanceInfo!A2:J
   followUpStatusIdRange: followUpStatus!A2:A
+  attendanceInfoByName: attendanceInfo!A2:E
+  attendanceList: attendanceList!A2:I
+  attendanceListByEmail: attendanceList!A2:I
+
+
 mail:
    smtpHost: smtp.office365.com
    smtpPort: 587

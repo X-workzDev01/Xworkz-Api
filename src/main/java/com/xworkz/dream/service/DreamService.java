@@ -330,7 +330,7 @@ public class DreamService {
 		try {
 			int rowIndex = findRowIndexByEmail(spreadsheetId, email);
 			String range = traineeSheetName + rowStartRange + rowIndex + ":" + rowEndRange + rowIndex;
-			
+
 			try {
 				List<List<Object>> values = Arrays.asList(wrapper.extractDtoDetails(dto));
 
@@ -456,7 +456,7 @@ public class DreamService {
 
 			boolean status = repo.updateFollowUpStatus(spreadsheetId, statusData);
 			if (status == true) {
-			
+
 				boolean update = updateCurrentFollowUp(spreadsheetId, statusDto.getBasicInfo().getEmail(),
 						statusDto.getAttemptStatus(), statusDto.getAttemptedBy());
 				repo.evictAllCachesOnTraineeDetails();
@@ -503,8 +503,6 @@ public class DreamService {
 		}
 		return null;
 	}
-
-
 
 	public ResponseEntity<?> getDetailsByEmail(String spreadsheetId, String email, HttpServletRequest request)
 			throws IOException {
@@ -561,7 +559,7 @@ public class DreamService {
 		List<FollowUpDto> followUpDtos = new ArrayList<>();
 
 		int endIndex = startingIndex + maxRows;
-	
+
 		ListIterator<List<Object>> iterator = values.listIterator(startingIndex);
 		while (iterator.hasNext() && iterator.nextIndex() < endIndex) {
 			List<Object> row = iterator.next();
@@ -704,7 +702,7 @@ public class DreamService {
 	}
 
 	public FollowUpDto getFollowUpDetailsByEmail(String spreadsheetId, String email) throws IOException {
-		
+
 		FollowUpDto followUpDto = new FollowUpDto();
 		if (email != null && !email.isEmpty()) {
 			List<List<Object>> lists = repo.getFollowUpDetails(spreadsheetId);
@@ -791,9 +789,21 @@ public class DreamService {
 							if (LocalDate.now().isEqual(LocalDate.parse(dto.getCallBack()))
 									&& email.equalsIgnoreCase(dto.getAttemptedBy())
 									&& statusCheck.contains(dto.getAttemptStatus())) {
-
 								notificationStatusBymail.add(dto);
+
 								response = ResponseEntity.ok(notificationStatusBymail);
+							}
+							if (LocalDate.now().minusDays(1).isEqual(LocalDate.parse(dto.getCallBack()))
+									&& email.equalsIgnoreCase(dto.getAttemptedBy())
+									&& statusCheck.contains(dto.getAttemptStatus())) {
+								notificationStatusBymail.add(dto);
+
+							}
+							if (LocalDate.now().plusDays(1).isEqual(LocalDate.parse(dto.getCallBack()))
+									&& email.equalsIgnoreCase(dto.getAttemptedBy())
+									&& statusCheck.contains(dto.getAttemptStatus())) {
+								notificationStatusBymail.add(dto);
+
 							}
 
 						});

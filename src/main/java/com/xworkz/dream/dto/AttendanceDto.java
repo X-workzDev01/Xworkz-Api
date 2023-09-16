@@ -25,9 +25,11 @@ public class AttendanceDto {
 	private CourseDto courseInfo;
 	@JsonProperty("preferredLocation")
 	private String preferredLocation;
-	@JsonProperty("preferredClassType")
-	private String preferredClassType;
 	@JsonProperty("attemptStatus")
 	private String attemptStatus;
+	private String date;
+	@JsonProperty("markAs")  
+	private int markAs;
+	
 
 }
