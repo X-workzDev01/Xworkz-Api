@@ -22,7 +22,7 @@ import org.springframework.web.bind.annotation.RequestHeader;
 import com.xworkz.dream.constants.Status;
 import com.xworkz.dream.dto.AttendanceDto;
 import com.xworkz.dream.dto.StatusDto;
-import com.xworkz.dream.repo.DreamRepo;
+import com.xworkz.dream.repository.DreamRepositoryImpl;
 import com.xworkz.dream.resource.AttendanceController;
 import com.xworkz.dream.wrapper.DreamWrapper;
 
@@ -31,7 +31,7 @@ import freemarker.template.TemplateException;
 @Service
 public class AttendanceService {
 	@Autowired
-	private DreamRepo repo;
+	private DreamRepositoryImpl repo;
 	@Value("${login.sheetId}")
 	private String sheetId;
 	private AttendanceDto attendanceDto;
@@ -63,7 +63,6 @@ public class AttendanceService {
 		int absent = 0;
 		if (dto != null) {
 			List<Object> list = wrapper.listOfAddAttendance(dto);
-			System.err.println("Listrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrr" + list);
 			boolean writeStatus = repo.everyDayAttendance(sheetId, list);
 			if (writeStatus == true) {
 

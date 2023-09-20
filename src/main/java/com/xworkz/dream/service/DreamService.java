@@ -58,7 +58,7 @@ import com.xworkz.dream.dto.utils.Dropdown;
 import com.xworkz.dream.dto.utils.Team;
 import com.xworkz.dream.dto.utils.User;
 import com.xworkz.dream.interfaces.EmailableClient;
-import com.xworkz.dream.repo.DreamRepo;
+import com.xworkz.dream.repository.DreamRepositoryImpl;
 import com.xworkz.dream.util.DreamUtil;
 import com.xworkz.dream.wrapper.DreamWrapper;
 import freemarker.template.TemplateException;
@@ -68,7 +68,7 @@ import freemarker.template.TemplateException;
 public class DreamService {
 
 	@Autowired
-	private DreamRepo repo;
+	private DreamRepositoryImpl repo;
 	@Autowired
 	private DreamWrapper wrapper;
 	private FollowUpDto followUpDto;
@@ -796,7 +796,7 @@ public class DreamService {
 								notificationStatusBymail.add(dto);
 
 							}
-							if (LocalDate.now().plusDays(1).isEqual(LocalDate.parse(dto.getCallBack()))
+							if (LocalDate.now().plusDays(4).isEqual(LocalDate.parse(dto.getCallBack()))
 									&& email.equalsIgnoreCase(dto.getAttemptedBy())
 									&& statusCheck.contains(dto.getAttemptStatus())) {
 								notificationStatusBymail.add(dto);
