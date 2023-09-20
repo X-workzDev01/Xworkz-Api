@@ -8,13 +8,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.xworkz.dream.dto.utils.Dropdown;
-import com.xworkz.dream.repo.DreamRepo;
+import com.xworkz.dream.repository.DreamRepositoryImpl;
 
 @Service
 public class UtilService {
 
 	@Autowired
-	private DreamRepo repo;
+	private DreamRepositoryImpl repo;
 
 	public Dropdown getDropdown(String spreadsheetId) {
 
