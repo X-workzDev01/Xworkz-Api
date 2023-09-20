@@ -337,8 +337,12 @@ public class DreamService {
 		try {
 			int rowIndex = findRowIndexByEmail(spreadsheetId, email);
 			String range = traineeSheetName + rowStartRange + rowIndex + ":" + rowEndRange + rowIndex;
+<<<<<<< HEAD
 			System.out.println(range);
 			System.out.println(dto);
+=======
+
+>>>>>>> 2698ddf639b52a4a5ccd9d2fb093e8a0abbda0b6
 			try {
 				List<List<Object>> values = Arrays.asList(wrapper.extractDtoDetails(dto));
 
@@ -465,8 +469,12 @@ public class DreamService {
 
 			boolean status = repo.updateFollowUpStatus(spreadsheetId, statusData);
 			if (status == true) {
+<<<<<<< HEAD
 				System.out.println("this is current follow up");
 				System.out.println(statusDto.getId());
+=======
+
+>>>>>>> 2698ddf639b52a4a5ccd9d2fb093e8a0abbda0b6
 				boolean update = updateCurrentFollowUp(spreadsheetId, statusDto.getBasicInfo().getEmail(),
 						statusDto.getAttemptStatus(), statusDto.getAttemptedBy());
 				System.out.println("update status:" + update);
@@ -516,6 +524,7 @@ public class DreamService {
 		return null;
 	}
 
+<<<<<<< HEAD
 //	public static List<SuggestionDto> getSuggestions(String dataToMatch, List<List<Object>> data) {
 //
 //		List<Object> list = data.stream().flatMap(List::stream)
@@ -524,6 +533,8 @@ public class DreamService {
 //		return null;
 //	}
 
+=======
+>>>>>>> 2698ddf639b52a4a5ccd9d2fb093e8a0abbda0b6
 	public ResponseEntity<?> getDetailsByEmail(String spreadsheetId, String email, HttpServletRequest request)
 			throws IOException {
 		List<List<Object>> data = repo.readData(spreadsheetId);
@@ -579,9 +590,12 @@ public class DreamService {
 		List<FollowUpDto> followUpDtos = new ArrayList<>();
 
 		int endIndex = startingIndex + maxRows;
+<<<<<<< HEAD
 		System.out.println(
 				"end row:" + endIndex + " " + " Start Index:" + " " + startingIndex + " " + " max index:" + maxRows);
 		// int rowCount = values.size();
+=======
+>>>>>>> 2698ddf639b52a4a5ccd9d2fb093e8a0abbda0b6
 
 		ListIterator<List<Object>> iterator = values.listIterator(startingIndex);
 		while (iterator.hasNext() && iterator.nextIndex() < endIndex) {
@@ -732,8 +746,12 @@ public class DreamService {
 	}
 
 	public FollowUpDto getFollowUpDetailsByEmail(String spreadsheetId, String email) throws IOException {
+<<<<<<< HEAD
 		// List<FollowUpDto> followUpDto = new ArrayList<FollowUpDto>();
 		// String traineeStatus=status.toLowerCase();
+=======
+
+>>>>>>> 2698ddf639b52a4a5ccd9d2fb093e8a0abbda0b6
 		FollowUpDto followUpDto = new FollowUpDto();
 		if (email != null && !email.isEmpty()) {
 			List<List<Object>> lists = repo.getFollowUpDetails(spreadsheetId);
@@ -814,6 +832,7 @@ public class DreamService {
 			if (spreadsheetId != null) {
 				List<List<Object>> list = repo.notification(spreadsheetId);
 
+<<<<<<< HEAD
 				if (email != null) {
 					list.stream().forEach(e -> {
 						StatusDto dto = wrapper.listToStatusDto(e);
@@ -821,6 +840,27 @@ public class DreamService {
 						if (LocalDate.now().isEqual(LocalDate.parse(dto.getCallBack()))
 								&& email.equalsIgnoreCase(dto.getAttemptedBy())
 								&& statusCheck.contains(dto.getAttemptStatus())) {
+=======
+							if (LocalDate.now().isEqual(LocalDate.parse(dto.getCallBack()))
+									&& email.equalsIgnoreCase(dto.getAttemptedBy())
+									&& statusCheck.contains(dto.getAttemptStatus())) {
+								notificationStatusBymail.add(dto);
+
+								response = ResponseEntity.ok(notificationStatusBymail);
+							}
+							if (LocalDate.now().minusDays(1).isEqual(LocalDate.parse(dto.getCallBack()))
+									&& email.equalsIgnoreCase(dto.getAttemptedBy())
+									&& statusCheck.contains(dto.getAttemptStatus())) {
+								notificationStatusBymail.add(dto);
+
+							}
+							if (LocalDate.now().plusDays(1).isEqual(LocalDate.parse(dto.getCallBack()))
+									&& email.equalsIgnoreCase(dto.getAttemptedBy())
+									&& statusCheck.contains(dto.getAttemptStatus())) {
+								notificationStatusBymail.add(dto);
+
+							}
+>>>>>>> 2698ddf639b52a4a5ccd9d2fb093e8a0abbda0b6
 
 							notificationStatusBymail.add(dto);
 							response = ResponseEntity.ok(notificationStatusBymail);

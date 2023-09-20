@@ -108,7 +108,7 @@ public class DreamWrapper {
 		if (rowSize > 3 && rows.get(3) != null && !rows.get(3).toString().isEmpty()) {
 			statusDto.getBasicInfo().setContactNumber(Long.parseLong(rows.get(3).toString()));
 		}
-	
+
 		if (rowSize > 4 && rows.get(4) != null && !rows.get(4).toString().isEmpty()) {
 			statusDto.setAttemptedOn((String) rows.get(4));
 		}
@@ -126,6 +126,7 @@ public class DreamWrapper {
 		}
 		if (rowSize > 9 && rows.get(9) != null && !rows.get(9).toString().isEmpty()) {
 			statusDto.setCallBack((String) rows.get(9));
+
 		}
 
 		if (rowSize > 10 && rows.get(10) != null && !rows.get(10).toString().isEmpty()) {
@@ -303,14 +304,72 @@ public class DreamWrapper {
 		row.add(dto.getBasicInfo().getContactNumber());
 		row.add(dto.getCourseInfo().getCourse());
 		row.add(dto.getPreferredLocation());
-		row.add(dto.getPreferredClassType());
 		row.add(dto.getCourseInfo().getBatchTiming());
-		row.add(LocalDateTime.now().toString());
-		row.add(dto.getCourseInfo().getOfferedAs());
 
 		return row;
 
 	}
-	
+
+	public List<Object> listOfAddAttendance(AttendanceDto dto) {
+
+		List<Object> row = new ArrayList<Object>();
+
+		row.add(dto.getId());
+		row.add(dto.getBasicInfo().getTraineeName());
+		row.add(dto.getBasicInfo().getEmail());
+		row.add(dto.getBasicInfo().getContactNumber());
+		row.add(dto.getCourseInfo().getCourse());
+		row.add(dto.getPreferredLocation());
+		row.add(dto.getCourseInfo().getBatchTiming());
+		row.add(LocalDateTime.now());
+		row.add(dto.getMarkAs());
+
+		return row;
+
+	}
+
+	public AttendanceDto attendanceListToDto(List<Object> row) {
+
+		AttendanceDto attendanceDto = new AttendanceDto(0, new BasicInfoDto(), new CourseDto(), null, null, null, 0);
+
+		int rowSize = row.size();
+
+		if (rowSize > 0 && row.get(0) != null && !row.get(0).toString().isEmpty()) {
+			attendanceDto.setId(Integer.valueOf(row.get(0).toString()));
+		}
+
+		if (rowSize > 1 && row.get(1) != null && !row.get(1).toString().isEmpty()) {
+			attendanceDto.getBasicInfo().setTraineeName((String) row.get(1));
+		}
+
+		if (rowSize > 2 && row.get(2) != null && !row.get(2).toString().isEmpty()) {
+			attendanceDto.getBasicInfo().setEmail((String) row.get(2));
+		}
+
+		if (rowSize > 3 && row.get(3) != null && !row.get(3).toString().isEmpty()) {
+			attendanceDto.getBasicInfo().setContactNumber(Long.parseLong(row.get(3).toString()));
+		}
+
+		if (rowSize > 4 && row.get(4) != null && !row.get(4).toString().isEmpty()) {
+			attendanceDto.getCourseInfo().setCourse((String) row.get(4));
+		}
+		if (rowSize > 5 && row.get(5) != null && !row.get(5).toString().isEmpty()) {
+			attendanceDto.getCourseInfo().setBranch((String) row.get(5));
+		}
+
+		if (rowSize > 6 && row.get(6) != null && !row.get(6).toString().isEmpty()) {
+			attendanceDto.getCourseInfo().setBatchTiming((String) row.get(6));
+		}
+
+		if (rowSize > 7 && row.get(7) != null && !row.get(7).toString().isEmpty()) {
+			attendanceDto.setDate((String) row.get(7));
+		}
+
+		if (rowSize > 8 && row.get(8) != null && !row.get(8).toString().isEmpty()) {
+			attendanceDto.setMarkAs((int) (row.get(8)));
+		}
+
+		return attendanceDto;
+	}
 
 }
