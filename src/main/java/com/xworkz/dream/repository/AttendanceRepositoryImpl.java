@@ -5,10 +5,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Repository;
 
 import com.google.api.services.sheets.v4.Sheets;
 import com.google.api.services.sheets.v4.model.ValueRange;
-
+@Repository
 public class AttendanceRepositoryImpl implements AttendanceRepository {
 	private Sheets sheetsService;
 	@Value("${sheets.attendanceInfoRange}")

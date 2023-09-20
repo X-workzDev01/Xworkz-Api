@@ -50,7 +50,7 @@ import com.xworkz.dream.dto.StatusDto;
 import com.xworkz.dream.dto.TraineeDto;
 import com.xworkz.dream.dto.utils.Team;
 import com.xworkz.dream.interfaces.EmailableClient;
-import com.xworkz.dream.repo.DreamRepo;
+import com.xworkz.dream.repository.DreamRepository;
 import com.xworkz.dream.util.DreamUtil;
 import com.xworkz.dream.wrapper.DreamWrapper;
 
@@ -61,7 +61,7 @@ import freemarker.template.TemplateException;
 public class DreamServiceImpl implements DreamService {
 
 	@Autowired
-	private DreamRepo repo;
+	private DreamRepository repo;
 	@Autowired
 	private DreamWrapper wrapper;
 	private FollowUpDto followUpDto;
