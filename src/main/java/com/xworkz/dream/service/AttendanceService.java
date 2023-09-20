@@ -18,5 +18,6 @@ public interface AttendanceService {
 	public ResponseEntity<String> writeAttendance(@RequestHeader String spreadsheetId, @RequestBody AttendanceDto dto,
 			HttpServletRequest request) throws IOException, MessagingException, TemplateException;
 
+
 	public ResponseEntity<String> everyDayAttendance(AttendanceDto dto, HttpServletRequest request) throws Exception;
 }

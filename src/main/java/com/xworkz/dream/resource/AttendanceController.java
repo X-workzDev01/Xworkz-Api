@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import com.xworkz.dream.dto.AttendanceDto;
-import com.xworkz.dream.repo.DreamRepo;
+import com.xworkz.dream.repository.DreamRepositoryImpl;
 import com.xworkz.dream.service.AttendanceService;
 import freemarker.template.TemplateException;
 import io.swagger.annotations.ApiOperation;
@@ -24,7 +24,7 @@ import io.swagger.annotations.ApiOperation;
 @RequestMapping("/attendance")
 public class AttendanceController {
 	@Autowired
-	private DreamRepo repo;
+	private DreamRepositoryImpl repo;
 	@Autowired
 	private AttendanceService attendanceService;
 	Logger logger = LoggerFactory.getLogger(AttendanceController.class);

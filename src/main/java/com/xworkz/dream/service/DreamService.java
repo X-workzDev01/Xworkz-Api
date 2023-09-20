@@ -22,6 +22,7 @@ import freemarker.template.TemplateException;
 
 public interface DreamService {
 
+
 	public ResponseEntity<String> writeData(String spreadsheetId, TraineeDto dto, HttpServletRequest request)
 			throws MessagingException, TemplateException;
 
@@ -85,6 +86,7 @@ public interface DreamService {
 	public ResponseEntity<BatchDetails> getBatchDetailsByCourseName(String spreadsheetId, String courseName);
 
 	public FollowUpDto getFollowUpDetailsByEmail(String spreadsheetId, String email) throws IOException;
+
 
 	public void notification();
 
