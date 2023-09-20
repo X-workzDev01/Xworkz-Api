@@ -13,7 +13,7 @@ import com.xworkz.dream.dto.BasicInfoDto;
 import com.xworkz.dream.dto.CourseDto;
 import com.xworkz.dream.dto.EducationInfoDto;
 import com.xworkz.dream.dto.FollowUpDto;
-import com.xworkz.dream.dto.ReferalInfoDto;
+import com.xworkz.dream.dto.OthersDto;
 import com.xworkz.dream.dto.StatusDto;
 import com.xworkz.dream.dto.SuggestionDto;
 import com.xworkz.dream.dto.TraineeDto;
@@ -92,8 +92,8 @@ public class DreamWrapper {
 
 	public StatusDto listToStatusDto(List<Object> rows) {
 
-
-		StatusDto statusDto = new StatusDto(0, new BasicInfoDto(), null, null, null, null, null, null, null, null, null);
+		StatusDto statusDto = new StatusDto(0, new BasicInfoDto(), null, null, null, null, null, null, null, null,
+				null);
 
 		int rowSize = rows.size();
 		if (rowSize > 0 && rows.get(0) != null && !rows.get(0).toString().isEmpty()) {
@@ -138,7 +138,7 @@ public class DreamWrapper {
 
 	public TraineeDto listToDto(List<Object> row) {
 		TraineeDto traineeDto = new TraineeDto(0, new BasicInfoDto(), new EducationInfoDto(), new CourseDto(),
-				new ReferalInfoDto(), new AdminDto());
+				new OthersDto(), new AdminDto());
 
 		// Assuming the list follows this order: id ,traineeName, email, contactNumber,
 		// qualification, stream,
@@ -233,10 +233,13 @@ public class DreamWrapper {
 			traineeDto.getReferralInfo().setPreferredClassType((String) row.get(22).toString());
 		}
 		if (rowSize > 23 && row.get(23) != null && !row.get(23).toString().isEmpty()) {
-			traineeDto.getAdminDto().setCreatedBy((String) row.get(23).toString());
+			traineeDto.getReferralInfo().setPreferredClassType((String) row.get(23).toString());
 		}
-		if (rowSize > 24 && row.get(22) != null && !row.get(24).toString().isEmpty()) {
-			traineeDto.getAdminDto().setCreatedOn((String) row.get(24).toString());
+		if (rowSize > 24 && row.get(24) != null && !row.get(24).toString().isEmpty()) {
+			traineeDto.getAdminDto().setCreatedBy((String) row.get(24).toString());
+		}
+		if (rowSize > 25 && row.get(25) != null && !row.get(25).toString().isEmpty()) {
+			traineeDto.getAdminDto().setCreatedOn((String) row.get(25).toString());
 		}
 
 		return traineeDto;

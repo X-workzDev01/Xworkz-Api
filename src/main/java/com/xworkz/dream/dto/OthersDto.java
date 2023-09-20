@@ -11,7 +11,7 @@ import lombok.Setter;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class ReferalInfoDto {
+public class OthersDto {
 
 	private String referalName;
 	private Long referalContactNumber;
@@ -20,6 +20,7 @@ public class ReferalInfoDto {
 	private String working;
 	private String PreferredLocation;
 	private String PreferredClassType;
+	private String whatsAppLink;
 
 
 }
