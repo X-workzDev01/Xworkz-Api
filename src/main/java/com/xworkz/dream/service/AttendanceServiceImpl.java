@@ -18,7 +18,7 @@ import org.springframework.web.bind.annotation.RequestHeader;
 
 import com.xworkz.dream.constants.Status;
 import com.xworkz.dream.dto.AttendanceDto;
-import com.xworkz.dream.repo.DreamRepo;
+import com.xworkz.dream.repository.AttendanceRepository;
 import com.xworkz.dream.wrapper.DreamWrapper;
 
 import freemarker.template.TemplateException;
@@ -26,7 +26,7 @@ import freemarker.template.TemplateException;
 @Service
 public class AttendanceServiceImpl implements AttendanceService{
 	@Autowired
-	private DreamRepo repo;
+	private AttendanceRepository repo;
 	@Value("${login.sheetId}")
 	private String sheetId;
 	private AttendanceDto attendanceDto;

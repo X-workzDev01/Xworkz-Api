@@ -27,7 +27,7 @@ import org.springframework.web.context.request.ServletRequestAttributes;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.dataformat.yaml.snakeyaml.Yaml;
 import com.xworkz.dream.dto.utils.User;
-import com.xworkz.dream.repo.DreamRepo;
+import com.xworkz.dream.repository.DreamRepository;
 import com.xworkz.dream.util.DreamUtil;
 import com.xworkz.dream.wrapper.DreamWrapper;
 
@@ -49,7 +49,7 @@ public class LoginServiceImpl implements LoginService {
 	@Autowired
 	private ResourceLoader resourceLoader;
 	@Autowired
-	private DreamRepo repo;
+	private DreamRepository repo;
 
 	private static final Logger logger = LoggerFactory.getLogger(LoginServiceImpl.class);
 
