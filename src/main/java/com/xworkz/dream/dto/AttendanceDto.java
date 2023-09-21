@@ -27,9 +27,11 @@ public class AttendanceDto {
 	private String preferredLocation;
 	@JsonProperty("attemptStatus")
 	private String attemptStatus;
+	@JsonProperty("date")
 	private String date;
-	@JsonProperty("markAs")  
-	private int markAs;
-	
+	@JsonProperty("markAs")
+	private String markAs;
+	private String absent;
+	private String present;
 
 }
