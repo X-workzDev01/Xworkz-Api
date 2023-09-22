@@ -20,5 +20,6 @@ public class BatchDetails {
 	private String timing;
 	private String branch;
 	private String status;
+	private String whatsAppLink;
 
 }
