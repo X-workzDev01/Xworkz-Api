@@ -1,12 +1,16 @@
 package com.xworkz.dream.resource;
 
 import java.io.IOException;
+import java.util.List;
+
 import javax.mail.MessagingException;
 import javax.servlet.http.HttpServletRequest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -23,16 +27,16 @@ import io.swagger.annotations.ApiOperation;
 @RestController
 @RequestMapping("/attendance")
 public class AttendanceController {
-	@Autowired
-	private DreamRepositoryImpl repo;
+
 	@Autowired
 	private AttendanceService attendanceService;
+	@Value("${login.sheetId}")
+	private String spreadsheetId;
 	Logger logger = LoggerFactory.getLogger(AttendanceController.class);
 
 	@ApiOperation(value = "To register attendance details in the google sheets")
 	@PostMapping("/registerAttendance")
-	public ResponseEntity<String> registerAttendance(@RequestHeader String spreadsheetId,
-			@RequestBody AttendanceDto values, HttpServletRequest request)
+	public ResponseEntity<String> registerAttendance(@RequestBody AttendanceDto values, HttpServletRequest request)
 			throws IOException, MessagingException, TemplateException {
 		logger.info("Registering trainee details: {}", values);
 
@@ -43,9 +47,34 @@ public class AttendanceController {
 	}
 
 	@PostMapping("/addAttendennce")
+	@ApiOperation(value = "Everyday day Add attendance Entry")
+
 	public ResponseEntity<String> everyDayAttendance(@RequestBody AttendanceDto dto, HttpServletRequest request)
 			throws Exception {
 		return attendanceService.everyDayAttendance(dto, request);
+	}
+
+	@ApiOperation(value = "Get detiles of by using email")
+	@GetMapping("/byEmail")
+	public ResponseEntity<List<AttendanceDto>> getAttendanceListByEmail(@RequestParam String email) throws Exception {
+		return attendanceService.getAttendanceDetilesByEmail(email);
+	}
+
+	@ApiOperation(value = "Get detiles in using selected  batch ")
+	@GetMapping("/byBatch")
+	public ResponseEntity<List<AttendanceDto>> getAttendanceListByBatch(@RequestParam String batch) throws Exception {
+
+		return attendanceService.getAttendanceDetilesBatch(batch);
+
+	}
+
+	@ApiOperation(value = "Get detiles in using selected  batch  and date")
+	@GetMapping("/byBatchAndDate")
+	public ResponseEntity<List<AttendanceDto>> getAttendanceListByBatchAndDate(@RequestParam String batch,
+			@RequestParam String date) throws Exception {
+
+		return attendanceService.getAttendanceDetilesBatchAndDate(batch, date);
+
 	}
 
 }

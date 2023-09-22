@@ -789,7 +789,7 @@ public class DreamServiceImpl implements DreamService {
 				Status.Not_reachable.toString().replace('_', ' '), Status.Let_us_know.toString().replace('_', ' '),
 				Status.Need_online.toString().replace('_', ' ')).collect(Collectors.toList());
 
-		LocalTime time = LocalTime.of(18, 01, 01, 500_000_000);
+		LocalTime time = LocalTime.of(12, 35, 01, 500_000_000);
 		List<StatusDto> notificationStatus = new ArrayList<StatusDto>();
 		List<StatusDto> notificationStatusBymail = new ArrayList<StatusDto>();
 		List<List<Object>> followup = repo.getFollowUpDetailsByid(spreadsheetId);
