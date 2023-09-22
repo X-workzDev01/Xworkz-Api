@@ -234,7 +234,7 @@ public class DreamWrapper {
 			traineeDto.getReferralInfo().setPreferredClassType((String) row.get(22).toString());
 		}
 		if (rowSize > 23 && row.get(23) != null && !row.get(23).toString().isEmpty()) {
-			traineeDto.getReferralInfo().setPreferredClassType((String) row.get(23).toString());
+			traineeDto.getReferralInfo().setWhatsAppLink((String) row.get(23).toString());
 		}
 		if (rowSize > 24 && row.get(24) != null && !row.get(24).toString().isEmpty()) {
 			traineeDto.getAdminDto().setCreatedBy((String) row.get(24).toString());
