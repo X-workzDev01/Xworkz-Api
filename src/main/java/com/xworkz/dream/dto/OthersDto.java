@@ -20,7 +20,7 @@ public class OthersDto {
 	private String working;
 	private String PreferredLocation;
 	private String PreferredClassType;
-	private String whatsAppLink;
+	private String sendWhatsAppLink;
 
 
 }

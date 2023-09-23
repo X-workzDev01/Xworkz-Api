@@ -116,7 +116,7 @@ public class DreamServiceImpl implements DreamService {
 				dto.getReferralInfo().setXworkzEmail(Status.NA.toString());
 				dto.getReferralInfo().setPreferredLocation(Status.NA.toString());
 				dto.getReferralInfo().setPreferredClassType(Status.NA.toString());
-				dto.getReferralInfo().setWhatsAppLink(Status.NO.toString());
+				dto.getReferralInfo().setSendWhatsAppLink(Status.NO.toString());
 				dto.getAdminDto().setCreatedOn(LocalDateTime.now().toString());
 				List<Object> list = wrapper.extractDtoDetails(dto);
 
@@ -686,35 +686,18 @@ public class DreamServiceImpl implements DreamService {
 	}
 
 	@Override
-	public ResponseEntity<BatchDetails> getBatchDetailsByCourseName(String spreadsheetId, String courseName) {
+	public ResponseEntity<BatchDetails> getBatchDetailsByCourseName(String spreadsheetId, String courseName)throws IOException {
 		List<List<Object>> detailsByCourseName;
-		try {
 			detailsByCourseName = repo.getCourseDetails(spreadsheetId);
 
 			BatchDetails batch = new BatchDetails();
 			if (detailsByCourseName != null) {
 				for (List<Object> row : detailsByCourseName) {
-					if (row.get(1).toString().equalsIgnoreCase(courseName)) {
-						batch.setId(Integer.valueOf(row.get(0).toString()));
-						batch.setCourseName(String.valueOf(row.get(1)));
-						batch.setTrainerName(String.valueOf(row.get(2)));
-						batch.setStartTime(String.valueOf(row.get(3)));
-						batch.setBatchType(String.valueOf(row.get(4)));
-						batch.setTiming(String.valueOf(row.get(5)));
-						batch.setBranch(String.valueOf(row.get(6)));
-						batch.setStatus(String.valueOf(row.get(7)));
-
-					}
-
+					batch=wrapper.batchDetailsToDto(row);
 				}
 				return ResponseEntity.ok(batch);
 			}
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-
-		return null;
-
+			return null;
 	}
 
 	@Override
