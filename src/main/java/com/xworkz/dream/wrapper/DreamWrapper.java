@@ -1,6 +1,7 @@
 package com.xworkz.dream.wrapper;
 
 import java.lang.reflect.Field;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -234,6 +235,7 @@ public class DreamWrapper {
 		}
 		if (rowSize > 23 && row.get(23) != null && !row.get(23).toString().isEmpty()) {
 			traineeDto.getReferralInfo().setSendWhatsAppLink((String) row.get(23).toString());
+
 		}
 		if (rowSize > 24 && row.get(24) != null && !row.get(24).toString().isEmpty()) {
 			traineeDto.getAdminDto().setCreatedBy((String) row.get(24).toString());
@@ -357,7 +359,7 @@ public class DreamWrapper {
 		row.add(dto.getBasicInfo().getEmail());
 		row.add(dto.getBasicInfo().getContactNumber());
 		row.add(dto.getCourseInfo().getCourse());
-		row.add(dto.getPreferredLocation());
+		row.add(dto.getCourseInfo().getBranch());
 		row.add(dto.getCourseInfo().getBatchTiming());
 
 		return row;
@@ -375,7 +377,7 @@ public class DreamWrapper {
 		row.add(dto.getCourseInfo().getCourse());
 		row.add(dto.getPreferredLocation());
 		row.add(dto.getCourseInfo().getBatchTiming());
-		row.add(LocalDateTime.now());
+		row.add(LocalDate.now().toString());
 		row.add(dto.getMarkAs());
 
 		return row;
@@ -384,7 +386,8 @@ public class DreamWrapper {
 
 	public AttendanceDto attendanceListToDto(List<Object> row) {
 
-		AttendanceDto attendanceDto = new AttendanceDto(0, new BasicInfoDto(), new CourseDto(), null, null, null, 0);
+		AttendanceDto attendanceDto = new AttendanceDto(0, new BasicInfoDto(), new CourseDto(), null, null, null, null,
+				null, null);
 
 		int rowSize = row.size();
 
@@ -420,7 +423,56 @@ public class DreamWrapper {
 		}
 
 		if (rowSize > 8 && row.get(8) != null && !row.get(8).toString().isEmpty()) {
-			attendanceDto.setMarkAs((int) (row.get(8)));
+			attendanceDto.setMarkAs((String) (row.get(8)));
+		}
+		if (rowSize > 9 && row.get(9) != null && !row.get(9).toString().isEmpty()) {
+			attendanceDto.setPresent((String) (row.get(9)));
+		}
+		if (rowSize > 10 && row.get(10) != null && !row.get(10).toString().isEmpty()) {
+			attendanceDto.setAbsent((String) (row.get(10)));
+		}
+		return attendanceDto;
+	}
+
+	public AttendanceDto attendanceListEverydayToDto(List<Object> row) {
+
+		AttendanceDto attendanceDto = new AttendanceDto(0, new BasicInfoDto(), new CourseDto(), null, null, null, null,
+				null, null);
+		int rowSize = row.size();
+
+		if (rowSize > 0 && row.get(0) != null && !row.get(0).toString().isEmpty()) {
+			attendanceDto.setId(Integer.valueOf(row.get(0).toString()));
+		}
+
+		if (rowSize > 1 && row.get(1) != null && !row.get(1).toString().isEmpty()) {
+			attendanceDto.getBasicInfo().setTraineeName((String) row.get(1));
+		}
+
+		if (rowSize > 2 && row.get(2) != null && !row.get(2).toString().isEmpty()) {
+			attendanceDto.getBasicInfo().setEmail((String) row.get(2));
+		}
+
+		if (rowSize > 3 && row.get(3) != null && !row.get(3).toString().isEmpty()) {
+			attendanceDto.getBasicInfo().setContactNumber(Long.parseLong(row.get(3).toString()));
+		}
+
+		if (rowSize > 4 && row.get(4) != null && !row.get(4).toString().isEmpty()) {
+			attendanceDto.getCourseInfo().setCourse((String) row.get(4));
+		}
+		if (rowSize > 5 && row.get(5) != null && !row.get(5).toString().isEmpty()) {
+			attendanceDto.getCourseInfo().setBranch((String) row.get(5));
+		}
+
+		if (rowSize > 6 && row.get(6) != null && !row.get(6).toString().isEmpty()) {
+			attendanceDto.getCourseInfo().setBatchTiming((String) row.get(6));
+		}
+
+		if (rowSize > 7 && row.get(7) != null && !row.get(7).toString().isEmpty()) {
+			attendanceDto.setDate((String) row.get(7));
+		}
+
+		if (rowSize > 8 && row.get(8) != null && !row.get(8).toString().isEmpty()) {
+			attendanceDto.setPresent((row.get(8).toString()));
 		}
 
 		return attendanceDto;
