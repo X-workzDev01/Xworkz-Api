@@ -260,7 +260,6 @@ public class DreamRepositoryImpl implements DreamRepository {
 	@Override
 	public UpdateValuesResponse updateFollow(String spreadsheetId, String range2, ValueRange valueRange)
 			throws IOException {
-		System.out.println(spreadsheetId + " " + range2 + " " + valueRange);
 		return sheetsService.spreadsheets().values().update(spreadsheetId, range2, valueRange)
 				.setValueInputOption("RAW").execute();
 	}

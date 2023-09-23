@@ -6,8 +6,12 @@ import java.io.IOException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.ListIterator;
 import java.util.Map;
@@ -112,7 +116,7 @@ public class DreamServiceImpl implements DreamService {
 				dto.getReferralInfo().setXworkzEmail(Status.NA.toString());
 				dto.getReferralInfo().setPreferredLocation(Status.NA.toString());
 				dto.getReferralInfo().setPreferredClassType(Status.NA.toString());
-				dto.getReferralInfo().setWhatsAppLink(Status.NO.toString());
+				dto.getReferralInfo().setSendWhatsAppLink(Status.NO.toString());
 				dto.getAdminDto().setCreatedOn(LocalDateTime.now().toString());
 				List<Object> list = wrapper.extractDtoDetails(dto);
 
@@ -506,12 +510,11 @@ public class DreamServiceImpl implements DreamService {
 	public ResponseEntity<?> getDetailsByEmail(String spreadsheetId, String email, HttpServletRequest request)
 			throws IOException {
 		List<List<Object>> data = repo.readData(spreadsheetId);
-		TraineeDto trainee = null;
-		for (List<Object> list : data) {
-			if (list.contains(email)) {
-				trainee = wrapper.listToDto(list);
-			}
-		}
+		TraineeDto trainee = data.stream()
+			    .filter(list -> list.contains(email))
+			    .findFirst()
+			    .map(wrapper::listToDto)
+			    .orElse(null);
 		if (trainee != null) {
 			return ResponseEntity.ok(trainee);
 		} else {
@@ -523,12 +526,11 @@ public class DreamServiceImpl implements DreamService {
 	public ResponseEntity<FollowUpDto> getFollowUpByEmail(String spreadsheetId, String email,
 			HttpServletRequest request) throws IOException {
 		List<List<Object>> data = repo.getFollowUpDetails(spreadsheetId);
-		FollowUpDto followUp = null;
-		for (List<Object> list : data) {
-			if (list.get(2).toString().equalsIgnoreCase(email)) {
-				followUp = wrapper.listToFollowUpDTO(list);
-			}
-		}
+		FollowUpDto followUp = data.stream()
+			    .filter(list -> list.size() > 2 && list.get(2).toString().equalsIgnoreCase(email))
+			    .findFirst()
+			    .map(wrapper::listToFollowUpDTO)
+			    .orElse(null);
 		if (followUp != null) {
 			return ResponseEntity.ok(followUp);
 		} else {
@@ -540,7 +542,7 @@ public class DreamServiceImpl implements DreamService {
 	public ResponseEntity<FollowUpDataDto> getFollowUpDetails(String spreadsheetId, int startingIndex, int maxRows,
 			String status) throws IOException {
 		List<FollowUpDto> followUpDto = new ArrayList<FollowUpDto>();
-		// String traineeStatus=status.toLowerCase();
+
 		if (status != null && !status.isEmpty()) {
 
 			List<List<Object>> lists = repo.getFollowUpDetails(spreadsheetId);
@@ -548,7 +550,13 @@ public class DreamServiceImpl implements DreamService {
 			List<List<Object>> data = lists.stream()
 					.filter(list -> list.stream().anyMatch(value -> value.toString().equalsIgnoreCase(status)))
 					.collect(Collectors.toList());
-			followUpDto = getFollowUpRows(data, startingIndex, maxRows);
+
+	 
+	        List<List<Object>> sortedData = data.stream()
+	                .sorted(Comparator.comparing(list -> list.get(4).toString(), Comparator.reverseOrder()))
+	                .collect(Collectors.toList());
+	        
+			followUpDto = getFollowUpRows(sortedData, startingIndex, maxRows);
 			FollowUpDataDto followUpDataDto = new FollowUpDataDto(followUpDto, data.size());
 			repo.evictAllCachesOnTraineeDetails();
 			return ResponseEntity.ok(followUpDataDto);
@@ -678,35 +686,18 @@ public class DreamServiceImpl implements DreamService {
 	}
 
 	@Override
-	public ResponseEntity<BatchDetails> getBatchDetailsByCourseName(String spreadsheetId, String courseName) {
+	public ResponseEntity<BatchDetails> getBatchDetailsByCourseName(String spreadsheetId, String courseName)throws IOException {
 		List<List<Object>> detailsByCourseName;
-		try {
 			detailsByCourseName = repo.getCourseDetails(spreadsheetId);
 
 			BatchDetails batch = new BatchDetails();
 			if (detailsByCourseName != null) {
 				for (List<Object> row : detailsByCourseName) {
-					if (row.get(1).toString().equalsIgnoreCase(courseName)) {
-						batch.setId(Integer.valueOf(row.get(0).toString()));
-						batch.setCourseName(String.valueOf(row.get(1)));
-						batch.setTrainerName(String.valueOf(row.get(2)));
-						batch.setStartTime(String.valueOf(row.get(3)));
-						batch.setBatchType(String.valueOf(row.get(4)));
-						batch.setTiming(String.valueOf(row.get(5)));
-						batch.setBranch(String.valueOf(row.get(6)));
-						batch.setStatus(String.valueOf(row.get(7)));
-
-					}
-
+					batch=wrapper.batchDetailsToDto(row);
 				}
 				return ResponseEntity.ok(batch);
 			}
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-
-		return null;
-
+			return null;
 	}
 
 	@Override

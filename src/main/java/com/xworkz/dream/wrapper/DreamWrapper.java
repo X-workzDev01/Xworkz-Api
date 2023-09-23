@@ -11,6 +11,7 @@ import org.springframework.stereotype.Component;
 import com.xworkz.dream.dto.AdminDto;
 import com.xworkz.dream.dto.AttendanceDto;
 import com.xworkz.dream.dto.BasicInfoDto;
+import com.xworkz.dream.dto.BatchDetails;
 import com.xworkz.dream.dto.CourseDto;
 import com.xworkz.dream.dto.EducationInfoDto;
 import com.xworkz.dream.dto.FollowUpDto;
@@ -127,7 +128,6 @@ public class DreamWrapper {
 		}
 		if (rowSize > 9 && rows.get(9) != null && !rows.get(9).toString().isEmpty()) {
 			statusDto.setCallBack((String) rows.get(9));
-
 		}
 
 		if (rowSize > 10 && rows.get(10) != null && !rows.get(10).toString().isEmpty()) {
@@ -234,7 +234,8 @@ public class DreamWrapper {
 			traineeDto.getReferralInfo().setPreferredClassType((String) row.get(22).toString());
 		}
 		if (rowSize > 23 && row.get(23) != null && !row.get(23).toString().isEmpty()) {
-			traineeDto.getReferralInfo().setPreferredClassType((String) row.get(23).toString());
+			traineeDto.getReferralInfo().setSendWhatsAppLink((String) row.get(23).toString());
+
 		}
 		if (rowSize > 24 && row.get(24) != null && !row.get(24).toString().isEmpty()) {
 			traineeDto.getAdminDto().setCreatedBy((String) row.get(24).toString());
@@ -297,6 +298,57 @@ public class DreamWrapper {
 
 		return detailsList;
 	}
+	
+	public List<Object> listOfBatchDetails(BatchDetails dto){
+		List<Object> row =new ArrayList<Object>();
+		row.add(dto.getId());
+		row.add(dto.getCourseName());
+		row.add(dto.getTrainerName());
+		row.add(dto.getStartTime());
+		row.add(dto.getBatchType());
+		row.add(dto.getTiming());
+		row.add(dto.getBranch());
+		row.add(dto.getStatus());
+		row.add(dto.getWhatsAppLink());
+		
+		return row;
+	}
+	
+	public BatchDetails batchDetailsToDto(List<Object> row) {
+		
+		BatchDetails details=new BatchDetails(null, null, null, null, null, null, null, null, null);
+		int rowSize = row.size();
+		if (rowSize > 0 && row.get(0) != null && !row.get(0).toString().isEmpty()) {
+			details.setId(Integer.valueOf(row.get(0).toString()));
+		}
+		if (rowSize > 1 && row.get(1) != null && !row.get(1).toString().isEmpty()) {
+			details.setCourseName(String.valueOf(row.get(1).toString()));
+		}
+		if (rowSize > 2 && row.get(2) != null && !row.get(2).toString().isEmpty()) {
+			details.setTrainerName(String.valueOf(row.get(2).toString()));
+		}
+		if (rowSize > 3 && row.get(3) != null && !row.get(3).toString().isEmpty()) {
+			details.setStartTime(String.valueOf(row.get(3).toString()));
+		}
+		if (rowSize > 4 && row.get(4) != null && !row.get(4).toString().isEmpty()) {
+			details.setBatchType(String.valueOf(row.get(4).toString()));
+		}
+		if (rowSize > 5 && row.get(5) != null && !row.get(5).toString().isEmpty()) {
+			details.setTiming(String.valueOf(row.get(5).toString()));
+		}
+		if (rowSize > 6 && row.get(6) != null && !row.get(6).toString().isEmpty()) {
+			details.setBranch(String.valueOf(row.get(6).toString()));
+		}
+		if (rowSize > 7 && row.get(7) != null && !row.get(7).toString().isEmpty()) {
+			details.setStatus(String.valueOf(row.get(7).toString()));
+		}
+		if (rowSize > 8 && row.get(8) != null && !row.get(8).toString().isEmpty()) {
+			details.setWhatsAppLink(String.valueOf(row.get(8).toString()));
+		}
+		
+		return details;
+	}
+	
 
 	public List<Object> listOfAttendance(AttendanceDto dto) {
 
