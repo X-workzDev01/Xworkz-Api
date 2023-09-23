@@ -1,6 +1,6 @@
 spring:
    profiles:
-      active: local
+      active: dev
    freemarker:
     template-loader-path: classpath:/templates/
 
@@ -41,12 +41,6 @@ sheets:
   presentRange: H
   absentRange: I
   AttandanceInfoSheetName: attendanceInfo!
-  
-
-
-
-
-
 mail:
    smtpHost: smtp.office365.com
    smtpPort: 587
