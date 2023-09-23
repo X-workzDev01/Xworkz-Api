@@ -772,84 +772,77 @@ public class DreamServiceImpl implements DreamService {
 				Status.Not_reachable.toString().replace('_', ' '), Status.Let_us_know.toString().replace('_', ' '),
 				Status.Need_online.toString().replace('_', ' ')).collect(Collectors.toList());
 
-		LocalTime time = LocalTime.of(12, 35, 01, 500_000_000);
+		LocalTime time = LocalTime.of(18, 00, 01, 500_000_000);
 		List<StatusDto> notificationStatus = new ArrayList<StatusDto>();
 		List<StatusDto> notificationStatusBymail = new ArrayList<StatusDto>();
 		List<List<Object>> followup = repo.getFollowUpDetailsByid(spreadsheetId);
 		followup.stream().forEach(f -> {
 			followUpDto = wrapper.listToFollowUpDTO(f);
 		});
-		try {
-			if (spreadsheetId != null) {
-				List<List<Object>> list = repo.notification(spreadsheetId);
-				if (!list.isEmpty()) {
-					if (email != null) {
-						list.stream().forEach(e -> {
-							StatusDto dto = wrapper.listToStatusDto(e);
 
-							if (LocalDate.now().isEqual(LocalDate.parse(dto.getCallBack()))
-									&& email.equalsIgnoreCase(dto.getAttemptedBy())
-									&& statusCheck.contains(dto.getAttemptStatus())) {
-								notificationStatusBymail.add(dto);
-
-								response = ResponseEntity.ok(notificationStatusBymail);
-							}
-							if (LocalDate.now().minusDays(1).isEqual(LocalDate.parse(dto.getCallBack()))
-									&& email.equalsIgnoreCase(dto.getAttemptedBy())
-									&& statusCheck.contains(dto.getAttemptStatus())) {
-								notificationStatusBymail.add(dto);
-
-							}
-							if (LocalDate.now().plusDays(1).isEqual(LocalDate.parse(dto.getCallBack()))
-									&& email.equalsIgnoreCase(dto.getAttemptedBy())
-									&& statusCheck.contains(dto.getAttemptStatus())) {
-								notificationStatusBymail.add(dto);
-
-							}
-
-						});
-
-					}
+		if (spreadsheetId != null) {
+			List<List<Object>> list = repo.notification(spreadsheetId);
+			if (!list.isEmpty()) {
+				if (email != null) {
 					list.stream().forEach(e -> {
 						StatusDto dto = wrapper.listToStatusDto(e);
-						if (dto.getCallBack() != null) {
-							if (LocalDateTime.now()
-									.isAfter(LocalDateTime.of((LocalDate.parse(dto.getCallBack())), time))
-									&& LocalDateTime.now().isBefore(LocalDateTime
-											.of((LocalDate.parse(dto.getCallBack())), time.plusMinutes(30)))) {
 
-								if (statusCheck.contains(dto.getAttemptStatus())
-										&& LocalDate.now().isEqual(LocalDate.parse(dto.getCallBack()))) {
+						if (LocalDate.now().isEqual(LocalDate.parse(dto.getCallBack()))
+								&& email.equalsIgnoreCase(dto.getAttemptedBy())
+								&& statusCheck.contains(dto.getAttemptStatus())) {
+							notificationStatusBymail.add(dto);
 
-									notificationStatus.add(dto);
-									response = ResponseEntity.ok(notificationStatus);
+							response = ResponseEntity.ok(notificationStatusBymail);
+						}
+						if (LocalDate.now().minusDays(1).isEqual(LocalDate.parse(dto.getCallBack()))
+								&& email.equalsIgnoreCase(dto.getAttemptedBy())
+								&& statusCheck.contains(dto.getAttemptStatus())) {
+							notificationStatusBymail.add(dto);
 
-								}
+						}
+						if (LocalDate.now().plusDays(1).isEqual(LocalDate.parse(dto.getCallBack()))
+								&& email.equalsIgnoreCase(dto.getAttemptedBy())
+								&& statusCheck.contains(dto.getAttemptStatus())) {
+							notificationStatusBymail.add(dto);
 
-							}
 						}
 
 					});
+
 				}
-				if (LocalTime.now().isAfter(time) && LocalTime.now().isBefore(time.plusMinutes(30))) {
 
-					if (!notificationStatus.isEmpty()) {
+				list.stream().forEach(e -> {
+					StatusDto dto = wrapper.listToStatusDto(e);
+					if (dto.getCallBack() != null) {
+							if (LocalDateTime.now()
+									.isAfter(LocalDateTime.of((LocalDate.parse(dto.getCallBack())), time))
+									&& LocalDateTime.now().isBefore(LocalDateTime
+											.of((LocalDate.parse(dto.getCallBack())), time.plusMinutes(26)))) {
 
-						util.sendNotificationToEmail(teamList, notificationStatus);
-					} else {
+						if (statusCheck.contains(dto.getAttemptStatus())
+								&& LocalDate.now().isEqual(LocalDate.parse(dto.getCallBack()))) {
+
+							notificationStatus.add(dto);
+							response = ResponseEntity.ok(notificationStatus);
+
+						}
 
 					}
+						}
 
-				}
-
+				});
 			}
+				if (LocalTime.now().isAfter(time) && LocalTime.now().isBefore(time.plusMinutes(26))) {
 
-		} catch (
+			if (!notificationStatus.isEmpty()) {
+ 
+				util.sendNotificationToEmail(teamList, notificationStatus);
 
-		IOException e) {
-			e.printStackTrace();
+			} 
 
 		}
+
+			}
 
 	}
 

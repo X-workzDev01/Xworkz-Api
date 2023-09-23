@@ -25,7 +25,7 @@ import freemarker.template.TemplateException;
 import io.swagger.annotations.ApiOperation;
 
 @RestController
-@RequestMapping("/attendance")
+@RequestMapping("/")
 public class AttendanceController {
 
 	@Autowired

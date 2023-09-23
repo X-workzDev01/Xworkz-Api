@@ -375,7 +375,7 @@ public class DreamWrapper {
 		row.add(dto.getBasicInfo().getEmail());
 		row.add(dto.getBasicInfo().getContactNumber());
 		row.add(dto.getCourseInfo().getCourse());
-		row.add(dto.getPreferredLocation());
+		row.add(dto.getCourseInfo().getBranch());
 		row.add(dto.getCourseInfo().getBatchTiming());
 		row.add(LocalDate.now().toString());
 		row.add(dto.getMarkAs());
@@ -468,11 +468,11 @@ public class DreamWrapper {
 		}
 
 		if (rowSize > 7 && row.get(7) != null && !row.get(7).toString().isEmpty()) {
-			attendanceDto.setDate((String) row.get(7));
+			attendanceDto.setPresent((String) row.get(7));
 		}
 
 		if (rowSize > 8 && row.get(8) != null && !row.get(8).toString().isEmpty()) {
-			attendanceDto.setPresent((row.get(8).toString()));
+			attendanceDto.setAbsent((row.get(8).toString()));
 		}
 
 		return attendanceDto;

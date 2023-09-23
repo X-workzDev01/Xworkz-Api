@@ -297,7 +297,6 @@ public class DreamRepositoryImpl implements DreamRepository {
 			"followUpDetails" }, allEntries = true)
 	public void evictAllCachesOnTraineeDetails() {
 		// will evict all entries in the specified caches
-		System.out.println("evictAllCachesOnTraineeDetails running");
 
 	}
 
