@@ -25,18 +25,27 @@ sheets:
   followUpRowCurrentStartRange: G
   followUpRowCurrentEndRange: H
   emailAndNameRange: xworkzApi!A2:C
-  batchDetails: batchDetails!A2:H
-  batchDetailsRange: batchDetails!A2:H 
+  batchDetailsSheetName: batchDetails!
+  batchDetailsStartRange: A2
+  batchDetailsEndRange: I
+  batchDetails: batchDetails!A2:I
+  batchDetailsRange: batchDetails!A2:I 
   batchIdRange: batchDetails!A2:A
   dateOfBirthDetailsSheetName: dateOfBirthDetails!
   dateOfBirthDetailsRange: dateOfBirthDetails!A2:D
   birthdayRange: dateOfBirthDetails!A2:A
-  attendanceInfoRange: attendanceInfo!A3:K
+  attendanceInfoRange: attendanceInfo!A2:J
   attendanceInfoIDRange: attendanceInfo!A2:J
   followUpStatusIdRange: followUpStatus!A2:A
   attendanceInfoByName: attendanceInfo!A2:E
-  attendanceList: attendanceList!A2:I
+  attendanceList: attendanceList!A2:J
   attendanceListByEmail: attendanceList!A2:I
+  batchDetailsCourseNameRange: batchDetails!B2:B
+  idAttandanceInfoRange: A3:A
+  presentRange: H
+  absentRange: I
+  AttandanceInfoSheetName: attendanceInfo!
+
 
 
 mail:

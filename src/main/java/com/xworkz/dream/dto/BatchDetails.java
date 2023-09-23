@@ -14,11 +14,12 @@ import lombok.Setter;
 public class BatchDetails {
 	private Integer id;
 	private String courseName;
-	private String trainerName;
+	private String trainerName; 
 	private String startTime;
 	private String batchType;
 	private String timing;
 	private String branch;
 	private String status;
+	private String whatsAppLink;
 
 }
