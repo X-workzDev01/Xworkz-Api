@@ -360,7 +360,7 @@ public class DreamWrapper {
 		row.add(dto.getBasicInfo().getContactNumber());
 		row.add(dto.getCourseInfo().getCourse());
 		row.add(dto.getCourseInfo().getBranch());
-		row.add(dto.getCourseInfo().getBatchTiming());
+		row.add(dto.getCourseInfo().getBatchType());
 
 		return row;
 
