@@ -259,15 +259,6 @@ public class DreamServiceImpl implements DreamService {
 	}
 
 	@Override
-	@CacheEvict(value = { "sheetsData", "emailData", "contactData", "getDropdowns", "followUpStatusDetails",
-			"followUpDetails" }, allEntries = true)
-	@Scheduled(fixedDelay = 43200000) // 12 hours in milliseconds
-	public void evictAllCaches() {
-		// This method will be scheduled to run every 12 hours
-		// and will evict all entries in the specified caches
-	}
-
-	@Override
 	public ResponseEntity<SheetsDto> readData(String spreadsheetId, int startingIndex, int maxRows) {
 		try {
 			List<List<Object>> data = repo.readData(spreadsheetId);
@@ -413,21 +404,17 @@ public class DreamServiceImpl implements DreamService {
 	@Override
 	public boolean updateCurrentFollowUp(String spreadsheetId, String email, String currentStatus,
 			String currentlyFollowedBy) throws IOException, IllegalAccessException {
-		// List<List<Object>> followUpData = repo.getFollowUpDetails(spreadsheetId);
 		FollowUpDto followUpDto = getFollowUpDetailsByEmail(spreadsheetId, email);
 		int rowIndex = findByEmailForUpdate(spreadsheetId, email);
 		String range = followUpSheetName + followUprowStartRange + rowIndex + ":" + followUprowEndRange + rowIndex;
 		followUpDto.setCurrentStatus(currentStatus);
-		// followUpDto.setCurrentlyFollowedBy(currentlyFollowedBy);;
 		List<List<Object>> values = Arrays.asList(wrapper.extractDtoDetails(followUpDto));
 		ValueRange valueRange = new ValueRange();
 		valueRange.setValues(values);
 		UpdateValuesResponse updated = repo.updateFollow(spreadsheetId, range, valueRange);
 		if (updated.isEmpty()) {
-			// repo.evictAllCachesOnTraineeDetails();
 			return false;
 		} else {
-			// repo.evictAllCachesOnTraineeDetails();
 			return true;
 		}
 	}
@@ -884,5 +871,13 @@ public class DreamServiceImpl implements DreamService {
 	public String verifyEmails(String email) {
 		return emailableClient.verifyEmail(email, API_KEY);
 	}
-
+	
+	@Override
+	@CacheEvict(value = { "sheetsData", "emailData", "contactData", "getDropdowns", "followUpStatusDetails",
+			"followUpDetails" }, allEntries = true)
+	@Scheduled(fixedDelay = 43200000) // 12 hours in milliseconds
+	public void evictAllCaches() {
+		// This method will be scheduled to run every 12 hours
+		// and will evict all entries in the specified caches
+	}
 }
