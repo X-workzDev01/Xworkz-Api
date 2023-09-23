@@ -69,10 +69,12 @@ public class AttendanceServiceImpl implements AttendanceService {
 			dto.getCourseInfo().setStartTime(LocalDateTime.now().toString());
 			List<Object> list = wrapper.listOfAttendance(dto);
 			attendanceRepository.writeAttendance(spreadsheetId, list, attendanceInfoRange);
+			logger.info("Attendance Detiles Added Sucessfully SpreadsheetId: {} , Detiles: {} ", spreadsheetId,
+					dto.toString());
 			return ResponseEntity.ok("Attendance Detiles Added Sucessfully");
 
 		}
-		
+
 		return ResponseEntity.ok("Attendance detiles already exists");
 
 	}
@@ -82,6 +84,7 @@ public class AttendanceServiceImpl implements AttendanceService {
 
 		if (dto != null) {
 			List<Object> list = wrapper.listOfAddAttendance(dto);
+
 			boolean writeStatus = attendanceRepository.everyDayAttendance(sheetId, list, attendanceListRange);
 			if (writeStatus == true) {
 
@@ -114,7 +117,7 @@ public class AttendanceServiceImpl implements AttendanceService {
 			}
 
 		}
-
+		logger.info("Attendance Detiles Added Sucessfully SpreadsheetId: {} , Detiles: {} ", sheetId, dto);
 		return ResponseEntity.ok("Total Present is " + present + "ABsent is " + absent);
 
 	}
@@ -138,14 +141,15 @@ public class AttendanceServiceImpl implements AttendanceService {
 			throws IOException, MessagingException, TemplateException {
 		List<AttendanceDto> dtos = new ArrayList<AttendanceDto>();
 		List<List<Object>> attandanceList = attendanceRepository.attendanceDetilesByEmail(sheetId, Email,
-				attendanceInfoRange);
+				attendanceListRange);
+		System.err.println("------------------------ "+attandanceList);
 		attandanceList.stream().forEach(f -> {
 			AttendanceDto dto = wrapper.attendanceListToDto(f);
 			dtos.add(dto);
 
 		});
 
-		return ResponseEntity.ok(dtos);
+		return ResponseEntity.ok(dtos); 
 	}
 
 	@Override
@@ -154,14 +158,17 @@ public class AttendanceServiceImpl implements AttendanceService {
 		List<AttendanceDto> dtos = new ArrayList<AttendanceDto>();
 		List<List<Object>> attandanceList = attendanceRepository.attendanceDetilesByEmail(sheetId, batch,
 				attendanceInfoRange);
+		logger.debug("Dto is  attandance :{} ", attandanceList);
+
 		attandanceList.stream().forEach(f -> {
 			if (!f.isEmpty() && f.toString() != null) {
 				AttendanceDto dto = wrapper.attendanceListEverydayToDto(f);
 				if (dto.getCourseInfo().getCourse().equals(batch)) {
-					dtos.add(dto);
+					dtos.add(dto); 
 				}
 			}
 		});
+		logger.debug("Dto is  attandance :{} ", dtos);
 		return ResponseEntity.ok(dtos);
 	}
 
