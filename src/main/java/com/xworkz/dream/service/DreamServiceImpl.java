@@ -321,19 +321,15 @@ public class DreamServiceImpl implements DreamService {
 	@Override
 	public ResponseEntity<String> update(String spreadsheetId, String email, TraineeDto dto) {
 		
-			System.err.println(dto);
 			AdminDto admin = new AdminDto();
 			admin.setCreatedBy(dto.getAdminDto().getCreatedBy());	
 			admin.setCreatedOn(LocalDateTime.now().toString());
 			admin.setUpdatedBy(dto.getAdminDto().getUpdatedBy());
 			admin.setUpdatedOn(LocalDateTime.now().toString());
 			dto.setAdminDto(admin);
-			System.err.println("========"+dto);
 			try {
 			int rowIndex = findRowIndexByEmail(spreadsheetId, email);
 			String range = traineeSheetName + rowStartRange + rowIndex + ":" + rowEndRange + rowIndex;
-			System.out.println(range);
-
 			try {
 				List<List<Object>> values = Arrays.asList(wrapper.extractDtoDetails(dto));
 
@@ -367,7 +363,7 @@ public class DreamServiceImpl implements DreamService {
 			throws IOException, IllegalAccessException {
 		FollowUpDto followUpDto = getFollowUpDetailsByEmail(spreadsheetId, email);
 
-		System.err.println(followUpDto);
+
 		int rowIndex = findByEmailForUpdate(spreadsheetId, email);
 
 		String range = followUpSheetName + followUprowStartRange + rowIndex + ":" + followUprowEndRange + rowIndex;
