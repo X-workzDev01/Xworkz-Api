@@ -1,6 +1,6 @@
 spring:
    profiles:
-      active: dev
+      active: local
    freemarker:
     template-loader-path: classpath:/templates/
 
@@ -15,13 +15,13 @@ sheets:
   followUpRange: followUp!A2:I
   followUpStatus: followUpStatus!A2:L
   rowStartRange: A
-  rowEndRange: Y
+  rowEndRange: Y    
   traineeSheetName: xworkzApi!
   followUpSheetName: followUp!
   followUprowStartRange: A2
   followUprowEndRange: I
   followUpEmailRange: followUp!C2:C
-  idRange: xworkzApi!A3:A
+  idRange: xworkzApi!A3:A  
   followUpRowCurrentStartRange: G
   followUpRowCurrentEndRange: H
   emailAndNameRange: xworkzApi!A2:C
@@ -39,12 +39,14 @@ sheets:
   followUpStatusIdRange: followUpStatus!A2:A
   attendanceInfoByName: attendanceInfo!A2:E
   attendanceList: attendanceList!A2:J
-  attendanceListByEmail: attendanceList!A2:I
+  attendanceListByEmail: attendanceList!A2:J
+  attendanceListRange: attendanceList!A2:K
   batchDetailsCourseNameRange: batchDetails!B2:B
   idAttandanceInfoRange: A3:A
   presentRange: H
   absentRange: I
   AttandanceInfoSheetName: attendanceInfo!
+  attendanceListDefaultRange: attendanceInfo!J2:j
 
 mail:
    smtpHost: smtp.office365.com

@@ -13,6 +13,7 @@ import javax.annotation.PostConstruct;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.ResourceLoader;
@@ -24,6 +25,10 @@ import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.gson.GsonFactory;
 import com.google.api.services.sheets.v4.Sheets;
 import com.google.api.services.sheets.v4.SheetsScopes;
+import com.google.api.services.sheets.v4.model.BatchGetValuesByDataFilterRequest;
+import com.google.api.services.sheets.v4.model.BatchGetValuesByDataFilterResponse;
+import com.google.api.services.sheets.v4.model.ClearValuesRequest;
+import com.google.api.services.sheets.v4.model.DataFilter;
 import com.google.api.services.sheets.v4.model.UpdateValuesResponse;
 import com.google.api.services.sheets.v4.model.ValueRange;
 import com.google.auth.http.HttpCredentialsAdapter;
@@ -67,7 +72,9 @@ public class AttendanceRepositoryImpl implements AttendanceRepository {
 	}
 
 	@Override
-//	@Cacheable(value = "attendanceList", key = "#sheetId", unless = "#result == null")
+	@Cacheable(value = "byEmail", key = "#sheetId", unless = "#result == null")
+	@CacheEvict(value = { "byEmail" }, allEntries = true)
+
 	public List<List<Object>> attendanceDetilesByEmail(String sheetId, String email, String range) throws IOException {
 		ValueRange response = sheetsService.spreadsheets().values().get(sheetId, range).execute();
 		return response.getValues();
@@ -84,7 +91,6 @@ public class AttendanceRepositoryImpl implements AttendanceRepository {
 	}
 
 	@Override
-//	@Cacheable(value = "attendanceInfo", key = "#sheetId", unless = "#result == null")
 	public List<List<Object>> getEmail(String spreadsheetId, String range) throws IOException {
 		ValueRange response = sheetsService.spreadsheets().values().get(spreadsheetId, range).execute();
 		return response.getValues();
@@ -96,4 +102,9 @@ public class AttendanceRepositoryImpl implements AttendanceRepository {
 				.execute();
 	}
 
+	public void clearColumnData(String spreadsheetId, String range) throws IOException {
+		Sheets.Spreadsheets.Values.Clear request = sheetsService.spreadsheets().values().clear(spreadsheetId, range,
+				new ClearValuesRequest());
+		request.execute();
+	}
 }

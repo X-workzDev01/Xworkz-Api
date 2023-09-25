@@ -17,4 +17,6 @@ public interface AttendanceRepository {
 			throws IOException;
 
 	public UpdateValuesResponse update(String spreadsheetId, String range2, ValueRange valueRange) throws IOException;
+
+	public void clearColumnData(String spreadsheetId, String range) throws IOException;
 }
