@@ -298,9 +298,9 @@ public class DreamWrapper {
 
 		return detailsList;
 	}
-	
-	public List<Object> listOfBatchDetails(BatchDetails dto){
-		List<Object> row =new ArrayList<Object>();
+
+	public List<Object> listOfBatchDetails(BatchDetails dto) {
+		List<Object> row = new ArrayList<Object>();
 		row.add(dto.getId());
 		row.add(dto.getCourseName());
 		row.add(dto.getTrainerName());
@@ -310,13 +310,13 @@ public class DreamWrapper {
 		row.add(dto.getBranch());
 		row.add(dto.getStatus());
 		row.add(dto.getWhatsAppLink());
-		
+
 		return row;
 	}
-	
+
 	public BatchDetails batchDetailsToDto(List<Object> row) {
-		
-		BatchDetails details=new BatchDetails(null, null, null, null, null, null, null, null, null);
+
+		BatchDetails details = new BatchDetails(null, null, null, null, null, null, null, null, null);
 		int rowSize = row.size();
 		if (rowSize > 0 && row.get(0) != null && !row.get(0).toString().isEmpty()) {
 			details.setId(Integer.valueOf(row.get(0).toString()));
@@ -345,10 +345,9 @@ public class DreamWrapper {
 		if (rowSize > 8 && row.get(8) != null && !row.get(8).toString().isEmpty()) {
 			details.setWhatsAppLink(String.valueOf(row.get(8).toString()));
 		}
-		
+
 		return details;
 	}
-	
 
 	public List<Object> listOfAttendance(AttendanceDto dto) {
 
@@ -379,6 +378,7 @@ public class DreamWrapper {
 		row.add(dto.getCourseInfo().getBatchTiming());
 		row.add(LocalDate.now().toString());
 		row.add(dto.getMarkAs());
+		row.add("true");
 
 		return row;
 
@@ -387,8 +387,7 @@ public class DreamWrapper {
 	public AttendanceDto attendanceListToDto(List<Object> row) {
 
 		AttendanceDto attendanceDto = new AttendanceDto(0, new BasicInfoDto(), new CourseDto(), null, null, null, null,
-				null, null);
-
+				null, null, null);
 		int rowSize = row.size();
 
 		if (rowSize > 0 && row.get(0) != null && !row.get(0).toString().isEmpty()) {
@@ -426,18 +425,17 @@ public class DreamWrapper {
 			attendanceDto.setMarkAs((String) (row.get(8)));
 		}
 		if (rowSize > 9 && row.get(9) != null && !row.get(9).toString().isEmpty()) {
-			attendanceDto.setPresent((String) (row.get(9)));
+			attendanceDto.setIsButton((String) (row.get(9).toString().toLowerCase()));
 		}
-		if (rowSize > 10 && row.get(10) != null && !row.get(10).toString().isEmpty()) {
-			attendanceDto.setAbsent((String) (row.get(10)));
-		}
+
 		return attendanceDto;
 	}
 
 	public AttendanceDto attendanceListEverydayToDto(List<Object> row) {
 
 		AttendanceDto attendanceDto = new AttendanceDto(0, new BasicInfoDto(), new CourseDto(), null, null, null, null,
-				null, null);
+				null, null, null);
+
 		int rowSize = row.size();
 
 		if (rowSize > 0 && row.get(0) != null && !row.get(0).toString().isEmpty()) {
@@ -473,6 +471,9 @@ public class DreamWrapper {
 
 		if (rowSize > 8 && row.get(8) != null && !row.get(8).toString().isEmpty()) {
 			attendanceDto.setAbsent((row.get(8).toString()));
+		}
+		if (rowSize > 9 && row.get(9) != null && !row.get(9).toString().isEmpty()) {
+			attendanceDto.setIsButton((row.get(9).toString().toLowerCase()));
 		}
 
 		return attendanceDto;
