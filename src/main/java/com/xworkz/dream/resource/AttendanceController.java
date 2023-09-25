@@ -10,6 +10,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
+import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -18,6 +19,10 @@ import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+
+import com.google.api.services.sheets.v4.model.BatchGetValuesByDataFilterRequest;
+import com.google.api.services.sheets.v4.model.DataFilter;
+import com.google.api.services.sheets.v4.model.ValueRange;
 import com.xworkz.dream.dto.AttendanceDto;
 import com.xworkz.dream.repository.DreamRepositoryImpl;
 import com.xworkz.dream.service.AttendanceService;
@@ -25,7 +30,8 @@ import freemarker.template.TemplateException;
 import io.swagger.annotations.ApiOperation;
 
 @RestController
-@RequestMapping("/")
+@EnableScheduling
+@RequestMapping("/api")
 public class AttendanceController {
 
 	@Autowired
@@ -38,7 +44,7 @@ public class AttendanceController {
 	@PostMapping("/registerAttendance")
 	public ResponseEntity<String> registerAttendance(@RequestBody AttendanceDto values, HttpServletRequest request)
 			throws IOException, MessagingException, TemplateException {
-		logger.info("Registering trainee details: {}", values);
+		logger.debug("Registering trainee details: {}", values);
 
 		attendanceService.writeAttendance(spreadsheetId, values, request);
 
@@ -62,9 +68,10 @@ public class AttendanceController {
 
 	@ApiOperation(value = "Get detiles in using selected  batch ")
 	@GetMapping("/byBatch")
-	public ResponseEntity<List<AttendanceDto>> getAttendanceListByBatch(@RequestParam String batch) throws Exception {
+	public ResponseEntity<List<AttendanceDto>> getAttendanceListByBatch(@RequestParam String batch,
+			@RequestParam int startIndex, @RequestParam int maxRows) throws Exception {
 
-		return attendanceService.getAttendanceDetilesBatch(batch);
+		return attendanceService.getAttendanceDetilesBatch(batch,startIndex,maxRows);
 
 	}
 
