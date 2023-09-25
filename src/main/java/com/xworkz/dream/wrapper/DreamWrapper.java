@@ -59,7 +59,7 @@ public class DreamWrapper {
 	}
 
 	public FollowUpDto listToFollowUpDTO(List<Object> row) {
-		FollowUpDto followUpDto = new FollowUpDto(0, new BasicInfoDto(), null, null, null, null, null);
+		FollowUpDto followUpDto = new FollowUpDto(0, new BasicInfoDto(), null, null, null, null, null, null);
 		int rowSize = row.size();
 		if (rowSize > 0 && row.get(0) != null && !row.get(0).toString().isEmpty()) {
 			followUpDto.setId(Integer.valueOf(row.get(0).toString()));
@@ -88,6 +88,20 @@ public class DreamWrapper {
 		if (rowSize > 8 && row.get(8) != null && !row.get(8).toString().isEmpty()) {
 			followUpDto.setCurrentStatus((String) row.get(8));
 		}
+		if (rowSize > 9 && row.get(9) != null && !row.get(9).toString().isEmpty()) {
+		    if (followUpDto.getAdminDto() == null) {
+		        followUpDto.setAdminDto(new AdminDto());
+		    }
+		    followUpDto.getAdminDto().setCreatedBy(row.get(9).toString());
+		}
+
+		if (rowSize > 10 && row.get(10) != null && !row.get(10).toString().isEmpty()) {
+		    if (followUpDto.getAdminDto() == null) {
+		        followUpDto.setAdminDto(new AdminDto());
+		    }
+		    followUpDto.getAdminDto().setCreatedOn(row.get(10).toString());
+		}
+
 
 		return followUpDto;
 	}
@@ -238,11 +252,23 @@ public class DreamWrapper {
 
 		}
 		if (rowSize > 24 && row.get(24) != null && !row.get(24).toString().isEmpty()) {
-			traineeDto.getAdminDto().setCreatedBy((String) row.get(24).toString());
+		    traineeDto.getAdminDto().setCreatedBy(row.get(24).toString());
 		}
+
 		if (rowSize > 25 && row.get(25) != null && !row.get(25).toString().isEmpty()) {
-			traineeDto.getAdminDto().setCreatedOn((String) row.get(25).toString());
+		    String createdOnValue = row.get(25).toString();
+		    System.out.println("Created On Value: " + createdOnValue); // Log the value
+		    traineeDto.getAdminDto().setCreatedOn(createdOnValue);
 		}
+
+		if (rowSize > 26 && row.get(26) != null && !row.get(26).toString().isEmpty()) {
+		    traineeDto.getAdminDto().setUpdatedBy(row.get(26).toString());
+		}
+
+		if (rowSize > 27 && row.get(27) != null && !row.get(27).toString().isEmpty()) {
+		    traineeDto.getAdminDto().setUpdatedOn(row.get(27).toString());
+		}
+
 
 		return traineeDto;
 	}
