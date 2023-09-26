@@ -404,12 +404,13 @@ public class DreamServiceImpl implements DreamService {
 	}
 
 	@Override
-	public boolean updateCurrentFollowUp(String spreadsheetId, String email, String currentStatus,
-			String currentlyFollowedBy) throws IOException, IllegalAccessException {
+	
+	public boolean updateCurrentFollowUp(String spreadsheetId, String email, String currentStatus, String currentlyFollowedBy,
+			String joiningDate) throws IOException, IllegalAccessException{
 		FollowUpDto followUpDto = getFollowUpDetailsByEmail(spreadsheetId, email);
 		int rowIndex = findByEmailForUpdate(spreadsheetId, email);
 		String range = followUpSheetName + followUprowStartRange + rowIndex + ":" + followUprowEndRange + rowIndex;
-		UpdateValuesResponse updated = setFollowUpDto(spreadsheetId, currentStatus, currentlyFollowedBy, followUpDto,
+		UpdateValuesResponse updated = setFollowUpDto(spreadsheetId, currentStatus, currentlyFollowedBy,followUpDto,joiningDate,
 				range);
 		if (updated.isEmpty()) {
 			return false;
@@ -419,8 +420,9 @@ public class DreamServiceImpl implements DreamService {
 	}
 
 	private UpdateValuesResponse setFollowUpDto(String spreadsheetId, String currentStatus, String currentlyFollowedBy,
-			FollowUpDto followUpDto, String range) throws IllegalAccessException, IOException {
+			FollowUpDto followUpDto,String joiningDate,String range) throws IllegalAccessException, IOException {
 		AdminDto existingAdminDto = followUpDto.getAdminDto();
+		System.err.println(followUpDto);
 		AdminDto adminDto = new AdminDto();
 		if (existingAdminDto != null) {
 			adminDto.setCreatedBy(existingAdminDto.getCreatedBy());
@@ -431,6 +433,7 @@ public class DreamServiceImpl implements DreamService {
 		}else {
 			followUpDto.setCurrentStatus(followUpDto.getCurrentStatus());
 		}
+		followUpDto.setJoiningDate(joiningDate);
 		adminDto.setUpdatedBy(currentlyFollowedBy);
 		adminDto.setUpdatedOn(LocalDateTime.now().toString());
 		followUpDto.setAdminDto(adminDto);
@@ -453,7 +456,7 @@ public class DreamServiceImpl implements DreamService {
 			if (status == true) {
 
 				boolean update = updateCurrentFollowUp(spreadsheetId, statusDto.getBasicInfo().getEmail(),
-						statusDto.getAttemptStatus(), statusDto.getAttemptedBy());
+						statusDto.getAttemptStatus(), statusDto.getAttemptedBy(),statusDto.getJoiningDate());
 				repo.evictAllCachesOnTraineeDetails();
 			}
 
@@ -470,9 +473,6 @@ public class DreamServiceImpl implements DreamService {
 		}
 
 	}
-
-	
-
 	@Override
 	public ResponseEntity<List<TraineeDto>> getSearchSuggestion(String spreadsheetId, String value,
 			HttpServletRequest request) {
@@ -858,5 +858,12 @@ public class DreamServiceImpl implements DreamService {
 	public void evictAllCaches() {
 		// This method will be scheduled to run every 12 hours
 		// and will evict all entries in the specified caches
+	}
+
+	@Override
+	public boolean updateCurrentFollowUp(String spreadsheetId, String email, String currentStatus,
+			String currentlyFollowedBy) throws IOException, IllegalAccessException {
+		// TODO Auto-generated method stub
+		return false;
 	}
 }

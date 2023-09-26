@@ -2,5 +2,5 @@ package com.xworkz.dream.constants;
 
 public enum FollowUp {
 
-	NOT_CONFIRMED,NONE,NEW;
+	Yet_to_confirm,NONE,NEW;
 }
