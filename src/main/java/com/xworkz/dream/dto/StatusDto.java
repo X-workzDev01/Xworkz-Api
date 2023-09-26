@@ -37,6 +37,6 @@ public class StatusDto {
 	private String callBack;
 	@JsonProperty("callBackTime")
 	private String callBackTime;
-	@JsonProperty("registrationDate")
-	private String registrationDate;
+	@JsonProperty("joiningDate")
+	private String joiningDate;
 }

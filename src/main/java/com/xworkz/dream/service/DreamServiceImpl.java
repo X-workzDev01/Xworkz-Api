@@ -118,6 +118,7 @@ public class DreamServiceImpl implements DreamService {
 				dto.getReferralInfo().setPreferredLocation(Status.NA.toString());
 				dto.getReferralInfo().setPreferredClassType(Status.NA.toString());
 				dto.getReferralInfo().setSendWhatsAppLink(Status.NO.toString());
+				dto.getReferralInfo().setRegistrationDate(LocalDate.now().toString());
 				dto.getAdminDto().setCreatedOn(LocalDateTime.now().toString());
 				List<Object> list = wrapper.extractDtoDetails(dto);
 
@@ -170,26 +171,13 @@ public class DreamServiceImpl implements DreamService {
 	@Override
 	public boolean addToFollowUp(TraineeDto traineeDto, String spreadSheetId)
 			throws IOException, IllegalAccessException {
-		FollowUpDto followUpDto = new FollowUpDto();
-
-		BasicInfoDto basicInfo = new BasicInfoDto();
-		basicInfo.setTraineeName(traineeDto.getBasicInfo().getTraineeName());
-		basicInfo.setEmail(traineeDto.getBasicInfo().getEmail());
-		basicInfo.setContactNumber(traineeDto.getBasicInfo().getContactNumber());
-
-		// Set the initialized BasicInfo object to followUpDto
-		followUpDto.setBasicInfo(basicInfo);
-		followUpDto.setCourseName(traineeDto.getCourseInfo().getCourse());
-		followUpDto.setRegistrationDate(LocalDate.now().toString());
-		followUpDto.setJoiningDate(FollowUp.NOT_CONFIRMED.toString());
-		followUpDto.setId(traineeDto.getId());
-		followUpDto.setCurrentlyFollowedBy(FollowUp.NONE.toString());
-		followUpDto.setCurrentStatus(FollowUp.NEW.toString());
-		followUpDto.setAdminDto(traineeDto.getAdminDto());
+		FollowUpDto followUpDto = wrapper.setFollowUp(traineeDto);
 		List<Object> data = wrapper.extractDtoDetails(followUpDto);
 		repo.saveToFollowUp(spreadSheetId, data);
 		return true;
 	}
+
+	
 
 	@Override
 	public ResponseEntity<String> emailCheck(String spreadsheetId, String email, HttpServletRequest request) {
@@ -262,12 +250,17 @@ public class DreamServiceImpl implements DreamService {
 	@Override
 	public ResponseEntity<SheetsDto> readData(String spreadsheetId, int startingIndex, int maxRows) {
 		try {
-			List<List<Object>> data = repo.readData(spreadsheetId);
-			List<TraineeDto> dtos = getLimitedRows(data, startingIndex, maxRows);
+			List<List<Object>> dataList = repo.readData(spreadsheetId);
+	
+			
+			List<List<Object>> sortedData = dataList.stream()
+					.sorted(Comparator.comparing(list -> list.get(25).toString(), Comparator.reverseOrder()))
+					.collect(Collectors.toList());
+			List<TraineeDto> dtos = getLimitedRows(sortedData, startingIndex, maxRows);
 			HttpServletResponse response = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes())
 					.getResponse();		
 		
-			SheetsDto dto = new SheetsDto(dtos, data.size());
+			SheetsDto dto = new SheetsDto(dtos, dataList.size());
 			
 			return ResponseEntity.ok(dto);
 		} catch (IOException e) {
@@ -323,7 +316,7 @@ public class DreamServiceImpl implements DreamService {
 		
 			AdminDto admin = new AdminDto();
 			admin.setCreatedBy(dto.getAdminDto().getCreatedBy());	
-			admin.setCreatedOn(LocalDateTime.now().toString());
+			admin.setCreatedOn(dto.getAdminDto().getCreatedOn());
 			admin.setUpdatedBy(dto.getAdminDto().getUpdatedBy());
 			admin.setUpdatedOn(LocalDateTime.now().toString());
 			dto.setAdminDto(admin);
@@ -416,12 +409,27 @@ public class DreamServiceImpl implements DreamService {
 		FollowUpDto followUpDto = getFollowUpDetailsByEmail(spreadsheetId, email);
 		int rowIndex = findByEmailForUpdate(spreadsheetId, email);
 		String range = followUpSheetName + followUprowStartRange + rowIndex + ":" + followUprowEndRange + rowIndex;
-		followUpDto.setCurrentStatus(currentStatus);
+		UpdateValuesResponse updated = setFollowUpDto(spreadsheetId, currentStatus, currentlyFollowedBy, followUpDto,
+				range);
+		if (updated.isEmpty()) {
+			return false;
+		} else {
+			return true;
+		}
+	}
+
+	private UpdateValuesResponse setFollowUpDto(String spreadsheetId, String currentStatus, String currentlyFollowedBy,
+			FollowUpDto followUpDto, String range) throws IllegalAccessException, IOException {
 		AdminDto existingAdminDto = followUpDto.getAdminDto();
 		AdminDto adminDto = new AdminDto();
 		if (existingAdminDto != null) {
 			adminDto.setCreatedBy(existingAdminDto.getCreatedBy());
 			adminDto.setCreatedOn(existingAdminDto.getCreatedOn());
+		}
+		if(currentStatus!=null) {
+			followUpDto.setCurrentStatus(currentStatus);
+		}else {
+			followUpDto.setCurrentStatus(followUpDto.getCurrentStatus());
 		}
 		adminDto.setUpdatedBy(currentlyFollowedBy);
 		adminDto.setUpdatedOn(LocalDateTime.now().toString());
@@ -430,11 +438,7 @@ public class DreamServiceImpl implements DreamService {
 		ValueRange valueRange = new ValueRange();
 		valueRange.setValues(values);
 		UpdateValuesResponse updated = repo.updateFollow(spreadsheetId, range, valueRange);
-		if (updated.isEmpty()) {
-			return false;
-		} else {
-			return true;
-		}
+		return updated;
 	}
 
 	@Override
@@ -443,23 +447,8 @@ public class DreamServiceImpl implements DreamService {
 		try {
 
 			List<List<Object>> data = repo.getStatusId(spreadsheetId).getValues();
-			int size = data.size();
-			BasicInfoDto basicInfo = new BasicInfoDto();
-			basicInfo.setTraineeName(statusDto.getBasicInfo().getTraineeName());
-			basicInfo.setEmail(statusDto.getBasicInfo().getEmail());
-			basicInfo.setContactNumber(statusDto.getBasicInfo().getContactNumber());
-			StatusDto sdto = new StatusDto();
-			sdto.setId(size += 1);
-			sdto.setBasicInfo(basicInfo);
-			sdto.setAttemptedOn(LocalDateTime.now().toString());
-			sdto.setAttemptedBy(statusDto.getAttemptedBy());
-			sdto.setAttemptStatus(statusDto.getAttemptStatus());
-			sdto.setComments(statusDto.getComments());
-			sdto.setCallDuration(statusDto.getCallDuration());
-			sdto.setCallBack(statusDto.getCallBack());
-			sdto.setCallBackTime(statusDto.getCallBackTime());
+			StatusDto sdto = wrapper.setFollowUpStatus(statusDto, data);
 			List<Object> statusData = wrapper.extractDtoDetails(sdto);
-
 			boolean status = repo.updateFollowUpStatus(spreadsheetId, statusData);
 			if (status == true) {
 
@@ -481,6 +470,8 @@ public class DreamServiceImpl implements DreamService {
 		}
 
 	}
+
+	
 
 	@Override
 	public ResponseEntity<List<TraineeDto>> getSearchSuggestion(String spreadsheetId, String value,

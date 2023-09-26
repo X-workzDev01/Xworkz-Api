@@ -8,6 +8,7 @@ import java.util.List;
 
 import org.springframework.stereotype.Component;
 
+import com.xworkz.dream.constants.FollowUp;
 import com.xworkz.dream.dto.AdminDto;
 import com.xworkz.dream.dto.AttendanceDto;
 import com.xworkz.dream.dto.BasicInfoDto;
@@ -252,21 +253,24 @@ public class DreamWrapper {
 
 		}
 		if (rowSize > 24 && row.get(24) != null && !row.get(24).toString().isEmpty()) {
-		    traineeDto.getAdminDto().setCreatedBy(row.get(24).toString());
-		}
+			traineeDto.getReferralInfo().setSendWhatsAppLink((String) row.get(24).toString());
 
+		}
 		if (rowSize > 25 && row.get(25) != null && !row.get(25).toString().isEmpty()) {
-		    String createdOnValue = row.get(25).toString();
-		    System.out.println("Created On Value: " + createdOnValue); // Log the value
-		    traineeDto.getAdminDto().setCreatedOn(createdOnValue);
+		    traineeDto.getReferralInfo().setRegistrationDate(row.get(25).toString());
 		}
 
 		if (rowSize > 26 && row.get(26) != null && !row.get(26).toString().isEmpty()) {
-		    traineeDto.getAdminDto().setUpdatedBy(row.get(26).toString());
+		    String createdOnValue = row.get(26).toString();
+		    traineeDto.getAdminDto().setCreatedOn(createdOnValue);
 		}
 
 		if (rowSize > 27 && row.get(27) != null && !row.get(27).toString().isEmpty()) {
-		    traineeDto.getAdminDto().setUpdatedOn(row.get(27).toString());
+		    traineeDto.getAdminDto().setUpdatedBy(row.get(27).toString());
+		}
+
+		if (rowSize > 28 && row.get(28) != null && !row.get(28).toString().isEmpty()) {
+		    traineeDto.getAdminDto().setUpdatedOn(row.get(28).toString());
 		}
 
 
@@ -504,5 +508,52 @@ public class DreamWrapper {
 
 		return attendanceDto;
 	}
+	
+	public FollowUpDto setFollowUp(TraineeDto traineeDto) {
+		FollowUpDto followUpDto = new FollowUpDto();
+		BasicInfoDto basicInfo = new BasicInfoDto();
+		basicInfo.setTraineeName(traineeDto.getBasicInfo().getTraineeName());
+		basicInfo.setEmail(traineeDto.getBasicInfo().getEmail());
+		basicInfo.setContactNumber(traineeDto.getBasicInfo().getContactNumber());
+		followUpDto.setBasicInfo(basicInfo);
+		followUpDto.setCourseName(traineeDto.getCourseInfo().getCourse());
+		followUpDto.setRegistrationDate(LocalDate.now().toString());
+		followUpDto.setJoiningDate(FollowUp.NOT_CONFIRMED.toString());
+		followUpDto.setId(traineeDto.getId());
+		followUpDto.setCurrentlyFollowedBy(FollowUp.NONE.toString());
+		followUpDto.setCurrentStatus(FollowUp.NEW.toString());
+		followUpDto.setAdminDto(traineeDto.getAdminDto());
+		return followUpDto;
+	}
+	public void setAdminDto(TraineeDto dto) {
+		AdminDto admin = new AdminDto();
+		admin.setCreatedBy(dto.getAdminDto().getCreatedBy());	
+		admin.setCreatedOn(dto.getAdminDto().getCreatedOn());
+		admin.setUpdatedBy(dto.getAdminDto().getUpdatedBy());
+		admin.setUpdatedOn(LocalDateTime.now().toString());
+		dto.setAdminDto(admin);
+	}
+	
+	public StatusDto setFollowUpStatus(StatusDto statusDto, List<List<Object>> data) {
+		int size = data.size();
+		BasicInfoDto basicInfo = new BasicInfoDto();
+		basicInfo.setTraineeName(statusDto.getBasicInfo().getTraineeName());
+		basicInfo.setEmail(statusDto.getBasicInfo().getEmail());
+		basicInfo.setContactNumber(statusDto.getBasicInfo().getContactNumber());
+		StatusDto sdto = new StatusDto();
+		sdto.setId(size += 1);
+		sdto.setBasicInfo(basicInfo);
+		sdto.setAttemptedOn(LocalDateTime.now().toString());
+		sdto.setAttemptedBy(statusDto.getAttemptedBy());
+		sdto.setAttemptStatus(statusDto.getAttemptStatus());
+		sdto.setComments(statusDto.getComments());
+		sdto.setCallDuration(statusDto.getCallDuration());
+		sdto.setCallBack(statusDto.getCallBack());
+		sdto.setCallBackTime(statusDto.getCallBackTime());
+		return sdto;
+	}
+	
+	
+
 
 }
