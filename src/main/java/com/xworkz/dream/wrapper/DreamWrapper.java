@@ -518,7 +518,7 @@ public class DreamWrapper {
 		followUpDto.setBasicInfo(basicInfo);
 		followUpDto.setCourseName(traineeDto.getCourseInfo().getCourse());
 		followUpDto.setRegistrationDate(LocalDate.now().toString());
-		followUpDto.setJoiningDate(FollowUp.Yet_to_confirm.toString());
+		followUpDto.setJoiningDate(FollowUp.NOT_CONFIRMED.toString());
 		followUpDto.setId(traineeDto.getId());
 		followUpDto.setCurrentlyFollowedBy(FollowUp.NONE.toString());
 		followUpDto.setCurrentStatus(FollowUp.NEW.toString());

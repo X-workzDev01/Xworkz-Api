@@ -422,18 +422,19 @@ public class DreamServiceImpl implements DreamService {
 	private UpdateValuesResponse setFollowUpDto(String spreadsheetId, String currentStatus, String currentlyFollowedBy,
 			FollowUpDto followUpDto,String joiningDate,String range) throws IllegalAccessException, IOException {
 		AdminDto existingAdminDto = followUpDto.getAdminDto();
-		System.err.println(followUpDto);
 		AdminDto adminDto = new AdminDto();
 		if (existingAdminDto != null) {
 			adminDto.setCreatedBy(existingAdminDto.getCreatedBy());
 			adminDto.setCreatedOn(existingAdminDto.getCreatedOn());
 		}
-		if(currentStatus!=null) {
-			followUpDto.setCurrentStatus(currentStatus);
-		}else {
-			followUpDto.setCurrentStatus(followUpDto.getCurrentStatus());
+		if (currentStatus != null && !currentStatus.equals("NA")) {
+		    followUpDto.setCurrentStatus(currentStatus);
 		}
-		followUpDto.setJoiningDate(joiningDate);
+
+		if (joiningDate != null && !joiningDate.equals("NA")) {
+		    followUpDto.setJoiningDate(joiningDate);
+		}
+
 		adminDto.setUpdatedBy(currentlyFollowedBy);
 		adminDto.setUpdatedOn(LocalDateTime.now().toString());
 		followUpDto.setAdminDto(adminDto);
