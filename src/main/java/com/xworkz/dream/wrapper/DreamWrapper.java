@@ -253,11 +253,11 @@ public class DreamWrapper {
 
 		}
 		if (rowSize > 24 && row.get(24) != null && !row.get(24).toString().isEmpty()) {
-			traineeDto.getReferralInfo().setSendWhatsAppLink((String) row.get(24).toString());
+			traineeDto.getReferralInfo().setRegistrationDate((String)row.get(24).toString());
 
 		}
 		if (rowSize > 25 && row.get(25) != null && !row.get(25).toString().isEmpty()) {
-		    traineeDto.getReferralInfo().setRegistrationDate(row.get(25).toString());
+		    traineeDto.getAdminDto().setCreatedBy(row.get(25).toString());
 		}
 
 		if (rowSize > 26 && row.get(26) != null && !row.get(26).toString().isEmpty()) {

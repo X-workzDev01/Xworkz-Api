@@ -251,11 +251,17 @@ public class DreamServiceImpl implements DreamService {
 	public ResponseEntity<SheetsDto> readData(String spreadsheetId, int startingIndex, int maxRows) {
 		try {
 			List<List<Object>> dataList = repo.readData(spreadsheetId);
+	   
 	
+//			List<List<Object>> sortedData = dataList.stream()
+//					.sorted(Comparator.comparing(list -> list.get(25).toString(), Comparator.reverseOrder()))
+//					.collect(Collectors.toList());
+//			System.err.println(sortedData);
 			
 			List<List<Object>> sortedData = dataList.stream()
-					.sorted(Comparator.comparing(list -> list.get(25).toString(), Comparator.reverseOrder()))
+					.sorted(Comparator.comparing(list -> list.get(24).toString(), Comparator.reverseOrder()))
 					.collect(Collectors.toList());
+			System.err.println(sortedData);
 			List<TraineeDto> dtos = getLimitedRows(sortedData, startingIndex, maxRows);
 			HttpServletResponse response = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes())
 					.getResponse();		
