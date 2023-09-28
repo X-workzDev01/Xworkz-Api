@@ -69,6 +69,7 @@ public class DreamServiceImpl implements DreamService {
 	@Autowired
 	private DreamWrapper wrapper;
 	private FollowUpDto followUpDto;
+	private BatchDetails batch;
 
 	@Autowired
 	private DreamUtil util;
@@ -113,6 +114,9 @@ public class DreamServiceImpl implements DreamService {
 				int size = data.size();
 
 				dto.setId(size += 1);
+				dto.getReferralInfo().setComments(Status.NA.toString());
+				dto.getReferralInfo().setReferalName(Status.NA.toString());
+				dto.getReferralInfo().setReferalContactNumber(0L);
 				dto.getReferralInfo().setXworkzEmail(Status.NA.toString());
 				dto.getReferralInfo().setPreferredLocation(Status.NA.toString());
 				dto.getReferralInfo().setPreferredClassType(Status.NA.toString());
@@ -297,7 +301,7 @@ public class DreamServiceImpl implements DreamService {
 
 		while (iterator.hasNext() && iterator.nextIndex() < endIndex) {
 			List<Object> row = iterator.next();
-			System.out.println(row);
+
 			if (row != null && !row.isEmpty()) {
 				TraineeDto traineeDto = wrapper.listToDto(row);
 				traineeDtos.add(traineeDto);
@@ -682,17 +686,23 @@ public class DreamServiceImpl implements DreamService {
 	@Override
 	public ResponseEntity<BatchDetails> getBatchDetailsByCourseName(String spreadsheetId, String courseName)
 			throws IOException {
-		List<List<Object>> detailsByCourseName;
-		detailsByCourseName = repo.getCourseDetails(spreadsheetId);
+		List<List<Object>> detailsByCourseName = repo.getCourseDetails(spreadsheetId);
+		batch = null;
 
-		BatchDetails batch = new BatchDetails();
-		if (detailsByCourseName != null) {
-			for (List<Object> row : detailsByCourseName) {
-				batch = wrapper.batchDetailsToDto(row);
-			}
-			return ResponseEntity.ok(batch);
+		List<List<Object>> filter = detailsByCourseName.stream()
+				.filter(e -> e.contains(courseName) && e.contains("Active")).collect(Collectors.toList());
+		filter.stream().forEach(item -> {
+			this.batch = wrapper.batchDetailsToDto(item);
+
+			System.err.println(this.batch);
+
+		});
+		if (batch != null) {
+			return ResponseEntity.ok(this.batch);
+
 		}
 		return null;
+
 	}
 
 	@Override
