@@ -297,7 +297,7 @@ public class DreamServiceImpl implements DreamService {
 
 		while (iterator.hasNext() && iterator.nextIndex() < endIndex) {
 			List<Object> row = iterator.next();
-
+			System.out.println(row);
 			if (row != null && !row.isEmpty()) {
 				TraineeDto traineeDto = wrapper.listToDto(row);
 				traineeDtos.add(traineeDto);
@@ -510,11 +510,8 @@ public class DreamServiceImpl implements DreamService {
 	public ResponseEntity<?> getDetailsByEmail(String spreadsheetId, String email, HttpServletRequest request)
 			throws IOException {
 		List<List<Object>> data = repo.readData(spreadsheetId);
-		TraineeDto trainee = data.stream()
-			    .filter(list -> list.contains(email))
-			    .findFirst()
-			    .map(wrapper::listToDto)
-			    .orElse(null);
+		TraineeDto trainee = data.stream().filter(list -> list.contains(email)).findFirst().map(wrapper::listToDto)
+				.orElse(null);
 		if (trainee != null) {
 			return ResponseEntity.ok(trainee);
 		} else {
@@ -527,10 +524,8 @@ public class DreamServiceImpl implements DreamService {
 			HttpServletRequest request) throws IOException {
 		List<List<Object>> data = repo.getFollowUpDetails(spreadsheetId);
 		FollowUpDto followUp = data.stream()
-			    .filter(list -> list.size() > 2 && list.get(2).toString().equalsIgnoreCase(email))
-			    .findFirst()
-			    .map(wrapper::listToFollowUpDTO)
-			    .orElse(null);
+				.filter(list -> list.size() > 2 && list.get(2).toString().equalsIgnoreCase(email)).findFirst()
+				.map(wrapper::listToFollowUpDTO).orElse(null);
 		if (followUp != null) {
 			return ResponseEntity.ok(followUp);
 		} else {
@@ -551,11 +546,10 @@ public class DreamServiceImpl implements DreamService {
 					.filter(list -> list.stream().anyMatch(value -> value.toString().equalsIgnoreCase(status)))
 					.collect(Collectors.toList());
 
-	 
-	        List<List<Object>> sortedData = data.stream()
-	                .sorted(Comparator.comparing(list -> list.get(4).toString(), Comparator.reverseOrder()))
-	                .collect(Collectors.toList());
-	        
+			List<List<Object>> sortedData = data.stream()
+					.sorted(Comparator.comparing(list -> list.get(4).toString(), Comparator.reverseOrder()))
+					.collect(Collectors.toList());
+
 			followUpDto = getFollowUpRows(sortedData, startingIndex, maxRows);
 			FollowUpDataDto followUpDataDto = new FollowUpDataDto(followUpDto, data.size());
 			repo.evictAllCachesOnTraineeDetails();
@@ -686,18 +680,19 @@ public class DreamServiceImpl implements DreamService {
 	}
 
 	@Override
-	public ResponseEntity<BatchDetails> getBatchDetailsByCourseName(String spreadsheetId, String courseName)throws IOException {
+	public ResponseEntity<BatchDetails> getBatchDetailsByCourseName(String spreadsheetId, String courseName)
+			throws IOException {
 		List<List<Object>> detailsByCourseName;
-			detailsByCourseName = repo.getCourseDetails(spreadsheetId);
+		detailsByCourseName = repo.getCourseDetails(spreadsheetId);
 
-			BatchDetails batch = new BatchDetails();
-			if (detailsByCourseName != null) {
-				for (List<Object> row : detailsByCourseName) {
-					batch=wrapper.batchDetailsToDto(row);
-				}
-				return ResponseEntity.ok(batch);
+		BatchDetails batch = new BatchDetails();
+		if (detailsByCourseName != null) {
+			for (List<Object> row : detailsByCourseName) {
+				batch = wrapper.batchDetailsToDto(row);
 			}
-			return null;
+			return ResponseEntity.ok(batch);
+		}
+		return null;
 	}
 
 	@Override
@@ -791,7 +786,6 @@ public class DreamServiceImpl implements DreamService {
 								&& email.equalsIgnoreCase(dto.getAttemptedBy())
 								&& statusCheck.contains(dto.getAttemptStatus())) {
 							notificationStatusBymail.add(dto);
-
 							response = ResponseEntity.ok(notificationStatusBymail);
 						}
 						if (LocalDate.now().minusDays(1).isEqual(LocalDate.parse(dto.getCallBack()))
@@ -814,35 +808,34 @@ public class DreamServiceImpl implements DreamService {
 				list.stream().forEach(e -> {
 					StatusDto dto = wrapper.listToStatusDto(e);
 					if (dto.getCallBack() != null) {
-							if (LocalDateTime.now()
-									.isAfter(LocalDateTime.of((LocalDate.parse(dto.getCallBack())), time))
-									&& LocalDateTime.now().isBefore(LocalDateTime
-											.of((LocalDate.parse(dto.getCallBack())), time.plusMinutes(26)))) {
+						if (LocalDateTime.now().isAfter(LocalDateTime.of((LocalDate.parse(dto.getCallBack())), time))
+								&& LocalDateTime.now().isBefore(
+										LocalDateTime.of((LocalDate.parse(dto.getCallBack())), time.plusMinutes(26)))) {
 
-						if (statusCheck.contains(dto.getAttemptStatus())
-								&& LocalDate.now().isEqual(LocalDate.parse(dto.getCallBack()))) {
+							if (statusCheck.contains(dto.getAttemptStatus())
+									&& LocalDate.now().isEqual(LocalDate.parse(dto.getCallBack()))) {
 
-							notificationStatus.add(dto);
-							response = ResponseEntity.ok(notificationStatus);
+								notificationStatus.add(dto);
+								response = ResponseEntity.ok(notificationStatus);
+
+							}
 
 						}
-
 					}
-						}
 
 				});
 			}
-				if (LocalTime.now().isAfter(time) && LocalTime.now().isBefore(time.plusMinutes(26))) {
+			if (LocalTime.now().isAfter(time) && LocalTime.now().isBefore(time.plusMinutes(26))) {
 
-			if (!notificationStatus.isEmpty()) {
- 
-				util.sendNotificationToEmail(teamList, notificationStatus);
+				if (!notificationStatus.isEmpty()) {
 
-			} 
+					util.sendNotificationToEmail(teamList, notificationStatus);
 
-		}
+				}
 
 			}
+
+		}
 
 	}
 

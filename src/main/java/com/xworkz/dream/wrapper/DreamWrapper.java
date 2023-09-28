@@ -425,7 +425,7 @@ public class DreamWrapper {
 			attendanceDto.setMarkAs((String) (row.get(8)));
 		}
 		if (rowSize > 9 && row.get(9) != null && !row.get(9).toString().isEmpty()) {
-			attendanceDto.setIsButton((String) (row.get(9).toString().toLowerCase()));
+			attendanceDto.setIsButton(Boolean.parseBoolean((row.get(9).toString())));
 		}
 
 		return attendanceDto;
@@ -473,7 +473,7 @@ public class DreamWrapper {
 			attendanceDto.setAbsent((row.get(8).toString()));
 		}
 		if (rowSize > 9 && row.get(9) != null && !row.get(9).toString().isEmpty()) {
-			attendanceDto.setIsButton((row.get(9).toString().toLowerCase()));
+			attendanceDto.setIsButton(Boolean.parseBoolean((row.get(9).toString())));
 		}
 
 		return attendanceDto;

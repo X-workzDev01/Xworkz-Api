@@ -8,6 +8,7 @@ import org.springframework.cloud.openfeign.EnableFeignClients;
 
 @SpringBootApplication
 @EnableFeignClients("com.xworkz.dream.interfaces")
+
 public class XworkzApiApplication {
 
 	public static void main(String[] args) {
