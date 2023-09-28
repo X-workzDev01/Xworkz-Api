@@ -289,7 +289,7 @@ public class DreamServiceImpl implements DreamService {
 
 		while (iterator.hasNext() && iterator.nextIndex() < endIndex) {
 			List<Object> row = iterator.next();
-
+			System.out.println(row);
 			if (row != null && !row.isEmpty()) {
 				TraineeDto traineeDto = wrapper.listToDto(row);
 				traineeDtos.add(traineeDto);
@@ -789,7 +789,6 @@ public class DreamServiceImpl implements DreamService {
 								&& email.equalsIgnoreCase(dto.getAttemptedBy())
 								&& statusCheck.contains(dto.getAttemptStatus())) {
 							notificationStatusBymail.add(dto);
-
 							response = ResponseEntity.ok(notificationStatusBymail);
 						}
 						if (LocalDate.now().minusDays(1).isEqual(LocalDate.parse(dto.getCallBack()))

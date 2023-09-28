@@ -72,12 +72,15 @@ public class AttendanceRepositoryImpl implements AttendanceRepository {
 	}
 
 	@Override
-	@Cacheable(value = "byEmail", key = "#sheetId", unless = "#result == null")
-	@CacheEvict(value = { "byEmail" }, allEntries = true)
 
 	public List<List<Object>> attendanceDetilesByEmail(String sheetId, String email, String range) throws IOException {
 		ValueRange response = sheetsService.spreadsheets().values().get(sheetId, range).execute();
 		return response.getValues();
+	}
+
+	@Override
+	public void evictCacheByEmail() throws IOException {
+
 	}
 
 	@Override
