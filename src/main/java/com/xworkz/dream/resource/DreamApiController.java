@@ -27,6 +27,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.xworkz.dream.dto.BasicInfoDto;
 import com.xworkz.dream.dto.BatchDetailsDto;
 import com.xworkz.dream.dto.BirthDayInfoDto;
+import com.xworkz.dream.dto.EducationInfoDto;
+import com.xworkz.dream.dto.EnquiryDto;
 import com.xworkz.dream.dto.FollowUpDataDto;
 import com.xworkz.dream.dto.FollowUpDto;
 import com.xworkz.dream.dto.SheetsDto;
@@ -213,5 +215,21 @@ public class DreamApiController {
 		}
 
 	}
+	@ApiOperation(value = "To Add Enquiry Details")
+	@PostMapping("/enquiry")
+	public ResponseEntity<String> addEnquiry( @RequestBody EnquiryDto enquiryDto , @RequestHeader String spreadSheetId , HttpServletRequest request){
+		
+		boolean saved = service.addEnquiry(enquiryDto, spreadSheetId, request);
+		String uri = request.getRequestURI();
+		System.out.println(uri.contains("enquiry"));
+//		System.out.println(dto);
+		
+		return ResponseEntity.ok().body("Success");
+					
+		
+		
+		
+	}
+	
 	
 }

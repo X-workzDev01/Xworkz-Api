@@ -29,5 +29,6 @@ public interface AttendanceService {
 
 	public ResponseEntity<List<AttendanceDto>> getAttendanceDetilesBatch(String batch, int startIndex, int maxRows)
 			throws IOException, MessagingException, TemplateException;
-
+	
+	
 }

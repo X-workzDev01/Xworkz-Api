@@ -9,8 +9,11 @@ import javax.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 
+import com.xworkz.dream.dto.BasicInfoDto;
 import com.xworkz.dream.dto.BatchDetails;
 import com.xworkz.dream.dto.BatchDetailsDto;
+import com.xworkz.dream.dto.EducationInfoDto;
+import com.xworkz.dream.dto.EnquiryDto;
 import com.xworkz.dream.dto.FollowUpDataDto;
 import com.xworkz.dream.dto.FollowUpDto;
 import com.xworkz.dream.dto.SheetsDto;
@@ -96,6 +99,8 @@ public interface DreamService {
 	public ResponseEntity<List<StatusDto>> setNotification(@Value("${myapp.scheduled.param}") String email,
 			@Value("${myapp.scheduled.param}") HttpServletRequest requests) throws IOException;
 
-	public String verifyEmails(String email); 
+	public String verifyEmails(String email);
+	
+	public boolean addEnquiry( EnquiryDto enquiryDto, String spreadsheetId , HttpServletRequest request);
 
 }

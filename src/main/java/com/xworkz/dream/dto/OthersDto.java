@@ -21,6 +21,17 @@ public class OthersDto {
 	private String PreferredLocation;
 	private String PreferredClassType;
 	private String sendWhatsAppLink;
+	
+	public OthersDto(String value) {
+		this.referalName=value;
+		this.referalContactNumber=0L;
+		this.comments = value;
+		this.xworkzEmail = value;
+		this.working = value;
+		this.PreferredLocation = value;
+		this.PreferredClassType = value;
+		this.sendWhatsAppLink = value;
+	}
 
 
 }
