@@ -8,6 +8,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -16,6 +17,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.xworkz.dream.dto.BatchDetails;
 import com.xworkz.dream.dto.BatchDetailsDto;
 import com.xworkz.dream.dto.TraineeDto;
 import com.xworkz.dream.service.DreamService;
@@ -47,6 +49,22 @@ public class CreateBatchInfoController {
 	public boolean updateWhatsAppLinkByCourseName(@RequestHeader String spreadsheetId,@RequestParam String cousreName,@RequestParam String whatsAppLink) throws IllegalAccessException, IOException {
 		logger.info("cousreName : whatsAppLink"+ cousreName +" : "+whatsAppLink);
 		return whatsAppService.updateWhatsAppLinkByCourseName(spreadsheetId, cousreName, whatsAppLink);
+	}
+	
+	@GetMapping("/getWhatsAppLink")
+	public String getWhatsAppLinkByCourseName(@RequestHeader String spreadsheetId,
+			@RequestParam String courseName) throws IOException {
+		 ResponseEntity<BatchDetails> batchDetailsByCourseName = service.getBatchDetailsByCourseName(spreadsheetId, courseName);
+		return batchDetailsByCourseName.getBody().getWhatsAppLink();
+
+	}
+	
+	@GetMapping("/sendWhatsAppLink")
+	public boolean  sendWhatsAppLink(@RequestHeader String spreadsheetId,
+			@RequestParam String courseName) throws IOException {
+		boolean emailByCourseName = whatsAppService.getEmailByCourseName(spreadsheetId, courseName);
+		return emailByCourseName;
+		
 	}
 	
 

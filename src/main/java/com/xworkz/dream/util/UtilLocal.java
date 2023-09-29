@@ -74,6 +74,13 @@ public class UtilLocal implements DreamUtil{
 	}
 
 
+	@Override
+	public boolean sendWhatsAppLink(List<String> recipients, String subject, String whatsAppLink) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+
 	
 
 	
