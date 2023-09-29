@@ -24,4 +24,5 @@ public class OthersDto {
 	private String registrationDate;
 
 
+
 }

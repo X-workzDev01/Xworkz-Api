@@ -48,8 +48,12 @@ import com.xworkz.dream.dto.BasicInfoDto;
 import com.xworkz.dream.dto.BatchDetails;
 import com.xworkz.dream.dto.BatchDetailsDto;
 import com.xworkz.dream.dto.BirthDayInfoDto;
+import com.xworkz.dream.dto.CourseDto;
+import com.xworkz.dream.dto.EducationInfoDto;
+import com.xworkz.dream.dto.EnquiryDto;
 import com.xworkz.dream.dto.FollowUpDataDto;
 import com.xworkz.dream.dto.FollowUpDto;
+import com.xworkz.dream.dto.OthersDto;
 import com.xworkz.dream.dto.SheetsDto;
 import com.xworkz.dream.dto.StatusDto;
 import com.xworkz.dream.dto.TraineeDto;
@@ -108,68 +112,62 @@ public class DreamServiceImpl implements DreamService {
 
 	@Override
 	public ResponseEntity<String> writeData(String spreadsheetId, TraineeDto dto, HttpServletRequest request)
-			throws MessagingException, TemplateException {
-		try {
-			if (true) {// isCookieValid(request)
-				List<List<Object>> data = repo.getIds(spreadsheetId).getValues();
-				int size = data.size();
 
-				dto.setId(size += 1);
-				dto.getOthersDto().setXworkzEmail(Status.NA.toString());
-				dto.getOthersDto().setPreferredLocation(Status.NA.toString());
-				dto.getOthersDto().setPreferredClassType(Status.NA.toString());
-				dto.getOthersDto().setSendWhatsAppLink(Status.NO.toString());
-				dto.getOthersDto().setRegistrationDate(LocalDate.now().toString());
+	        throws MessagingException, TemplateException {
+	    try {
+	        if (true) {// isCookieValid(request)
+	            List<List<Object>> data = repo.getIds(spreadsheetId).getValues();
+	            int size = data.size();
 
-				dto.getAdminDto().setCreatedOn(LocalDateTime.now().toString());
-				List<Object> list = wrapper.extractDtoDetails(dto);
+	            dto.setId(size += 1);
+	            dto.getReferralInfo().setXworkzEmail(Status.NA.toString());
+	            dto.getReferralInfo().setPreferredLocation(Status.NA.toString());
+	            dto.getReferralInfo().setPreferredClassType(Status.NA.toString());
+	            dto.getReferralInfo().setSendWhatsAppLink(Status.NO.toString());
+              dto.getOthersDto().setRegistrationDate(LocalDate.now().toString());
+	            dto.getAdminDto().setCreatedOn(LocalDateTime.now().toString());
+	            List<Object> list = wrapper.extractDtoDetails(dto);
 
-				boolean writeStatus = repo.writeData(spreadsheetId, list);
-				// calling method to store date of birth details
-				saveBirthDayInfo(spreadsheetId, dto, request);
-				if (writeStatus) {
-					logger.info("Data written successfully to spreadsheetId: {}", spreadsheetId);
-					boolean status = addToFollowUp(dto, spreadsheetId);
-					if (status) {
-						logger.info("Data written successfully to spreadsheetId and Added to Follow Up: {}",
-								spreadsheetId);
+	            boolean writeStatus = repo.writeData(spreadsheetId, list);
 
-//						boolean sent = util.sendCourseContent(dto.getBasicInfo().getEmail(),
-//								dto.getBasicInfo().getTraineeName());
-//						repo.evictAllCachesOnTraineeDetails();
-//						if (sent == true) {
-//							return ResponseEntity.ok("Data written successfully , Added to follow Up , sended course content ");
-//						} else {
-//							return ResponseEntity.ok("Email not sent, Data written successfully , Added to follow Up");
-//						}
-						boolean sent = util.sendCourseContent(dto.getBasicInfo().getEmail(),
-								dto.getBasicInfo().getTraineeName());
-						repo.evictAllCachesOnTraineeDetails();
-						if (sent == true) {
-							return ResponseEntity
-									.ok("Data written successfully , Added to follow Up , sended course content ");
-						} else {
-							return ResponseEntity.ok("Email not sent, Data written successfully , Added to follow Up");
-						}
-					}
-					return ResponseEntity.ok("Data written successfully , not added to Follow Up");
-				} else {
-					logger.warn("Failed to write data to spreadsheetId: {}", spreadsheetId);
-					return ResponseEntity.badRequest().body("Failed to write data");
-				}
-			}
-		} catch (IOException e) {
-			logger.error("Error occurred while writing data to spreadsheetId: {}", spreadsheetId, e);
-			e.printStackTrace();
-			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("An error occurred");
-		} catch (IllegalAccessException e) {
-			e.printStackTrace();
-			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Data mapping error");
+	            // Check if the request is "/register" before calling saveBirthDayInfo
+	            if (isRegisterRequest(request)) {
+	            	System.out.println("/register");
+//	                saveBirthDayInfo(spreadsheetId, dto, request);
+	            }
 
-		}
-		return null;
+	            if (isRegisterRequest(request)) {
+	            	System.out.println("/register");
+//	                boolean status = addToFollowUp(dto, spreadsheetId);
+	                if (true) {
+	                    logger.info("Data written successfully to spreadsheetId and Added to Follow Up: {}", spreadsheetId);
+	                    boolean sent = util.sendCourseContent(dto.getBasicInfo().getEmail(), dto.getBasicInfo().getTraineeName());
+	                    repo.evictAllCachesOnTraineeDetails();
+	                    if (sent == true) {
+	                        return ResponseEntity.ok("Data written successfully , Added to follow Up , sent course content ");
+	                    } else {
+	                        return ResponseEntity.ok("Email not sent, Data written successfully , Added to follow Up");
+	                    }
+	                }
+	                return ResponseEntity.ok("Data written successfully , not added to Follow Up");
+	            } else {
+	                // For requests other than "/register", return an appropriate response.
+	                return ResponseEntity.ok("Data written successfully (Non-registration request)");
+	            }
+	        }
+	    } catch (Exception e) {
+	        logger.error("Error processing request: " + e.getMessage(), e);
+	        return ResponseEntity.badRequest().body("Failed to process the request");
+	    }
+	    // You should have a return statement here for any other cases.
+	    return ResponseEntity.badRequest().body("Failed to process the request");
 	}
 
+	// Helper method to check if the request URI is "/register"
+	private boolean isRegisterRequest(HttpServletRequest request) {
+	    return request.getRequestURI().equals("/api/register");
+
+	}
 	@Override
 	public boolean addToFollowUp(TraineeDto traineeDto, String spreadSheetId)
 			throws IOException, IllegalAccessException {
@@ -860,6 +858,31 @@ public class DreamServiceImpl implements DreamService {
 	@Override
 	public String verifyEmails(String email) {
 		return emailableClient.verifyEmail(email, API_KEY);
+	}
+	
+	@Override
+	public boolean addEnquiry(EnquiryDto enquiryDto ,  String spreadsheetId , HttpServletRequest request) {
+		TraineeDto traineeDto = new TraineeDto();
+		EnquiryDto validatedEnquiryDto =wrapper.validateEnquiry(enquiryDto);
+		
+		traineeDto.setCourseInfo(new CourseDto("NA"));
+		traineeDto.setReferralInfo(new OthersDto("NA"));
+		traineeDto.setAdminDto(enquiryDto.getAdminDto());
+		traineeDto.setBasicInfo(enquiryDto.getBasicInfo());
+		traineeDto.setEducationInfo(enquiryDto.getEducationInfo());
+		System.out.println(traineeDto);
+		
+		try {
+			writeData(spreadsheetId, traineeDto, request);
+		} catch (MessagingException | TemplateException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return true;
+		
+	
+		
+		
 	}
 
 	@Override

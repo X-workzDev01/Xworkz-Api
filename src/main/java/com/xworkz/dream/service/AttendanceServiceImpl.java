@@ -257,7 +257,7 @@ public class AttendanceServiceImpl implements AttendanceService {
 
 	@Scheduled(fixedRate = 60 * 1000) // 1000 is equal to 1 second
 	public void schudulerAttandance() throws IOException {
-		System.err.println("Hi98999999999999999");
+//		System.err.println("Hi98999999999999999");
 		attendanceRepository.clearColumnData(sheetId, attendanceListDefaultRange);
 
 	}

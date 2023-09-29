@@ -15,6 +15,7 @@ import com.xworkz.dream.dto.BasicInfoDto;
 import com.xworkz.dream.dto.BatchDetails;
 import com.xworkz.dream.dto.CourseDto;
 import com.xworkz.dream.dto.EducationInfoDto;
+import com.xworkz.dream.dto.EnquiryDto;
 import com.xworkz.dream.dto.FollowUpDto;
 import com.xworkz.dream.dto.OthersDto;
 import com.xworkz.dream.dto.StatusDto;
@@ -509,6 +510,42 @@ public class DreamWrapper {
 		return attendanceDto;
 	}
 	
+
+	public EnquiryDto validateEnquiry(EnquiryDto dto) {
+	    BasicInfoDto basicDto = dto.getBasicInfo();
+	    if (basicDto != null) {
+	        basicDto.setDateOfBirth("NA");
+
+	        if (basicDto.getEmail() == null || basicDto.getEmail().isEmpty()) {
+	            String contactNumber = String.valueOf(basicDto.getContactNumber());
+	            String generatedEmail = contactNumber + "@dummy.com";
+	            System.out.println(generatedEmail);
+	            basicDto.setEmail(generatedEmail);
+	        }
+	    }
+
+	    EducationInfoDto educationDto = dto.getEducationInfo();
+	    if (educationDto != null) {
+	        if (educationDto.getCollegeName() == null || educationDto.getCollegeName().isEmpty()) {
+	            educationDto.setCollegeName("NA");
+	        }
+
+	        if (educationDto.getStream() == null || educationDto.getStream().isEmpty()) {
+	            educationDto.setStream("NA");
+	        }
+
+	        if (educationDto.getQualification() == null || educationDto.getQualification().isEmpty()) {
+	            educationDto.setQualification("NA");
+	        }
+
+	        if (educationDto.getYearOfPassout() == null || educationDto.getYearOfPassout().isEmpty()) {
+	            educationDto.setYearOfPassout("NA");
+	        }
+	    }
+
+	    return dto;
+	}
+
 	public FollowUpDto setFollowUp(TraineeDto traineeDto) {
 		FollowUpDto followUpDto = new FollowUpDto();
 		BasicInfoDto basicInfo = new BasicInfoDto();
@@ -554,4 +591,6 @@ public class DreamWrapper {
 		return sdto;
 	}
 
+
 }
+
