@@ -115,14 +115,12 @@ public class DreamServiceImpl implements DreamService {
 				int size = data.size();
 
 				dto.setId(size += 1);
-				dto.getReferralInfo().setComments(Status.NA.toString());
-				dto.getReferralInfo().setReferalName(Status.NA.toString());
-				dto.getReferralInfo().setReferalContactNumber(0L);
-				dto.getReferralInfo().setXworkzEmail(Status.NA.toString());
-				dto.getReferralInfo().setPreferredLocation(Status.NA.toString());
-				dto.getReferralInfo().setPreferredClassType(Status.NA.toString());
-				dto.getReferralInfo().setSendWhatsAppLink(Status.NO.toString());
-				dto.getReferralInfo().setRegistrationDate(LocalDate.now().toString());
+				dto.getOthersDto().setXworkzEmail(Status.NA.toString());
+				dto.getOthersDto().setPreferredLocation(Status.NA.toString());
+				dto.getOthersDto().setPreferredClassType(Status.NA.toString());
+				dto.getOthersDto().setSendWhatsAppLink(Status.NO.toString());
+        dto.getOthersDto().setRegistrationDate(LocalDate.now().toString());
+
 				dto.getAdminDto().setCreatedOn(LocalDateTime.now().toString());
 				List<Object> list = wrapper.extractDtoDetails(dto);
 
@@ -772,7 +770,6 @@ public class DreamServiceImpl implements DreamService {
 	@Override
 	public void notification(String spreadsheetId, String email, List<Team> teamList, HttpServletRequest requests)
 			throws IOException {
-
 		List<String> statusCheck = Stream.of(Status.Busy.toString(), Status.New.toString(),
 				Status.Interested.toString(), Status.RNR.toString(), Status.Not_interested.toString().replace('_', ' '),
 				Status.Incomingcall_not_available.toString().replace('_', ' '),
@@ -788,7 +785,9 @@ public class DreamServiceImpl implements DreamService {
 		});
 
 		if (spreadsheetId != null) {
-			List<List<Object>> list = repo.notification(spreadsheetId);
+			List<List<Object>> listOfData = repo.notification(spreadsheetId);
+			List<List<Object>> list = listOfData.stream().filter(items -> !items.contains("NA"))
+					.collect(Collectors.toList());
 			if (!list.isEmpty()) {
 				if (email != null) {
 					list.stream().forEach(e -> {
@@ -816,6 +815,7 @@ public class DreamServiceImpl implements DreamService {
 					});
 
 				}
+				System.out.println(list.toString()+" "+list.size());
 
 				list.stream().forEach(e -> {
 					StatusDto dto = wrapper.listToStatusDto(e);

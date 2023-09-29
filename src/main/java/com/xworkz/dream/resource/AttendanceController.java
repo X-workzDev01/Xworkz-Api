@@ -23,7 +23,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.google.api.services.sheets.v4.model.BatchGetValuesByDataFilterRequest;
 import com.google.api.services.sheets.v4.model.DataFilter;
 import com.google.api.services.sheets.v4.model.ValueRange;
-import com.xworkz.dream.dto.AttandanceSheetDto;
+import com.xworkz.dream.dto.AttadanceSheetDto;
 import com.xworkz.dream.dto.AttendanceDto;
 import com.xworkz.dream.repository.DreamRepositoryImpl;
 import com.xworkz.dream.service.AttendanceService;
@@ -60,14 +60,14 @@ public class AttendanceController {
 
 	@ApiOperation(value = "Get detiles of by using email")
 	@GetMapping("/byEmail")
-	public ResponseEntity<AttandanceSheetDto> getAttendanceListByEmail(@RequestParam String email,
+	public ResponseEntity<AttadanceSheetDto> getAttendanceListByEmail(@RequestParam String email,
 			@RequestParam int startIndex, @RequestParam int maxRows) throws Exception {
 		return attendanceService.getAttendanceDetilesByEmail(email, startIndex, maxRows);
 	}
 
 	@ApiOperation(value = "Get detiles in using selected  batch ")
 	@GetMapping("/byBatch")
-	public ResponseEntity<AttandanceSheetDto> getAttendanceListByBatch(@RequestParam String batch,
+	public ResponseEntity<AttadanceSheetDto> getAttendanceListByBatch(@RequestParam String batch,
 			@RequestParam int startIndex, @RequestParam int maxRows) throws Exception {
 
 		return attendanceService.getAttendanceDetilesBatch(batch, startIndex, maxRows);
@@ -76,7 +76,7 @@ public class AttendanceController {
 
 	@ApiOperation(value = "Get detiles in using selected  batch  and date")
 	@GetMapping("/byBatchAndDate")
-	public ResponseEntity<AttandanceSheetDto> getAttendanceListByBatchAndDate(@RequestParam String batch,
+	public ResponseEntity<AttadanceSheetDto> getAttendanceListByBatchAndDate(@RequestParam String batch,
 			@RequestParam String date, @RequestParam int startIndex, @RequestParam int maxRows) throws Exception {
 
 		return attendanceService.getAttendanceDetilesBatchAndDate(batch, date, startIndex, maxRows);

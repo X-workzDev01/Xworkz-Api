@@ -27,7 +27,7 @@ import org.springframework.web.bind.annotation.RequestHeader;
 
 import com.google.api.services.sheets.v4.model.ValueRange;
 import com.xworkz.dream.constants.Status;
-import com.xworkz.dream.dto.AttandanceSheetDto;
+import com.xworkz.dream.dto.AttadanceSheetDto;
 import com.xworkz.dream.dto.AttendanceDto;
 import com.xworkz.dream.repository.AttendanceRepository;
 import com.xworkz.dream.wrapper.DreamWrapper;
@@ -149,7 +149,7 @@ public class AttendanceServiceImpl implements AttendanceService {
 	}
 
 	@Override
-	public ResponseEntity<AttandanceSheetDto> getAttendanceDetilesByEmail(String email, int startIndex, int maxRows)
+	public ResponseEntity<AttadanceSheetDto> getAttendanceDetilesByEmail(String email, int startIndex, int maxRows)
 			throws IOException, MessagingException, TemplateException {
 
 		List<List<Object>> attandanceList = attendanceRepository.attendanceDetilesByEmail(sheetId, email,
@@ -157,14 +157,14 @@ public class AttendanceServiceImpl implements AttendanceService {
 		List<List<Object>> filter = attandanceList.stream().filter(e -> e.contains(email)).collect(Collectors.toList());
 		List<AttendanceDto> dtos = this.getLimitedRowsByEmail(filter, email, startIndex, maxRows);
 
-		AttandanceSheetDto dtosList = new AttandanceSheetDto(dtos, dtos.size());
+		AttadanceSheetDto dtosList = new AttadanceSheetDto(dtos, filter.size());
 		logger.debug("Response attandance by email {}", dtosList);
 		System.err.println(dtosList);
 		return ResponseEntity.ok(dtosList);
 	}
 
 	@Override
-	public ResponseEntity<AttandanceSheetDto> getAttendanceDetilesBatch(String batch, int startIndex, int maxRows)
+	public ResponseEntity<AttadanceSheetDto> getAttendanceDetilesBatch(String batch, int startIndex, int maxRows)
 			throws IOException, MessagingException, TemplateException {
 
 		List<List<Object>> attandanceList = attendanceRepository.attendanceDetilesByEmail(sheetId, batch,
@@ -172,7 +172,7 @@ public class AttendanceServiceImpl implements AttendanceService {
 		List<List<Object>> filter = attandanceList.stream().filter(e -> e.contains(batch)).collect(Collectors.toList());
 
 		List<AttendanceDto> dtos = this.getLimitedRows(filter, startIndex, maxRows);
-		AttandanceSheetDto sheetDto = new AttandanceSheetDto(dtos, filter.size());
+		AttadanceSheetDto sheetDto = new AttadanceSheetDto(dtos, filter.size());
 		logger.debug("Dto is  attandance :{} ", sheetDto);
 		return ResponseEntity.ok(sheetDto);
 	}
@@ -243,14 +243,14 @@ public class AttendanceServiceImpl implements AttendanceService {
 	}
 
 	@Override
-	public ResponseEntity<AttandanceSheetDto> getAttendanceDetilesBatchAndDate(String batch, String date,
+	public ResponseEntity<AttadanceSheetDto> getAttendanceDetilesBatchAndDate(String batch, String date,
 			int startIndex, int maxRows) throws IOException, MessagingException, TemplateException {
 		List<List<Object>> attandanceList = attendanceRepository.attendanceDetilesByEmail(sheetId, batch,
 				attendanceList);
 		List<List<Object>> filter = attandanceList.stream().filter(e -> e.contains(batch) && e.contains(date))
 				.collect(Collectors.toList());
 		List<AttendanceDto> dtos = getLimitedRowsBatchAndDate(filter, batch, date, startIndex, maxRows);
-		AttandanceSheetDto attandanceSheetDto = new AttandanceSheetDto(dtos, filter.size());
+		AttadanceSheetDto attandanceSheetDto = new AttadanceSheetDto(dtos, filter.size());
 		logger.debug("Get attandance detiles by date is {} ", dtos);
 		return ResponseEntity.ok(attandanceSheetDto);
 	}
