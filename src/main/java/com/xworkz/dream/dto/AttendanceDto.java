@@ -33,7 +33,7 @@ public class AttendanceDto {
 	private String markAs;
 	private String absent;
 	private String present;
-	private String isButton;
+	private Boolean isButton;
 
 
 }

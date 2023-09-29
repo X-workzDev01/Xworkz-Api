@@ -100,7 +100,13 @@ public interface DreamService {
 			@Value("${myapp.scheduled.param}") HttpServletRequest requests) throws IOException;
 
 	public String verifyEmails(String email);
+
 	
 	public boolean addEnquiry( EnquiryDto enquiryDto, String spreadsheetId , HttpServletRequest request);
+
+
+	boolean updateCurrentFollowUp(String spreadsheetId, String email, String currentStatus, String currentlyFollowedBy,
+			String joiningDate) throws IOException, IllegalAccessException; 
+
 
 }

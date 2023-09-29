@@ -40,6 +40,7 @@ import org.thymeleaf.context.Context;
 
 import com.google.api.client.util.ArrayMap;
 import com.xworkz.dream.dto.StatusDto;
+import com.xworkz.dream.dto.TraineeDto;
 import com.xworkz.dream.dto.utils.Team;
 
 import freemarker.template.Configuration;
@@ -217,10 +218,53 @@ public class UtilDev implements DreamUtil {
 			message.setSubject(subject);
 			message.setText(body.toString());
 			message.setContent(emailContent, "text/html; charset=UTF-8");
-			Transport.send(message);
+//			Transport.send(message);
 			System.out.println("Emails sent successfully.");
 		} catch (Exception e) {
 			e.printStackTrace();
+		}
+		return false;
+
+	}
+
+	@Override
+	public boolean sendWhatsAppLink(List<String> traineeEmail, String subject, String whatsAppLink) {
+		String from = userName;
+		Properties properties = new Properties();
+		properties.put("mail.smtp.auth", "true");
+		properties.put("mail.smtp.starttls.enable", "true");
+		properties.put("mail.smtp.host", "smtp.office365.com");
+		properties.put("mail.smtp.port", "587"); // SMTP port (587 for TLS)
+
+		Session session = Session.getInstance(properties, new javax.mail.Authenticator() {
+			protected PasswordAuthentication getPasswordAuthentication() {
+				return new PasswordAuthentication(userName, password);
+			}
+		});
+
+		try {
+			MimeMessage message = new MimeMessage(session);
+			message.setFrom(new InternetAddress(from));
+			for (String recipient : traineeEmail) {
+				message.addRecipient(Message.RecipientType.TO, new InternetAddress(recipient));
+
+			}
+
+			Context context = new Context();
+			context.setVariable("whatsAppLink", whatsAppLink);
+			String emailContent = templateEngine.process("WhatsAppLinkContentTemplate", context);
+			MimeMessageHelper helper = new MimeMessageHelper(message, true);
+			helper.setText(emailContent);
+			message.setSubject(subject);
+			message.setText(whatsAppLink.toString());
+			System.err.println("4444444444444 " + emailContent);
+			message.setContent(emailContent, "text/html; charset=UTF-8");
+			System.out.println("running           " + message);
+
+			Transport.send(message);
+			System.out.println("Emails sent successfully.");
+		} catch (Exception e) {
+			logger.error(e.getMessage());
 		}
 		return false;
 

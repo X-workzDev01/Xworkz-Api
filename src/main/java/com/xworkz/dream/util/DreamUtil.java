@@ -23,4 +23,5 @@ public interface DreamUtil {
 	public boolean sendCourseContent(String email, String name)
 			throws MessagingException, IOException, TemplateException;
 
+	public boolean sendWhatsAppLink(List<String> traineeEmail, String subject,String whatsAppLink);
 }
