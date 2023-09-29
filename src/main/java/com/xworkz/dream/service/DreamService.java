@@ -96,6 +96,9 @@ public interface DreamService {
 	public ResponseEntity<List<StatusDto>> setNotification(@Value("${myapp.scheduled.param}") String email,
 			@Value("${myapp.scheduled.param}") HttpServletRequest requests) throws IOException;
 
-	public String verifyEmails(String email); 
+	public String verifyEmails(String email);
+
+	boolean updateCurrentFollowUp(String spreadsheetId, String email, String currentStatus, String currentlyFollowedBy,
+			String joiningDate) throws IOException, IllegalAccessException; 
 
 }

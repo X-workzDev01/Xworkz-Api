@@ -1,11 +1,11 @@
 
 sheets:
-  range: A3:Y
+  range: A3:AC
   emailRange: C3:C
   contactNumberRange: D3:D
   loginInfoRange: loginInfo!A2:B
   attendanceInfoRange: attendanceInfo!A2:K
-  attendanceList: attendanceList!A2:I
+  attendanceList: attendanceList!A2:J
   attendanceListRange: attendanceList!A2:K
 
 
