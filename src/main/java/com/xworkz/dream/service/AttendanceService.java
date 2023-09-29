@@ -10,7 +10,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 
-import com.xworkz.dream.dto.AttandanceSheetDto;
+import com.xworkz.dream.dto.AttadanceSheetDto;
 import com.xworkz.dream.dto.AttendanceDto;
 
 import freemarker.template.TemplateException;
@@ -22,13 +22,13 @@ public interface AttendanceService {
 
 	public ResponseEntity<String> everyDayAttendance(AttendanceDto dto, HttpServletRequest request) throws Exception;
 
-	ResponseEntity<AttandanceSheetDto> getAttendanceDetilesByEmail(String Email, int startIndex, int maxRows)
+	ResponseEntity<AttadanceSheetDto> getAttendanceDetilesByEmail(String Email, int startIndex, int maxRows)
 			throws IOException, MessagingException, TemplateException;
 
-	public ResponseEntity<AttandanceSheetDto> getAttendanceDetilesBatchAndDate(String batch, String date,
+	public ResponseEntity<AttadanceSheetDto> getAttendanceDetilesBatchAndDate(String batch, String date,
 			int startIndex, int maxRows) throws IOException, MessagingException, TemplateException;
 
-	public ResponseEntity<AttandanceSheetDto> getAttendanceDetilesBatch(String batch, int startIndex, int maxRows)
+	public ResponseEntity<AttadanceSheetDto> getAttendanceDetilesBatch(String batch, int startIndex, int maxRows)
 			throws IOException, MessagingException, TemplateException;
 
 }

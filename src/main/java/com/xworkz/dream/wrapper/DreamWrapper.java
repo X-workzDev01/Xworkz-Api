@@ -37,9 +37,9 @@ public class DreamWrapper {
 		row.add(dto.getCourseInfo().getTrainerName());
 		row.add(dto.getCourseInfo().getBranch());
 		row.add(dto.getCourseInfo().getCourse());
-		row.add(dto.getReferralInfo().getReferalName());
-		row.add(dto.getReferralInfo().getReferalContactNumber());
-		row.add(dto.getReferralInfo().getComments());
+		row.add(dto.getOthersDto().getReferalName());
+		row.add(dto.getOthersDto().getReferalContactNumber());
+		row.add(dto.getOthersDto().getComments());
 
 		return row;
 
@@ -212,29 +212,29 @@ public class DreamWrapper {
 		}
 
 		if (rowSize > 16 && row.get(16) != null && !row.get(16).toString().isEmpty()) {
-			traineeDto.getReferralInfo().setReferalName((String) row.get(16));
+			traineeDto.getOthersDto().setReferalName((String) row.get(16));
 		}
 		if (rowSize > 17 && row.get(17) != null && !row.get(17).toString().isEmpty()) {
 			Long referalContactNumber = Long.parseLong(row.get(17).toString());
-			traineeDto.getReferralInfo().setReferalContactNumber(referalContactNumber);
+			traineeDto.getOthersDto().setReferalContactNumber(referalContactNumber);
 		}
 		if (rowSize > 18 && row.get(18) != null && !row.get(18).toString().isEmpty()) {
-			traineeDto.getReferralInfo().setComments((String) row.get(18).toString());
+			traineeDto.getOthersDto().setComments((String) row.get(18).toString());
 		}
 		if (rowSize > 19 && row.get(19) != null && !row.get(19).toString().isEmpty()) {
-			traineeDto.getReferralInfo().setXworkzEmail((String) row.get(19).toString());
+			traineeDto.getOthersDto().setXworkzEmail((String) row.get(19).toString());
 		}
 		if (rowSize > 20 && row.get(20) != null && !row.get(20).toString().isEmpty()) {
-			traineeDto.getReferralInfo().setWorking((String) row.get(20).toString());
+			traineeDto.getOthersDto().setWorking((String) row.get(20).toString());
 		}
 		if (rowSize > 21 && row.get(21) != null && !row.get(21).toString().isEmpty()) {
-			traineeDto.getReferralInfo().setPreferredLocation((String) row.get(21).toString());
+			traineeDto.getOthersDto().setPreferredLocation((String) row.get(21).toString());
 		}
 		if (rowSize > 22 && row.get(22) != null && !row.get(22).toString().isEmpty()) {
-			traineeDto.getReferralInfo().setPreferredClassType((String) row.get(22).toString());
+			traineeDto.getOthersDto().setPreferredClassType((String) row.get(22).toString());
 		}
 		if (rowSize > 23 && row.get(23) != null && !row.get(23).toString().isEmpty()) {
-			traineeDto.getReferralInfo().setSendWhatsAppLink((String) row.get(23).toString());
+			traineeDto.getOthersDto().setSendWhatsAppLink((String) row.get(23).toString());
 
 		}
 		if (rowSize > 24 && row.get(24) != null && !row.get(24).toString().isEmpty()) {
