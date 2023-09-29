@@ -119,7 +119,7 @@ public class DreamServiceImpl implements DreamService {
 				dto.getOthersDto().setPreferredLocation(Status.NA.toString());
 				dto.getOthersDto().setPreferredClassType(Status.NA.toString());
 				dto.getOthersDto().setSendWhatsAppLink(Status.NO.toString());
-        dto.getOthersDto().setRegistrationDate(LocalDate.now().toString());
+				dto.getOthersDto().setRegistrationDate(LocalDate.now().toString());
 
 				dto.getAdminDto().setCreatedOn(LocalDateTime.now().toString());
 				List<Object> list = wrapper.extractDtoDetails(dto);
@@ -178,8 +178,6 @@ public class DreamServiceImpl implements DreamService {
 		repo.saveToFollowUp(spreadSheetId, data);
 		return true;
 	}
-
-	
 
 	@Override
 	public ResponseEntity<String> emailCheck(String spreadsheetId, String email, HttpServletRequest request) {
@@ -253,23 +251,22 @@ public class DreamServiceImpl implements DreamService {
 	public ResponseEntity<SheetsDto> readData(String spreadsheetId, int startingIndex, int maxRows) {
 		try {
 			List<List<Object>> dataList = repo.readData(spreadsheetId);
-	   
-	
+
 //			List<List<Object>> sortedData = dataList.stream()
 //					.sorted(Comparator.comparing(list -> list.get(25).toString(), Comparator.reverseOrder()))
 //					.collect(Collectors.toList());
 //			System.err.println(sortedData);
-			
+
 			List<List<Object>> sortedData = dataList.stream()
 					.sorted(Comparator.comparing(list -> list.get(24).toString(), Comparator.reverseOrder()))
 					.collect(Collectors.toList());
 			System.err.println(sortedData);
 			List<TraineeDto> dtos = getLimitedRows(sortedData, startingIndex, maxRows);
 			HttpServletResponse response = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes())
-					.getResponse();		
-		
+					.getResponse();
+
 			SheetsDto dto = new SheetsDto(dtos, dataList.size());
-			
+
 			return ResponseEntity.ok(dto);
 		} catch (IOException e) {
 
@@ -321,14 +318,14 @@ public class DreamServiceImpl implements DreamService {
 
 	@Override
 	public ResponseEntity<String> update(String spreadsheetId, String email, TraineeDto dto) {
-		
-			AdminDto admin = new AdminDto();
-			admin.setCreatedBy(dto.getAdminDto().getCreatedBy());	
-			admin.setCreatedOn(dto.getAdminDto().getCreatedOn());
-			admin.setUpdatedBy(dto.getAdminDto().getUpdatedBy());
-			admin.setUpdatedOn(LocalDateTime.now().toString());
-			dto.setAdminDto(admin);
-			try {
+
+		AdminDto admin = new AdminDto();
+		admin.setCreatedBy(dto.getAdminDto().getCreatedBy());
+		admin.setCreatedOn(dto.getAdminDto().getCreatedOn());
+		admin.setUpdatedBy(dto.getAdminDto().getUpdatedBy());
+		admin.setUpdatedOn(LocalDateTime.now().toString());
+		dto.setAdminDto(admin);
+		try {
 			int rowIndex = findRowIndexByEmail(spreadsheetId, email);
 			String range = traineeSheetName + rowStartRange + rowIndex + ":" + rowEndRange + rowIndex;
 			try {
@@ -363,7 +360,6 @@ public class DreamServiceImpl implements DreamService {
 	public ResponseEntity<String> updateFollowUp(String spreadsheetId, String email, FollowUpDto followDto)
 			throws IOException, IllegalAccessException {
 		FollowUpDto followUpDto = getFollowUpDetailsByEmail(spreadsheetId, email);
-
 
 		int rowIndex = findByEmailForUpdate(spreadsheetId, email);
 
@@ -412,14 +408,14 @@ public class DreamServiceImpl implements DreamService {
 	}
 
 	@Override
-	
-	public boolean updateCurrentFollowUp(String spreadsheetId, String email, String currentStatus, String currentlyFollowedBy,
-			String joiningDate) throws IOException, IllegalAccessException{
+
+	public boolean updateCurrentFollowUp(String spreadsheetId, String email, String currentStatus,
+			String currentlyFollowedBy, String joiningDate) throws IOException, IllegalAccessException {
 		FollowUpDto followUpDto = getFollowUpDetailsByEmail(spreadsheetId, email);
 		int rowIndex = findByEmailForUpdate(spreadsheetId, email);
 		String range = followUpSheetName + followUprowStartRange + rowIndex + ":" + followUprowEndRange + rowIndex;
-		UpdateValuesResponse updated = setFollowUpDto(spreadsheetId, currentStatus, currentlyFollowedBy,followUpDto,joiningDate,
-				range);
+		UpdateValuesResponse updated = setFollowUpDto(spreadsheetId, currentStatus, currentlyFollowedBy, followUpDto,
+				joiningDate, range);
 		if (updated.isEmpty()) {
 			return false;
 		} else {
@@ -428,7 +424,7 @@ public class DreamServiceImpl implements DreamService {
 	}
 
 	private UpdateValuesResponse setFollowUpDto(String spreadsheetId, String currentStatus, String currentlyFollowedBy,
-			FollowUpDto followUpDto,String joiningDate,String range) throws IllegalAccessException, IOException {
+			FollowUpDto followUpDto, String joiningDate, String range) throws IllegalAccessException, IOException {
 		AdminDto existingAdminDto = followUpDto.getAdminDto();
 		AdminDto adminDto = new AdminDto();
 		if (existingAdminDto != null) {
@@ -436,11 +432,11 @@ public class DreamServiceImpl implements DreamService {
 			adminDto.setCreatedOn(existingAdminDto.getCreatedOn());
 		}
 		if (currentStatus != null && !currentStatus.equals("NA")) {
-		    followUpDto.setCurrentStatus(currentStatus);
+			followUpDto.setCurrentStatus(currentStatus);
 		}
 
 		if (joiningDate != null && !joiningDate.equals("NA")) {
-		    followUpDto.setJoiningDate(joiningDate);
+			followUpDto.setJoiningDate(joiningDate);
 		}
 
 		adminDto.setUpdatedBy(currentlyFollowedBy);
@@ -465,7 +461,7 @@ public class DreamServiceImpl implements DreamService {
 			if (status == true) {
 
 				boolean update = updateCurrentFollowUp(spreadsheetId, statusDto.getBasicInfo().getEmail(),
-						statusDto.getAttemptStatus(), statusDto.getAttemptedBy(),statusDto.getJoiningDate());
+						statusDto.getAttemptStatus(), statusDto.getAttemptedBy(), statusDto.getJoiningDate());
 				repo.evictAllCachesOnTraineeDetails();
 			}
 
@@ -482,6 +478,7 @@ public class DreamServiceImpl implements DreamService {
 		}
 
 	}
+
 	@Override
 	public ResponseEntity<List<TraineeDto>> getSearchSuggestion(String spreadsheetId, String value,
 			HttpServletRequest request) {
@@ -815,7 +812,6 @@ public class DreamServiceImpl implements DreamService {
 					});
 
 				}
-				System.out.println(list.toString()+" "+list.size());
 
 				list.stream().forEach(e -> {
 					StatusDto dto = wrapper.listToStatusDto(e);

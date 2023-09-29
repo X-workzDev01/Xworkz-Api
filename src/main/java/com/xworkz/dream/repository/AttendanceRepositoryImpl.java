@@ -72,7 +72,6 @@ public class AttendanceRepositoryImpl implements AttendanceRepository {
 	}
 
 	@Override
-
 	public List<List<Object>> attendanceDetilesByEmail(String sheetId, String email, String range) throws IOException {
 		ValueRange response = sheetsService.spreadsheets().values().get(sheetId, range).execute();
 		return response.getValues();
