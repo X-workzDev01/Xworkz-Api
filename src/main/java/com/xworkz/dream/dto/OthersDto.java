@@ -21,6 +21,7 @@ public class OthersDto {
 	private String PreferredLocation;
 	private String PreferredClassType;
 	private String sendWhatsAppLink;
+	private String registrationDate;
 
 
 }
