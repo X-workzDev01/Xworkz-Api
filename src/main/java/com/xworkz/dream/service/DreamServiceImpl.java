@@ -133,11 +133,10 @@ public class DreamServiceImpl implements DreamService {
 
 	            // Check if the request is "/register" before calling saveBirthDayInfo
 	            if (isRegisterRequest(request)) {
-	                System.out.println("/register");
-	                // saveBirthDayInfo(spreadsheetId, dto, request);
+	                 saveBirthDayInfo(spreadsheetId, dto, request);
 	            }
 
-	            System.out.println("/register");
+	            
 	            boolean status = addToFollowUp(dto, spreadsheetId);
 
 	            if (status) {
