@@ -112,48 +112,48 @@ public class DreamServiceImpl implements DreamService {
 
 	@Override
 	public ResponseEntity<String> writeData(String spreadsheetId, TraineeDto dto, HttpServletRequest request)
-
 	        throws MessagingException, TemplateException {
 	    try {
 	        if (true) {// isCookieValid(request)
 	            List<List<Object>> data = repo.getIds(spreadsheetId).getValues();
 	            int size = data.size();
+	            System.out.println(size);
 
 	            dto.setId(size += 1);
-	            dto.getReferralInfo().setXworkzEmail(Status.NA.toString());
-	            dto.getReferralInfo().setPreferredLocation(Status.NA.toString());
-	            dto.getReferralInfo().setPreferredClassType(Status.NA.toString());
-	            dto.getReferralInfo().setSendWhatsAppLink(Status.NO.toString());
-              dto.getOthersDto().setRegistrationDate(LocalDate.now().toString());
+	            dto.getOthersDto().setXworkzEmail(Status.NA.toString());
+	            dto.getOthersDto().setPreferredLocation(Status.NA.toString());
+	            dto.getOthersDto().setPreferredClassType(Status.NA.toString());
+	            dto.getOthersDto().setSendWhatsAppLink(Status.NO.toString());
+	            dto.getOthersDto().setRegistrationDate(LocalDate.now().toString());
 	            dto.getAdminDto().setCreatedOn(LocalDateTime.now().toString());
 	            List<Object> list = wrapper.extractDtoDetails(dto);
-
+	            
+	            System.out.println(list);
 	            boolean writeStatus = repo.writeData(spreadsheetId, list);
 
 	            // Check if the request is "/register" before calling saveBirthDayInfo
 	            if (isRegisterRequest(request)) {
-	            	System.out.println("/register");
-//	                saveBirthDayInfo(spreadsheetId, dto, request);
+	                System.out.println("/register");
+	                // saveBirthDayInfo(spreadsheetId, dto, request);
 	            }
 
-	            if (isRegisterRequest(request)) {
-	            	System.out.println("/register");
-//	                boolean status = addToFollowUp(dto, spreadsheetId);
-	                if (true) {
-	                    logger.info("Data written successfully to spreadsheetId and Added to Follow Up: {}", spreadsheetId);
-	                    boolean sent = util.sendCourseContent(dto.getBasicInfo().getEmail(), dto.getBasicInfo().getTraineeName());
-	                    repo.evictAllCachesOnTraineeDetails();
-	                    if (sent == true) {
-	                        return ResponseEntity.ok("Data written successfully , Added to follow Up , sent course content ");
-	                    } else {
-	                        return ResponseEntity.ok("Email not sent, Data written successfully , Added to follow Up");
-	                    }
+	            System.out.println("/register");
+	            boolean status = addToFollowUp(dto, spreadsheetId);
+
+	            if (status) {
+	                logger.info("Data written successfully to spreadsheetId and Added to Follow Up: {}", spreadsheetId);
+	                if(isRegisterRequest(request)) {
+	                	 boolean sent = util.sendCourseContent(dto.getBasicInfo().getEmail(), dto.getBasicInfo().getTraineeName());
+	                	 if (sent == true) {
+	 	                    return ResponseEntity.ok("Data written successfully , Added to follow Up , sent course content ");
+	 	                } else {
+	 	                    return ResponseEntity.ok("Email not sent, Data written successfully , Added to follow Up");
+	 	                }
 	                }
-	                return ResponseEntity.ok("Data written successfully , not added to Follow Up");
-	            } else {
-	                // For requests other than "/register", return an appropriate response.
-	                return ResponseEntity.ok("Data written successfully (Non-registration request)");
+	                repo.evictAllCachesOnTraineeDetails();
+	                
 	            }
+	            return ResponseEntity.ok("Data written successfully , not added to Follow Up");
 	        }
 	    } catch (Exception e) {
 	        logger.error("Error processing request: " + e.getMessage(), e);
@@ -162,7 +162,6 @@ public class DreamServiceImpl implements DreamService {
 	    // You should have a return statement here for any other cases.
 	    return ResponseEntity.badRequest().body("Failed to process the request");
 	}
-
 	// Helper method to check if the request URI is "/register"
 	private boolean isRegisterRequest(HttpServletRequest request) {
 	    return request.getRequestURI().equals("/api/register");
@@ -866,7 +865,7 @@ public class DreamServiceImpl implements DreamService {
 		EnquiryDto validatedEnquiryDto =wrapper.validateEnquiry(enquiryDto);
 		
 		traineeDto.setCourseInfo(new CourseDto("NA"));
-		traineeDto.setReferralInfo(new OthersDto("NA"));
+		traineeDto.setOthersDto(new OthersDto("NA"));
 		traineeDto.setAdminDto(enquiryDto.getAdminDto());
 		traineeDto.setBasicInfo(enquiryDto.getBasicInfo());
 		traineeDto.setEducationInfo(enquiryDto.getEducationInfo());
