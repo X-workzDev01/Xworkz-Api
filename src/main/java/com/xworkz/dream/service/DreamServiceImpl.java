@@ -109,6 +109,8 @@ public class DreamServiceImpl implements DreamService {
 	@Override
 	public ResponseEntity<String> writeData(String spreadsheetId, TraineeDto dto, HttpServletRequest request)
 			throws MessagingException, TemplateException {
+
+
 		try {
 			if (true) {// isCookieValid(request)
 				List<List<Object>> data = repo.getIds(spreadsheetId).getValues();
@@ -120,10 +122,24 @@ public class DreamServiceImpl implements DreamService {
 				dto.getOthersDto().setPreferredClassType(Status.NA.toString());
 				dto.getOthersDto().setSendWhatsAppLink(Status.NO.toString());
 				dto.getOthersDto().setRegistrationDate(LocalDate.now().toString());
-
 				dto.getAdminDto().setCreatedOn(LocalDateTime.now().toString());
-				List<Object> list = wrapper.extractDtoDetails(dto);
+				if (dto.getOthersDto().getReferalName() == null) {
+					dto.getOthersDto().setReferalName("NA");
 
+				}
+				if (dto.getOthersDto().getComments() == null) {
+					dto.getOthersDto().setComments("NA");
+				}
+				if (dto.getOthersDto().getWorking() == null) {
+
+					dto.getOthersDto().setWorking("No");
+				}
+				if (dto.getOthersDto().getReferalContactNumber() == null) {
+
+					dto.getOthersDto().setReferalContactNumber(0L);
+				}
+
+				List<Object> list = wrapper.extractDtoDetails(dto);
 				boolean writeStatus = repo.writeData(spreadsheetId, list);
 				// calling method to store date of birth details
 				saveBirthDayInfo(spreadsheetId, dto, request);
@@ -134,6 +150,7 @@ public class DreamServiceImpl implements DreamService {
 						logger.info("Data written successfully to spreadsheetId and Added to Follow Up: {}",
 								spreadsheetId);
 
+						
 //						boolean sent = util.sendCourseContent(dto.getBasicInfo().getEmail(),
 //								dto.getBasicInfo().getTraineeName());
 //						repo.evictAllCachesOnTraineeDetails();
@@ -255,12 +272,10 @@ public class DreamServiceImpl implements DreamService {
 //			List<List<Object>> sortedData = dataList.stream()
 //					.sorted(Comparator.comparing(list -> list.get(25).toString(), Comparator.reverseOrder()))
 //					.collect(Collectors.toList());
-//			System.err.println(sortedData);
 
 			List<List<Object>> sortedData = dataList.stream()
 					.sorted(Comparator.comparing(list -> list.get(24).toString(), Comparator.reverseOrder()))
 					.collect(Collectors.toList());
-			System.err.println(sortedData);
 			List<TraineeDto> dtos = getLimitedRows(sortedData, startingIndex, maxRows);
 			HttpServletResponse response = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes())
 					.getResponse();
@@ -692,7 +707,6 @@ public class DreamServiceImpl implements DreamService {
 		filter.stream().forEach(item -> {
 			this.batch = wrapper.batchDetailsToDto(item);
 
-			System.err.println(this.batch);
 
 		});
 		if (batch != null) {

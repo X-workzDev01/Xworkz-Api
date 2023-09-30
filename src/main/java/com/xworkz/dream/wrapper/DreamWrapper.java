@@ -90,19 +90,18 @@ public class DreamWrapper {
 			followUpDto.setCurrentStatus((String) row.get(8));
 		}
 		if (rowSize > 9 && row.get(9) != null && !row.get(9).toString().isEmpty()) {
-		    if (followUpDto.getAdminDto() == null) {
-		        followUpDto.setAdminDto(new AdminDto());
-		    }
-		    followUpDto.getAdminDto().setCreatedBy(row.get(9).toString());
+			if (followUpDto.getAdminDto() == null) {
+				followUpDto.setAdminDto(new AdminDto());
+			}
+			followUpDto.getAdminDto().setCreatedBy(row.get(9).toString());
 		}
 
 		if (rowSize > 10 && row.get(10) != null && !row.get(10).toString().isEmpty()) {
-		    if (followUpDto.getAdminDto() == null) {
-		        followUpDto.setAdminDto(new AdminDto());
-		    }
-		    followUpDto.getAdminDto().setCreatedOn(row.get(10).toString());
+			if (followUpDto.getAdminDto() == null) {
+				followUpDto.setAdminDto(new AdminDto());
+			}
+			followUpDto.getAdminDto().setCreatedOn(row.get(10).toString());
 		}
-
 
 		return followUpDto;
 	}
@@ -253,26 +252,25 @@ public class DreamWrapper {
 
 		}
 		if (rowSize > 24 && row.get(24) != null && !row.get(24).toString().isEmpty()) {
-			traineeDto.getOthersDto().setRegistrationDate((String)row.get(24).toString());
+			traineeDto.getOthersDto().setRegistrationDate((String) row.get(24).toString());
 
 		}
 		if (rowSize > 25 && row.get(25) != null && !row.get(25).toString().isEmpty()) {
-		    traineeDto.getAdminDto().setCreatedBy(row.get(25).toString());
+			traineeDto.getAdminDto().setCreatedBy(row.get(25).toString());
 		}
 
 		if (rowSize > 26 && row.get(26) != null && !row.get(26).toString().isEmpty()) {
-		    String createdOnValue = row.get(26).toString();
-		    traineeDto.getAdminDto().setCreatedOn(createdOnValue);
+			String createdOnValue = row.get(26).toString();
+			traineeDto.getAdminDto().setCreatedOn(createdOnValue);
 		}
 
 		if (rowSize > 27 && row.get(27) != null && !row.get(27).toString().isEmpty()) {
-		    traineeDto.getAdminDto().setUpdatedBy(row.get(27).toString());
+			traineeDto.getAdminDto().setUpdatedBy(row.get(27).toString());
 		}
 
 		if (rowSize > 28 && row.get(28) != null && !row.get(28).toString().isEmpty()) {
-		    traineeDto.getAdminDto().setUpdatedOn(row.get(28).toString());
+			traineeDto.getAdminDto().setUpdatedOn(row.get(28).toString());
 		}
-
 
 		return traineeDto;
 	}
@@ -314,11 +312,13 @@ public class DreamWrapper {
 
 			// Extract the value of the field from the DTO object
 			Object fieldValue = field.get(dto);
+			System.err.println(fieldValue);
 
 			if (fieldValue != null && !field.getType().isPrimitive() && !field.getType().getName().startsWith("java")) {
 				// Handle association with another DTO
 				List<Object> subDtoDetails = extractDtoDetails(fieldValue);
 				detailsList.addAll(subDtoDetails);
+			
 
 			} else {
 				// Add the value to the list
@@ -508,7 +508,7 @@ public class DreamWrapper {
 
 		return attendanceDto;
 	}
-	
+
 	public FollowUpDto setFollowUp(TraineeDto traineeDto) {
 		FollowUpDto followUpDto = new FollowUpDto();
 		BasicInfoDto basicInfo = new BasicInfoDto();
@@ -525,15 +525,16 @@ public class DreamWrapper {
 		followUpDto.setAdminDto(traineeDto.getAdminDto());
 		return followUpDto;
 	}
+
 	public void setAdminDto(TraineeDto dto) {
 		AdminDto admin = new AdminDto();
-		admin.setCreatedBy(dto.getAdminDto().getCreatedBy());	
+		admin.setCreatedBy(dto.getAdminDto().getCreatedBy());
 		admin.setCreatedOn(dto.getAdminDto().getCreatedOn());
 		admin.setUpdatedBy(dto.getAdminDto().getUpdatedBy());
 		admin.setUpdatedOn(LocalDateTime.now().toString());
 		dto.setAdminDto(admin);
 	}
-	
+
 	public StatusDto setFollowUpStatus(StatusDto statusDto, List<List<Object>> data) {
 		int size = data.size();
 		BasicInfoDto basicInfo = new BasicInfoDto();
