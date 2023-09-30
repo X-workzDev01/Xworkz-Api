@@ -159,7 +159,6 @@ public class AttendanceServiceImpl implements AttendanceService {
 
 		AttadanceSheetDto dtosList = new AttadanceSheetDto(dtos, filter.size());
 		logger.debug("Response attandance by email {}", dtosList);
-		System.err.println(dtosList);
 		return ResponseEntity.ok(dtosList);
 	}
 
@@ -231,9 +230,7 @@ public class AttendanceServiceImpl implements AttendanceService {
 			List<Object> row = iterator.next();
 
 			if (row != null && !row.isEmpty()) {
-				System.out.println("999");
 				AttendanceDto attendanceDto = wrapper.attendanceListToDto(row);
-				System.err.println(attendanceDto);
 				if (attendanceDto.getCourseInfo().getCourse().equals(batch) && attendanceDto.getDate().equals(date)) {
 					attendanceDtos.add(attendanceDto);
 				}
@@ -257,7 +254,7 @@ public class AttendanceServiceImpl implements AttendanceService {
 
 	@Scheduled(fixedRate = 60 * 1000) // 1000 is equal to 1 second
 	public void schudulerAttandance() throws IOException {
-//		System.err.println("Hi98999999999999999");
+
 		attendanceRepository.clearColumnData(sheetId, attendanceListDefaultRange);
 
 	}
