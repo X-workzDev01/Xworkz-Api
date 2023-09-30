@@ -27,7 +27,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.xworkz.dream.dto.BasicInfoDto;
 import com.xworkz.dream.dto.BatchDetailsDto;
 import com.xworkz.dream.dto.BirthDayInfoDto;
-import com.xworkz.dream.dto.EducationInfoDto;
 import com.xworkz.dream.dto.EnquiryDto;
 import com.xworkz.dream.dto.FollowUpDataDto;
 import com.xworkz.dream.dto.FollowUpDto;
@@ -215,6 +214,7 @@ public class DreamApiController {
 		}
 
 	}
+	
 	@ApiOperation(value = "To Add Enquiry Details")
 	@PostMapping("/enquiry")
 	public ResponseEntity<String> addEnquiry( @RequestBody EnquiryDto enquiryDto , @RequestHeader String spreadSheetId , HttpServletRequest request){
@@ -230,6 +230,5 @@ public class DreamApiController {
 		
 		
 	}
-	
 	
 }
