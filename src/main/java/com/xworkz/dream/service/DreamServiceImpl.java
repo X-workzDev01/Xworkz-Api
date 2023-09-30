@@ -48,8 +48,12 @@ import com.xworkz.dream.dto.BasicInfoDto;
 import com.xworkz.dream.dto.BatchDetails;
 import com.xworkz.dream.dto.BatchDetailsDto;
 import com.xworkz.dream.dto.BirthDayInfoDto;
+import com.xworkz.dream.dto.CourseDto;
+import com.xworkz.dream.dto.EducationInfoDto;
+import com.xworkz.dream.dto.EnquiryDto;
 import com.xworkz.dream.dto.FollowUpDataDto;
 import com.xworkz.dream.dto.FollowUpDto;
+import com.xworkz.dream.dto.OthersDto;
 import com.xworkz.dream.dto.SheetsDto;
 import com.xworkz.dream.dto.StatusDto;
 import com.xworkz.dream.dto.TraineeDto;
@@ -149,16 +153,6 @@ public class DreamServiceImpl implements DreamService {
 					if (status) {
 						logger.info("Data written successfully to spreadsheetId and Added to Follow Up: {}",
 								spreadsheetId);
-
-						
-//						boolean sent = util.sendCourseContent(dto.getBasicInfo().getEmail(),
-//								dto.getBasicInfo().getTraineeName());
-//						repo.evictAllCachesOnTraineeDetails();
-//						if (sent == true) {
-//							return ResponseEntity.ok("Data written successfully , Added to follow Up , sended course content ");
-//						} else {
-//							return ResponseEntity.ok("Email not sent, Data written successfully , Added to follow Up");
-//						}
 						boolean sent = util.sendCourseContent(dto.getBasicInfo().getEmail(),
 								dto.getBasicInfo().getTraineeName());
 						repo.evictAllCachesOnTraineeDetails();
@@ -183,10 +177,9 @@ public class DreamServiceImpl implements DreamService {
 			e.printStackTrace();
 			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Data mapping error");
 
-		}
-		return null;
+    }
+    return null;
 	}
-
 	@Override
 	public boolean addToFollowUp(TraineeDto traineeDto, String spreadSheetId)
 			throws IOException, IllegalAccessException {
@@ -874,6 +867,31 @@ public class DreamServiceImpl implements DreamService {
 	@Override
 	public String verifyEmails(String email) {
 		return emailableClient.verifyEmail(email, API_KEY);
+	}
+	
+	@Override
+	public boolean addEnquiry(EnquiryDto enquiryDto ,  String spreadsheetId , HttpServletRequest request) {
+		TraineeDto traineeDto = new TraineeDto();
+		EnquiryDto validatedEnquiryDto =wrapper.validateEnquiry(enquiryDto);
+		
+		traineeDto.setCourseInfo(new CourseDto("NA"));
+		traineeDto.setOthersDto(new OthersDto("NA"));
+		traineeDto.setAdminDto(enquiryDto.getAdminDto());
+		traineeDto.setBasicInfo(enquiryDto.getBasicInfo());
+		traineeDto.setEducationInfo(enquiryDto.getEducationInfo());
+		System.out.println(traineeDto);
+		
+		try {
+			writeData(spreadsheetId, traineeDto, request);
+		} catch (MessagingException | TemplateException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return true;
+		
+	
+		
+		
 	}
 
 	@Override
