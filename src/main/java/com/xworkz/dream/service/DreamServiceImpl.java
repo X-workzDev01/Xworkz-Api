@@ -112,60 +112,73 @@ public class DreamServiceImpl implements DreamService {
 
 	@Override
 	public ResponseEntity<String> writeData(String spreadsheetId, TraineeDto dto, HttpServletRequest request)
-	        throws MessagingException, TemplateException {
-	    try {
-	        if (true) {// isCookieValid(request)
-	            List<List<Object>> data = repo.getIds(spreadsheetId).getValues();
-	            int size = data.size();
-	            System.out.println(size);
+			throws MessagingException, TemplateException {
 
-	            dto.setId(size += 1);
-	            dto.getOthersDto().setXworkzEmail(Status.NA.toString());
-	            dto.getOthersDto().setPreferredLocation(Status.NA.toString());
-	            dto.getOthersDto().setPreferredClassType(Status.NA.toString());
-	            dto.getOthersDto().setSendWhatsAppLink(Status.NO.toString());
-	            dto.getOthersDto().setRegistrationDate(LocalDate.now().toString());
-	            dto.getAdminDto().setCreatedOn(LocalDateTime.now().toString());
-	            List<Object> list = wrapper.extractDtoDetails(dto);
-	            
-	            System.out.println(list);
-	            boolean writeStatus = repo.writeData(spreadsheetId, list);
 
-	            // Check if the request is "/register" before calling saveBirthDayInfo
-	            if (isRegisterRequest(request)) {
-	                System.out.println("/register");
-	                // saveBirthDayInfo(spreadsheetId, dto, request);
-	            }
+		try {
+			if (true) {// isCookieValid(request)
+				List<List<Object>> data = repo.getIds(spreadsheetId).getValues();
+				int size = data.size();
 
-	            System.out.println("/register");
-	            boolean status = addToFollowUp(dto, spreadsheetId);
+				dto.setId(size += 1);
+				dto.getOthersDto().setXworkzEmail(Status.NA.toString());
+				dto.getOthersDto().setPreferredLocation(Status.NA.toString());
+				dto.getOthersDto().setPreferredClassType(Status.NA.toString());
+				dto.getOthersDto().setSendWhatsAppLink(Status.NO.toString());
+				dto.getOthersDto().setRegistrationDate(LocalDate.now().toString());
+				dto.getAdminDto().setCreatedOn(LocalDateTime.now().toString());
+				if (dto.getOthersDto().getReferalName() == null) {
+					dto.getOthersDto().setReferalName("NA");
 
-	            if (status) {
-	                logger.info("Data written successfully to spreadsheetId and Added to Follow Up: {}", spreadsheetId);
-	                if(isRegisterRequest(request)) {
-	                	 boolean sent = util.sendCourseContent(dto.getBasicInfo().getEmail(), dto.getBasicInfo().getTraineeName());
-	                	 if (sent == true) {
-	 	                    return ResponseEntity.ok("Data written successfully , Added to follow Up , sent course content ");
-	 	                } else {
-	 	                    return ResponseEntity.ok("Email not sent, Data written successfully , Added to follow Up");
-	 	                }
-	                }
-	                repo.evictAllCachesOnTraineeDetails();
-	                
-	            }
-	            return ResponseEntity.ok("Data written successfully , not added to Follow Up");
-	        }
-	    } catch (Exception e) {
-	        logger.error("Error processing request: " + e.getMessage(), e);
-	        return ResponseEntity.badRequest().body("Failed to process the request");
-	    }
-	    // You should have a return statement here for any other cases.
-	    return ResponseEntity.badRequest().body("Failed to process the request");
-	}
-	// Helper method to check if the request URI is "/register"
-	private boolean isRegisterRequest(HttpServletRequest request) {
-	    return request.getRequestURI().equals("/api/register");
+				}
+				if (dto.getOthersDto().getComments() == null) {
+					dto.getOthersDto().setComments("NA");
+				}
+				if (dto.getOthersDto().getWorking() == null) {
 
+					dto.getOthersDto().setWorking("No");
+				}
+				if (dto.getOthersDto().getReferalContactNumber() == null) {
+
+					dto.getOthersDto().setReferalContactNumber(0L);
+				}
+
+				List<Object> list = wrapper.extractDtoDetails(dto);
+				boolean writeStatus = repo.writeData(spreadsheetId, list);
+				// calling method to store date of birth details
+				saveBirthDayInfo(spreadsheetId, dto, request);
+				if (writeStatus) {
+					logger.info("Data written successfully to spreadsheetId: {}", spreadsheetId);
+					boolean status = addToFollowUp(dto, spreadsheetId);
+					if (status) {
+						logger.info("Data written successfully to spreadsheetId and Added to Follow Up: {}",
+								spreadsheetId);
+						boolean sent = util.sendCourseContent(dto.getBasicInfo().getEmail(),
+								dto.getBasicInfo().getTraineeName());
+						repo.evictAllCachesOnTraineeDetails();
+						if (sent == true) {
+							return ResponseEntity
+									.ok("Data written successfully , Added to follow Up , sended course content ");
+						} else {
+							return ResponseEntity.ok("Email not sent, Data written successfully , Added to follow Up");
+						}
+					}
+					return ResponseEntity.ok("Data written successfully , not added to Follow Up");
+				} else {
+					logger.warn("Failed to write data to spreadsheetId: {}", spreadsheetId);
+					return ResponseEntity.badRequest().body("Failed to write data");
+				}
+			}
+		} catch (IOException e) {
+			logger.error("Error occurred while writing data to spreadsheetId: {}", spreadsheetId, e);
+			e.printStackTrace();
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("An error occurred");
+		} catch (IllegalAccessException e) {
+			e.printStackTrace();
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Data mapping error");
+
+    }
+    return null;
 	}
 	@Override
 	public boolean addToFollowUp(TraineeDto traineeDto, String spreadSheetId)
@@ -252,12 +265,10 @@ public class DreamServiceImpl implements DreamService {
 //			List<List<Object>> sortedData = dataList.stream()
 //					.sorted(Comparator.comparing(list -> list.get(25).toString(), Comparator.reverseOrder()))
 //					.collect(Collectors.toList());
-//			System.err.println(sortedData);
 
 			List<List<Object>> sortedData = dataList.stream()
 					.sorted(Comparator.comparing(list -> list.get(24).toString(), Comparator.reverseOrder()))
 					.collect(Collectors.toList());
-			System.err.println(sortedData);
 			List<TraineeDto> dtos = getLimitedRows(sortedData, startingIndex, maxRows);
 			HttpServletResponse response = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes())
 					.getResponse();
@@ -689,7 +700,6 @@ public class DreamServiceImpl implements DreamService {
 		filter.stream().forEach(item -> {
 			this.batch = wrapper.batchDetailsToDto(item);
 
-			System.err.println(this.batch);
 
 		});
 		if (batch != null) {
