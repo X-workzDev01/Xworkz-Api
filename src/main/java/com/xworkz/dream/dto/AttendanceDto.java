@@ -34,6 +34,9 @@ public class AttendanceDto {
 	private String absent;
 	private String present;
 	private Boolean isButton;
+	private String yColor;
+	private String nColor;
+
 
 
 }

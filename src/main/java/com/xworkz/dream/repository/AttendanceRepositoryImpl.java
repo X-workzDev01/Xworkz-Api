@@ -14,6 +14,7 @@ import javax.annotation.PostConstruct;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.ResourceLoader;
@@ -81,7 +82,8 @@ public class AttendanceRepositoryImpl implements AttendanceRepository {
 	public void evictCacheByEmail() throws IOException {
 
 	}
-
+	@Cacheable(value = "byEmail", key = "#spreadsheetId",unless = "#result == null")
+	@CachePut(value = "byEmail", key = "#spreadsheetId")
 	@Override
 	public boolean everyDayAttendance(String spreadsheetId, List<Object> row, String range) throws IOException {
 		List<List<Object>> values = new ArrayList<>();
@@ -106,7 +108,7 @@ public class AttendanceRepositoryImpl implements AttendanceRepository {
 
 	public void clearColumnData(String spreadsheetId, String range) throws IOException {
 		Sheets.Spreadsheets.Values.Clear request = sheetsService.spreadsheets().values().clear(spreadsheetId, range,
-				new ClearValuesRequest());
+				 new ClearValuesRequest());
 		request.execute();
 	}
 }

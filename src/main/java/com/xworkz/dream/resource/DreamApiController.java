@@ -30,6 +30,7 @@ import com.xworkz.dream.dto.BirthDayInfoDto;
 import com.xworkz.dream.dto.EnquiryDto;
 import com.xworkz.dream.dto.FollowUpDataDto;
 import com.xworkz.dream.dto.FollowUpDto;
+import com.xworkz.dream.dto.SheetNotificationDto;
 import com.xworkz.dream.dto.SheetsDto;
 import com.xworkz.dream.dto.StatusDto;
 import com.xworkz.dream.dto.SuggestionDto;
@@ -195,7 +196,7 @@ public class DreamApiController {
 
 	@ApiOperation(" Notification API for pending Follow Ups for the Day")
 	@GetMapping("/notification")
-	public ResponseEntity<List<StatusDto>> getFollowupNotification(@RequestParam String email,
+	public ResponseEntity<SheetNotificationDto> getFollowupNotification(@RequestParam String email,
 			HttpServletRequest request) throws IOException {
 		return service.setNotification(email, request);
 	}
@@ -214,21 +215,19 @@ public class DreamApiController {
 		}
 
 	}
-	
+
 	@ApiOperation(value = "To Add Enquiry Details")
 	@PostMapping("/enquiry")
-	public ResponseEntity<String> addEnquiry( @RequestBody EnquiryDto enquiryDto , @RequestHeader String spreadSheetId , HttpServletRequest request){
-		
+	public ResponseEntity<String> addEnquiry(@RequestBody EnquiryDto enquiryDto, @RequestHeader String spreadSheetId,
+			HttpServletRequest request) {
+
 		boolean saved = service.addEnquiry(enquiryDto, spreadSheetId, request);
 		String uri = request.getRequestURI();
 		System.out.println(uri.contains("enquiry"));
 //		System.out.println(dto);
-		
+
 		return ResponseEntity.ok().body("Success");
-					
-		
-		
-		
+
 	}
-	
+
 }

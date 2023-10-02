@@ -54,6 +54,7 @@ import com.xworkz.dream.dto.EnquiryDto;
 import com.xworkz.dream.dto.FollowUpDataDto;
 import com.xworkz.dream.dto.FollowUpDto;
 import com.xworkz.dream.dto.OthersDto;
+import com.xworkz.dream.dto.SheetNotificationDto;
 import com.xworkz.dream.dto.SheetsDto;
 import com.xworkz.dream.dto.StatusDto;
 import com.xworkz.dream.dto.TraineeDto;
@@ -81,7 +82,7 @@ public class DreamServiceImpl implements DreamService {
 	private String attemptedBy;
 	private String id = "1p3G4et36vkzSDs3W63cj6qnUFEWljLos2HHXIZd78Gg";
 	private HttpServletRequest request;
-	private ResponseEntity<List<StatusDto>> response;
+	private ResponseEntity<SheetNotificationDto> response;
 	private String loginEmail;
 	List<Team> users = new ArrayList<Team>();
 	@Autowired
@@ -106,14 +107,13 @@ public class DreamServiceImpl implements DreamService {
 	private String followUprowStartRange;
 	@Value("${sheets.followUprowEndRange}")
 	private String followUprowEndRange;
-	private static final String API_KEY = "live_7dffc6f2186bc1a4bb21";
+	private static final String API_KEY = "live_1c9a44377323556a9243";
 
 	private static final Logger logger = LoggerFactory.getLogger(DreamServiceImpl.class);
 
 	@Override
 	public ResponseEntity<String> writeData(String spreadsheetId, TraineeDto dto, HttpServletRequest request)
 			throws MessagingException, TemplateException {
-
 
 		try {
 			if (true) {// isCookieValid(request)
@@ -177,9 +177,10 @@ public class DreamServiceImpl implements DreamService {
 			e.printStackTrace();
 			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Data mapping error");
 
-    }
-    return null;
+		}
+		return null;
 	}
+
 	@Override
 	public boolean addToFollowUp(TraineeDto traineeDto, String spreadSheetId)
 			throws IOException, IllegalAccessException {
@@ -700,7 +701,6 @@ public class DreamServiceImpl implements DreamService {
 		filter.stream().forEach(item -> {
 			this.batch = wrapper.batchDetailsToDto(item);
 
-
 		});
 		if (batch != null) {
 			return ResponseEntity.ok(this.batch);
@@ -763,7 +763,7 @@ public class DreamServiceImpl implements DreamService {
 	public void notification() {
 		try {
 			List<Team> teamList = getTeam();
-			notification(id, loginEmail, teamList, request);
+			ResponseEntity<SheetNotificationDto> notificationDto= notification(id, loginEmail, teamList, request);
 
 		} catch (IOException e) {
 			throw new RuntimeException("Exception occurred: " + e.getMessage(), e);
@@ -772,7 +772,7 @@ public class DreamServiceImpl implements DreamService {
 	}
 
 	@Override
-	public void notification(String spreadsheetId, String email, List<Team> teamList, HttpServletRequest requests)
+	public ResponseEntity<SheetNotificationDto> notification(String spreadsheetId, String email, List<Team> teamList, HttpServletRequest requests)
 			throws IOException {
 		List<String> statusCheck = Stream.of(Status.Busy.toString(), Status.New.toString(),
 				Status.Interested.toString(), Status.RNR.toString(), Status.Not_interested.toString().replace('_', ' '),
@@ -782,7 +782,10 @@ public class DreamServiceImpl implements DreamService {
 
 		LocalTime time = LocalTime.of(18, 00, 01, 500_000_000);
 		List<StatusDto> notificationStatus = new ArrayList<StatusDto>();
-		List<StatusDto> notificationStatusBymail = new ArrayList<StatusDto>();
+		List<StatusDto> today = new ArrayList<StatusDto>();
+		List<StatusDto> yesterday = new ArrayList<StatusDto>();
+		List<StatusDto> afterFoureDay = new ArrayList<StatusDto>();
+
 		List<List<Object>> followup = repo.getFollowUpDetailsByid(spreadsheetId);
 		followup.stream().forEach(f -> {
 			followUpDto = wrapper.listToFollowUpDTO(f);
@@ -800,23 +803,24 @@ public class DreamServiceImpl implements DreamService {
 						if (LocalDate.now().isEqual(LocalDate.parse(dto.getCallBack()))
 								&& email.equalsIgnoreCase(dto.getAttemptedBy())
 								&& statusCheck.contains(dto.getAttemptStatus())) {
-							notificationStatusBymail.add(dto);
-							response = ResponseEntity.ok(notificationStatusBymail);
+							today.add(dto);
 						}
 						if (LocalDate.now().minusDays(1).isEqual(LocalDate.parse(dto.getCallBack()))
 								&& email.equalsIgnoreCase(dto.getAttemptedBy())
 								&& statusCheck.contains(dto.getAttemptStatus())) {
-							notificationStatusBymail.add(dto);
+							yesterday.add(dto);
 
 						}
-						if (LocalDate.now().plusDays(1).isEqual(LocalDate.parse(dto.getCallBack()))
+						if (LocalDate.now().plusDays(4).isEqual(LocalDate.parse(dto.getCallBack()))
 								&& email.equalsIgnoreCase(dto.getAttemptedBy())
 								&& statusCheck.contains(dto.getAttemptStatus())) {
-							notificationStatusBymail.add(dto);
+							afterFoureDay.add(dto);
 
 						}
 
 					});
+					SheetNotificationDto dto = new SheetNotificationDto(yesterday, today, afterFoureDay);
+					response= ResponseEntity.ok(dto);
 
 				}
 
@@ -831,7 +835,6 @@ public class DreamServiceImpl implements DreamService {
 									&& LocalDate.now().isEqual(LocalDate.parse(dto.getCallBack()))) {
 
 								notificationStatus.add(dto);
-								response = ResponseEntity.ok(notificationStatus);
 
 							}
 
@@ -851,11 +854,12 @@ public class DreamServiceImpl implements DreamService {
 			}
 
 		}
+		return null;
 
 	}
 
 	@Override
-	public ResponseEntity<List<StatusDto>> setNotification(@Value("${myapp.scheduled.param}") String email,
+	public ResponseEntity<SheetNotificationDto> setNotification(@Value("${myapp.scheduled.param}") String email,
 			@Value("${myapp.scheduled.param}") HttpServletRequest requests) throws IOException {
 		this.request = requests;
 		this.loginEmail = email;
@@ -868,19 +872,19 @@ public class DreamServiceImpl implements DreamService {
 	public String verifyEmails(String email) {
 		return emailableClient.verifyEmail(email, API_KEY);
 	}
-	
+
 	@Override
-	public boolean addEnquiry(EnquiryDto enquiryDto ,  String spreadsheetId , HttpServletRequest request) {
+	public boolean addEnquiry(EnquiryDto enquiryDto, String spreadsheetId, HttpServletRequest request) {
 		TraineeDto traineeDto = new TraineeDto();
-		EnquiryDto validatedEnquiryDto =wrapper.validateEnquiry(enquiryDto);
-		
+		EnquiryDto validatedEnquiryDto = wrapper.validateEnquiry(enquiryDto);
+
 		traineeDto.setCourseInfo(new CourseDto("NA"));
 		traineeDto.setOthersDto(new OthersDto("NA"));
 		traineeDto.setAdminDto(enquiryDto.getAdminDto());
 		traineeDto.setBasicInfo(enquiryDto.getBasicInfo());
 		traineeDto.setEducationInfo(enquiryDto.getEducationInfo());
 		System.out.println(traineeDto);
-		
+
 		try {
 			writeData(spreadsheetId, traineeDto, request);
 		} catch (MessagingException | TemplateException e) {
@@ -888,10 +892,7 @@ public class DreamServiceImpl implements DreamService {
 			e.printStackTrace();
 		}
 		return true;
-		
-	
-		
-		
+
 	}
 
 	@Override
