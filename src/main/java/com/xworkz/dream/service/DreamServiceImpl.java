@@ -112,20 +112,18 @@ public class DreamServiceImpl implements DreamService {
 
 	@Override
 	public ResponseEntity<String> writeData(String spreadsheetId, TraineeDto dto, HttpServletRequest request)
-
 	        throws MessagingException, TemplateException {
 	    try {
 	        if (true) {// isCookieValid(request)
 	            List<List<Object>> data = repo.getIds(spreadsheetId).getValues();
 	            int size = data.size();
 	            System.out.println(size);
-
 	            dto.setId(size += 1);
 	            dto.getOthersDto().setXworkzEmail(Status.NA.toString());
 	            dto.getOthersDto().setPreferredLocation(Status.NA.toString());
 	            dto.getOthersDto().setPreferredClassType(Status.NA.toString());
 	            dto.getOthersDto().setSendWhatsAppLink(Status.NO.toString());
-	            dto.getOthersDto().setRegistrationDate(LocalDate.now().toString());
+ dto.getOthersDto().setRegistrationDate(LocalDateTime.now().toString());
 	            dto.getAdminDto().setCreatedOn(LocalDateTime.now().toString());
               if (dto.getOthersDto().getReferalName() == null) {
 					dto.getOthersDto().setReferalName("NA");
@@ -261,15 +259,13 @@ public class DreamServiceImpl implements DreamService {
 	@Override
 	public ResponseEntity<SheetsDto> readData(String spreadsheetId, int startingIndex, int maxRows) {
 		try {
+		
 			List<List<Object>> dataList = repo.readData(spreadsheetId);
-
-//			List<List<Object>> sortedData = dataList.stream()
-//					.sorted(Comparator.comparing(list -> list.get(25).toString(), Comparator.reverseOrder()))
-//					.collect(Collectors.toList());
-
+		
 			List<List<Object>> sortedData = dataList.stream()
 					.sorted(Comparator.comparing(list -> list.get(24).toString(), Comparator.reverseOrder()))
 					.collect(Collectors.toList());
+		
 			List<TraineeDto> dtos = getLimitedRows(sortedData, startingIndex, maxRows);
 			HttpServletResponse response = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes())
 					.getResponse();
