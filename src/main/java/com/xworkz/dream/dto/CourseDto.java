@@ -37,5 +37,16 @@ public class CourseDto {
 	private String startTime;
 	@JsonProperty("offeredAs")
 	private String offeredAs;
+	
+	public CourseDto( String value) {
+		
+		this.course= value;
+		this.branch= value;
+		this.trainerName = value;
+		this.batchType = value;
+		this.batchTiming = value;
+		this.startTime = value;
+		this.offeredAs = value;
+	}
 
 }
