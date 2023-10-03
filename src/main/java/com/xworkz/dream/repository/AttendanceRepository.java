@@ -18,6 +18,7 @@ public interface AttendanceRepository {
 
 	public UpdateValuesResponse update(String spreadsheetId, String range2, ValueRange valueRange) throws IOException;
 
+
 	public void clearColumnData(String spreadsheetId, String range) throws IOException;
 
 	public void evictCacheByEmail() throws IOException;

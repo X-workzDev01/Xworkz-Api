@@ -40,13 +40,14 @@ sheets:
   attendanceInfoByName: attendanceInfo!A2:E
   attendanceList: attendanceList!A2:J
   attendanceListByEmail: attendanceList!A2:J
-  attendanceListRange: attendanceList!A2:K
+  attendanceListRange: attendanceList!A2:M
   batchDetailsCourseNameRange: batchDetails!B2:B
   idAttandanceInfoRange: A3:A
   presentRange: H
   absentRange: I
   AttandanceInfoSheetName: attendanceInfo!
   attendanceListDefaultRange: attendanceInfo!J2:j
+  attendanceInfoMarkAs:  J
 
 mail:
    smtpHost: smtp.office365.com
