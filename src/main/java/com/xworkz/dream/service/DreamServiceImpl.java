@@ -711,11 +711,9 @@ public class DreamServiceImpl implements DreamService {
 		filter.stream().forEach(item -> {
 			this.batch = wrapper.batchDetailsToDto(item);
 
-
 		});
 		if (batch != null) {
 			return ResponseEntity.ok(this.batch);
-
 		}
 		return null;
 	}
@@ -923,7 +921,20 @@ public class DreamServiceImpl implements DreamService {
 	@Override
 	public ResponseEntity<String> updateFollowUp(String spreadsheetId, String email, FollowUpDto followDto)
 			throws IOException, IllegalAccessException {
-		// TODO Auto-generated method stub
-		return null;
+		FollowUpDto followUpDto = getFollowUpDetailsByEmail(spreadsheetId, email);
+
+		int rowIndex = findByEmailForUpdate(spreadsheetId, email);
+
+		String range = followUpSheetName + followUprowStartRange + rowIndex + ":" + followUprowEndRange + rowIndex;
+		List<List<Object>> values = Arrays.asList(wrapper.extractDtoDetails(followDto));
+		ValueRange valueRange = new ValueRange();
+		valueRange.setValues(values);
+		UpdateValuesResponse updated = repo.updateFollow(spreadsheetId, range, valueRange);
+		if (updated.isEmpty()) {
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("An error occurred ");
+		} else {
+			repo.evictAllCachesOnTraineeDetails();
+			return ResponseEntity.ok("Updated Successfully");
+		}
 	}
 }
