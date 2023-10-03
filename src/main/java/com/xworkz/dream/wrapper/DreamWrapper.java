@@ -254,7 +254,6 @@ public class DreamWrapper {
 		}
 		if (rowSize > 24 && row.get(24) != null && !row.get(24).toString().isEmpty()) {
 			traineeDto.getOthersDto().setRegistrationDate((String) row.get(24).toString());
-
 		}
 		if (rowSize > 25 && row.get(25) != null && !row.get(25).toString().isEmpty()) {
 			traineeDto.getAdminDto().setCreatedBy(row.get(25).toString());
