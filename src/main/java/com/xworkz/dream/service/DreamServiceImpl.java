@@ -125,7 +125,7 @@ public class DreamServiceImpl implements DreamService {
 	            dto.getOthersDto().setPreferredLocation(Status.NA.toString());
 	            dto.getOthersDto().setPreferredClassType(Status.NA.toString());
 	            dto.getOthersDto().setSendWhatsAppLink(Status.NO.toString());
- dto.getOthersDto().setRegistrationDate(LocalDateTime.now().toString());
+	            dto.getOthersDto().setRegistrationDate(LocalDateTime.now().toString());
 	            dto.getAdminDto().setCreatedOn(LocalDateTime.now().toString());
               if (dto.getOthersDto().getReferalName() == null) {
 					dto.getOthersDto().setReferalName("NA");
@@ -345,6 +345,7 @@ public class DreamServiceImpl implements DreamService {
 				if (updated.isEmpty()) {
 					return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("An error occurred ");
 				} else {
+					  boolean followUpResponse = updateFollowUp(spreadsheetId, email, dto);
 					repo.evictAllCachesOnTraineeDetails();
 					return ResponseEntity.ok("Updated Successfully");
 				}
@@ -365,24 +366,36 @@ public class DreamServiceImpl implements DreamService {
 	}
 
 	@Override
-	public ResponseEntity<String> updateFollowUp(String spreadsheetId, String email, FollowUpDto followDto)
-			throws IOException, IllegalAccessException {
-		FollowUpDto followUpDto = getFollowUpDetailsByEmail(spreadsheetId, email);
+	public boolean updateFollowUp(String spreadsheetId, String email, TraineeDto dto)
+	        throws IOException, IllegalAccessException {
+	    FollowUpDto followUpDto = getFollowUpDetailsByEmail(spreadsheetId, email);
+	    if (followUpDto == null) {
+	        return false;
+	    }
 
-		int rowIndex = findByEmailForUpdate(spreadsheetId, email);
+	    int rowIndex = findByEmailForUpdate(spreadsheetId, email);
 
-		String range = followUpSheetName + followUprowStartRange + rowIndex + ":" + followUprowEndRange + rowIndex;
-		List<List<Object>> values = Arrays.asList(wrapper.extractDtoDetails(followDto));
-		ValueRange valueRange = new ValueRange();
-		valueRange.setValues(values);
-		UpdateValuesResponse updated = repo.updateFollow(spreadsheetId, range, valueRange);
-		if (updated.isEmpty()) {
-			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("An error occurred ");
-		} else {
-			repo.evictAllCachesOnTraineeDetails();
-			return ResponseEntity.ok("Updated Successfully");
-		}
+	    String range = followUpSheetName + followUprowStartRange + rowIndex + ":" + followUprowEndRange + rowIndex;
 
+	    // Initialize followUpDto with the existing data
+	    followUpDto = getFollowUpDetailsByEmail(spreadsheetId, email);
+
+	    // Update the email from the TraineeDto
+	    followUpDto.getBasicInfo().setEmail(dto.getBasicInfo().getEmail());
+
+	    System.out.println(followUpDto);
+
+	    List<List<Object>> values = Arrays.asList(wrapper.extractDtoDetails(followUpDto));
+	    ValueRange valueRange = new ValueRange();
+	    valueRange.setValues(values);
+	    UpdateValuesResponse updated = repo.updateFollow(spreadsheetId, range, valueRange);
+
+	    if (updated.isEmpty()) {
+	        return false;
+	    } else {
+	        repo.evictAllCachesOnTraineeDetails();
+	        return true;
+	    }
 	}
 
 	private int findRowIndexByEmail(String spreadsheetId, String email) throws IOException {
@@ -608,6 +621,7 @@ public class DreamServiceImpl implements DreamService {
 		List<List<Object>> data = dataList.stream()
 				.filter(list -> list.stream().anyMatch(value -> value.toString().equalsIgnoreCase(email)))
 				.collect(Collectors.toList());
+		Collections.reverse(data);
 		for (List<Object> row : data) {
 			StatusDto dto = wrapper.listToStatusDto(row);
 			statusDto.add(dto);
@@ -703,7 +717,6 @@ public class DreamServiceImpl implements DreamService {
 		});
 		if (batch != null) {
 			return ResponseEntity.ok(this.batch);
-
 		}
 		return null;
 	}
@@ -908,5 +921,24 @@ public class DreamServiceImpl implements DreamService {
 			String currentlyFollowedBy) throws IOException, IllegalAccessException {
 		// TODO Auto-generated method stub
 		return false;
+	}
+	@Override
+	public ResponseEntity<String> updateFollowUp(String spreadsheetId, String email, FollowUpDto followDto)
+			throws IOException, IllegalAccessException {
+		FollowUpDto followUpDto = getFollowUpDetailsByEmail(spreadsheetId, email);
+
+		int rowIndex = findByEmailForUpdate(spreadsheetId, email);
+
+		String range = followUpSheetName + followUprowStartRange + rowIndex + ":" + followUprowEndRange + rowIndex;
+		List<List<Object>> values = Arrays.asList(wrapper.extractDtoDetails(followDto));
+		ValueRange valueRange = new ValueRange();
+		valueRange.setValues(values);
+		UpdateValuesResponse updated = repo.updateFollow(spreadsheetId, range, valueRange);
+		if (updated.isEmpty()) {
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("An error occurred ");
+		} else {
+			repo.evictAllCachesOnTraineeDetails();
+			return ResponseEntity.ok("Updated Successfully");
+		}
 	}
 }

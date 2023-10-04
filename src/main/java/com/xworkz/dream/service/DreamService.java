@@ -8,11 +8,8 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
-
-import com.xworkz.dream.dto.BasicInfoDto;
 import com.xworkz.dream.dto.BatchDetails;
 import com.xworkz.dream.dto.BatchDetailsDto;
-import com.xworkz.dream.dto.EducationInfoDto;
 import com.xworkz.dream.dto.EnquiryDto;
 import com.xworkz.dream.dto.FollowUpDataDto;
 import com.xworkz.dream.dto.FollowUpDto;
@@ -107,7 +104,10 @@ public interface DreamService {
 
 
 	boolean updateCurrentFollowUp(String spreadsheetId, String email, String currentStatus, String currentlyFollowedBy,
-			String joiningDate) throws IOException, IllegalAccessException; 
+			String joiningDate) throws IOException, IllegalAccessException;
+
+	boolean updateFollowUp(String spreadsheetId, String email, TraineeDto dto)
+			throws IOException, IllegalAccessException; 
 
 
 }
