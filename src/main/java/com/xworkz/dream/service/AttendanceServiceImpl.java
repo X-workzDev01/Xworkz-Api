@@ -19,7 +19,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.cache.annotation.CachePut;
 import org.springframework.http.ResponseEntity;
+import org.springframework.scheduling.annotation.Async;
+import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -61,6 +64,8 @@ public class AttendanceServiceImpl implements AttendanceService {
 	@Value("${sheets.AttandanceInfoSheetName}")
 	private String AttandanceInfoSheetName;
 	private AttendanceDto attendanceDto;
+	@Value("${sheets.attendanceInfoMarkAs}")
+	private String attendanceMarkAs;
 	private int present = 0;
 	private int absent = 0;
 
@@ -90,10 +95,12 @@ public class AttendanceServiceImpl implements AttendanceService {
 
 	}
 
+	@Async
 	@Override
 	public ResponseEntity<String> everyDayAttendance(AttendanceDto dto, HttpServletRequest request) throws Exception {
 
 		if (dto != null) {
+
 			List<Object> list = wrapper.listOfAddAttendance(dto);
 
 			boolean writeStatus = attendanceRepository.everyDayAttendance(sheetId, list, attendanceListRange);
@@ -101,11 +108,24 @@ public class AttendanceServiceImpl implements AttendanceService {
 
 				List<List<Object>> attendanceList = attendanceRepository.attendanceDetilesByEmail(sheetId,
 						dto.getBasicInfo().getEmail(), attendanceListRange);
+				logger.debug("Every day attendance detiles added sucessfully {}", attendanceList);
 				present = 0;
 				absent = 0;
 				int rowIndex = findRowIndexByid(sheetId, dto.getBasicInfo().getEmail());
 				String presentrange = AttandanceInfoSheetName + presentRange + rowIndex;
+				String updateRange = AttandanceInfoSheetName + attendanceMarkAs + rowIndex;
 
+				if (dto.getMarkAs().equals("1")) {
+					ValueRange body = new ValueRange().setValues(Arrays.asList(Arrays.asList("true", "blue", "gray")));
+					System.err.println(body);
+
+					attendanceRepository.update(sheetId, updateRange, body);
+				}
+				if (dto.getMarkAs().equalsIgnoreCase("0")) {
+					ValueRange body = new ValueRange().setValues(Arrays.asList(Arrays.asList("true", "gray", "blue")));
+
+					attendanceRepository.update(sheetId, updateRange, body);
+				}
 				attendanceList.stream().forEach(f -> {
 					attendanceDto = wrapper.attendanceListToDto(f);
 
@@ -122,9 +142,8 @@ public class AttendanceServiceImpl implements AttendanceService {
 
 				});
 
-				ValueRange body = new ValueRange().setValues(Arrays.asList(Arrays.asList(present, absent, true)));
+				ValueRange body = new ValueRange().setValues(Arrays.asList(Arrays.asList(present, absent)));
 				attendanceRepository.update(sheetId, presentrange, body);
-				attendanceRepository.evictCacheByEmail();
 
 			}
 
@@ -159,7 +178,6 @@ public class AttendanceServiceImpl implements AttendanceService {
 
 		AttadanceSheetDto dtosList = new AttadanceSheetDto(dtos, filter.size());
 		logger.debug("Response attandance by email {}", dtosList);
-		System.err.println(dtosList);
 		return ResponseEntity.ok(dtosList);
 	}
 
@@ -167,14 +185,19 @@ public class AttendanceServiceImpl implements AttendanceService {
 	public ResponseEntity<AttadanceSheetDto> getAttendanceDetilesBatch(String batch, int startIndex, int maxRows)
 			throws IOException, MessagingException, TemplateException {
 
-		List<List<Object>> attandanceList = attendanceRepository.attendanceDetilesByEmail(sheetId, batch,
+		List<List<Object>> attendanceList = attendanceRepository.attendanceDetilesByEmail(sheetId, batch,
 				attendanceInfoRange);
-		List<List<Object>> filter = attandanceList.stream().filter(e -> e.contains(batch)).collect(Collectors.toList());
+		if (!attendanceList.isEmpty()) {
+			List<List<Object>> filter = attendanceList.stream().filter(e -> e.contains(batch))
+					.collect(Collectors.toList());
 
-		List<AttendanceDto> dtos = this.getLimitedRows(filter, startIndex, maxRows);
-		AttadanceSheetDto sheetDto = new AttadanceSheetDto(dtos, filter.size());
-		logger.debug("Dto is  attandance :{} ", sheetDto);
-		return ResponseEntity.ok(sheetDto);
+			List<AttendanceDto> dtos = this.getLimitedRows(filter, startIndex, maxRows);
+			AttadanceSheetDto sheetDto = new AttadanceSheetDto(dtos, filter.size());
+			logger.debug("Dto is  attandance :{} ", sheetDto);
+
+			return ResponseEntity.ok(sheetDto);
+		}
+		return null;
 	}
 
 	private List<AttendanceDto> getLimitedRowsByEmail(List<List<Object>> values, String email, int startingIndex,
@@ -198,8 +221,7 @@ public class AttendanceServiceImpl implements AttendanceService {
 		return attendanceDtos;
 	}
 
-	private List<AttendanceDto> getLimitedRows(List<List<Object>> values, int startingIndex,
-			int maxRows) {
+	private List<AttendanceDto> getLimitedRows(List<List<Object>> values, int startingIndex, int maxRows) {
 		List<AttendanceDto> attendanceDtos = new ArrayList<>();
 
 		int endIndex = startingIndex + maxRows;
@@ -231,9 +253,7 @@ public class AttendanceServiceImpl implements AttendanceService {
 			List<Object> row = iterator.next();
 
 			if (row != null && !row.isEmpty()) {
-				System.out.println("999");
 				AttendanceDto attendanceDto = wrapper.attendanceListToDto(row);
-				System.err.println(attendanceDto);
 				if (attendanceDto.getCourseInfo().getCourse().equals(batch) && attendanceDto.getDate().equals(date)) {
 					attendanceDtos.add(attendanceDto);
 				}
@@ -243,8 +263,8 @@ public class AttendanceServiceImpl implements AttendanceService {
 	}
 
 	@Override
-	public ResponseEntity<AttadanceSheetDto> getAttendanceDetilesBatchAndDate(String batch, String date,
-			int startIndex, int maxRows) throws IOException, MessagingException, TemplateException {
+	public ResponseEntity<AttadanceSheetDto> getAttendanceDetilesBatchAndDate(String batch, String date, int startIndex,
+			int maxRows) throws IOException, MessagingException, TemplateException {
 		List<List<Object>> attandanceList = attendanceRepository.attendanceDetilesByEmail(sheetId, batch,
 				attendanceList);
 		List<List<Object>> filter = attandanceList.stream().filter(e -> e.contains(batch) && e.contains(date))
@@ -255,10 +275,12 @@ public class AttendanceServiceImpl implements AttendanceService {
 		return ResponseEntity.ok(attandanceSheetDto);
 	}
 
-	@Scheduled(fixedRate = 60 * 1000) // 1000 is equal to 1 second
+	@Scheduled(fixedRate = 86400000) // 1000 is equal to 1 second
 	public void schudulerAttandance() throws IOException {
-//		System.err.println("Hi98999999999999999");
-		attendanceRepository.clearColumnData(sheetId, attendanceListDefaultRange);
+
+		attendanceRepository.clearColumnData(sheetId, "attendanceInfo!J2:J");
+		attendanceRepository.clearColumnData(sheetId, "attendanceInfo!K2:k");
+		attendanceRepository.clearColumnData(sheetId, "attendanceInfo!L2:L");
 
 	}
 
