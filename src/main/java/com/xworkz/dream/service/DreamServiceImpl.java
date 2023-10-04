@@ -80,7 +80,9 @@ public class DreamServiceImpl implements DreamService {
 	@Autowired
 	private DreamUtil util;
 	private String attemptedBy;
-	private String id = "1p3G4et36vkzSDs3W63cj6qnUFEWljLos2HHXIZd78Gg";
+	@Value("${login.sheetId}")
+	private String id;
+
 	private HttpServletRequest request;
 	private ResponseEntity<SheetNotificationDto> response;
 	private String loginEmail;
@@ -799,12 +801,15 @@ public class DreamServiceImpl implements DreamService {
 		List<StatusDto> afterFoureDay = new ArrayList<StatusDto>();
 
 		List<List<Object>> followup = repo.getFollowUpDetailsByid(spreadsheetId);
-		followup.stream().forEach(f -> {
-			followUpDto = wrapper.listToFollowUpDTO(f);
-		});
+		if(followup!=null) {
+			followup.stream().forEach(f -> {
+				followUpDto = wrapper.listToFollowUpDTO(f);
+			});
+		}
 
 		if (spreadsheetId != null) {
 			List<List<Object>> listOfData = repo.notification(spreadsheetId);
+			
 			List<List<Object>> list = listOfData.stream().filter(items -> !items.contains("NA"))
 					.collect(Collectors.toList());
 			if (!list.isEmpty()) {

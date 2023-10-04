@@ -1,12 +1,11 @@
 spring:
    profiles:
-      active: local
+      active: prod
    freemarker:
     template-loader-path: classpath:/templates/
 
 sheets:
   appName: Dream Api
-  credentialsPath: classpath:META-INF/credentials.json
   range: A3:AC
   emailRange: C3:C
   contactNumberRange: D3:D
@@ -60,7 +59,7 @@ logging:
     
 login:
   userFile: classpath:users.yml
-  sheetId: 1p3G4et36vkzSDs3W63cj6qnUFEWljLos2HHXIZd78Gg
+  
 
 server:
   port : 8081
