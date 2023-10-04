@@ -3,10 +3,10 @@ package com.xworkz.dream.service;
 import java.io.IOException;
 import java.util.Collections;
 import java.util.List;
-
+import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
+import org.slf4j.LoggerFactory;
 import com.xworkz.dream.dto.utils.Dropdown;
 import com.xworkz.dream.repository.DreamRepository;
 
@@ -15,6 +15,7 @@ public class UtilServiceImpl implements UtilService {
 
 	@Autowired
 	private DreamRepository repo;
+	private static final Logger logger = LoggerFactory.getLogger(UtilServiceImpl.class);
 
 	@Override
 	public Dropdown getDropdown(String spreadsheetId) {

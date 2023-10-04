@@ -13,7 +13,7 @@ import java.util.Properties;
 import java.util.Random;
 import java.util.Set;
 import java.util.stream.Collectors;
-
+import java.util.Objects;
 import javax.mail.Authenticator;
 import javax.mail.Message;
 import javax.mail.MessagingException;
@@ -68,7 +68,7 @@ public class UtilDev implements DreamUtil {
 	@Autowired
 	private Configuration freemarkerConfig;
 
-	private static final Logger logger = LoggerFactory.getLogger(UtilLocal.class);
+	private static final Logger logger = LoggerFactory.getLogger(UtilDev.class);
 
 	public int generateOTP() {
 		// Generate a random OTP
@@ -92,7 +92,6 @@ public class UtilDev implements DreamUtil {
 	    return sendEmail(email, subject, body);
 	}
 
-
 	public boolean sendNotificationToEmail(List<Team> teamList, List<StatusDto> notificationStatus) {
 	    if (teamList == null || notificationStatus == null) {
 	        logger.warn("teamList or notificationStatus is null");
@@ -113,7 +112,6 @@ public class UtilDev implements DreamUtil {
 
 	    return true;
 	}
-
 
 	public boolean sendEmail(String email, String subject, String body) {
 	    if (email == null || subject == null || body == null) {
@@ -160,7 +158,7 @@ public class UtilDev implements DreamUtil {
 		return Base64.getEncoder().encodeToString(tokenBytes);
 	}
 
-	
+
 	@Override
 	public boolean sendCourseContent(String email, String recipientName)
 	        throws MessagingException, IOException, TemplateException {
@@ -197,12 +195,12 @@ public class UtilDev implements DreamUtil {
 	        throw e;
 	    }
 	}
-
-
+	
 	private String renderJspTemplate(String templateName, String recipientName) throws IOException, TemplateException {
 	    if (templateName == null || recipientName == null) {
 	        logger.warn("templateName or recipientName is null");
 	        return null;
+	    }
 	    
 	    try {
 	        Template template = freemarkerConfig.getTemplate(templateName + ".html"); // Use .ftl extension
@@ -214,91 +212,89 @@ public class UtilDev implements DreamUtil {
 	        throw e;
 	    }
 	}
+	public boolean bulkSendMail(List<String> recipients, String subject, List<StatusDto> body) {
+        if (recipients == null || subject == null || body == null) {
+            logger.warn("recipients, subject, or body is null");
+            return false;
+        }
 
+        String from = userName;
+        Properties properties = new Properties();
+        properties.put("mail.smtp.auth", "true");
+        properties.put("mail.smtp.starttls.enable", "true");
+        properties.put("mail.smtp.host", "smtp.office365.com");
+        properties.put("mail.smtp.port", "587"); // SMTP port (587 for TLS)
 
-	    public boolean bulkSendMail(List<String> recipients, String subject, List<StatusDto> body) {
-	        if (recipients == null || subject == null || body == null) {
-	            logger.warn("recipients, subject, or body is null");
-	            return false;
-	        }
+        Session session = Session.getInstance(properties, new javax.mail.Authenticator() {
+            protected PasswordAuthentication getPasswordAuthentication() {
+                return new PasswordAuthentication(userName, password);
+            }
+        });
 
-	        String from = userName;
-	        Properties properties = new Properties();
-	        properties.put("mail.smtp.auth", "true");
-	        properties.put("mail.smtp.starttls.enable", "true");
-	        properties.put("mail.smtp.host", "smtp.office365.com");
-	        properties.put("mail.smtp.port", "587"); // SMTP port (587 for TLS)
+        try {
+            MimeMessage message = new MimeMessage(session);
+            message.setFrom(new InternetAddress(from));
+            for (String recipient : recipients) {
+                message.addRecipient(Message.RecipientType.TO, new InternetAddress(recipient));
+            }
+            Context context = new Context();
+            context.setVariable("listDto", body);
+            String emailContent = templateEngine.process("FollowCandidateFollowupTemplate", context);
+            MimeMessageHelper helper = new MimeMessageHelper(message, true);
+            helper.setText(emailContent, true); // Use true for HTML content
+            message.setSubject(subject);
+            message.setContent(emailContent, "text/html; charset=UTF-8");
+            Transport.send(message); // Uncomment this line to actually send the email
+            logger.info("Emails sent successfully.");
+            return true;
+        } catch (Exception e) {
+            logger.error("Failed to send bulk email", e);
+            return false;
+        }
+    }
 
-	        Session session = Session.getInstance(properties, new javax.mail.Authenticator() {
-	            protected PasswordAuthentication getPasswordAuthentication() {
-	                return new PasswordAuthentication(userName, password);
-	            }
-	        });
+    @Override
+    public boolean sendWhatsAppLink(List<String> traineeEmail, String subject, String whatsAppLink) {
+        if (traineeEmail == null || subject == null || whatsAppLink == null) {
+            logger.warn("traineeEmail, subject, or whatsAppLink is null");
+            return false;
+        }
 
-	        try {
-	            MimeMessage message = new MimeMessage(session);
-	            message.setFrom(new InternetAddress(from));
-	            for (String recipient : recipients) {
-	                message.addRecipient(Message.RecipientType.TO, new InternetAddress(recipient));
-	            }
-	            Context context = new Context();
-	            context.setVariable("listDto", body);
-	            String emailContent = templateEngine.process("FollowCandidateFollowupTemplate", context);
-	            MimeMessageHelper helper = new MimeMessageHelper(message, true);
-	            helper.setText(emailContent, true); // Use true for HTML content
-	            message.setSubject(subject);
-	            message.setContent(emailContent, "text/html; charset=UTF-8");
-	            Transport.send(message); // Uncomment this line to actually send the email
-	            logger.info("Emails sent successfully.");
-	            return true;
-	        } catch (Exception e) {
-	            logger.error("Failed to send bulk email", e);
-	            return false;
-	        }
-	    }
+        String from = userName;
+        Properties properties = new Properties();
+        properties.put("mail.smtp.auth", "true");
+        properties.put("mail.smtp.starttls.enable", "true");
+        properties.put("mail.smtp.host", "smtp.office365.com");
+        properties.put("mail.smtp.port", "587"); // SMTP port (587 for TLS)
 
-        @Override
-	    public boolean sendWhatsAppLink(List<String> traineeEmail, String subject, String whatsAppLink) {
-	        if (traineeEmail == null || subject == null || whatsAppLink == null) {
-	            logger.warn("traineeEmail, subject, or whatsAppLink is null");
-	            return false;
-	        }
+        Session session = Session.getInstance(properties, new javax.mail.Authenticator() {
+            protected PasswordAuthentication getPasswordAuthentication() {
+                return new PasswordAuthentication(userName, password);
+            }
+        });
 
-	        String from = userName;
-	        Properties properties = new Properties();
-	        properties.put("mail.smtp.auth", "true");
-	        properties.put("mail.smtp.starttls.enable", "true");
-	        properties.put("mail.smtp.host", "smtp.office365.com");
-	        properties.put("mail.smtp.port", "587"); // SMTP port (587 for TLS)
+        try {
+            MimeMessage message = new MimeMessage(session);
+            message.setFrom(new InternetAddress(from));
+            for (String recipient : traineeEmail) {
+                message.addRecipient(Message.RecipientType.TO, new InternetAddress(recipient));
+            }
 
-	        Session session = Session.getInstance(properties, new javax.mail.Authenticator() {
-	            protected PasswordAuthentication getPasswordAuthentication() {
-	                return new PasswordAuthentication(userName, password);
-	            }
-	        });
+            Context context = new Context();
+            context.setVariable("whatsAppLink", whatsAppLink);
+            String emailContent = templateEngine.process("WhatsAppLinkContentTemplate", context);
+            MimeMessageHelper helper = new MimeMessageHelper(message, true);
+            helper.setText(emailContent, true); // Use true for HTML content
+            message.setSubject(subject);
+            message.setContent(emailContent, "text/html; charset=UTF-8");
 
-	        try {
-	            MimeMessage message = new MimeMessage(session);
-	            message.setFrom(new InternetAddress(from));
-	            for (String recipient : traineeEmail) {
-	                message.addRecipient(Message.RecipientType.TO, new InternetAddress(recipient));
-	            }
-
-	            Context context = new Context();
-	            context.setVariable("whatsAppLink", whatsAppLink);
-	            String emailContent = templateEngine.process("WhatsAppLinkContentTemplate", context);
-	            MimeMessageHelper helper = new MimeMessageHelper(message, true);
-	            helper.setText(emailContent, true); // Use true for HTML content
-	            message.setSubject(subject);
-	            message.setContent(emailContent, "text/html; charset=UTF-8");
-
-	            Transport.send(message);
-	            logger.info("Emails sent successfully.");
-	            return true;
-	        } catch (Exception e) {
-	            logger.error("Failed to send WhatsApp link email", e);
-	            return false;
-	        }
-	    }
+            Transport.send(message);
+            logger.info("Emails sent successfully.");
+            return true;
+        } catch (Exception e) {
+            logger.error("Failed to send WhatsApp link email", e);
+            return false;
+        }
+    }
 
 }
