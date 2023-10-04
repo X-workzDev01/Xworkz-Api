@@ -227,8 +227,17 @@ public class UtilDev implements DreamUtil {
 
 	}
 
+	private String JspTemplate(String templateName, String whatsAppLink) throws IOException, TemplateException {
+		Template template = freemarkerConfig.getTemplate(templateName + ".html"); // Use .ftl extension
+
+		Map<String, Object> model = new HashMap<>();
+		model.put("whatsAppLink", whatsAppLink);
+
+		return FreeMarkerTemplateUtils.processTemplateIntoString(template, model);
+	}
 	@Override
 	public boolean sendWhatsAppLink(List<String> traineeEmail, String subject, String whatsAppLink) {
+		System.out.println("enter send mail"+whatsAppLink);
 		String from = userName;
 		Properties properties = new Properties();
 		properties.put("mail.smtp.auth", "true");
@@ -238,7 +247,7 @@ public class UtilDev implements DreamUtil {
 
 		Session session = Session.getInstance(properties, new javax.mail.Authenticator() {
 			protected PasswordAuthentication getPasswordAuthentication() {
-				return new PasswordAuthentication(userName, password);
+				return new PasswordAuthentication(from, password);
 			}
 		});
 
@@ -249,20 +258,19 @@ public class UtilDev implements DreamUtil {
 				message.addRecipient(Message.RecipientType.TO, new InternetAddress(recipient));
 
 			}
-
-			Context context = new Context();
-			context.setVariable("whatsAppLink", whatsAppLink);
-			String emailContent = templateEngine.process("WhatsAppLinkContentTemplate", context);
+			String emailContent = JspTemplate("WhatsAppLinkContentTemplate", whatsAppLink);
+			//message.setContent(emailContent, "text/html; charset=UTF-8");
+//			Context context = new Context();
+//			context.setVariable("link", whatsAppLink);
+//			String emailContent = templateEngine.process("WhatsAppLinkContentTemplate", context);
 			MimeMessageHelper helper = new MimeMessageHelper(message, true);
 			helper.setText(emailContent);
 			message.setSubject(subject);
 			message.setText(whatsAppLink.toString());
-			System.err.println("4444444444444 " + emailContent);
 			message.setContent(emailContent, "text/html; charset=UTF-8");
-			System.out.println("running           " + message);
-
 			Transport.send(message);
 			System.out.println("Emails sent successfully.");
+			return true;
 		} catch (Exception e) {
 			logger.error(e.getMessage());
 		}

@@ -134,7 +134,7 @@ public class DreamServiceImpl implements DreamService {
 	            // Check if the request is "/register" before calling saveBirthDayInfo
 	            if (isRegisterRequest(request)) {
 	                System.out.println("/register");
-	                // saveBirthDayInfo(spreadsheetId, dto, request);
+	                 saveBirthDayInfo(spreadsheetId, dto, request);
 	            }
 
 	            System.out.println("/register");
@@ -688,9 +688,6 @@ public class DreamServiceImpl implements DreamService {
 				.filter(e -> e.contains(courseName) && e.contains("Active")).collect(Collectors.toList());
 		filter.stream().forEach(item -> {
 			this.batch = wrapper.batchDetailsToDto(item);
-
-			System.err.println(this.batch);
-
 		});
 		if (batch != null) {
 			return ResponseEntity.ok(this.batch);

@@ -222,7 +222,6 @@ public class DreamApiController {
 		boolean saved = service.addEnquiry(enquiryDto, spreadSheetId, request);
 		String uri = request.getRequestURI();
 		System.out.println(uri.contains("enquiry"));
-//		System.out.println(dto);
 		
 		return ResponseEntity.ok().body("Success");
 					
