@@ -1,22 +1,14 @@
 user:
-  - email: xworkzdev@gmail.com
-    name: XworkzDev
-  - email: xworkzodc01@gmail.com
-    name: XworkzDev01
-  - email: om.bn@outlook.com
-    name: xworkzdev2
   - email: om@x-workz.in
-    name: xworkzdev3
-  - email: xworkzdev3@gmail.com
-    name: xworkzdev4
-  - email: xworkzdev4@gmail.com
-    name: xworkzdev5
+    name: omkar
   - email: akshara@x-workz.in
-    name: xworkzdev6
+    name: akshara
   - email: hr@x-workz.in
-    name: xworkzdev7
+    name: mamtha
   - email: Amulya@x-workz.in
-    name: xworkzdev8
+    name: amulya
+  - email: xworkzdev@gmail.com
+    name: dev
 
 
 
