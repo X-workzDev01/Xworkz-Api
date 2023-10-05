@@ -57,6 +57,8 @@ dependencies {
     implementation group: 'com.google.auth', name: 'google-auth-library-credentials', version: '1.16.0'
 	implementation group: 'org.springframework.boot', name: 'spring-boot-starter-thymeleaf', version: '2.6.15'
     implementation group: 'io.quarkus', name: 'quarkus-hibernate-validator', version: '3.3.3'
+    implementation 'org.reactivestreams:reactive-streams:1.0.3' // Use the appropriate version
+    
 	
     
 }
