@@ -32,6 +32,9 @@ public class CacheConfig {
 		caches.add(new ConcurrentMapCache("batchDetails"));
 		caches.add(new ConcurrentMapCache("followUpDetails"));
 		caches.add(new ConcurrentMapCache("followUpStatusDetails"));
+		caches.add(new ConcurrentMapCache("byEmail"));
+		caches.add(new ConcurrentMapCache("attendanceList"));
+
 		cacheManager.setCaches(caches);
 		return cacheManager;
 	}

@@ -4,21 +4,12 @@ import java.io.IOException;
 import java.security.SecureRandom;
 import java.util.Base64;
 import java.util.List;
-import java.util.Properties;
 
-import javax.mail.Authenticator;
-import javax.mail.Message;
 import javax.mail.MessagingException;
-import javax.mail.PasswordAuthentication;
-import javax.mail.Session;
-import javax.mail.Transport;
-import javax.mail.internet.InternetAddress;
-import javax.mail.internet.MimeMessage;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
 
@@ -68,9 +59,8 @@ public class UtilLocal implements DreamUtil{
 		return Base64.getEncoder().encodeToString(tokenBytes);
 	}
 
-
-	public boolean sendNotificationToEmail(List<Team> teamList, List<String> candidateName,
-			List<String> candidateEmail) {
+	@Override
+	public boolean sendNotificationToEmail(List<Team> teamList, List<StatusDto> notificationStatus) {
 		// TODO Auto-generated method stub
 		return false;
 	}
@@ -85,11 +75,13 @@ public class UtilLocal implements DreamUtil{
 
 
 	@Override
-	public boolean sendNotificationToEmail(List<Team> teamList, List<StatusDto> notificationStatus) {
+	public boolean sendWhatsAppLink(List<String> recipients, String subject, String whatsAppLink) {
 		// TODO Auto-generated method stub
 		return false;
 	}
 
+
+	
 
 	
 

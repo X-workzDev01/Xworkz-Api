@@ -48,8 +48,8 @@ import freemarker.template.Template;
 import freemarker.template.TemplateException;
 
 @Component
-@Profile("dev")
-public class UtilDev implements DreamUtil {
+@Profile("prod")
+public class UtilProd implements DreamUtil {
 
 	@Autowired
 	private TemplateEngine templateEngine;

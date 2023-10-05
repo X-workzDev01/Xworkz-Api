@@ -8,7 +8,7 @@ import org.springframework.cloud.openfeign.EnableFeignClients;
 
 @SpringBootApplication
 @EnableFeignClients("com.xworkz.dream.interfaces")
-//@EnableAutoConfiguration(exclude = FreeMarkerServletWebConfiguration.class)
+
 public class XworkzApiApplication {
 
 	public static void main(String[] args) {
@@ -17,3 +17,9 @@ public class XworkzApiApplication {
 
 	} 
 }
+
+
+
+
+
+ 

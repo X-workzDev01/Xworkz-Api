@@ -1,5 +1,6 @@
 package com.xworkz.dream.dto;
 
+import java.util.List;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -12,11 +13,9 @@ import lombok.ToString;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class AdminDto {
-
-	private String createdBy;
-	private String createdOn;
-	private String updatedBy;
-	private String updatedOn;
+public class SheetNotificationDto {
+	private List<StatusDto> yesterdayCandidates;
+	private List<StatusDto> todayCandidates;
+	private List<StatusDto> afterFourDayCandidates;
 
 }

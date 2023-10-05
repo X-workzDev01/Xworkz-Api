@@ -1,38 +1,53 @@
 spring:
    profiles:
-      active: local
+      active: prod
    freemarker:
     template-loader-path: classpath:/templates/
 
 sheets:
   appName: Dream Api
-  credentialsPath: classpath:META-INF/credentials.json
-  range: A3:Y
+  range: A3:AC
   emailRange: C3:C
   contactNumberRange: D3:D
   dropdownRange: dropDowns!A2:I
   loginInfoRange: loginInfo!A2:B
-  followUpRange: followUp!A2:I
+  followUpRange: followUp!A2:M
   followUpStatus: followUpStatus!A2:L
   rowStartRange: A
-  rowEndRange: Y
+  rowEndRange: AC    
   traineeSheetName: xworkzApi!
   followUpSheetName: followUp!
   followUprowStartRange: A2
-  followUprowEndRange: I
+  followUprowEndRange: M
   followUpEmailRange: followUp!C2:C
-  idRange: xworkzApi!A3:A
+  idRange: xworkzApi!A3:A  
   followUpRowCurrentStartRange: G
   followUpRowCurrentEndRange: H
   emailAndNameRange: xworkzApi!A2:C
-  batchDetails: batchDetails!A2:H
-  batchDetailsRange: batchDetails!A2:H 
+  batchDetailsSheetName: batchDetails!
+  batchDetailsStartRange: A2
+  batchDetailsEndRange: I
+  batchDetails: batchDetails!A2:I
+  batchDetailsRange: batchDetails!A2:I 
   batchIdRange: batchDetails!A2:A
   dateOfBirthDetailsSheetName: dateOfBirthDetails!
   dateOfBirthDetailsRange: dateOfBirthDetails!A2:D
   birthdayRange: dateOfBirthDetails!A2:A
-
+  attendanceInfoRange: attendanceInfo!A2:J
+  attendanceInfoIDRange: attendanceInfo!A2:J
   followUpStatusIdRange: followUpStatus!A2:A
+  attendanceInfoByName: attendanceInfo!A2:E
+  attendanceList: attendanceList!A2:J
+  attendanceListByEmail: attendanceList!A2:J
+  attendanceListRange: attendanceList!A2:M
+  batchDetailsCourseNameRange: batchDetails!B2:B
+  idAttandanceInfoRange: A3:A
+  presentRange: H
+  absentRange: I
+  AttandanceInfoSheetName: attendanceInfo!
+  attendanceListDefaultRange: attendanceInfo!J2:j
+  attendanceInfoMarkAs:  J
+
 mail:
    smtpHost: smtp.office365.com
    smtpPort: 587
@@ -44,7 +59,7 @@ logging:
     
 login:
   userFile: classpath:users.yml
-  sheetId: 1p3G4et36vkzSDs3W63cj6qnUFEWljLos2HHXIZd78Gg
+  
 
 server:
   port : 8081

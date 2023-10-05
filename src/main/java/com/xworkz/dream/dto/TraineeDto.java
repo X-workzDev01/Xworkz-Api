@@ -22,8 +22,8 @@ public class TraineeDto {
 	private EducationInfoDto educationInfo;
 	@JsonProperty("courseInfo")
 	private CourseDto courseInfo;
-	@JsonProperty("referralInfo")
-	private ReferalInfoDto referralInfo;
+	@JsonProperty("othersDto")
+	private OthersDto othersDto ;
 	@JsonProperty("adminDto")
 	private AdminDto adminDto;
 
