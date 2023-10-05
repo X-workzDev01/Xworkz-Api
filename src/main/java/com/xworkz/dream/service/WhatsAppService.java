@@ -9,10 +9,14 @@ import com.xworkz.dream.dto.BatchDetails;
 import com.xworkz.dream.dto.TraineeDto;
 
 public interface WhatsAppService {
-	
-	public BatchDetails getBatchDetailsListByCourseName(String spreadsheetId, String courseName)throws IOException;
 
-	public boolean updateWhatsAppLinkByCourseName(String spreadsheetId, String cousreName,String whatsAppLink) throws IOException, IllegalAccessException;
+	public BatchDetails getBatchDetailsListByCourseName(String spreadsheetId, String courseName) throws IOException;
 
-	public boolean getEmailByCourseName(String spreadsheetId, String cousreName)throws IOException;
+	public boolean updateWhatsAppLinkByCourseName(String spreadsheetId, String cousreName, String whatsAppLink)
+			throws IOException, IllegalAccessException;
+
+	public List<String> getEmailByCourseName(String spreadsheetId, String cousreName)
+			throws IOException;
+
+	public boolean sendWhatsAppLink(String spreadsheetId, String courseName)throws IOException;
 }

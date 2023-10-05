@@ -725,7 +725,6 @@ public class DreamServiceImpl implements DreamService {
 				.filter(e -> e.contains(courseName) && e.contains("Active")).collect(Collectors.toList());
 		filter.stream().forEach(item -> {
 			this.batch = wrapper.batchDetailsToDto(item);
-
 		});
 		if (batch != null) {
 			return ResponseEntity.ok(this.batch);
