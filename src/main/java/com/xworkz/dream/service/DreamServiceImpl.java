@@ -776,7 +776,7 @@ public class DreamServiceImpl implements DreamService {
 	}
 
 	@Override
-	@Scheduled(fixedRate = 60 * 1000) // 1000 milliseconds = 1 seconds
+	@Scheduled(fixedRate = 30 * 60 * 1000) // 1000 milliseconds = 1 seconds
 	public void notification() {
 		try {
 			List<Team> teamList = getTeam();
@@ -797,7 +797,7 @@ public class DreamServiceImpl implements DreamService {
 				Status.Not_reachable.toString().replace('_', ' '), Status.Let_us_know.toString().replace('_', ' '),
 				Status.Need_online.toString().replace('_', ' ')).collect(Collectors.toList());
 
-		LocalTime time = LocalTime.of(00, 9, 01, 500_000_000);
+		LocalTime time = LocalTime.of(18, 01, 01, 500_000_000);
 		List<StatusDto> notificationStatus = new ArrayList<StatusDto>();
 		List<StatusDto> today = new ArrayList<StatusDto>();
 		List<StatusDto> yesterday = new ArrayList<StatusDto>();
@@ -841,7 +841,7 @@ public class DreamServiceImpl implements DreamService {
 							if (LocalDateTime.now()
 									.isAfter(LocalDateTime.of((LocalDate.parse(dto.getCallBack())), time))
 									&& LocalDateTime.now().isBefore(LocalDateTime
-											.of((LocalDate.parse(dto.getCallBack())), time.plusMinutes(1)))) {
+											.of((LocalDate.parse(dto.getCallBack())), time.plusMinutes(29)))) {
 
 								if (statusCheck.contains(dto.getAttemptStatus())
 										&& LocalDate.now().isEqual(LocalDate.parse(dto.getCallBack()))) {
@@ -854,7 +854,7 @@ public class DreamServiceImpl implements DreamService {
 
 					});
 				}
-				if (LocalTime.now().isAfter(time) && LocalTime.now().isBefore(time.plusMinutes(1))) {
+				if (LocalTime.now().isAfter(time) && LocalTime.now().isBefore(time.plusMinutes(29))) {
 
 					if (!notificationStatus.isEmpty()) {
 
