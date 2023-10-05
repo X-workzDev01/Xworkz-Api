@@ -116,396 +116,403 @@ public class DreamServiceImpl implements DreamService {
 	@Override
 	public ResponseEntity<String> writeData(String spreadsheetId, TraineeDto dto, HttpServletRequest request)
 
-	        throws MessagingException, TemplateException {
-	    try {
-	        if (isCookieValid(request)) {
-	            List<List<Object>> data = repo.getIds(spreadsheetId).getValues();
-	            int size = data != null ? data.size() : 0;
-	            System.out.println(size);
-	            dto.setId(size + 1);
+			throws MessagingException, TemplateException {
+		try {
+			if (isCookieValid(request)) {
+				List<List<Object>> data = repo.getIds(spreadsheetId).getValues();
+				int size = data != null ? data.size() : 0;
+				System.out.println(size);
+				dto.setId(size + 1);
 
-	            if (dto.getOthersDto() != null) {
-	                if (dto.getOthersDto().getReferalName() == null) {
-	                    dto.getOthersDto().setReferalName("NA");
-	                }
-	                if (dto.getOthersDto().getComments() == null) {
-	                    dto.getOthersDto().setComments("NA");
-	                }
-	                if (dto.getOthersDto().getWorking() == null) {
-	                    dto.getOthersDto().setWorking("No");
-	                }
-	                if (dto.getOthersDto().getReferalContactNumber() == null) {
-	                    dto.getOthersDto().setReferalContactNumber(0L);
-	                }
-	                dto.getOthersDto().setXworkzEmail(Status.NA.toString());
-	                dto.getOthersDto().setPreferredLocation(Status.NA.toString());
-	                dto.getOthersDto().setPreferredClassType(Status.NA.toString());
-	                dto.getOthersDto().setSendWhatsAppLink(Status.NO.toString());
-	                dto.getOthersDto().setRegistrationDate(LocalDateTime.now().toString());
-	            }
+				if (dto.getOthersDto() != null) {
+					if (dto.getOthersDto().getReferalName() == null) {
+						dto.getOthersDto().setReferalName("NA");
+					}
+					if (dto.getOthersDto().getComments() == null) {
+						dto.getOthersDto().setComments("NA");
+					}
+					if (dto.getOthersDto().getWorking() == null) {
+						dto.getOthersDto().setWorking("No");
+					}
+					if (dto.getOthersDto().getReferalContactNumber() == null) {
+						dto.getOthersDto().setReferalContactNumber(0L);
+					}
+					dto.getOthersDto().setXworkzEmail(Status.NA.toString());
+					dto.getOthersDto().setPreferredLocation(Status.NA.toString());
+					dto.getOthersDto().setPreferredClassType(Status.NA.toString());
+					dto.getOthersDto().setSendWhatsAppLink(Status.NO.toString());
+					dto.getOthersDto().setRegistrationDate(LocalDateTime.now().toString());
+				}
 
-	            if (dto.getAdminDto() != null) {
-	                dto.getAdminDto().setCreatedOn(LocalDateTime.now().toString());
-	            }
+				if (dto.getAdminDto() != null) {
+					dto.getAdminDto().setCreatedOn(LocalDateTime.now().toString());
+				}
 
+				List<Object> list = wrapper.extractDtoDetails(dto);
+				System.out.println(list);
+				boolean writeStatus = repo.writeData(spreadsheetId, list);
 
-	            List<Object> list = wrapper.extractDtoDetails(dto);
-	            System.out.println(list);
-	            boolean writeStatus = repo.writeData(spreadsheetId, list);
+				if (isRegisterRequest(request)) {
+					saveBirthDayInfo(spreadsheetId, dto, request);
+				}
 
-	            if (isRegisterRequest(request)) {
-	                saveBirthDayInfo(spreadsheetId, dto, request);
-	            }
+				boolean status = addToFollowUp(dto, spreadsheetId);
 
-	            boolean status = addToFollowUp(dto, spreadsheetId);
-
-	            if (status) {
-	                logger.info("Data written successfully to spreadsheetId and Added to Follow Up: {}", spreadsheetId);
-	                if (isRegisterRequest(request)) {
-	                    boolean sent = util.sendCourseContent(dto.getBasicInfo().getEmail(), dto.getBasicInfo().getTraineeName());
-	                    if (sent) {
-	                        return ResponseEntity.ok("Data written successfully, Added to follow Up, sent course content");
-	                    } else {
-	                        return ResponseEntity.ok("Email not sent, Data written successfully, Added to follow Up");
-	                    }
-	                }
-	                repo.evictAllCachesOnTraineeDetails();
-	            }
-	            return ResponseEntity.ok("Data written successfully, not added to Follow Up");
-	        }
-	    } catch (Exception e) {
-	        logger.error("Error processing request: " + e.getMessage(), e);
-	        return ResponseEntity.badRequest().body("Failed to process the request");
-	    }
-	    // You should have a return statement here for any other cases.
-	    return ResponseEntity.badRequest().body("Failed to process the request");
+				if (status) {
+					logger.info("Data written successfully to spreadsheetId and Added to Follow Up: {}", spreadsheetId);
+					if (isRegisterRequest(request)) {
+						boolean sent = util.sendCourseContent(dto.getBasicInfo().getEmail(),
+								dto.getBasicInfo().getTraineeName());
+						if (sent) {
+							return ResponseEntity
+									.ok("Data written successfully, Added to follow Up, sent course content");
+						} else {
+							return ResponseEntity.ok("Email not sent, Data written successfully, Added to follow Up");
+						}
+					}
+					repo.evictAllCachesOnTraineeDetails();
+				}
+				return ResponseEntity.ok("Data written successfully, not added to Follow Up");
+			}
+		} catch (Exception e) {
+			logger.error("Error processing request: " + e.getMessage(), e);
+			return ResponseEntity.badRequest().body("Failed to process the request");
+		}
+		// You should have a return statement here for any other cases.
+		return ResponseEntity.badRequest().body("Failed to process the request");
 
 	}
 
 	// Helper method to check if the request URI is "/register"
 	private boolean isRegisterRequest(HttpServletRequest request) {
-	    return request.getRequestURI().equals("/api/register");
+		return request.getRequestURI().equals("/api/register");
 	}
 
 	@Override
 	public boolean addToFollowUp(TraineeDto traineeDto, String spreadSheetId)
-	        throws IOException, IllegalAccessException {
-	    if (traineeDto == null) {
-	        return false;
-	    }
-	    FollowUpDto followUpDto = wrapper.setFollowUp(traineeDto);
-	    if (followUpDto == null) {
-	        return false;
-	    }
-	    List<Object> data = wrapper.extractDtoDetails(followUpDto);
-	    if (data == null) {
-	        return false;
-	    }
-	    repo.saveToFollowUp(spreadSheetId, data);
-	    return true;
+			throws IOException, IllegalAccessException {
+		if (traineeDto == null) {
+			return false;
+		}
+		FollowUpDto followUpDto = wrapper.setFollowUp(traineeDto);
+		if (followUpDto == null) {
+			return false;
+		}
+		List<Object> data = wrapper.extractDtoDetails(followUpDto);
+		if (data == null) {
+			return false;
+		}
+		repo.saveToFollowUp(spreadSheetId, data);
+		return true;
 	}
 
 	@Override
 	public ResponseEntity<String> emailCheck(String spreadsheetId, String email, HttpServletRequest request) {
 
-	    try {
-	        if (isCookieValid(request)) {
-	            ValueRange values = repo.getEmails(spreadsheetId);
-	            if (values != null && values.getValues() != null) {
-	                for (List<Object> row : values.getValues()) {
-	                    if (row != null && !row.isEmpty() && row.get(0) != null && row.get(0).toString().equalsIgnoreCase(email)) {
-	                        logger.info("Email exists in spreadsheetId: {}", spreadsheetId);
-	                        return ResponseEntity.status(HttpStatus.CREATED).body("Email exists");
-	                    }
-	                }
-	            }
-	            logger.info("Email does not exist in spreadsheetId: {}", spreadsheetId);
-	            return ResponseEntity.ok("Email does not exist");
-	        } else {
-	            // Invalid cookie
-	            logger.info("Invalid cookie in the request");
-	            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid cookie");
-	        }
-	    } catch (Exception e) {
-	        logger.error("An error occurred while checking email in spreadsheetId: {}", spreadsheetId, e);
-	        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("An error occurred");
-	    }
+		try {
+			if (isCookieValid(request)) {
+				ValueRange values = repo.getEmails(spreadsheetId);
+				if (values != null && values.getValues() != null) {
+					for (List<Object> row : values.getValues()) {
+						if (row != null && !row.isEmpty() && row.get(0) != null
+								&& row.get(0).toString().equalsIgnoreCase(email)) {
+							logger.info("Email exists in spreadsheetId: {}", spreadsheetId);
+							return ResponseEntity.status(HttpStatus.CREATED).body("Email exists");
+						}
+					}
+				}
+				logger.info("Email does not exist in spreadsheetId: {}", spreadsheetId);
+				return ResponseEntity.ok("Email does not exist");
+			} else {
+				// Invalid cookie
+				logger.info("Invalid cookie in the request");
+				return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid cookie");
+			}
+		} catch (Exception e) {
+			logger.error("An error occurred while checking email in spreadsheetId: {}", spreadsheetId, e);
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("An error occurred");
+		}
 	}
 
 	private boolean isCookieValid(HttpServletRequest request) {
-	    Cookie[] cookies = request.getCookies();
-	    if (cookies != null) {
-	        for (Cookie cookie : cookies) {
-	            if (cookie != null && cookie.getName() != null && cookie.getName().equals("Xworkz")) {
-	                return true;
-	            }
-	        }
-	    }
-	    return false;
+		Cookie[] cookies = request.getCookies();
+		if (cookies != null) {
+			for (Cookie cookie : cookies) {
+				if (cookie != null && cookie.getName() != null && cookie.getName().equals("Xworkz")) {
+					return true;
+				}
+			}
+		}
+		return false;
 	}
 
 	@Override
 	public ResponseEntity<String> contactNumberCheck(String spreadsheetId, Long contactNumber,
-	        HttpServletRequest request) {
-	    try {
-	        if (isCookieValid(request)) {
-	            ValueRange values = repo.getContactNumbers(spreadsheetId);
-	            if (values != null && values.getValues() != null) {
-	                for (List<Object> row : values.getValues()) {
-	                    if (row != null && !row.isEmpty() && row.get(0) != null
-	                            && row.get(0).toString().equals(String.valueOf(contactNumber))) {
-	                        logger.info("Contact Number exists in spreadsheetId: {}", spreadsheetId);
-	                        return ResponseEntity.status(HttpStatus.CREATED).body("Contact Number exists");
-	                    }
-	                }
-	            }
-	            logger.info("Contact Number does not exist in spreadsheetId: {}", spreadsheetId);
-	            return ResponseEntity.ok("Contact Number does not exist");
-	        } else {
-	            // Invalid cookie
-	            logger.info("Invalid cookie in the request");
-	            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid cookie");
-	        }
-	    } catch (Exception e) {
-	        logger.error("An error occurred while checking Contact Number in spreadsheetId: {}", spreadsheetId, e);
-	        e.printStackTrace();
-	        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("An error occurred");
-	    }
+			HttpServletRequest request) {
+		try {
+			if (isCookieValid(request)) {
+				ValueRange values = repo.getContactNumbers(spreadsheetId);
+				if (values != null && values.getValues() != null) {
+					for (List<Object> row : values.getValues()) {
+						if (row != null && !row.isEmpty() && row.get(0) != null
+								&& row.get(0).toString().equals(String.valueOf(contactNumber))) {
+							logger.info("Contact Number exists in spreadsheetId: {}", spreadsheetId);
+							return ResponseEntity.status(HttpStatus.CREATED).body("Contact Number exists");
+						}
+					}
+				}
+				logger.info("Contact Number does not exist in spreadsheetId: {}", spreadsheetId);
+				return ResponseEntity.ok("Contact Number does not exist");
+			} else {
+				// Invalid cookie
+				logger.info("Invalid cookie in the request");
+				return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid cookie");
+			}
+		} catch (Exception e) {
+			logger.error("An error occurred while checking Contact Number in spreadsheetId: {}", spreadsheetId, e);
+			e.printStackTrace();
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("An error occurred");
+		}
 	}
 
 	@Override
 	public ResponseEntity<SheetsDto> readData(String spreadsheetId, int startingIndex, int maxRows) {
 
-	    try {
-	        List<List<Object>> dataList = repo.readData(spreadsheetId);
+		try {
+			List<List<Object>> dataList = repo.readData(spreadsheetId);
 
+			if (dataList != null) {
+				List<List<Object>> sortedData = dataList.stream().sorted(Comparator.comparing(
+						list -> list != null && !list.isEmpty() && list.size() > 24 ? list.get(24).toString() : "",
+						Comparator.reverseOrder())).collect(Collectors.toList());
 
-	        if (dataList != null) {
-	            List<List<Object>> sortedData = dataList.stream()
-	                    .sorted(Comparator.comparing(list -> list != null && !list.isEmpty() && list.size() > 24 ?
-	                            list.get(24).toString() : "", Comparator.reverseOrder()))
-	                    .collect(Collectors.toList());
+				List<TraineeDto> dtos = getLimitedRows(sortedData, startingIndex, maxRows);
+				HttpServletResponse response = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes())
+						.getResponse();
 
-	            List<TraineeDto> dtos = getLimitedRows(sortedData, startingIndex, maxRows);
-	            HttpServletResponse response = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes())
-	                    .getResponse();
+				SheetsDto dto = new SheetsDto(dtos, dataList.size());
 
-	            SheetsDto dto = new SheetsDto(dtos, dataList.size());
-
-	            return ResponseEntity.ok(dto);
-	        }
-	    } catch (IOException e) {
-	        e.printStackTrace();
-	    }
-	    return null;
+				return ResponseEntity.ok(dto);
+			}
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		return null;
 	}
 
 	@Override
 	public List<TraineeDto> getLimitedRows(List<List<Object>> values, int startingIndex, int maxRows) {
-	    List<TraineeDto> traineeDtos = new ArrayList<>();
+		List<TraineeDto> traineeDtos = new ArrayList<>();
 
-	    if (values != null) {
-	        int endIndex = startingIndex + maxRows;
-	        int rowCount = values.size();
+		if (values != null) {
+			int endIndex = startingIndex + maxRows;
+			int rowCount = values.size();
 
-	        ListIterator<List<Object>> iterator = values.listIterator(startingIndex);
+			ListIterator<List<Object>> iterator = values.listIterator(startingIndex);
 
-	        while (iterator.hasNext() && iterator.nextIndex() < endIndex) {
-	            List<Object> row = iterator.next();
+			while (iterator.hasNext() && iterator.nextIndex() < endIndex) {
+				List<Object> row = iterator.next();
 
-	            if (row != null && !row.isEmpty()) {
-	                TraineeDto traineeDto = wrapper.listToDto(row);
-	                traineeDtos.add(traineeDto);
-	            }
-	        }
-	    }
-	    return traineeDtos;
+				if (row != null && !row.isEmpty()) {
+					TraineeDto traineeDto = wrapper.listToDto(row);
+					traineeDtos.add(traineeDto);
+				}
+			}
+		}
+		return traineeDtos;
 	}
 
 	@Override
 	public List<TraineeDto> filterData(String spreadsheetId, String searchValue) throws IOException {
-	    if (searchValue != null && !searchValue.isEmpty()) {
-	        List<List<Object>> data = repo.readData(spreadsheetId);
-	        List<List<Object>> filteredLists = data.stream()
-	                .filter(list -> list.stream()
-	                        .anyMatch(value -> value != null && value.toString().toLowerCase().contains(searchValue.toLowerCase())))
-	                .collect(Collectors.toList());
-	        List<TraineeDto> flist = new ArrayList<TraineeDto>();
-	        for (List<Object> list2 : filteredLists) {
-	            TraineeDto dto = wrapper.listToDto(list2);
-	            flist.add(dto);
-	        }
-	        return flist;
-	    } else {
-	        return new ArrayList<>(); // Return an empty list if searchValue is null or empty
-	    }
+		if (searchValue != null && !searchValue.isEmpty()) {
+			List<List<Object>> data = repo.readData(spreadsheetId);
+			List<List<Object>> filteredLists = data.stream().filter(list -> list.stream().anyMatch(
+					value -> value != null && value.toString().toLowerCase().contains(searchValue.toLowerCase())))
+					.collect(Collectors.toList());
+			List<TraineeDto> flist = new ArrayList<TraineeDto>();
+			for (List<Object> list2 : filteredLists) {
+				TraineeDto dto = wrapper.listToDto(list2);
+				flist.add(dto);
+			}
+			return flist;
+		} else {
+			return new ArrayList<>(); // Return an empty list if searchValue is null or empty
+		}
 	}
 
 	@Override
 	public ResponseEntity<String> update(String spreadsheetId, String email, TraineeDto dto) {
 
-	    AdminDto admin = new AdminDto();
-	    admin.setCreatedBy(dto.getAdminDto().getCreatedBy());
-	    admin.setCreatedOn(dto.getAdminDto().getCreatedOn());
-	    admin.setUpdatedBy(dto.getAdminDto().getUpdatedBy());
-	    admin.setUpdatedOn(LocalDateTime.now().toString());
-	    dto.setAdminDto(admin);
-	    try {
-	        int rowIndex = findRowIndexByEmail(spreadsheetId, email);
-	        if (rowIndex != -1) {
-	            String range = traineeSheetName + rowStartRange + rowIndex + ":" + rowEndRange + rowIndex;
-	            try {
-	                List<List<Object>> values = Arrays.asList(wrapper.extractDtoDetails(dto));
+		AdminDto admin = new AdminDto();
+		admin.setCreatedBy(dto.getAdminDto().getCreatedBy());
+		admin.setCreatedOn(dto.getAdminDto().getCreatedOn());
+		admin.setUpdatedBy(dto.getAdminDto().getUpdatedBy());
+		admin.setUpdatedOn(LocalDateTime.now().toString());
+		dto.setAdminDto(admin);
+		try {
+			int rowIndex = findRowIndexByEmail(spreadsheetId, email);
+			if (rowIndex != -1) {
+				String range = traineeSheetName + rowStartRange + rowIndex + ":" + rowEndRange + rowIndex;
+				try {
+					List<List<Object>> values = Arrays.asList(wrapper.extractDtoDetails(dto));
 
-	                ValueRange valueRange = new ValueRange();
-	                valueRange.setValues(values);
-	                UpdateValuesResponse updated = repo.update(spreadsheetId, range, valueRange);
-	                if (updated != null && !updated.isEmpty()) {
-	                    boolean followUpResponse = updateFollowUp(spreadsheetId, email, dto);
-	                    repo.evictAllCachesOnTraineeDetails();
-	                    return ResponseEntity.ok("Updated Successfully");
-	                } else {
-	                    return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("An error occurred ");
-	                }
-	            } catch (IllegalAccessException e) {
-	                e.printStackTrace();
-	                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("An error occurred ");
-	            }
-	        } else {
-	            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Email not found");
-	        }
-	    } catch (IOException e) {
-	        e.printStackTrace();
-	        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("An error occurred ");
-	    }
+					ValueRange valueRange = new ValueRange();
+					valueRange.setValues(values);
+					UpdateValuesResponse updated = repo.update(spreadsheetId, range, valueRange);
+					if (updated != null && !updated.isEmpty()) {
+						boolean followUpResponse = updateFollowUp(spreadsheetId, email, dto);
+						repo.evictAllCachesOnTraineeDetails();
+						return ResponseEntity.ok("Updated Successfully");
+					} else {
+						return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("An error occurred ");
+					}
+				} catch (IllegalAccessException e) {
+					e.printStackTrace();
+					return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("An error occurred ");
+				}
+			} else {
+				return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Email not found");
+			}
+		} catch (IOException e) {
+			e.printStackTrace();
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("An error occurred ");
+		}
 	}
 
 	@Override
-	public boolean updateFollowUp(String spreadsheetId, String email, TraineeDto dto) throws IOException, IllegalAccessException {
-	    FollowUpDto followUpDto = getFollowUpDetailsByEmail(spreadsheetId, email);
-	    if (followUpDto == null) {
-	        return false;
-	    }
+	public boolean updateFollowUp(String spreadsheetId, String email, TraineeDto dto)
+			throws IOException, IllegalAccessException {
+		FollowUpDto followUpDto = getFollowUpDetailsByEmail(spreadsheetId, email);
+		if (followUpDto == null) {
+			return false;
+		}
 
-	    int rowIndex = findByEmailForUpdate(spreadsheetId, email);
-	    if (rowIndex != -1) {
-	        String range = followUpSheetName + followUprowStartRange + rowIndex + ":" + followUprowEndRange + rowIndex;
+		int rowIndex = findByEmailForUpdate(spreadsheetId, email);
+		if (rowIndex != -1) {
+			String range = followUpSheetName + followUprowStartRange + rowIndex + ":" + followUprowEndRange + rowIndex;
 
-	        // Initialize followUpDto with the existing data
-	        followUpDto = getFollowUpDetailsByEmail(spreadsheetId, email);
+			// Initialize followUpDto with the existing data
+			followUpDto = getFollowUpDetailsByEmail(spreadsheetId, email);
 
-	        // Update the email from the TraineeDto
-	        followUpDto.getBasicInfo().setEmail(dto.getBasicInfo().getEmail());
+			// Update the email from the TraineeDto
+			followUpDto.getBasicInfo().setEmail(dto.getBasicInfo().getEmail());
 
-	        System.out.println(followUpDto);
+			System.out.println(followUpDto);
 
-	        List<List<Object>> values = Arrays.asList(wrapper.extractDtoDetails(followUpDto));
-	        ValueRange valueRange = new ValueRange();
-	        valueRange.setValues(values);
-	        UpdateValuesResponse updated = repo.updateFollow(spreadsheetId, range, valueRange);
+			List<List<Object>> values = Arrays.asList(wrapper.extractDtoDetails(followUpDto));
+			ValueRange valueRange = new ValueRange();
+			valueRange.setValues(values);
+			UpdateValuesResponse updated = repo.updateFollow(spreadsheetId, range, valueRange);
 
-	        if (updated != null && !updated.isEmpty()) {
-	            repo.evictAllCachesOnTraineeDetails();
-	            return true;
-	        } else {
-	            return false;
-	        }
-	    } else {
-	        return false;
-	    }
+			if (updated != null && !updated.isEmpty()) {
+				repo.evictAllCachesOnTraineeDetails();
+				return true;
+			} else {
+				return false;
+			}
+		} else {
+			return false;
+		}
 
 	}
 
 	private int findRowIndexByEmail(String spreadsheetId, String email) throws IOException {
-	    ValueRange data = repo.getEmails(spreadsheetId);
-	    List<List<Object>> values = data.getValues();
-	    if (values != null) {
-	        for (int i = 0; i < values.size(); i++) {
-	            List<Object> row = values.get(i);
-	            if (row.size() > 0 && row.get(0).toString().equalsIgnoreCase(email)) {
-	                return i + 3;
-	            }
-	        }
-	    }
-	    return -1;
+		ValueRange data = repo.getEmails(spreadsheetId);
+		List<List<Object>> values = data.getValues();
+		if (values != null) {
+			for (int i = 0; i < values.size(); i++) {
+				List<Object> row = values.get(i);
+				if (row.size() > 0 && row.get(0).toString().equalsIgnoreCase(email)) {
+					return i + 3;
+				}
+			}
+		}
+		return -1;
 	}
 
 	private int findFollowUpRowIndexById(String spreadsheetId, int id) throws IOException {
-	    List<List<Object>> values = repo.getFollowUpDetails(spreadsheetId);
-	    if (values != null) {
-	        for (int i = 0; i < values.size(); i++) {
-	            List<Object> row = values.get(i);
-	            if (row.size() > 0 && row.get(0).equals(String.valueOf(id))) {
-	                return i + 3;
-	            }
-	        }
-	    }
-	    return -1;
+		List<List<Object>> values = repo.getFollowUpDetails(spreadsheetId);
+		if (values != null) {
+			for (int i = 0; i < values.size(); i++) {
+				List<Object> row = values.get(i);
+				if (row.size() > 0 && row.get(0).equals(String.valueOf(id))) {
+					return i + 3;
+				}
+			}
+		}
+		return -1;
 	}
 
 	@Override
-	public boolean updateCurrentFollowUp(String spreadsheetId, String email, String currentStatus, String currentlyFollowedBy, String joiningDate) throws IOException, IllegalAccessException {
-	    FollowUpDto followUpDto = getFollowUpDetailsByEmail(spreadsheetId, email);
-	    int rowIndex = findByEmailForUpdate(spreadsheetId, email);
-	    if (rowIndex != -1) {
-	        String range = followUpSheetName + followUprowStartRange + rowIndex + ":" + followUprowEndRange + rowIndex;
-	        UpdateValuesResponse updated = setFollowUpDto(spreadsheetId, currentStatus, currentlyFollowedBy, followUpDto, joiningDate, range);
-	        if (updated != null && !updated.isEmpty()) {
-	            return true;
-	        } else {
-	            return false;
-	        }
-	    } else {
-	        return false;
-	    }
+	public boolean updateCurrentFollowUp(String spreadsheetId, String email, String currentStatus,
+			String currentlyFollowedBy, String joiningDate) throws IOException, IllegalAccessException {
+		FollowUpDto followUpDto = getFollowUpDetailsByEmail(spreadsheetId, email);
+		int rowIndex = findByEmailForUpdate(spreadsheetId, email);
+		if (rowIndex != -1) {
+			String range = followUpSheetName + followUprowStartRange + rowIndex + ":" + followUprowEndRange + rowIndex;
+			UpdateValuesResponse updated = setFollowUpDto(spreadsheetId, currentStatus, currentlyFollowedBy,
+					followUpDto, joiningDate, range);
+			if (updated != null && !updated.isEmpty()) {
+				return true;
+			} else {
+				return false;
+			}
+		} else {
+			return false;
+		}
 	}
 
-	private UpdateValuesResponse setFollowUpDto(String spreadsheetId, String currentStatus, String currentlyFollowedBy, FollowUpDto followUpDto, String joiningDate, String range) throws IllegalAccessException, IOException {
-	    AdminDto existingAdminDto = followUpDto.getAdminDto();
-	    AdminDto adminDto = new AdminDto();
-	    if (existingAdminDto != null) {
-	        adminDto.setCreatedBy(existingAdminDto.getCreatedBy());
-	        adminDto.setCreatedOn(existingAdminDto.getCreatedOn());
-	    }
-	    if (currentStatus != null && !currentStatus.equals("NA")) {
-	        followUpDto.setCurrentStatus(currentStatus);
-	    }
-	    if (joiningDate != null && !joiningDate.equals("NA")) {
-	        followUpDto.setJoiningDate(joiningDate);
-	    }
-	    adminDto.setUpdatedBy(currentlyFollowedBy);
-	    adminDto.setUpdatedOn(LocalDateTime.now().toString());
-	    followUpDto.setAdminDto(adminDto);
-	    List<List<Object>> values = Arrays.asList(wrapper.extractDtoDetails(followUpDto));
-	    ValueRange valueRange = new ValueRange();
-	    valueRange.setValues(values);
-	    UpdateValuesResponse updated = repo.updateFollow(spreadsheetId, range, valueRange);
-	    return updated;
-	}
-
-	@Override
-	public ResponseEntity<String> updateFollowUpStatus(String spreadsheetId, StatusDto statusDto, HttpServletRequest request) {
-	    try {
-	        List<List<Object>> data = repo.getStatusId(spreadsheetId).getValues();
-	        StatusDto sdto = wrapper.setFollowUpStatus(statusDto, data);
-	        List<Object> statusData = wrapper.extractDtoDetails(sdto);
-	        boolean status = repo.updateFollowUpStatus(spreadsheetId, statusData);
-	        if (status == true) {
-	            boolean update = updateCurrentFollowUp(spreadsheetId, statusDto.getBasicInfo().getEmail(), statusDto.getAttemptStatus(), statusDto.getAttemptedBy(), statusDto.getJoiningDate());
-	            repo.evictAllCachesOnTraineeDetails();
-	        }
-	        return ResponseEntity.ok("Follow Status Updated for ID :  " + statusDto.getId());
-	    } catch (IllegalAccessException e) {
-	        e.printStackTrace();
-	        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("An error occurred in Mapping data");
-	    } catch (IOException e) {
-	        e.printStackTrace();
-	        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("An error occurred with credentials file ");
-	    }
+	private UpdateValuesResponse setFollowUpDto(String spreadsheetId, String currentStatus, String currentlyFollowedBy,
+			FollowUpDto followUpDto, String joiningDate, String range) throws IllegalAccessException, IOException {
+		AdminDto existingAdminDto = followUpDto.getAdminDto();
+		AdminDto adminDto = new AdminDto();
+		if (existingAdminDto != null) {
+			adminDto.setCreatedBy(existingAdminDto.getCreatedBy());
+			adminDto.setCreatedOn(existingAdminDto.getCreatedOn());
+		}
+		if (currentStatus != null && !currentStatus.equals("NA")) {
+			followUpDto.setCurrentStatus(currentStatus);
+		}
+		if (joiningDate != null && !joiningDate.equals("NA")) {
+			followUpDto.setJoiningDate(joiningDate);
+		}
+		adminDto.setUpdatedBy(currentlyFollowedBy);
+		adminDto.setUpdatedOn(LocalDateTime.now().toString());
+		followUpDto.setAdminDto(adminDto);
+		List<List<Object>> values = Arrays.asList(wrapper.extractDtoDetails(followUpDto));
+		ValueRange valueRange = new ValueRange();
+		valueRange.setValues(values);
+		UpdateValuesResponse updated = repo.updateFollow(spreadsheetId, range, valueRange);
+		return updated;
 	}
 
 	@Override
-	public ResponseEntity<List<TraineeDto>> getSearchSuggestion(String spreadsheetId, String value, HttpServletRequest request) {
+	public ResponseEntity<String> updateFollowUpStatus(String spreadsheetId, StatusDto statusDto,
+			HttpServletRequest request) {
+		try {
+			List<List<Object>> data = repo.getStatusId(spreadsheetId).getValues();
+			StatusDto sdto = wrapper.setFollowUpStatus(statusDto, data);
+			List<Object> statusData = wrapper.extractDtoDetails(sdto);
+			boolean status = repo.updateFollowUpStatus(spreadsheetId, statusData);
+			if (status == true) {
+				boolean update = updateCurrentFollowUp(spreadsheetId, statusDto.getBasicInfo().getEmail(),
+						statusDto.getAttemptStatus(), statusDto.getAttemptedBy(), statusDto.getJoiningDate());
+				repo.evictAllCachesOnTraineeDetails();
+			}
+			return ResponseEntity.ok("Follow Status Updated for ID :  " + statusDto.getId());
+		} catch (IllegalAccessException e) {
+			e.printStackTrace();
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("An error occurred in Mapping data");
+		} catch (IOException e) {
+			e.printStackTrace();
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+					.body("An error occurred with credentials file ");
+		}
+	}
+
+	@Override
+	public ResponseEntity<List<TraineeDto>> getSearchSuggestion(String spreadsheetId, String value,
+			HttpServletRequest request) {
 		String pattern = ".{3}";
 		List<TraineeDto> suggestion = new ArrayList<>();
 		if (value != null) {
@@ -524,14 +531,18 @@ public class DreamServiceImpl implements DreamService {
 				return ResponseEntity.ok(suggestion);
 			} catch (IOException e) {
 				e.printStackTrace();
-				return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new ArrayList<>()); // Return an empty list on error
+				return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new ArrayList<>()); // Return an
+																										// empty list on
+																										// error
 			}
 		}
-		return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ArrayList<>()); // Return a bad request on null value
+		return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ArrayList<>()); // Return a bad request on null
+																						// value
 	}
 
 	@Override
-	public ResponseEntity<?> getDetailsByEmail(String spreadsheetId, String email, HttpServletRequest request) throws IOException {
+	public ResponseEntity<?> getDetailsByEmail(String spreadsheetId, String email, HttpServletRequest request)
+			throws IOException {
 		List<List<Object>> data = repo.readData(spreadsheetId);
 		TraineeDto trainee = data.stream().filter(list -> list.contains(email)).findFirst().map(wrapper::listToDto)
 				.orElse(null);
@@ -543,7 +554,8 @@ public class DreamServiceImpl implements DreamService {
 	}
 
 	@Override
-	public ResponseEntity<FollowUpDto> getFollowUpByEmail(String spreadsheetId, String email, HttpServletRequest request) throws IOException {
+	public ResponseEntity<FollowUpDto> getFollowUpByEmail(String spreadsheetId, String email,
+			HttpServletRequest request) throws IOException {
 		List<List<Object>> data = repo.getFollowUpDetails(spreadsheetId);
 		FollowUpDto followUp = data.stream()
 				.filter(list -> list.size() > 2 && list.get(2).toString().equalsIgnoreCase(email)).findFirst()
@@ -556,7 +568,8 @@ public class DreamServiceImpl implements DreamService {
 	}
 
 	@Override
-	public ResponseEntity<FollowUpDataDto> getFollowUpDetails(String spreadsheetId, int startingIndex, int maxRows, String status) throws IOException {
+	public ResponseEntity<FollowUpDataDto> getFollowUpDetails(String spreadsheetId, int startingIndex, int maxRows,
+			String status) throws IOException {
 		List<FollowUpDto> followUpDto = new ArrayList<FollowUpDto>();
 
 		if (status != null && !status.isEmpty()) {
@@ -576,7 +589,8 @@ public class DreamServiceImpl implements DreamService {
 			repo.evictAllCachesOnTraineeDetails();
 			return ResponseEntity.ok(followUpDataDto);
 		}
-		return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null); // Return a bad request if status is null or empty
+		return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null); // Return a bad request if status is null or
+																			// empty
 	}
 
 	@Override
@@ -776,7 +790,7 @@ public class DreamServiceImpl implements DreamService {
 			ResponseEntity<SheetNotificationDto> notificationDto = notification(id, loginEmail, teamList, request);
 
 		} catch (IOException e) {
-			throw  new RuntimeException("Exception occurred: " + e.getMessage(), e);
+			throw new RuntimeException("Exception occurred: " + e.getMessage(), e);
 		}
 
 	}
@@ -790,7 +804,7 @@ public class DreamServiceImpl implements DreamService {
 				Status.Not_reachable.toString().replace('_', ' '), Status.Let_us_know.toString().replace('_', ' '),
 				Status.Need_online.toString().replace('_', ' ')).collect(Collectors.toList());
 
-		LocalTime time = LocalTime.of(06, 01, 01, 500_000_000);
+		LocalTime time = LocalTime.of(18, 00, 01, 500_000_000);
 		List<StatusDto> notificationStatus = new ArrayList<StatusDto>();
 		List<StatusDto> today = new ArrayList<StatusDto>();
 		List<StatusDto> yesterday = new ArrayList<StatusDto>();
@@ -800,9 +814,10 @@ public class DreamServiceImpl implements DreamService {
 			if (listOfData != null) {
 				List<List<Object>> list = listOfData.stream().filter(items -> !items.contains("NA"))
 						.collect(Collectors.toList());
-				if (!list.isEmpty()) {
+
+				if (!listOfData.isEmpty()) {
 					if (email != null) {
-						list.stream().forEach(e -> {
+						listOfData.stream().forEach(e -> {
 							StatusDto dto = wrapper.listToStatusDto(e);
 
 							if (LocalDate.now().isEqual(LocalDate.parse(dto.getCallBack()))
@@ -828,16 +843,18 @@ public class DreamServiceImpl implements DreamService {
 						response = ResponseEntity.ok(dto);
 
 					}
-					list.stream().forEach(e -> {
+
+					listOfData.stream().forEach(e -> {
 						StatusDto dto = wrapper.listToStatusDto(e);
-						if (dto.getCallBack() != null) {
+						if (dto.getCallBack() != null && dto.getCallBack().toString() != "NA") {
 							if (LocalDateTime.now()
 									.isAfter(LocalDateTime.of((LocalDate.parse(dto.getCallBack())), time))
 									&& LocalDateTime.now().isBefore(LocalDateTime
-											.of((LocalDate.parse(dto.getCallBack())), time.plusMinutes(29)))) {
+											.of((LocalDate.parse(dto.getCallBack())), time.plusMinutes(26)))) {
 
 								if (statusCheck.contains(dto.getAttemptStatus())
 										&& LocalDate.now().isEqual(LocalDate.parse(dto.getCallBack()))) {
+
 									notificationStatus.add(dto);
 
 								}
@@ -847,17 +864,17 @@ public class DreamServiceImpl implements DreamService {
 
 					});
 				}
-				if (LocalTime.now().isAfter(time) && LocalTime.now().isBefore(time.plusMinutes(29))) {
+			}
+			if (LocalTime.now().isAfter(time) && LocalTime.now().isBefore(time.plusMinutes(26))) {
 
-					if (!notificationStatus.isEmpty()) {
+				if (!notificationStatus.isEmpty()) {
 
-						util.sendNotificationToEmail(teamList, notificationStatus);
-
-					}
+					util.sendNotificationToEmail(teamList, notificationStatus);
 
 				}
 
 			}
+
 		}
 		return null;
 

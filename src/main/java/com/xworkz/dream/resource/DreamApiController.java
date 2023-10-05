@@ -199,7 +199,11 @@ public class DreamApiController {
 	@GetMapping("/notification")
 	public ResponseEntity<SheetNotificationDto> getFollowupNotification(@RequestParam String email,
 			HttpServletRequest request) throws IOException {
-		return service.setNotification(email, request);
+
+		ResponseEntity<SheetNotificationDto> entity = service.setNotification(email, request);
+ 
+		return entity;
+
 	}
 
 	@ApiOperation(value = "To verifay the email")
@@ -220,18 +224,19 @@ public class DreamApiController {
 	@ApiOperation(value = "To Add Enquiry Details")
 	@PostMapping("/enquiry")
 
-	public ResponseEntity<String> addEnquiry(@RequestBody EnquiryDto enquiryDto, @RequestHeader String spreadSheetId, HttpServletRequest request) {
+	public ResponseEntity<String> addEnquiry(@RequestBody EnquiryDto enquiryDto, @RequestHeader String spreadSheetId,
+			HttpServletRequest request) {
 
-	    boolean saved = service.addEnquiry(enquiryDto, spreadSheetId, request);
-	    String uri = request.getRequestURI();
-	    System.out.println(uri.contains("enquiry"));
-	    System.out.println(enquiryDto);
+		boolean saved = service.addEnquiry(enquiryDto, spreadSheetId, request);
+		String uri = request.getRequestURI();
+		System.out.println(uri.contains("enquiry"));
+		System.out.println(enquiryDto);
 
-	    if (saved) {
-	        return ResponseEntity.ok().body("Enquiry Added Successfully");
-	    } else {
-	        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to save the enquiry");
-	    }
+		if (saved) {
+			return ResponseEntity.ok().body("Enquiry Added Successfully");
+		} else {
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to save the enquiry");
+		}
 	}
 
 }

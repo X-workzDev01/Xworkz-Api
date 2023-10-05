@@ -81,7 +81,6 @@ public class DreamRepositoryImpl implements DreamRepository {
 	@Value("${sheets.followUpStatusIdRange}")
 	private String followUpStatusIdRange;
 
-
 	@Autowired
 	private ResourceLoader resourceLoader;
 
@@ -306,7 +305,5 @@ public class DreamRepositoryImpl implements DreamRepository {
 		ValueRange response = sheetsService.spreadsheets().values().get(spreadsheetId, followUpRange).execute();
 		return response.getValues();
 	}
-
-
 
 }
