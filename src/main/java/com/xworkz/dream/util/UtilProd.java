@@ -70,6 +70,7 @@ public class UtilProd implements DreamUtil {
 
 	private static final Logger logger = LoggerFactory.getLogger(UtilLocal.class);
 
+
 	public int generateOTP() {
 		// Generate a random OTP
 		int otpLength = 6;
@@ -218,7 +219,7 @@ public class UtilProd implements DreamUtil {
 			message.setSubject(subject);
 			message.setText(body.toString());
 			message.setContent(emailContent, "text/html; charset=UTF-8");
-//			Transport.send(message);
+			Transport.send(message);
 			System.out.println("Emails sent successfully.");
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -257,17 +258,15 @@ public class UtilProd implements DreamUtil {
 			helper.setText(emailContent);
 			message.setSubject(subject);
 			message.setText(whatsAppLink.toString());
-			System.err.println("4444444444444 " + emailContent);
+			
 			message.setContent(emailContent, "text/html; charset=UTF-8");
-			System.out.println("running           " + message);
 
 			Transport.send(message);
-			System.out.println("Emails sent successfully.");
 		} catch (Exception e) {
 			logger.error(e.getMessage());
 		}
 		return false;
 
-	}
+	}   
 
 }

@@ -115,6 +115,7 @@ public class DreamServiceImpl implements DreamService {
 
 	@Override
 	public ResponseEntity<String> writeData(String spreadsheetId, TraineeDto dto, HttpServletRequest request)
+
 	        throws MessagingException, TemplateException {
 	    try {
 	        if (isCookieValid(request)) {
@@ -147,6 +148,7 @@ public class DreamServiceImpl implements DreamService {
 	                dto.getAdminDto().setCreatedOn(LocalDateTime.now().toString());
 	            }
 
+
 	            List<Object> list = wrapper.extractDtoDetails(dto);
 	            System.out.println(list);
 	            boolean writeStatus = repo.writeData(spreadsheetId, list);
@@ -177,6 +179,7 @@ public class DreamServiceImpl implements DreamService {
 	    }
 	    // You should have a return statement here for any other cases.
 	    return ResponseEntity.badRequest().body("Failed to process the request");
+
 	}
 
 	// Helper method to check if the request URI is "/register"
@@ -272,8 +275,10 @@ public class DreamServiceImpl implements DreamService {
 
 	@Override
 	public ResponseEntity<SheetsDto> readData(String spreadsheetId, int startingIndex, int maxRows) {
+
 	    try {
 	        List<List<Object>> dataList = repo.readData(spreadsheetId);
+
 
 	        if (dataList != null) {
 	            List<List<Object>> sortedData = dataList.stream()
@@ -338,6 +343,7 @@ public class DreamServiceImpl implements DreamService {
 
 	@Override
 	public ResponseEntity<String> update(String spreadsheetId, String email, TraineeDto dto) {
+
 	    AdminDto admin = new AdminDto();
 	    admin.setCreatedBy(dto.getAdminDto().getCreatedBy());
 	    admin.setCreatedOn(dto.getAdminDto().getCreatedOn());
@@ -407,6 +413,7 @@ public class DreamServiceImpl implements DreamService {
 	    } else {
 	        return false;
 	    }
+
 	}
 
 	private int findRowIndexByEmail(String spreadsheetId, String email) throws IOException {
@@ -766,7 +773,7 @@ public class DreamServiceImpl implements DreamService {
 	public void notification() {
 		try {
 			List<Team> teamList = getTeam();
-			ResponseEntity<SheetNotificationDto> notificationDto= notification(id, loginEmail, teamList, request);
+			ResponseEntity<SheetNotificationDto> notificationDto = notification(id, loginEmail, teamList, request);
 
 		} catch (IOException e) {
 			throw  new RuntimeException("Exception occurred: " + e.getMessage(), e);
@@ -775,90 +782,82 @@ public class DreamServiceImpl implements DreamService {
 	}
 
 	@Override
-	public ResponseEntity<SheetNotificationDto> notification(String spreadsheetId, String email, List<Team> teamList, HttpServletRequest requests)
-			throws IOException {
+	public ResponseEntity<SheetNotificationDto> notification(String spreadsheetId, String email, List<Team> teamList,
+			HttpServletRequest requests) throws IOException {
 		List<String> statusCheck = Stream.of(Status.Busy.toString(), Status.New.toString(),
 				Status.Interested.toString(), Status.RNR.toString(), Status.Not_interested.toString().replace('_', ' '),
 				Status.Incomingcall_not_available.toString().replace('_', ' '),
 				Status.Not_reachable.toString().replace('_', ' '), Status.Let_us_know.toString().replace('_', ' '),
 				Status.Need_online.toString().replace('_', ' ')).collect(Collectors.toList());
 
-		LocalTime time = LocalTime.of(18, 00, 01, 500_000_000);
+		LocalTime time = LocalTime.of(06, 01, 01, 500_000_000);
 		List<StatusDto> notificationStatus = new ArrayList<StatusDto>();
 		List<StatusDto> today = new ArrayList<StatusDto>();
 		List<StatusDto> yesterday = new ArrayList<StatusDto>();
 		List<StatusDto> afterFoureDay = new ArrayList<StatusDto>();
-
-		List<List<Object>> followup = repo.getFollowUpDetailsByid(spreadsheetId);
-		if(followup!=null) {
-			followup.stream().forEach(f -> {
-				followUpDto = wrapper.listToFollowUpDTO(f);
-			});
-		}
-
 		if (spreadsheetId != null) {
 			List<List<Object>> listOfData = repo.notification(spreadsheetId);
-			
-			List<List<Object>> list = listOfData.stream().filter(items -> !items.contains("NA"))
-					.collect(Collectors.toList());
-			if (!list.isEmpty()) {
-				if (email != null) {
-					list.stream().forEach(e -> {
-						StatusDto dto = wrapper.listToStatusDto(e);
+			if (listOfData != null) {
+				List<List<Object>> list = listOfData.stream().filter(items -> !items.contains("NA"))
+						.collect(Collectors.toList());
+				if (!list.isEmpty()) {
+					if (email != null) {
+						list.stream().forEach(e -> {
+							StatusDto dto = wrapper.listToStatusDto(e);
 
-						if (LocalDate.now().isEqual(LocalDate.parse(dto.getCallBack()))
-								&& email.equalsIgnoreCase(dto.getAttemptedBy())
-								&& statusCheck.contains(dto.getAttemptStatus())) {
-							today.add(dto);
-						}
-						if (LocalDate.now().minusDays(1).isEqual(LocalDate.parse(dto.getCallBack()))
-								&& email.equalsIgnoreCase(dto.getAttemptedBy())
-								&& statusCheck.contains(dto.getAttemptStatus())) {
-							yesterday.add(dto);
+							if (LocalDate.now().isEqual(LocalDate.parse(dto.getCallBack()))
+									&& email.equalsIgnoreCase(dto.getAttemptedBy())
+									&& statusCheck.contains(dto.getAttemptStatus())) {
+								today.add(dto);
+							}
+							if (LocalDate.now().minusDays(1).isEqual(LocalDate.parse(dto.getCallBack()))
+									&& email.equalsIgnoreCase(dto.getAttemptedBy())
+									&& statusCheck.contains(dto.getAttemptStatus())) {
+								yesterday.add(dto);
 
-						}
-						if (LocalDate.now().plusDays(4).isEqual(LocalDate.parse(dto.getCallBack()))
-								&& email.equalsIgnoreCase(dto.getAttemptedBy())
-								&& statusCheck.contains(dto.getAttemptStatus())) {
-							afterFoureDay.add(dto);
-
-						}
-
-					});
-					SheetNotificationDto dto = new SheetNotificationDto(yesterday, today, afterFoureDay);
-					response= ResponseEntity.ok(dto);
-
-				}
-
-				list.stream().forEach(e -> {
-					StatusDto dto = wrapper.listToStatusDto(e);
-					if (dto.getCallBack() != null) {
-						if (LocalDateTime.now().isAfter(LocalDateTime.of((LocalDate.parse(dto.getCallBack())), time))
-								&& LocalDateTime.now().isBefore(
-										LocalDateTime.of((LocalDate.parse(dto.getCallBack())), time.plusMinutes(26)))) {
-
-							if (statusCheck.contains(dto.getAttemptStatus())
-									&& LocalDate.now().isEqual(LocalDate.parse(dto.getCallBack()))) {
-
-								notificationStatus.add(dto);
+							}
+							if (LocalDate.now().plusDays(4).isEqual(LocalDate.parse(dto.getCallBack()))
+									&& email.equalsIgnoreCase(dto.getAttemptedBy())
+									&& statusCheck.contains(dto.getAttemptStatus())) {
+								afterFoureDay.add(dto);
 
 							}
 
-						}
+						});
+						SheetNotificationDto dto = new SheetNotificationDto(yesterday, today, afterFoureDay);
+						response = ResponseEntity.ok(dto);
+
 					}
+					list.stream().forEach(e -> {
+						StatusDto dto = wrapper.listToStatusDto(e);
+						if (dto.getCallBack() != null) {
+							if (LocalDateTime.now()
+									.isAfter(LocalDateTime.of((LocalDate.parse(dto.getCallBack())), time))
+									&& LocalDateTime.now().isBefore(LocalDateTime
+											.of((LocalDate.parse(dto.getCallBack())), time.plusMinutes(29)))) {
 
-				});
-			}
-			if (LocalTime.now().isAfter(time) && LocalTime.now().isBefore(time.plusMinutes(26))) {
+								if (statusCheck.contains(dto.getAttemptStatus())
+										&& LocalDate.now().isEqual(LocalDate.parse(dto.getCallBack()))) {
+									notificationStatus.add(dto);
 
-				if (!notificationStatus.isEmpty()) {
+								}
 
-					util.sendNotificationToEmail(teamList, notificationStatus);
+							}
+						}
+
+					});
+				}
+				if (LocalTime.now().isAfter(time) && LocalTime.now().isBefore(time.plusMinutes(29))) {
+
+					if (!notificationStatus.isEmpty()) {
+
+						util.sendNotificationToEmail(teamList, notificationStatus);
+
+					}
 
 				}
 
 			}
-
 		}
 		return null;
 
@@ -916,6 +915,7 @@ public class DreamServiceImpl implements DreamService {
 		// TODO Auto-generated method stub
 		return false;
 	}
+
 	@Override
 	public ResponseEntity<String> updateFollowUp(String spreadsheetId, String email, FollowUpDto followDto)
 			throws IOException, IllegalAccessException {
