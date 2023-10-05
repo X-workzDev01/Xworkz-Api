@@ -220,6 +220,8 @@ public class UtilDev implements DreamUtil {
 			message.setContent(emailContent, "text/html; charset=UTF-8");
 			Transport.send(message);
 			System.out.println("Emails sent successfully.");
+			logger.info("mail sent sucessfully");
+
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
