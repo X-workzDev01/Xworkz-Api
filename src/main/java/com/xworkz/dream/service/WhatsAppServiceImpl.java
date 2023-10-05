@@ -16,6 +16,7 @@ import org.springframework.stereotype.Service;
 import com.google.api.services.sheets.v4.model.UpdateValuesResponse;
 import com.google.api.services.sheets.v4.model.ValueRange;
 import com.xworkz.dream.dto.BatchDetails;
+import com.xworkz.dream.dto.OthersDto;
 import com.xworkz.dream.dto.TraineeDto;
 import com.xworkz.dream.repository.DreamRepository;
 import com.xworkz.dream.repository.WhatsAppRepository;
@@ -97,26 +98,63 @@ public class WhatsAppServiceImpl implements WhatsAppService {
 	}
 
 	@Override
-	public boolean getEmailByCourseName(String spreadsheetId, String courseName) throws IOException {
+	public List<String> getEmailByCourseName(String spreadsheetId, String courseName) throws IOException {
 		List<List<Object>> readData = repo.readData(spreadsheetId);
-		String subject = "whatsApp Link";
-		ResponseEntity<BatchDetails> batchDetailsByCourseName = service.getBatchDetailsByCourseName(spreadsheetId,courseName);
-     List<String> emailList = readData.stream()
-    		    .filter(row -> row.size() > 2 && row.get(9) instanceof String) // Ensure row size and check if element is String
-    		    .filter(row -> "No".equalsIgnoreCase((String) row.get(23))) // Filter rows by a specific field (e.g., "Status") being equal to "No"
-    		    .map(row -> (String) row.get(2)) // Extract email addresses from the filtered rows
-    		    .collect(Collectors.toList());
-     	System.out.println("emailList : "+emailList);
-     
-//     if(!emailList.isEmpty()) {
-//    	 boolean sendWhatsAppLink = util.sendWhatsAppLink(emailList, subject, batchDetailsByCourseName.getBody().getWhatsAppLink());
-//    	 if(sendWhatsAppLink) {
-//    		 
-//    	 }
-			return true;
-//     }
-     
-//	return false;
+		List<String> emailList = readData.stream().filter(row -> row.size() > 2 && row.get(9) instanceof String)
+				.filter(row -> "No".equalsIgnoreCase((String) row.get(23))).map(row -> (String) row.get(2))
+				.collect(Collectors.toList());
+		System.out.println("emailList : " + emailList);
+
+		return emailList;
+	}
+
+	public synchronized void processAndBulkUpdate(String spreadsheetId, String courseName) throws IOException {
+		List<List<Object>> readData = repo.readData(spreadsheetId);
+		List<String> emailsToUpdate = readData.stream().filter(rowData -> shouldUpdateWhatsAppLink(rowData))
+				.map(rowData -> (String) rowData.get(2)) // Assuming email is in the first column (index 0)
+				.collect(Collectors.toList());
+
+		if (!emailsToUpdate.isEmpty()) {
+			bulkUpdateWhatsAppLink(spreadsheetId, emailsToUpdate, courseName);
+		}
+	}
+
+	private boolean shouldUpdateWhatsAppLink(List<Object> rowData) {
+		return rowData.size() > 2 && "No".equalsIgnoreCase((String) rowData.get(23));
+	}
+
+	private void bulkUpdateWhatsAppLink(String spreadsheetId, List<String> emails, String courseName) throws IOException {
+		List<List<Object>> readData = repo.readData(spreadsheetId);
+		System.out.println("emails : "+emails);
+		for (String email : emails) {
+			TraineeDto trainee = readData.stream().filter(list -> list.contains(email)).findFirst().map(wrapper::listToDto)
+					.orElse(null);
+			System.out.println("trainee : "+trainee);
+			trainee.getOthersDto().setSendWhatsAppLink("Yes");
+			ResponseEntity<String> update = service.update(spreadsheetId, email, trainee);
+			logger.info("Bulk update WhatsAppLinkSend: {}", update);
+		}
+	}
+
+	@Override
+	public boolean sendWhatsAppLink(String spreadsheetId, String courseName) throws IOException {
+
+		List<String> emailByCourseName = this.getEmailByCourseName(spreadsheetId, courseName);
+		String subject = "WhatsApp Link";
+		ResponseEntity<BatchDetails> batchDetailsByCourseName = service.getBatchDetailsByCourseName(spreadsheetId,
+				courseName);
+		if (!emailByCourseName.isEmpty()) {
+
+			boolean sendWhatsAppLink = util.sendWhatsAppLink(emailByCourseName, subject,
+					batchDetailsByCourseName.getBody().getWhatsAppLink());
+			if (sendWhatsAppLink == true) {
+				this.processAndBulkUpdate(spreadsheetId, courseName);
+				return true;
+			}
+
+		}
+
+		return false;
 	}
 
 }

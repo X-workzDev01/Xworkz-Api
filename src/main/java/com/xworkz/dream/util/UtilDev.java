@@ -253,6 +253,14 @@ public class UtilDev implements DreamUtil {
         }
     }
 
+	  private String JspTemplate(String templateName, String whatsAppLink) throws IOException, TemplateException {
+		Template template = freemarkerConfig.getTemplate(templateName + ".html"); // Use .ftl extension
+
+		Map<String, Object> model = new HashMap<>();
+		model.put("whatsAppLink", whatsAppLink);
+
+		return FreeMarkerTemplateUtils.processTemplateIntoString(template, model);
+
     @Override
     public boolean sendWhatsAppLink(List<String> traineeEmail, String subject, String whatsAppLink) {
         if (traineeEmail == null || subject == null || whatsAppLink == null) {
@@ -280,9 +288,7 @@ public class UtilDev implements DreamUtil {
                 message.addRecipient(Message.RecipientType.TO, new InternetAddress(recipient));
             }
 
-            Context context = new Context();
-            context.setVariable("whatsAppLink", whatsAppLink);
-            String emailContent = templateEngine.process("WhatsAppLinkContentTemplate", context);
+            String emailContent = JspTemplate("WhatsAppLinkContentTemplate", whatsAppLink);
             MimeMessageHelper helper = new MimeMessageHelper(message, true);
             helper.setText(emailContent, true); // Use true for HTML content
             message.setSubject(subject);

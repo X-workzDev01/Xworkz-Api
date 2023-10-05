@@ -66,4 +66,11 @@ public class WhatsAppRepositoryImpl implements WhatsAppRepository {
 		ValueRange response = sheetsService.spreadsheets().values().get(spreadsheetId, batchDetailsCourseNameRange).execute();
 		return response;
 	}
+	
+	@Override
+	public UpdateValuesResponse updateWhatsAppLink(String spreadsheetId, String range2, ValueRange valueRange) throws IOException {
+		return sheetsService.spreadsheets().values().update(spreadsheetId, range2, valueRange)
+				.setValueInputOption("RAW").execute();
+	}
+
 }

@@ -219,7 +219,6 @@ public class DreamApiController {
 
 	@ApiOperation(value = "To Add Enquiry Details")
 	@PostMapping("/enquiry")
-
 	public ResponseEntity<String> addEnquiry(@RequestBody EnquiryDto enquiryDto, @RequestHeader String spreadSheetId, HttpServletRequest request) {
 
 	    boolean saved = service.addEnquiry(enquiryDto, spreadSheetId, request);
@@ -233,5 +232,4 @@ public class DreamApiController {
 	        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to save the enquiry");
 	    }
 	}
-
 }
