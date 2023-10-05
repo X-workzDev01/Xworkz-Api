@@ -66,6 +66,7 @@ public class AttendanceRepositoryImpl implements AttendanceRepository {
 	public boolean writeAttendance(String spreadsheetId, List<Object> row, String range) throws IOException {
 		List<List<Object>> values = new ArrayList<>();
 		values.add(row);
+		System.err.println("row                  " + row);
 		ValueRange body = new ValueRange().setValues(values);
 		sheetsService.spreadsheets().values().append(spreadsheetId, range, body).setValueInputOption("USER_ENTERED")
 				.execute();
@@ -82,7 +83,8 @@ public class AttendanceRepositoryImpl implements AttendanceRepository {
 	public void evictCacheByEmail() throws IOException {
 
 	}
-	@Cacheable(value = "byEmail", key = "#spreadsheetId",unless = "#result == null")
+
+	@Cacheable(value = "byEmail", key = "#spreadsheetId", unless = "#result == null")
 	@CachePut(value = "byEmail", key = "#spreadsheetId")
 	@Override
 	public boolean everyDayAttendance(String spreadsheetId, List<Object> row, String range) throws IOException {
@@ -108,7 +110,7 @@ public class AttendanceRepositoryImpl implements AttendanceRepository {
 
 	public void clearColumnData(String spreadsheetId, String range) throws IOException {
 		Sheets.Spreadsheets.Values.Clear request = sheetsService.spreadsheets().values().clear(spreadsheetId, range,
-				 new ClearValuesRequest());
+				new ClearValuesRequest());
 		request.execute();
 	}
 }
