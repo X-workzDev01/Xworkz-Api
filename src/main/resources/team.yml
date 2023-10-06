@@ -1,11 +1,15 @@
 team:
-  - email: xworkzdev4@gmail.com
-    name: Admin01
-  - email: hareeshahr79@gmail.com
-    name: Admin02
-  - email: hareeshahr.xworkz@gmail.com
-    name: Admin03
-  - email: xworkzdev3@gmail.com
-    name: Admin04
-
+ 
+  - email: om@x-workz.in
+    name: omkar
+  - email: akshara@x-workz.in
+    name: akshara
+  - email: hr@x-workz.in
+    name: mamatha
+  - email: Amulya@x-workz.in
+    name: amulya
+  - email: xworkzdev@gmail.com
+    name: dev
+  - email: keerthanahn.xworkz@gmail.com
+    name: keerthana
 
