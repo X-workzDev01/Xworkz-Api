@@ -111,9 +111,8 @@ public class DreamWrapper {
 
 		StatusDto statusDto = new StatusDto(0, new BasicInfoDto(), null, null, null, null, null, null, null, null,
 				null);
-
 		int rowSize = rows.size();
-		if (rowSize > 0 && rows.get(0) != null && !rows.get(0).toString().isEmpty()) {
+		if (rowSize > 0 && rows.get(0) != null && !rows.get(0).toString().isEmpty() ) {
 			statusDto.setId(Integer.valueOf(rows.get(0).toString()));
 		}
 		if (rowSize > 1 && rows.get(1) != null && !rows.get(1).toString().isEmpty()) {
@@ -148,6 +147,7 @@ public class DreamWrapper {
 		if (rowSize > 10 && rows.get(10) != null && !rows.get(10).toString().isEmpty()) {
 			statusDto.setCallBackTime((String) rows.get(10)); // Corrected field name
 		}
+
 
 		return statusDto;
 	}
@@ -469,7 +469,6 @@ public class DreamWrapper {
 
 		AttendanceDto attendanceDto = new AttendanceDto(0, new BasicInfoDto(), new CourseDto(), null, null, null, null,
 				null, null, null, null, null);
-
 
 		int rowSize = row.size();
 
