@@ -8,14 +8,12 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
-
-import com.xworkz.dream.dto.BasicInfoDto;
 import com.xworkz.dream.dto.BatchDetails;
 import com.xworkz.dream.dto.BatchDetailsDto;
-import com.xworkz.dream.dto.EducationInfoDto;
 import com.xworkz.dream.dto.EnquiryDto;
 import com.xworkz.dream.dto.FollowUpDataDto;
 import com.xworkz.dream.dto.FollowUpDto;
+import com.xworkz.dream.dto.SheetNotificationDto;
 import com.xworkz.dream.dto.SheetsDto;
 import com.xworkz.dream.dto.StatusDto;
 import com.xworkz.dream.dto.TraineeDto;
@@ -93,10 +91,10 @@ public interface DreamService {
 
 	public void notification();
 
-	public void notification(String spreadsheetId, String email, List<Team> teamList, HttpServletRequest requests)
+	public ResponseEntity<SheetNotificationDto> notification(String spreadsheetId, String email, List<Team> teamList, HttpServletRequest requests)
 			throws IOException;
 
-	public ResponseEntity<List<StatusDto>> setNotification(@Value("${myapp.scheduled.param}") String email,
+	public ResponseEntity<SheetNotificationDto> setNotification(@Value("${myapp.scheduled.param}") String email,
 			@Value("${myapp.scheduled.param}") HttpServletRequest requests) throws IOException;
 
 	public String verifyEmails(String email);
@@ -106,7 +104,10 @@ public interface DreamService {
 
 
 	boolean updateCurrentFollowUp(String spreadsheetId, String email, String currentStatus, String currentlyFollowedBy,
-			String joiningDate) throws IOException, IllegalAccessException; 
+			String joiningDate) throws IOException, IllegalAccessException;
+
+	boolean updateFollowUp(String spreadsheetId, String email, TraineeDto dto)
+			throws IOException, IllegalAccessException; 
 
 
 }

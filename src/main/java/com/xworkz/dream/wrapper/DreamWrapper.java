@@ -111,9 +111,8 @@ public class DreamWrapper {
 
 		StatusDto statusDto = new StatusDto(0, new BasicInfoDto(), null, null, null, null, null, null, null, null,
 				null);
-
 		int rowSize = rows.size();
-		if (rowSize > 0 && rows.get(0) != null && !rows.get(0).toString().isEmpty()) {
+		if (rowSize > 0 && rows.get(0) != null && !rows.get(0).toString().isEmpty() ) {
 			statusDto.setId(Integer.valueOf(rows.get(0).toString()));
 		}
 		if (rowSize > 1 && rows.get(1) != null && !rows.get(1).toString().isEmpty()) {
@@ -148,6 +147,7 @@ public class DreamWrapper {
 		if (rowSize > 10 && rows.get(10) != null && !rows.get(10).toString().isEmpty()) {
 			statusDto.setCallBackTime((String) rows.get(10)); // Corrected field name
 		}
+
 
 		return statusDto;
 	}
@@ -254,7 +254,6 @@ public class DreamWrapper {
 		}
 		if (rowSize > 24 && row.get(24) != null && !row.get(24).toString().isEmpty()) {
 			traineeDto.getOthersDto().setRegistrationDate((String) row.get(24).toString());
-
 		}
 		if (rowSize > 25 && row.get(25) != null && !row.get(25).toString().isEmpty()) {
 			traineeDto.getAdminDto().setCreatedBy(row.get(25).toString());
@@ -319,7 +318,6 @@ public class DreamWrapper {
 				// Handle association with another DTO
 				List<Object> subDtoDetails = extractDtoDetails(fieldValue);
 				detailsList.addAll(subDtoDetails);
-			
 
 			} else {
 				// Add the value to the list
@@ -416,9 +414,8 @@ public class DreamWrapper {
 	}
 
 	public AttendanceDto attendanceListToDto(List<Object> row) {
-
 		AttendanceDto attendanceDto = new AttendanceDto(0, new BasicInfoDto(), new CourseDto(), null, null, null, null,
-				null, null, null);
+				null, null, null, null, null);
 		int rowSize = row.size();
 
 		if (rowSize > 0 && row.get(0) != null && !row.get(0).toString().isEmpty()) {
@@ -458,6 +455,12 @@ public class DreamWrapper {
 		if (rowSize > 9 && row.get(9) != null && !row.get(9).toString().isEmpty()) {
 			attendanceDto.setIsButton(Boolean.parseBoolean((row.get(9).toString())));
 		}
+		if (rowSize > 10 && row.get(10) != null && !row.get(10).toString().isEmpty()) {
+			attendanceDto.setYColor((String) row.get(10));
+		}
+		if (rowSize > 10 && row.get(11) != null && !row.get(11).toString().isEmpty()) {
+			attendanceDto.setNColor((String) row.get(11));
+		}
 
 		return attendanceDto;
 	}
@@ -465,7 +468,7 @@ public class DreamWrapper {
 	public AttendanceDto attendanceListEverydayToDto(List<Object> row) {
 
 		AttendanceDto attendanceDto = new AttendanceDto(0, new BasicInfoDto(), new CourseDto(), null, null, null, null,
-				null, null, null);
+				null, null, null, null, null);
 
 		int rowSize = row.size();
 
@@ -506,44 +509,47 @@ public class DreamWrapper {
 		if (rowSize > 9 && row.get(9) != null && !row.get(9).toString().isEmpty()) {
 			attendanceDto.setIsButton(Boolean.parseBoolean((row.get(9).toString())));
 		}
-
+		if (rowSize > 10 && row.get(10) != null && !row.get(10).toString().isEmpty()) {
+			attendanceDto.setYColor((String) row.get(10));
+		}
+		if (rowSize > 11 && row.get(11) != null && !row.get(11).toString().isEmpty()) {
+			attendanceDto.setNColor((String) row.get(11));
+		}
 		return attendanceDto;
 	}
 
-
 	public EnquiryDto validateEnquiry(EnquiryDto dto) {
-	    BasicInfoDto basicDto = dto.getBasicInfo();
-	    if (basicDto != null) {
-	        basicDto.setDateOfBirth("NA");
+		BasicInfoDto basicDto = dto.getBasicInfo();
+		if (basicDto != null) {
+			basicDto.setDateOfBirth("NA");
 
-	        if (basicDto.getEmail() == null || basicDto.getEmail().isEmpty()) {
-	            String contactNumber = String.valueOf(basicDto.getContactNumber());
-	            String generatedEmail = contactNumber + "@dummy.com";
-	            System.out.println(generatedEmail);
-	            basicDto.setEmail(generatedEmail);
-	        }
-	    }
+			if (basicDto.getEmail() == null || basicDto.getEmail().isEmpty()) {
+				String contactNumber = String.valueOf(basicDto.getContactNumber());
+				String generatedEmail = contactNumber + "@dummy.com";
+				basicDto.setEmail(generatedEmail);
+			}
+		}
 
-	    EducationInfoDto educationDto = dto.getEducationInfo();
-	    if (educationDto != null) {
-	        if (educationDto.getCollegeName() == null || educationDto.getCollegeName().isEmpty()) {
-	            educationDto.setCollegeName("NA");
-	        }
+		EducationInfoDto educationDto = dto.getEducationInfo();
+		if (educationDto != null) {
+			if (educationDto.getCollegeName() == null || educationDto.getCollegeName().isEmpty()) {
+				educationDto.setCollegeName("NA");
+			}
 
-	        if (educationDto.getStream() == null || educationDto.getStream().isEmpty()) {
-	            educationDto.setStream("NA");
-	        }
+			if (educationDto.getStream() == null || educationDto.getStream().isEmpty()) {
+				educationDto.setStream("NA");
+			}
 
-	        if (educationDto.getQualification() == null || educationDto.getQualification().isEmpty()) {
-	            educationDto.setQualification("NA");
-	        }
+			if (educationDto.getQualification() == null || educationDto.getQualification().isEmpty()) {
+				educationDto.setQualification("NA");
+			}
 
-	        if (educationDto.getYearOfPassout() == null || educationDto.getYearOfPassout().isEmpty()) {
-	            educationDto.setYearOfPassout("NA");
-	        }
-	    }
+			if (educationDto.getYearOfPassout() == null || educationDto.getYearOfPassout().isEmpty()) {
+				educationDto.setYearOfPassout("NA");
+			}
+		}
 
-	    return dto;
+		return dto;
 	}
 
 	public FollowUpDto setFollowUp(TraineeDto traineeDto) {
@@ -573,7 +579,7 @@ public class DreamWrapper {
 	}
 
 	public StatusDto setFollowUpStatus(StatusDto statusDto, List<List<Object>> data) {
-		int size = data.size();
+		int size = data != null ? data.size() : 0;
 		BasicInfoDto basicInfo = new BasicInfoDto();
 		basicInfo.setTraineeName(statusDto.getBasicInfo().getTraineeName());
 		basicInfo.setEmail(statusDto.getBasicInfo().getEmail());
@@ -586,12 +592,14 @@ public class DreamWrapper {
 		sdto.setAttemptStatus(statusDto.getAttemptStatus());
 		sdto.setComments(statusDto.getComments());
 		sdto.setCallDuration(statusDto.getCallDuration());
+		if(statusDto.getCallBack().equals("NA")) {
+			sdto.setCallBack("1000-01-01");
+		}else {
 		sdto.setCallBack(statusDto.getCallBack());
+		}
 		sdto.setCallBackTime(statusDto.getCallBackTime());
 		sdto.setJoiningDate(statusDto.getJoiningDate());
 		return sdto;
 	}
 
-
 }
-

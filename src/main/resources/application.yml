@@ -6,7 +6,6 @@ spring:
 
 sheets:
   appName: Dream Api
-  credentialsPath: classpath:META-INF/credentials.json
   range: A3:AC
   emailRange: C3:C
   contactNumberRange: D3:D
@@ -40,13 +39,14 @@ sheets:
   attendanceInfoByName: attendanceInfo!A2:E
   attendanceList: attendanceList!A2:J
   attendanceListByEmail: attendanceList!A2:J
-  attendanceListRange: attendanceList!A2:K
+  attendanceListRange: attendanceList!A2:M
   batchDetailsCourseNameRange: batchDetails!B2:B
   idAttandanceInfoRange: A3:A
   presentRange: H
   absentRange: I
   AttandanceInfoSheetName: attendanceInfo!
   attendanceListDefaultRange: attendanceInfo!J2:j
+  attendanceInfoMarkAs:  J
 
 mail:
    smtpHost: smtp.office365.com
@@ -59,7 +59,7 @@ logging:
     
 login:
   userFile: classpath:users.yml
-  sheetId: 1p3G4et36vkzSDs3W63cj6qnUFEWljLos2HHXIZd78Gg
+  
 
 server:
   port : 8081

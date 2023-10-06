@@ -1,6 +1,7 @@
 package com.xworkz.dream.resource;
 
 import java.io.IOException;
+import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -60,10 +61,10 @@ public class CreateBatchInfoController {
 	}
 	
 	@GetMapping("/sendWhatsAppLink")
-	public boolean  sendWhatsAppLink(@RequestHeader String spreadsheetId,
+	public boolean  mailWhatsAppLink(@RequestHeader String spreadsheetId,
 			@RequestParam String courseName) throws IOException {
-		boolean emailByCourseName = whatsAppService.getEmailByCourseName(spreadsheetId, courseName);
-		return emailByCourseName;
+		boolean sendWhatsAppLink = whatsAppService.sendWhatsAppLink(spreadsheetId, courseName);
+		return sendWhatsAppLink;
 		
 	}
 	

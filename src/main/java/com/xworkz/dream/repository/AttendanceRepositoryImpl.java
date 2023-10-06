@@ -14,6 +14,7 @@ import javax.annotation.PostConstruct;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.ResourceLoader;
@@ -65,6 +66,7 @@ public class AttendanceRepositoryImpl implements AttendanceRepository {
 	public boolean writeAttendance(String spreadsheetId, List<Object> row, String range) throws IOException {
 		List<List<Object>> values = new ArrayList<>();
 		values.add(row);
+		System.err.println("row                  " + row);
 		ValueRange body = new ValueRange().setValues(values);
 		sheetsService.spreadsheets().values().append(spreadsheetId, range, body).setValueInputOption("USER_ENTERED")
 				.execute();
@@ -82,6 +84,8 @@ public class AttendanceRepositoryImpl implements AttendanceRepository {
 
 	}
 
+	@Cacheable(value = "byEmail", key = "#spreadsheetId", unless = "#result == null")
+	@CachePut(value = "byEmail", key = "#spreadsheetId")
 	@Override
 	public boolean everyDayAttendance(String spreadsheetId, List<Object> row, String range) throws IOException {
 		List<List<Object>> values = new ArrayList<>();

@@ -8,15 +8,14 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 
+@ToString
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@ToString
-public class AttadanceSheetDto {
-	private List<AttendanceDto> dto;
-	private Integer size;
-
-
+public class SheetNotificationDto {
+	private List<StatusDto> yesterdayCandidates;
+	private List<StatusDto> todayCandidates;
+	private List<StatusDto> afterFourDayCandidates;
 
 }
