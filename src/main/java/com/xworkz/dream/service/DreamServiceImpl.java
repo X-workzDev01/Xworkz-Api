@@ -119,9 +119,7 @@ public class DreamServiceImpl implements DreamService {
 	    try {
 	        List<List<Object>> data = repo.getIds(spreadsheetId).getValues();
 	        int size = data != null ? data.size() : 0;
-	        System.out.println(size);
-	        dto.setId(size + 1);
-           
+	    	dto.setId(size += 1);
 	        dto.getOthersDto().setXworkzEmail(Status.NA.toString());
 			dto.getOthersDto().setPreferredLocation(Status.NA.toString());
 			dto.getOthersDto().setPreferredClassType(Status.NA.toString());
@@ -146,7 +144,7 @@ public class DreamServiceImpl implements DreamService {
 
 
 	        List<Object> list = wrapper.extractDtoDetails(dto);
-	        System.out.println(list);
+	      
 	        boolean writeStatus = repo.writeData(spreadsheetId, list);
 
 	        if (isRegisterRequest(request)) {
@@ -378,6 +376,7 @@ public class DreamServiceImpl implements DreamService {
 	@Override
 	public boolean updateFollowUp(String spreadsheetId, String email, TraineeDto dto)
 			throws IOException, IllegalAccessException {
+		System.out.println("Edit");
 		FollowUpDto followUpDto = getFollowUpDetailsByEmail(spreadsheetId, email);
 		if (followUpDto == null) {
 			return false;
@@ -392,9 +391,7 @@ public class DreamServiceImpl implements DreamService {
 
 			// Update the email from the TraineeDto
 			followUpDto.getBasicInfo().setEmail(dto.getBasicInfo().getEmail());
-
-			System.out.println(followUpDto);
-
+			followUpDto.setAdminDto(dto.getAdminDto());
 			List<List<Object>> values = Arrays.asList(wrapper.extractDtoDetails(followUpDto));
 			ValueRange valueRange = new ValueRange();
 			valueRange.setValues(values);
@@ -575,11 +572,13 @@ public class DreamServiceImpl implements DreamService {
 	                .filter(list -> list.stream().anyMatch(value -> value.toString().equalsIgnoreCase(status)))
 	                .collect(Collectors.toList());
 
-	        if (data != null) { // Check if data is not null before using it
+	        if (data != null) { 
+	       
 	            List<List<Object>> sortedData = data.stream()
-	                    .sorted(Comparator.comparing(list -> list.get(4).toString(), Comparator.reverseOrder()))
-	                    .collect(Collectors.toList());
-
+	                    .sorted(Comparator.comparing(
+	                            list -> list != null && !list.isEmpty() && list.size() > 4 ? list.get(4).toString() : "",
+	                            Comparator.reverseOrder()))
+	                    .collect(Collectors.toList());     
 	            followUpDto = getFollowUpRows(sortedData, startingIndex, maxRows);
 	            FollowUpDataDto followUpDataDto = new FollowUpDataDto(followUpDto, data.size());
 	            repo.evictAllCachesOnTraineeDetails();
