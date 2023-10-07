@@ -15,7 +15,7 @@ mail:
    smtpHost: smtp.office365.com
    smtpPort: 587
    userName: xworkzdev@outlook.com
-   password: KeepIT@Temp789 
+   password: KeepIT@Temp789
     
 login: 
   teamFile: classpath:team.yml
