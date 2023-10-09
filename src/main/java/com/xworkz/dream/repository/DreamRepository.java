@@ -66,4 +66,6 @@ public interface DreamRepository {
 
 	public void evictAllCachesOnTraineeDetails();
 
+	public List<List<Object>> getFollowupStatusByDate(String spreadsheetId) throws IOException;
+
 }
