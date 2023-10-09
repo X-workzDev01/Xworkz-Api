@@ -273,7 +273,6 @@ public class DreamRepositoryImpl implements DreamRepository {
 	@Cacheable(value = "batchDetails", key = "#spreadsheetId", unless = "#result == null")
 	public List<List<Object>> getCourseDetails(String spreadsheetId) throws IOException {
 		ValueRange response = sheetsService.spreadsheets().values().get(spreadsheetId, batchDetailsRange).execute();
-
 		return response.getValues();
 	}
 
@@ -310,6 +309,13 @@ public class DreamRepositoryImpl implements DreamRepository {
 	@Cacheable(value = "birthadayDetails", key = "#spreadsheetId", unless = "#result == null")
 	public List<List<Object>> getBirthadayDetails(String spreadsheetId) throws IOException {
 		ValueRange response = sheetsService.spreadsheets().values().get(spreadsheetId, dateOfBirthDetailsRange).execute();
+		return response.getValues();
+	}
+
+	@Override
+	public List<List<Object>> getFollowupStatusByDate(String spreadsheetId) throws IOException {
+		ValueRange response = sheetsService.spreadsheets().values().get(spreadsheetId, followUpRange).execute();
+		System.out.println(response.getValues());
 		return response.getValues();
 	}
 

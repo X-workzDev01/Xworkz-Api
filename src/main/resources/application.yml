@@ -1,24 +1,25 @@
 spring:
    profiles:
-      active: local
+      active: dev
    freemarker:
     template-loader-path: classpath:/templates/
 
 sheets:
+  
   appName: Dream Api
   range: A3:AC
   emailRange: C3:C
   contactNumberRange: D3:D
   dropdownRange: dropDowns!A2:I
   loginInfoRange: loginInfo!A2:B
-  followUpRange: followUp!A2:M
+  followUpRange: followUp!A2:N
   followUpStatus: followUpStatus!A2:L
   rowStartRange: A
   rowEndRange: AC    
   traineeSheetName: xworkzApi!
   followUpSheetName: followUp!
   followUprowStartRange: A2
-  followUprowEndRange: M
+  followUprowEndRange: N
   followUpEmailRange: followUp!C2:C
   idRange: xworkzApi!A3:A  
   followUpRowCurrentStartRange: G
@@ -47,6 +48,11 @@ sheets:
   AttandanceInfoSheetName: attendanceInfo!
   attendanceListDefaultRange: attendanceInfo!J2:j
   attendanceInfoMarkAs:  J
+
+mailChimp:
+  userName: 7FzbzzHIVQSVJVz5r4n/bGa/lhNWJCXUq6oqBxBCTYQ=
+  password: +mgZp4MIPWMTkaJ/pwphDw==
+  smtpHostChimp: yj/mpkyGHCjMIsVaHCMyxQZ4EBNjg/Ep6CbXhjKA7v0=
 
 mail:
    smtpHost: smtp.office365.com
