@@ -260,6 +260,7 @@ public class UtilDev implements DreamUtil {
 		model.put("whatsAppLink", whatsAppLink);
 
 		return FreeMarkerTemplateUtils.processTemplateIntoString(template, model);
+	  }
 
     @Override
     public boolean sendWhatsAppLink(List<String> traineeEmail, String subject, String whatsAppLink) {
