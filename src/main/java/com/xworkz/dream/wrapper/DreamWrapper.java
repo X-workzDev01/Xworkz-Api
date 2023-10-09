@@ -526,7 +526,6 @@ public class DreamWrapper {
 			if (basicDto.getEmail() == null || basicDto.getEmail().isEmpty()) {
 				String contactNumber = String.valueOf(basicDto.getContactNumber());
 				String generatedEmail = contactNumber + "@dummy.com";
-				System.out.println(generatedEmail);
 				basicDto.setEmail(generatedEmail);
 			}
 		}
@@ -561,7 +560,7 @@ public class DreamWrapper {
 		basicInfo.setContactNumber(traineeDto.getBasicInfo().getContactNumber());
 		followUpDto.setBasicInfo(basicInfo);
 		followUpDto.setCourseName(traineeDto.getCourseInfo().getCourse());
-		followUpDto.setRegistrationDate(LocalDate.now().toString());
+		followUpDto.setRegistrationDate(LocalDateTime.now().toString());
 		followUpDto.setJoiningDate(FollowUp.NOT_CONFIRMED.toString());
 		followUpDto.setId(traineeDto.getId());
 		followUpDto.setCurrentlyFollowedBy(FollowUp.NONE.toString());
@@ -580,7 +579,7 @@ public class DreamWrapper {
 	}
 
 	public StatusDto setFollowUpStatus(StatusDto statusDto, List<List<Object>> data) {
-		int size = data.size();
+		int size = data != null ? data.size() : 0;
 		BasicInfoDto basicInfo = new BasicInfoDto();
 		basicInfo.setTraineeName(statusDto.getBasicInfo().getTraineeName());
 		basicInfo.setEmail(statusDto.getBasicInfo().getEmail());
@@ -593,7 +592,11 @@ public class DreamWrapper {
 		sdto.setAttemptStatus(statusDto.getAttemptStatus());
 		sdto.setComments(statusDto.getComments());
 		sdto.setCallDuration(statusDto.getCallDuration());
+		if(statusDto.getCallBack().equals("NA")) {
+			sdto.setCallBack("1000-01-01");
+		}else {
 		sdto.setCallBack(statusDto.getCallBack());
+		}
 		sdto.setCallBackTime(statusDto.getCallBackTime());
 		sdto.setJoiningDate(statusDto.getJoiningDate());
 		return sdto;

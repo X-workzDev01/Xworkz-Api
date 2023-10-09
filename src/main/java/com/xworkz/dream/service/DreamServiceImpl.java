@@ -86,7 +86,7 @@ public class DreamServiceImpl implements DreamService {
 	private HttpServletRequest request;
 	private ResponseEntity<SheetNotificationDto> response;
 	private String loginEmail;
-	List<Team> users = new ArrayList<Team>();
+	private List<Team> users = new ArrayList<Team>();
 	@Autowired
 	private ResourceLoader resourceLoader;
 	@Value("${login.teamFile}")
@@ -115,73 +115,67 @@ public class DreamServiceImpl implements DreamService {
 
 	@Override
 	public ResponseEntity<String> writeData(String spreadsheetId, TraineeDto dto, HttpServletRequest request)
+	        throws MessagingException, TemplateException {
+	    try {
+	        List<List<Object>> data = repo.getIds(spreadsheetId).getValues();
+	        int size = data != null ? data.size() : 0;
+	    	dto.setId(size += 1);
+	        dto.getOthersDto().setXworkzEmail(Status.NA.toString());
+			dto.getOthersDto().setPreferredLocation(Status.NA.toString());
+			dto.getOthersDto().setPreferredClassType(Status.NA.toString());
+			dto.getOthersDto().setSendWhatsAppLink(Status.NO.toString());
+			dto.getOthersDto().setRegistrationDate(LocalDateTime.now().toString());
+			dto.getAdminDto().setCreatedOn(LocalDateTime.now().toString());
+			if (dto.getOthersDto().getReferalName() == null) {
+				dto.getOthersDto().setReferalName("NA");
 
-			throws MessagingException, TemplateException {
-		try {
-			if (isCookieValid(request)) {
-				List<List<Object>> data = repo.getIds(spreadsheetId).getValues();
-				int size = data != null ? data.size() : 0;
-				System.out.println(size);
-				dto.setId(size + 1);
-
-				if (dto.getOthersDto() != null) {
-					if (dto.getOthersDto().getReferalName() == null) {
-						dto.getOthersDto().setReferalName("NA");
-					}
-					if (dto.getOthersDto().getComments() == null) {
-						dto.getOthersDto().setComments("NA");
-					}
-					if (dto.getOthersDto().getWorking() == null) {
-						dto.getOthersDto().setWorking("No");
-					}
-					if (dto.getOthersDto().getReferalContactNumber() == null) {
-						dto.getOthersDto().setReferalContactNumber(0L);
-					}
-					dto.getOthersDto().setXworkzEmail(Status.NA.toString());
-					dto.getOthersDto().setPreferredLocation(Status.NA.toString());
-					dto.getOthersDto().setPreferredClassType(Status.NA.toString());
-					dto.getOthersDto().setSendWhatsAppLink(Status.NO.toString());
-					dto.getOthersDto().setRegistrationDate(LocalDateTime.now().toString());
-				}
-
-				if (dto.getAdminDto() != null) {
-					dto.getAdminDto().setCreatedOn(LocalDateTime.now().toString());
-				}
-
-				List<Object> list = wrapper.extractDtoDetails(dto);
-				System.out.println(list);
-				boolean writeStatus = repo.writeData(spreadsheetId, list);
-
-				if (isRegisterRequest(request)) {
-					saveBirthDayInfo(spreadsheetId, dto, request);
-				}
-
-				boolean status = addToFollowUp(dto, spreadsheetId);
-
-				if (status) {
-					logger.info("Data written successfully to spreadsheetId and Added to Follow Up: {}", spreadsheetId);
-					if (isRegisterRequest(request)) {
-						boolean sent = util.sendCourseContent(dto.getBasicInfo().getEmail(),
-								dto.getBasicInfo().getTraineeName());
-						if (sent) {
-							return ResponseEntity
-									.ok("Data written successfully, Added to follow Up, sent course content");
-						} else {
-							return ResponseEntity.ok("Email not sent, Data written successfully, Added to follow Up");
-						}
-					}
-					repo.evictAllCachesOnTraineeDetails();
-				}
-				return ResponseEntity.ok("Data written successfully, not added to Follow Up");
 			}
-		} catch (Exception e) {
-			logger.error("Error processing request: " + e.getMessage(), e);
-			return ResponseEntity.badRequest().body("Failed to process the request");
-		}
-		// You should have a return statement here for any other cases.
-		return ResponseEntity.badRequest().body("Failed to process the request");
+			if (dto.getOthersDto().getComments() == null) {
+				dto.getOthersDto().setComments("NA");
+			}
+			if (dto.getOthersDto().getWorking() == null) {
 
+				dto.getOthersDto().setWorking("No");
+			}
+			if (dto.getOthersDto().getReferalContactNumber() == null) {
+
+				dto.getOthersDto().setReferalContactNumber(0L);
+			}
+
+
+	        List<Object> list = wrapper.extractDtoDetails(dto);
+	      
+	        boolean writeStatus = repo.writeData(spreadsheetId, list);
+
+	        if (isRegisterRequest(request)) {
+	            saveBirthDayInfo(spreadsheetId, dto, request);
+	        }
+
+	        boolean status = addToFollowUp(dto, spreadsheetId);
+
+	        if (status) {
+	            logger.info("Data written successfully to spreadsheetId and Added to Follow Up: {}", spreadsheetId);
+	            if (isRegisterRequest(request)) {
+	                boolean sent = util.sendCourseContent(dto.getBasicInfo().getEmail(),
+	                        dto.getBasicInfo().getTraineeName());
+	                if (sent) {
+	                    return ResponseEntity
+	                            .ok("Data written successfully, Added to follow Up, sent course content");
+	                } else {
+	                    return ResponseEntity.ok("Email not sent, Data written successfully, Added to follow Up");
+	                }
+	            }
+	            repo.evictAllCachesOnTraineeDetails();
+	        }
+	        return ResponseEntity.ok("Data written successfully, not added to Follow Up");
+	    } catch (Exception e) {
+	        logger.error("Error processing request: " + e.getMessage(), e);
+	        return ResponseEntity.badRequest().body("Failed to process the request");
+	    }
+	    // You should have a return statement here for any other cases.
+	    //return ResponseEntity.badRequest().body("Failed to process the request");
 	}
+
 
 	// Helper method to check if the request URI is "/register"
 	private boolean isRegisterRequest(HttpServletRequest request) {
@@ -210,7 +204,7 @@ public class DreamServiceImpl implements DreamService {
 	public ResponseEntity<String> emailCheck(String spreadsheetId, String email, HttpServletRequest request) {
 
 		try {
-			if (isCookieValid(request)) {
+			//if (isCookieValid(request)) {
 				ValueRange values = repo.getEmails(spreadsheetId);
 				if (values != null && values.getValues() != null) {
 					for (List<Object> row : values.getValues()) {
@@ -223,11 +217,11 @@ public class DreamServiceImpl implements DreamService {
 				}
 				logger.info("Email does not exist in spreadsheetId: {}", spreadsheetId);
 				return ResponseEntity.ok("Email does not exist");
-			} else {
-				// Invalid cookie
-				logger.info("Invalid cookie in the request");
-				return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid cookie");
-			}
+//			} else {
+//				// Invalid cookie
+//				logger.info("Invalid cookie in the request");
+//				return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid cookie");
+//			}
 		} catch (Exception e) {
 			logger.error("An error occurred while checking email in spreadsheetId: {}", spreadsheetId, e);
 			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("An error occurred");
@@ -250,7 +244,7 @@ public class DreamServiceImpl implements DreamService {
 	public ResponseEntity<String> contactNumberCheck(String spreadsheetId, Long contactNumber,
 			HttpServletRequest request) {
 		try {
-			if (isCookieValid(request)) {
+			//if (isCookieValid(request)) {
 				ValueRange values = repo.getContactNumbers(spreadsheetId);
 				if (values != null && values.getValues() != null) {
 					for (List<Object> row : values.getValues()) {
@@ -263,11 +257,11 @@ public class DreamServiceImpl implements DreamService {
 				}
 				logger.info("Contact Number does not exist in spreadsheetId: {}", spreadsheetId);
 				return ResponseEntity.ok("Contact Number does not exist");
-			} else {
-				// Invalid cookie
-				logger.info("Invalid cookie in the request");
-				return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid cookie");
-			}
+//			} else {
+//				// Invalid cookie
+//				logger.info("Invalid cookie in the request");
+//				return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid cookie");
+//			}
 		} catch (Exception e) {
 			logger.error("An error occurred while checking Contact Number in spreadsheetId: {}", spreadsheetId, e);
 			e.printStackTrace();
@@ -382,6 +376,7 @@ public class DreamServiceImpl implements DreamService {
 	@Override
 	public boolean updateFollowUp(String spreadsheetId, String email, TraineeDto dto)
 			throws IOException, IllegalAccessException {
+		System.out.println("Edit");
 		FollowUpDto followUpDto = getFollowUpDetailsByEmail(spreadsheetId, email);
 		if (followUpDto == null) {
 			return false;
@@ -396,9 +391,7 @@ public class DreamServiceImpl implements DreamService {
 
 			// Update the email from the TraineeDto
 			followUpDto.getBasicInfo().setEmail(dto.getBasicInfo().getEmail());
-
-			System.out.println(followUpDto);
-
+			followUpDto.setAdminDto(dto.getAdminDto());
 			List<List<Object>> values = Arrays.asList(wrapper.extractDtoDetails(followUpDto));
 			ValueRange valueRange = new ValueRange();
 			valueRange.setValues(values);
@@ -569,29 +562,35 @@ public class DreamServiceImpl implements DreamService {
 
 	@Override
 	public ResponseEntity<FollowUpDataDto> getFollowUpDetails(String spreadsheetId, int startingIndex, int maxRows,
-			String status) throws IOException {
-		List<FollowUpDto> followUpDto = new ArrayList<FollowUpDto>();
+	        String status) throws IOException {
+	    List<FollowUpDto> followUpDto = new ArrayList<FollowUpDto>();
+	    List<List<Object>> lists = repo.getFollowUpDetails(spreadsheetId);
 
-		if (status != null && !status.isEmpty()) {
+	    if (status != null && !status.isEmpty()&&lists!=null) {
 
-			List<List<Object>> lists = repo.getFollowUpDetails(spreadsheetId);
+	        List<List<Object>> data = lists.stream()
+	                .filter(list -> list.stream().anyMatch(value -> value.toString().equalsIgnoreCase(status)))
+	                .collect(Collectors.toList());
 
-			List<List<Object>> data = lists.stream()
-					.filter(list -> list.stream().anyMatch(value -> value.toString().equalsIgnoreCase(status)))
-					.collect(Collectors.toList());
-
-			List<List<Object>> sortedData = data.stream()
-					.sorted(Comparator.comparing(list -> list.get(4).toString(), Comparator.reverseOrder()))
-					.collect(Collectors.toList());
-
-			followUpDto = getFollowUpRows(sortedData, startingIndex, maxRows);
-			FollowUpDataDto followUpDataDto = new FollowUpDataDto(followUpDto, data.size());
-			repo.evictAllCachesOnTraineeDetails();
-			return ResponseEntity.ok(followUpDataDto);
-		}
-		return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null); // Return a bad request if status is null or
-																			// empty
+	        if (data != null) { 
+	       
+	            List<List<Object>> sortedData = data.stream()
+	                    .sorted(Comparator.comparing(
+	                            list -> list != null && !list.isEmpty() && list.size() > 4 ? list.get(4).toString() : "",
+	                            Comparator.reverseOrder()))
+	                    .collect(Collectors.toList());     
+	            followUpDto = getFollowUpRows(sortedData, startingIndex, maxRows);
+	            FollowUpDataDto followUpDataDto = new FollowUpDataDto(followUpDto, data.size());
+	            repo.evictAllCachesOnTraineeDetails();
+	            return ResponseEntity.ok(followUpDataDto);
+	        } else {
+	            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null); // Return a not found response if data is null
+	        }
+	    } else {
+	        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null); // Return a bad request if status is null or empty
+	    }
 	}
+
 
 	@Override
 	public List<FollowUpDto> getFollowUpRows(List<List<Object>> values, int startingIndex, int maxRows) {
@@ -630,14 +629,16 @@ public class DreamServiceImpl implements DreamService {
 			throws IOException {
 		List<StatusDto> statusDto = new ArrayList<>();
 		List<List<Object>> dataList = repo.getFollowUpStatusDetails(spreadsheetId);
-		List<List<Object>> data = dataList.stream()
-				.filter(list -> list.stream().anyMatch(value -> value.toString().equalsIgnoreCase(email)))
-				.collect(Collectors.toList());
-		Collections.reverse(data);
-		for (List<Object> row : data) {
-			StatusDto dto = wrapper.listToStatusDto(row);
-			statusDto.add(dto);
-		}
+		if (email != null && dataList != null && !dataList.isEmpty()) {
+			List<List<Object>> data = dataList.stream()
+					.filter(list -> list.stream().anyMatch(value -> value.toString().equalsIgnoreCase(email)))
+					.collect(Collectors.toList());
+			Collections.reverse(data);
+			for (List<Object> row : data) {
+				StatusDto dto = wrapper.listToStatusDto(row);
+				statusDto.add(dto);
+			}
+		}	
 		repo.evictAllCachesOnTraineeDetails();
 		return statusDto;
 	}
@@ -665,7 +666,7 @@ public class DreamServiceImpl implements DreamService {
 	public ResponseEntity<String> saveDetails(String spreadsheetId, BatchDetailsDto dto, HttpServletRequest request)
 			throws IOException, IllegalAccessException {
 		List<List<Object>> data = repo.getBatchId(spreadsheetId).getValues();
-		int size = data.size();
+		int size = data != null ? data.size() : 0;
 		dto.setId(size += 1);
 		List<Object> list = wrapper.extractDtoDetails(dto);
 		boolean save = repo.saveBatchDetails(spreadsheetId, list);
@@ -681,7 +682,7 @@ public class DreamServiceImpl implements DreamService {
 			throws IllegalAccessException, IOException {
 		BirthDayInfoDto birthday = new BirthDayInfoDto();
 		List<List<Object>> data = repo.getBirthDayId(spreadsheetId).getValues();
-		int size = data.size();
+		int size = data != null ? data.size() : 0;
 		birthday.setDto(dto.getBasicInfo());
 		birthday.setId(size += 1);
 		List<Object> list = wrapper.extractDtoDetails(birthday);

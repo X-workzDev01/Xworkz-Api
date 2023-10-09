@@ -273,7 +273,6 @@ public class DreamRepositoryImpl implements DreamRepository {
 	@Cacheable(value = "batchDetails", key = "#spreadsheetId", unless = "#result == null")
 	public List<List<Object>> getCourseDetails(String spreadsheetId) throws IOException {
 		ValueRange response = sheetsService.spreadsheets().values().get(spreadsheetId, batchDetailsRange).execute();
-
 		return response.getValues();
 	}
 
