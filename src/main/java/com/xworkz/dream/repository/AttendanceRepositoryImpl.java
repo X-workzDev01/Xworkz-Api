@@ -18,6 +18,7 @@ import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.ResourceLoader;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Repository;
 
 import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
@@ -74,18 +75,12 @@ public class AttendanceRepositoryImpl implements AttendanceRepository {
 	}
 
 	@Override
+
 	public List<List<Object>> attendanceDetilesByEmail(String sheetId, String email, String range) throws IOException {
 		ValueRange response = sheetsService.spreadsheets().values().get(sheetId, range).execute();
 		return response.getValues();
 	}
 
-	@Override
-	public void evictCacheByEmail() throws IOException {
-
-	}
-
-	@Cacheable(value = "byEmail", key = "#spreadsheetId", unless = "#result == null")
-	@CachePut(value = "byEmail", key = "#spreadsheetId")
 	@Override
 	public boolean everyDayAttendance(String spreadsheetId, List<Object> row, String range) throws IOException {
 		List<List<Object>> values = new ArrayList<>();
@@ -108,6 +103,7 @@ public class AttendanceRepositoryImpl implements AttendanceRepository {
 				.execute();
 	}
 
+	@Override
 	public void clearColumnData(String spreadsheetId, String range) throws IOException {
 		Sheets.Spreadsheets.Values.Clear request = sheetsService.spreadsheets().values().clear(spreadsheetId, range,
 				new ClearValuesRequest());

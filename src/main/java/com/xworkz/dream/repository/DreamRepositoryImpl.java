@@ -312,4 +312,11 @@ public class DreamRepositoryImpl implements DreamRepository {
 		return response.getValues();
 	}
 
+	@Override
+	public List<List<Object>> getFollowupStatusByDate(String spreadsheetId) throws IOException {
+		ValueRange response = sheetsService.spreadsheets().values().get(spreadsheetId, followUpRange).execute();
+		System.out.println(response.getValues());
+		return response.getValues();
+	}
+
 }

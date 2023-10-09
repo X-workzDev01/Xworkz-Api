@@ -68,4 +68,6 @@ public interface DreamRepository {
 	
 	public List<List<Object>> getBirthadayDetails(String spreadsheetId) throws IOException;
 
+	public List<List<Object>> getFollowupStatusByDate(String spreadsheetId) throws IOException;
+
 }

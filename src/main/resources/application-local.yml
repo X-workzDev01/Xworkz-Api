@@ -9,6 +9,10 @@ sheets:
   credentialsPath: classpath:META-INF/credentials-dev.json
 
 
+mailChimp:
+  userName: 7FzbzzHIVQSVJVz5r4n/bGa/lhNWJCXUq6oqBxBCTYQ=
+  password: +mgZp4MIPWMTkaJ/pwphDw==
+  smtpHostChimp: yj/mpkyGHCjMIsVaHCMyxQZ4EBNjg/Ep6CbXhjKA7v0=
   
 mail:
    smtpHost: smtp.office365.com

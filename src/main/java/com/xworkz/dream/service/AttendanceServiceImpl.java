@@ -100,7 +100,6 @@ public class AttendanceServiceImpl implements AttendanceService {
 
 	}
 
-	@Async
 	@Override
 	public ResponseEntity<String> everyDayAttendance(AttendanceDto dto, HttpServletRequest request) throws Exception {
 

@@ -32,7 +32,6 @@ import io.swagger.annotations.ApiOperation;
 import lombok.val;
 
 @RestController
-@EnableScheduling
 @RequestMapping("/api")
 public class AttendanceController {
 
