@@ -8,12 +8,16 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.RequestParam;
+
+import com.google.api.services.sheets.v4.model.Spreadsheet;
 import com.xworkz.dream.dto.BatchDetails;
 import com.xworkz.dream.dto.BatchDetailsDto;
 import com.xworkz.dream.dto.EnquiryDto;
 import com.xworkz.dream.dto.FollowUpDataDto;
 import com.xworkz.dream.dto.FollowUpDto;
 import com.xworkz.dream.dto.SheetNotificationDto;
+import com.xworkz.dream.dto.SheetStatusDTO;
 import com.xworkz.dream.dto.SheetsDto;
 import com.xworkz.dream.dto.StatusDto;
 import com.xworkz.dream.dto.TraineeDto;
@@ -22,7 +26,6 @@ import com.xworkz.dream.dto.utils.Team;
 import freemarker.template.TemplateException;
 
 public interface DreamService {
-
 
 	public ResponseEntity<String> writeData(String spreadsheetId, TraineeDto dto, HttpServletRequest request)
 			throws MessagingException, TemplateException;
@@ -84,30 +87,30 @@ public interface DreamService {
 
 	public ResponseEntity<List<Object>> getCourseNameByStatus(String spreadsheetId, String status);
 
-	public ResponseEntity<BatchDetails> getBatchDetailsByCourseName(String spreadsheetId, String courseName) throws IOException;
+	public ResponseEntity<BatchDetails> getBatchDetailsByCourseName(String spreadsheetId, String courseName)
+			throws IOException;
 
 	public FollowUpDto getFollowUpDetailsByEmail(String spreadsheetId, String email) throws IOException;
 
-
 	public void notification();
 
-	public ResponseEntity<SheetNotificationDto> notification(String spreadsheetId, String email, List<Team> teamList, HttpServletRequest requests)
-			throws IOException;
+	public ResponseEntity<SheetNotificationDto> notification(String spreadsheetId, String email, List<Team> teamList,
+			HttpServletRequest requests) throws IOException;
 
 	public ResponseEntity<SheetNotificationDto> setNotification(@Value("${myapp.scheduled.param}") String email,
 			@Value("${myapp.scheduled.param}") HttpServletRequest requests) throws IOException;
 
 	public String verifyEmails(String email);
 
-	
-	public boolean addEnquiry( EnquiryDto enquiryDto, String spreadsheetId , HttpServletRequest request);
+	public boolean addEnquiry(EnquiryDto enquiryDto, String spreadsheetId, HttpServletRequest request);
 
-
-	boolean updateCurrentFollowUp(String spreadsheetId, String email, String currentStatus, String currentlyFollowedBy,
-			String joiningDate) throws IOException, IllegalAccessException;
+	boolean updateCurrentFollowUp(String calback, String spreadsheetId, String email, String currentStatus,
+			String currentlyFollowedBy, String joiningDate) throws IOException, IllegalAccessException;
 
 	boolean updateFollowUp(String spreadsheetId, String email, TraineeDto dto)
-			throws IOException, IllegalAccessException; 
+			throws IOException, IllegalAccessException;
 
+	public ResponseEntity<FollowUpDataDto> getFollowStatusByDate(String date, int startIndex, int endIndex,
+			String spreadsheetID, HttpServletRequest request) throws IOException;
 
 }
