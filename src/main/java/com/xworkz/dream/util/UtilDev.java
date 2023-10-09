@@ -169,47 +169,6 @@ public class UtilDev implements DreamUtil {
 		}
 		return this.sendCourseContentMailChimp(email, recipientName);
 	}
-
-	public boolean bulkSendMail(List<String> recipients, String subject, List<StatusDto> body) {
-		if (recipients == null || subject == null || body == null) {
-			logger.warn("recipients, subject, or body is null");
-			return false;
-		}
-
-		String from = userName;
-		Properties properties = new Properties();
-		properties.put("mail.smtp.auth", "true");
-		properties.put("mail.smtp.starttls.enable", "true");
-		properties.put("mail.smtp.host", "smtp.office365.com");
-		properties.put("mail.smtp.port", "587"); // SMTP port (587 for TLS)
-
-		Session session = Session.getInstance(properties, new javax.mail.Authenticator() {
-			protected PasswordAuthentication getPasswordAuthentication() {
-				return new PasswordAuthentication(userName, password);
-			}
-		});
-
-		try {
-			MimeMessage message = new MimeMessage(session);
-			for (String recipient : recipients) {
-				message.addRecipient(Message.RecipientType.TO, new InternetAddress(recipient));
-			}
-			Context context = new Context();
-			context.setVariable("listDto", body);
-			String emailContent = templateEngine.process("FollowCandidateFollowupTemplate", context);
-			MimeMessageHelper helper = new MimeMessageHelper(message, true);
-			helper.setText(emailContent, true); // Use true for HTML content
-			message.setSubject(subject);
-			message.setContent(emailContent, "text/html; charset=UTF-8");
-			Transport.send(message); // Uncomment this line to actually send the email
-			logger.info("Emails sent successfully.");
-			return true;
-		} catch (Exception e) {
-			logger.error("Failed to send bulk email", e);
-			return false;
-		}
-	}
-
 	@Override
 	public boolean sendWhatsAppLink(List<String> traineeEmail, String subject, String whatsAppLink) {
 		return sendWhatsAppLinkToChimp(traineeEmail, subject, whatsAppLink);

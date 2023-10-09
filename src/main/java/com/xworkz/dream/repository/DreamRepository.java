@@ -65,6 +65,8 @@ public interface DreamRepository {
 	public List<List<Object>> getFollowUpDetailsByid(String spreadsheetId) throws IOException;
 
 	public void evictAllCachesOnTraineeDetails();
+	
+	public List<List<Object>> getBirthadayDetails(String spreadsheetId) throws IOException;
 
 	public List<List<Object>> getFollowupStatusByDate(String spreadsheetId) throws IOException;
 

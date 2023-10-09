@@ -304,6 +304,13 @@ public class DreamRepositoryImpl implements DreamRepository {
 		ValueRange response = sheetsService.spreadsheets().values().get(spreadsheetId, followUpRange).execute();
 		return response.getValues();
 	}
+	
+	@Override
+	@Cacheable(value = "birthadayDetails", key = "#spreadsheetId", unless = "#result == null")
+	public List<List<Object>> getBirthadayDetails(String spreadsheetId) throws IOException {
+		ValueRange response = sheetsService.spreadsheets().values().get(spreadsheetId, dateOfBirthDetailsRange).execute();
+		return response.getValues();
+	}
 
 	@Override
 	public List<List<Object>> getFollowupStatusByDate(String spreadsheetId) throws IOException {
