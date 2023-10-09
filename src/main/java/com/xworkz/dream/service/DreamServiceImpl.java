@@ -126,6 +126,7 @@ public class DreamServiceImpl implements DreamService {
 			dto.setId(size + 1);
 
 			dto.getOthersDto().setXworkzEmail(Status.NA.toString());
+
 			dto.getOthersDto().setPreferredLocation(Status.NA.toString());
 			dto.getOthersDto().setPreferredClassType(Status.NA.toString());
 			dto.getOthersDto().setSendWhatsAppLink(Status.NO.toString());
@@ -151,9 +152,39 @@ public class DreamServiceImpl implements DreamService {
 			System.out.println(list);
 			boolean writeStatus = repo.writeData(spreadsheetId, list);
 
-			if (isRegisterRequest(request)) {
-				saveBirthDayInfo(spreadsheetId, dto, request);
-			}
+<
+	        List<Object> list = wrapper.extractDtoDetails(dto);
+	      
+	        boolean writeStatus = repo.writeData(spreadsheetId, list);
+
+	        if (isRegisterRequest(request)) {
+	            saveBirthDayInfo(spreadsheetId, dto, request);
+	        }
+
+	        boolean status = addToFollowUp(dto, spreadsheetId);
+
+	        if (status) {
+	            logger.info("Data written successfully to spreadsheetId and Added to Follow Up: {}", spreadsheetId);
+	            if (isRegisterRequest(request)) {
+	                boolean sent = util.sendCourseContent(dto.getBasicInfo().getEmail(),
+	                        dto.getBasicInfo().getTraineeName());
+	                if (sent) {
+	                    return ResponseEntity
+	                            .ok("Data written successfully, Added to follow Up, sent course content");
+	                } else {
+	                    return ResponseEntity.ok("Email not sent, Data written successfully, Added to follow Up");
+	                }
+	            }
+	            repo.evictAllCachesOnTraineeDetails();
+	        }
+	        return ResponseEntity.ok("Data written successfully, not added to Follow Up");
+	    } catch (Exception e) {
+	        logger.error("Error processing request: " + e.getMessage(), e);
+	        return ResponseEntity.badRequest().body("Failed to process the request");
+	    }
+	    // You should have a return statement here for any other cases.
+	    //return ResponseEntity.badRequest().body("Failed to process the request");
+	}
 
 			boolean status = addToFollowUp(dto, spreadsheetId);
 
@@ -382,6 +413,7 @@ public class DreamServiceImpl implements DreamService {
 	@Override
 	public boolean updateFollowUp(String spreadsheetId, String email, TraineeDto dto)
 			throws IOException, IllegalAccessException {
+		System.out.println("Edit");
 		FollowUpDto followUpDto = getFollowUpDetailsByEmail(spreadsheetId, email);
 		if (followUpDto == null) {
 			return false;
@@ -396,9 +428,7 @@ public class DreamServiceImpl implements DreamService {
 
 			// Update the email from the TraineeDto
 			followUpDto.getBasicInfo().setEmail(dto.getBasicInfo().getEmail());
-
-			System.out.println(followUpDto);
-
+			followUpDto.setAdminDto(dto.getAdminDto());
 			List<List<Object>> values = Arrays.asList(wrapper.extractDtoDetails(followUpDto));
 			ValueRange valueRange = new ValueRange();
 			valueRange.setValues(values);
@@ -582,35 +612,34 @@ public class DreamServiceImpl implements DreamService {
 
 	@Override
 	public ResponseEntity<FollowUpDataDto> getFollowUpDetails(String spreadsheetId, int startingIndex, int maxRows,
-			String status) throws IOException {
-		List<FollowUpDto> followUpDto = new ArrayList<FollowUpDto>();
-		List<List<Object>> lists = repo.getFollowUpDetails(spreadsheetId);
+	        String status) throws IOException {
+	    List<FollowUpDto> followUpDto = new ArrayList<FollowUpDto>();
+	    List<List<Object>> lists = repo.getFollowUpDetails(spreadsheetId);
 
-		if (status != null && !status.isEmpty() && lists != null) {
+	    if (status != null && !status.isEmpty()&&lists!=null) {
 
-			List<List<Object>> data = lists.stream()
-					.filter(list -> list.stream().anyMatch(value -> value.toString().equalsIgnoreCase(status)))
-					.collect(Collectors.toList());
+	        List<List<Object>> data = lists.stream()
+	                .filter(list -> list.stream().anyMatch(value -> value.toString().equalsIgnoreCase(status)))
+	                .collect(Collectors.toList());
 
-			if (data != null) { // Check if data is not null before using it
-				List<List<Object>> sortedData = data.stream()
-						.sorted(Comparator.comparing(list -> list.get(4).toString(), Comparator.reverseOrder()))
-						.collect(Collectors.toList());
-
-				followUpDto = getFollowUpRows(sortedData, startingIndex, maxRows);
-				FollowUpDataDto followUpDataDto = new FollowUpDataDto(followUpDto, data.size());
-				repo.evictAllCachesOnTraineeDetails();
-				return ResponseEntity.ok(followUpDataDto);
-			} else {
-				return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null); // Return a not found response if data is
-																				// null
-			}
-		} else {
-			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null); // Return a bad request if status is null
-																				// or empty
-		}
+	        if (data != null) { 
+	       
+	            List<List<Object>> sortedData = data.stream()
+	                    .sorted(Comparator.comparing(
+	                            list -> list != null && !list.isEmpty() && list.size() > 4 ? list.get(4).toString() : "",
+	                            Comparator.reverseOrder()))
+	                    .collect(Collectors.toList());     
+	            followUpDto = getFollowUpRows(sortedData, startingIndex, maxRows);
+	            FollowUpDataDto followUpDataDto = new FollowUpDataDto(followUpDto, data.size());
+	            repo.evictAllCachesOnTraineeDetails();
+	            return ResponseEntity.ok(followUpDataDto);
+	        } else {
+	            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null); // Return a not found response if data is null
+	        }
+	    } else {
+	        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null); // Return a bad request if status is null or empty
+	    }
 	}
-
 	@Override
 	public List<FollowUpDto> getFollowUpRows(List<List<Object>> values, int startingIndex, int maxRows) {
 		List<FollowUpDto> followUpDtos = new ArrayList<>();
