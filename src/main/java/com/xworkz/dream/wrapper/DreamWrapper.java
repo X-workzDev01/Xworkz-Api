@@ -573,6 +573,22 @@ public class DreamWrapper {
 		followUpDto.setAdminDto(traineeDto.getAdminDto());
 		return followUpDto;
 	}
+	public FollowUpDto setFollowUpEnwuiry(TraineeDto traineeDto) {
+		FollowUpDto followUpDto = new FollowUpDto();
+		BasicInfoDto basicInfo = new BasicInfoDto();
+		basicInfo.setTraineeName(traineeDto.getBasicInfo().getTraineeName());
+		basicInfo.setEmail(traineeDto.getBasicInfo().getEmail());
+		basicInfo.setContactNumber(traineeDto.getBasicInfo().getContactNumber());
+		followUpDto.setBasicInfo(basicInfo);
+		followUpDto.setCourseName(traineeDto.getCourseInfo().getCourse());
+		followUpDto.setRegistrationDate(LocalDateTime.now().toString());
+		followUpDto.setJoiningDate(FollowUp.NOT_CONFIRMED.toString());
+		followUpDto.setId(traineeDto.getId());
+		followUpDto.setCurrentlyFollowedBy(FollowUp.NONE.toString());
+		followUpDto.setCurrentStatus(FollowUp.ENQUIRY.toString());
+		followUpDto.setAdminDto(traineeDto.getAdminDto());
+		return followUpDto;
+	}
 
 	public void setAdminDto(TraineeDto dto) {
 		AdminDto admin = new AdminDto();
