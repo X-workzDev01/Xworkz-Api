@@ -59,6 +59,8 @@ dependencies {
     implementation group: 'io.quarkus', name: 'quarkus-hibernate-validator', version: '3.3.3'
     implementation group: 'org.json', name: 'json', version: '20230227'
     implementation 'org.reactivestreams:reactive-streams:1.0.3' // or the latest version
+    implementation 'ch.qos.logback:logback-classic'
+    
     
     
     

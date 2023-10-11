@@ -151,25 +151,29 @@ public class DreamServiceImpl implements DreamService {
 
 			boolean writeStatus = repo.writeData(spreadsheetId, list);
 
-			if (isRegisterRequest(request)) {
-				saveBirthDayInfo(spreadsheetId, dto, request);
-			}
+//			if (isRegisterRequest(request)) {
+//				saveBirthDayInfo(spreadsheetId, dto, request);
+//			}
 
 			boolean status = addToFollowUp(dto, spreadsheetId);
 
 			if (status) {
 				logger.info("Data written successfully to spreadsheetId and Added to Follow Up: {}", spreadsheetId);
-				if (isRegisterRequest(request)) {
+//				if (isRegisterRequest(request)) {
+					saveBirthDayInfo(spreadsheetId, dto, request);
 					boolean sent = util.sendCourseContent(dto.getBasicInfo().getEmail(),
 							dto.getBasicInfo().getTraineeName());
+				
 					if (sent) {
 						return ResponseEntity.ok("Data written successfully, Added to follow Up, sent course content");
 					} else {
 						return ResponseEntity.ok("Email not sent, Data written successfully, Added to follow Up");
 					}
-				}
-				repo.evictAllCachesOnTraineeDetails();
+					
+//				}
+				
 			}
+			repo.evictAllCachesOnTraineeDetails();
 			return ResponseEntity.ok("Data written successfully, not added to Follow Up");
 		} catch (Exception e) {
 			logger.error("Error processing request: " + e.getMessage(), e);
@@ -432,14 +436,13 @@ public class DreamServiceImpl implements DreamService {
 		admin.setUpdatedBy(dto.getAdminDto().getUpdatedBy());
 		admin.setUpdatedOn(LocalDateTime.now().toString());
 		dto.setAdminDto(admin);
-		System.out.println("Email:  "+dto.getBasicInfo().getEmail());
-		if(email!=null&&dto.getBasicInfo().getEmail()=="") {
-			dto.getBasicInfo().setEmail(email);	
+		if (email != null && dto.getBasicInfo().getEmail() == "") {
+			dto.getBasicInfo().setEmail(email);
 		}
-		if(email!=null&&dto.getBasicInfo().getEmail()!=null) {
+		if (email != null && dto.getBasicInfo().getEmail() != null) {
 			dto.getBasicInfo().setEmail(dto.getBasicInfo().getEmail());
 		}
-		
+
 		if (dto.getCourseInfo().getCourse() == null) {
 			dto.getCourseInfo().setCourse("NA");
 
@@ -489,6 +492,7 @@ public class DreamServiceImpl implements DreamService {
 			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("An error occurred ");
 		}
 	}
+
 	@Override
 	public boolean updateFollowUp(String spreadsheetId, String email, TraineeDto dto)
 			throws IOException, IllegalAccessException {
@@ -1089,15 +1093,13 @@ public class DreamServiceImpl implements DreamService {
 		if (dataList != null && date != null) {
 			List<List<Object>> list = dataList.stream().filter(item -> item.get(9).equals(date))
 					.collect(Collectors.toList());
-
-			System.err.println(list);
 			List<FollowUpDto> dto = getLimitedRowsBatchAndDate(list, date, startIndex, endIndex);
-
 			FollowUpDataDto followUpDataDto = new FollowUpDataDto(dto, list.size());
-
+			logger.info("Getting detiles is {} ", followUpDataDto);
 			return ResponseEntity.ok(followUpDataDto);
 
 		}
+		logger.info("Detiles not fount ");
 		return null;
 
 	}

@@ -87,7 +87,7 @@ public class LoginServiceImpl implements LoginService {
 	    int otp = util.generateOTP();
 
 	    logger.debug("Generated OTP: {}", otp);
-	    System.out.println(cookieDomain);
+	    //System.out.println(cookieDomain);
 
 	    boolean otpSent = util.sendOtptoEmail(user.getEmail(), otp);
 	    if (otpSent) {
@@ -156,7 +156,7 @@ public class LoginServiceImpl implements LoginService {
 	                }
 	            } else {
 	                logger.warn("Wrong OTP for email: {}", email);
-	                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("OTP Wrong");
+	                return ResponseEntity.status(HttpStatus.OK).body("OTP Wrong");
 	            }
 	        } else {
 	            logger.warn("OTP expired for email: {}", email);
@@ -167,6 +167,9 @@ public class LoginServiceImpl implements LoginService {
 	        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("OTP IS NOT SAVED & GENERATE AGAIN");
 	    }
 	}
+	
+	
+
 	private boolean updateLoginInfo(User user, String spreadsheetId) {
 	    if (user == null || user.getEmail() == null) {
 	        logger.warn("User or user email is null");
