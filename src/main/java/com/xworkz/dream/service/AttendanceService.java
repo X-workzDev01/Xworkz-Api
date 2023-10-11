@@ -17,19 +17,18 @@ import freemarker.template.TemplateException;
 
 public interface AttendanceService {
 
-	public ResponseEntity<String> writeAttendance(@RequestHeader String spreadsheetId, @RequestBody AttendanceDto dto,
-			HttpServletRequest request) throws IOException, MessagingException, TemplateException;
+	public ResponseEntity<String> writeAttendance(String spreadsheetId, AttendanceDto dto, HttpServletRequest request)
+			throws IOException, MessagingException, TemplateException;
 
 	public ResponseEntity<String> everyDayAttendance(AttendanceDto dto, HttpServletRequest request) throws Exception;
 
 	ResponseEntity<AttadanceSheetDto> getAttendanceDetilesByEmail(String Email, int startIndex, int maxRows)
 			throws IOException, MessagingException, TemplateException;
 
-	public ResponseEntity<AttadanceSheetDto> getAttendanceDetilesBatchAndDate(String batch, String date,
-			int startIndex, int maxRows) throws IOException, MessagingException, TemplateException;
+	public ResponseEntity<AttadanceSheetDto> getAttendanceDetilesBatchAndDate(String batch, String date, int startIndex,
+			int maxRows) throws IOException, MessagingException, TemplateException;
 
 	public ResponseEntity<AttadanceSheetDto> getAttendanceDetilesBatch(String batch, int startIndex, int maxRows)
 			throws IOException, MessagingException, TemplateException;
-	
-	
+
 }

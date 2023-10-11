@@ -61,7 +61,7 @@ public class DreamWrapper {
 	}
 
 	public FollowUpDto listToFollowUpDTO(List<Object> row) {
-		FollowUpDto followUpDto = new FollowUpDto(0, new BasicInfoDto(), null, null, null, null, null, null);
+		FollowUpDto followUpDto = new FollowUpDto(0, new BasicInfoDto(), null, null, null, null, null, null, null);
 		int rowSize = row.size();
 		if (rowSize > 0 && row.get(0) != null && !row.get(0).toString().isEmpty()) {
 			followUpDto.setId(Integer.valueOf(row.get(0).toString()));
@@ -90,18 +90,22 @@ public class DreamWrapper {
 		if (rowSize > 8 && row.get(8) != null && !row.get(8).toString().isEmpty()) {
 			followUpDto.setCurrentStatus((String) row.get(8));
 		}
-		if (rowSize > 9 && row.get(9) != null && !row.get(9).toString().isEmpty()) {
-			if (followUpDto.getAdminDto() == null) {
-				followUpDto.setAdminDto(new AdminDto());
-			}
-			followUpDto.getAdminDto().setCreatedBy(row.get(9).toString());
+		if (rowSize > 8 && row.get(9) != null && !row.get(9).toString().isEmpty()) {
+			followUpDto.setCallback((String) row.get(9));
 		}
 
 		if (rowSize > 10 && row.get(10) != null && !row.get(10).toString().isEmpty()) {
 			if (followUpDto.getAdminDto() == null) {
 				followUpDto.setAdminDto(new AdminDto());
 			}
-			followUpDto.getAdminDto().setCreatedOn(row.get(10).toString());
+			followUpDto.getAdminDto().setCreatedBy(row.get(10).toString());
+		}
+
+		if (rowSize > 11 && row.get(11) != null && !row.get(11).toString().isEmpty()) {
+			if (followUpDto.getAdminDto() == null) {
+				followUpDto.setAdminDto(new AdminDto());
+			}
+			followUpDto.getAdminDto().setCreatedOn(row.get(11).toString());
 		}
 
 		return followUpDto;
@@ -111,7 +115,6 @@ public class DreamWrapper {
 
 		StatusDto statusDto = new StatusDto(0, new BasicInfoDto(), null, null, null, null, null, null, null, null,
 				null);
-
 		int rowSize = rows.size();
 		if (rowSize > 0 && rows.get(0) != null && !rows.get(0).toString().isEmpty()) {
 			statusDto.setId(Integer.valueOf(rows.get(0).toString()));
@@ -466,10 +469,11 @@ public class DreamWrapper {
 	}
 
 	public AttendanceDto attendanceListEverydayToDto(List<Object> row) {
+		System.err.println("row==================================================               " + row);
+
 
 		AttendanceDto attendanceDto = new AttendanceDto(0, new BasicInfoDto(), new CourseDto(), null, null, null, null,
 				null, null, null, null, null);
-
 
 		int rowSize = row.size();
 
@@ -527,7 +531,6 @@ public class DreamWrapper {
 			if (basicDto.getEmail() == null || basicDto.getEmail().isEmpty()) {
 				String contactNumber = String.valueOf(basicDto.getContactNumber());
 				String generatedEmail = contactNumber + "@dummy.com";
-				System.out.println(generatedEmail);
 				basicDto.setEmail(generatedEmail);
 			}
 		}
@@ -562,11 +565,27 @@ public class DreamWrapper {
 		basicInfo.setContactNumber(traineeDto.getBasicInfo().getContactNumber());
 		followUpDto.setBasicInfo(basicInfo);
 		followUpDto.setCourseName(traineeDto.getCourseInfo().getCourse());
-		followUpDto.setRegistrationDate(LocalDate.now().toString());
+		followUpDto.setRegistrationDate(LocalDateTime.now().toString());
 		followUpDto.setJoiningDate(FollowUp.NOT_CONFIRMED.toString());
 		followUpDto.setId(traineeDto.getId());
 		followUpDto.setCurrentlyFollowedBy(FollowUp.NONE.toString());
 		followUpDto.setCurrentStatus(FollowUp.NEW.toString());
+		followUpDto.setAdminDto(traineeDto.getAdminDto());
+		return followUpDto;
+	}
+	public FollowUpDto setFollowUpEnwuiry(TraineeDto traineeDto) {
+		FollowUpDto followUpDto = new FollowUpDto();
+		BasicInfoDto basicInfo = new BasicInfoDto();
+		basicInfo.setTraineeName(traineeDto.getBasicInfo().getTraineeName());
+		basicInfo.setEmail(traineeDto.getBasicInfo().getEmail());
+		basicInfo.setContactNumber(traineeDto.getBasicInfo().getContactNumber());
+		followUpDto.setBasicInfo(basicInfo);
+		followUpDto.setCourseName(traineeDto.getCourseInfo().getCourse());
+		followUpDto.setRegistrationDate(LocalDateTime.now().toString());
+		followUpDto.setJoiningDate(FollowUp.NOT_CONFIRMED.toString());
+		followUpDto.setId(traineeDto.getId());
+		followUpDto.setCurrentlyFollowedBy(FollowUp.NONE.toString());
+		followUpDto.setCurrentStatus(FollowUp.ENQUIRY.toString());
 		followUpDto.setAdminDto(traineeDto.getAdminDto());
 		return followUpDto;
 	}
@@ -581,7 +600,7 @@ public class DreamWrapper {
 	}
 
 	public StatusDto setFollowUpStatus(StatusDto statusDto, List<List<Object>> data) {
-		int size = data.size();
+		int size = data != null ? data.size() : 0;
 		BasicInfoDto basicInfo = new BasicInfoDto();
 		basicInfo.setTraineeName(statusDto.getBasicInfo().getTraineeName());
 		basicInfo.setEmail(statusDto.getBasicInfo().getEmail());
@@ -594,7 +613,11 @@ public class DreamWrapper {
 		sdto.setAttemptStatus(statusDto.getAttemptStatus());
 		sdto.setComments(statusDto.getComments());
 		sdto.setCallDuration(statusDto.getCallDuration());
-		sdto.setCallBack(statusDto.getCallBack());
+		if (statusDto.getCallBack().equals("NA")) {
+			sdto.setCallBack("1000-01-01");
+		} else {
+			sdto.setCallBack(statusDto.getCallBack());
+		}
 		sdto.setCallBackTime(statusDto.getCallBackTime());
 		sdto.setJoiningDate(statusDto.getJoiningDate());
 		return sdto;

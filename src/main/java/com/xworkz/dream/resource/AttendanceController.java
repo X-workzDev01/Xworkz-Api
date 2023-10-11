@@ -29,9 +29,9 @@ import com.xworkz.dream.repository.DreamRepositoryImpl;
 import com.xworkz.dream.service.AttendanceService;
 import freemarker.template.TemplateException;
 import io.swagger.annotations.ApiOperation;
+import lombok.val;
 
 @RestController
-@EnableScheduling
 @RequestMapping("/api")
 public class AttendanceController {
 
@@ -45,9 +45,11 @@ public class AttendanceController {
 	@PostMapping("/registerAttendance")
 	public ResponseEntity<String> registerAttendance(@RequestBody AttendanceDto values, HttpServletRequest request)
 			throws IOException, MessagingException, TemplateException {
+		System.err.println("sssshsssssssssssssss         " + spreadsheetId);
 		logger.debug("Registering trainee details: {}", values);
-		attendanceService.writeAttendance(spreadsheetId, values, request);
-		return null;
+
+		logger.debug("Attendance Register sucessfully {} ", values);
+		return attendanceService.writeAttendance(spreadsheetId, values, request);
 	}
 
 	@PostMapping("/addAttendennce")

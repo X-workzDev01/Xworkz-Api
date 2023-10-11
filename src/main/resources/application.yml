@@ -5,20 +5,21 @@ spring:
     template-loader-path: classpath:/templates/
 
 sheets:
+  
   appName: Dream Api
   range: A3:AC
   emailRange: C3:C
   contactNumberRange: D3:D
   dropdownRange: dropDowns!A2:I
   loginInfoRange: loginInfo!A2:B
-  followUpRange: followUp!A2:M
+  followUpRange: followUp!A2:N
   followUpStatus: followUpStatus!A2:L
   rowStartRange: A
   rowEndRange: AC    
   traineeSheetName: xworkzApi!
   followUpSheetName: followUp!
   followUprowStartRange: A2
-  followUprowEndRange: M
+  followUprowEndRange: N
   followUpEmailRange: followUp!C2:C
   idRange: xworkzApi!A3:A  
   followUpRowCurrentStartRange: G
@@ -48,14 +49,24 @@ sheets:
   attendanceListDefaultRange: attendanceInfo!J2:j
   attendanceInfoMarkAs:  J
 
+mailChimp:
+  userName: 7FzbzzHIVQSVJVz5r4n/bGa/lhNWJCXUq6oqBxBCTYQ=
+  password: +mgZp4MIPWMTkaJ/pwphDw==
+  smtpHostChimp: yj/mpkyGHCjMIsVaHCMyxQZ4EBNjg/Ep6CbXhjKA7v0=
+
 mail:
    smtpHost: smtp.office365.com
    smtpPort: 587
    userName: xworkzdev@outlook.com
    password: KeepIT@Temp789 
 logging:
+  file: D:/file.log
   level:
     root: INFO
+  pattern:
+    console: "%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n"
+    file: "%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n"
+
     
 login:
   userFile: classpath:users.yml
@@ -63,6 +74,8 @@ login:
 
 server:
   port : 8081
+
+  
 
 ---
 

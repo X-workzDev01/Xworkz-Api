@@ -31,8 +31,8 @@ public class FollowUpDto {
 	private String currentlyFollowedBy;
 	@JsonProperty("currentStatus")
 	private String currentStatus;
+	private String callback;
 	@JsonProperty("adminDto")
 	private AdminDto adminDto;
 
-	
 }

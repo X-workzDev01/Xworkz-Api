@@ -8,8 +8,13 @@ sheets:
   attendanceList: attendanceList!A2:J
   attendanceListRange: attendanceList!A2:M
   credentialsPath: classpath:META-INF/credentials-prod.json
+  liveKey: live_18d91055ea2440016bfa
 
 
+mailChimp:
+  userName: 7FzbzzHIVQSVJVz5r4n/bGa/lhNWJCXUq6oqBxBCTYQ=
+  password: +mgZp4MIPWMTkaJ/pwphDw==
+  smtpHostChimp: yj/mpkyGHCjMIsVaHCMyxQZ4EBNjg/Ep6CbXhjKA7v0=
  
 mail:
    smtpHost: smtp.office365.com

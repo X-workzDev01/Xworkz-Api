@@ -10,6 +10,7 @@ import javax.servlet.http.HttpServletRequest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.scheduling.annotation.EnableScheduling;
@@ -32,6 +33,7 @@ import com.xworkz.dream.dto.EnquiryDto;
 import com.xworkz.dream.dto.FollowUpDataDto;
 import com.xworkz.dream.dto.FollowUpDto;
 import com.xworkz.dream.dto.SheetNotificationDto;
+import com.xworkz.dream.dto.SheetStatusDTO;
 import com.xworkz.dream.dto.SheetsDto;
 import com.xworkz.dream.dto.StatusDto;
 import com.xworkz.dream.dto.SuggestionDto;
@@ -40,13 +42,14 @@ import com.xworkz.dream.dto.utils.User;
 import com.xworkz.dream.service.DreamService;
 
 import freemarker.template.TemplateException;
+import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 
 @RestController
-@EnableScheduling
 @RequestMapping("/api")
 public class DreamApiController {
-
+	@Value("${login.sheetId}")
+	private String id;
 	Logger logger = LoggerFactory.getLogger(DreamApiController.class);
 
 	private DreamService service;
@@ -199,7 +202,11 @@ public class DreamApiController {
 	@GetMapping("/notification")
 	public ResponseEntity<SheetNotificationDto> getFollowupNotification(@RequestParam String email,
 			HttpServletRequest request) throws IOException {
-		return service.setNotification(email, request);
+
+		ResponseEntity<SheetNotificationDto> entity = service.setNotification(email, request);
+
+		return entity;
+
 	}
 
 	@ApiOperation(value = "To verifay the email")
@@ -220,18 +227,26 @@ public class DreamApiController {
 	@ApiOperation(value = "To Add Enquiry Details")
 	@PostMapping("/enquiry")
 
-	public ResponseEntity<String> addEnquiry(@RequestBody EnquiryDto enquiryDto, @RequestHeader String spreadSheetId, HttpServletRequest request) {
+	public ResponseEntity<String> addEnquiry(@RequestBody EnquiryDto enquiryDto, @RequestHeader String spreadSheetId,
+			HttpServletRequest request) {
 
-	    boolean saved = service.addEnquiry(enquiryDto, spreadSheetId, request);
-	    String uri = request.getRequestURI();
-	    System.out.println(uri.contains("enquiry"));
-	    System.out.println(enquiryDto);
+		boolean saved = service.addEnquiry(enquiryDto, spreadSheetId, request);
+		String uri = request.getRequestURI();
+		System.out.println(uri.contains("enquiry"));
+		System.out.println(enquiryDto);
 
-	    if (saved) {
-	        return ResponseEntity.ok().body("Enquiry Added Successfully");
-	    } else {
-	        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to save the enquiry");
-	    }
+		if (saved) {
+			return ResponseEntity.ok().body("Enquiry Added Successfully");
+		} else {
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to save the enquiry");
+		}
+	}
+
+	@ApiOperation(value = "Get followup Status detiles By Date")
+	@GetMapping("/getFollowupstatusByDate")
+	public ResponseEntity<FollowUpDataDto> getFollowStatusByDate(@RequestParam String date,
+			@RequestParam int startIndex, @RequestParam int endIndex, HttpServletRequest request) throws IOException {
+		return service.getFollowStatusByDate(date, startIndex, endIndex, id, request);
 	}
 
 }
