@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -164,7 +165,10 @@ public class WhatsAppServiceImpl implements WhatsAppService {
 	    List<TraineeDto> traineeDetails = new ArrayList<>(); // Initialize as an empty list
 	    if (courseName != null) {
 	        if (data != null) {
-	            traineeDetails = data.stream()
+	        	List<List<Object>> sortedData = data.stream().sorted(Comparator.comparing(
+						list -> list != null && !list.isEmpty() && list.size() > 24 ? list.get(24).toString() : "",
+						Comparator.reverseOrder())).collect(Collectors.toList());
+	            traineeDetails = sortedData.stream()
 	                    .filter(row -> row.size() > 9 && row.contains(courseName))
 	                    .map(wrapper::listToDto)
 	                    .collect(Collectors.toList());
