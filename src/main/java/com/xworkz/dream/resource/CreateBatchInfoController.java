@@ -29,47 +29,48 @@ import io.swagger.annotations.ApiOperation;
 @RestController
 @RequestMapping("/api")
 public class CreateBatchInfoController {
-	
-	
+
 	Logger logger = LoggerFactory.getLogger(CreateBatchInfoController.class);
 
 	@Autowired
 	private DreamService service;
 	@Autowired
 	private WhatsAppService whatsAppService;
-	
+
 	@ApiOperation(value = "To register the upcoming batch details")
 	@PostMapping("/batchInfo")
 	public ResponseEntity<String> batchDetails(@RequestHeader String spreadsheetId, @RequestBody BatchDetailsDto dto,
 			HttpServletRequest request) throws IOException, IllegalAccessException {
-		logger.info("Registering trainee details: {}",dto);
+		logger.info("Registering trainee details: {}", dto);
 		return service.saveDetails(spreadsheetId, dto, request);
 	}
-	
+
 	@PutMapping("/updateWhatsAppLink")
-	public boolean updateWhatsAppLinkByCourseName(@RequestHeader String spreadsheetId,@RequestParam String cousreName,@RequestParam String whatsAppLink) throws IllegalAccessException, IOException {
-		logger.info("cousreName : whatsAppLink"+ cousreName +" : "+whatsAppLink);
+	public boolean updateWhatsAppLinkByCourseName(@RequestHeader String spreadsheetId, @RequestParam String cousreName,
+			@RequestParam String whatsAppLink) throws IllegalAccessException, IOException {
+		logger.info("cousreName : whatsAppLink" + cousreName + " : " + whatsAppLink);
 		return whatsAppService.updateWhatsAppLinkByCourseName(spreadsheetId, cousreName, whatsAppLink);
 	}
 	
 	@GetMapping("/getWhatsAppLink")
-	public String getWhatsAppLinkByCourseName(@RequestHeader String spreadsheetId,
-			@RequestParam String courseName) throws IOException {
-		 ResponseEntity<BatchDetails> batchDetailsByCourseName = service.getBatchDetailsByCourseName(spreadsheetId, courseName);
+	public String getWhatsAppLinkByCourseName(@RequestHeader String spreadsheetId, @RequestParam String courseName)
+			throws IOException {
+		ResponseEntity<BatchDetails> batchDetailsByCourseName = service.getBatchDetailsByCourseName(spreadsheetId,
+				courseName);
 		return batchDetailsByCourseName.getBody().getWhatsAppLink();
-
 	}
-	
+
 	@GetMapping("/sendWhatsAppLink")
-	public boolean  mailWhatsAppLink(@RequestHeader String spreadsheetId,
-			@RequestParam String courseName) throws IOException {
+	public boolean mailWhatsAppLink(@RequestHeader String spreadsheetId, @RequestParam String courseName)
+			throws IOException {
 		boolean sendWhatsAppLink = whatsAppService.sendWhatsAppLink(spreadsheetId, courseName);
 		return sendWhatsAppLink;
-		
 	}
-	
-	
-	
 
-	
+	@GetMapping("/traineeDetails")
+	@ApiOperation("To get the details of trainee based on the active course")
+	public ResponseEntity<List<TraineeDto>> traineeDetailsByCourse(@RequestHeader String spreadsheetId,
+			@RequestParam String courseName) throws IOException {
+		return whatsAppService.getTraineeDetailsByCourse(spreadsheetId, courseName);
+	}	
 }
