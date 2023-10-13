@@ -8,6 +8,7 @@ sheets:
   attendanceList: attendanceList!A2:J
   attendanceListRange: attendanceList!A2:M
   credentialsPath: classpath:META-INF/credentials-prod.json
+  liveKey: live_18d91055ea2440016bfa
 
 
 mailChimp:

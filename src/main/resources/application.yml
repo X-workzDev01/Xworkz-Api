@@ -60,8 +60,13 @@ mail:
    userName: xworkzdev@outlook.com
    password: KeepIT@Temp789 
 logging:
+  file: D:/file.log
   level:
     root: INFO
+  pattern:
+    console: "%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n"
+    file: "%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n"
+
     
 login:
   userFile: classpath:users.yml
@@ -69,6 +74,8 @@ login:
 
 server:
   port : 8081
+
+  
 
 ---
 
