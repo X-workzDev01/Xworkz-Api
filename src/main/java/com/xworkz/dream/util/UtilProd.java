@@ -69,7 +69,6 @@ public class UtilProd implements DreamUtil {
 	@Autowired
 	private ChimpMailService chimpMailService;
 
-
 	@Autowired
 	private EncryptionHelper helper;
 
@@ -94,10 +93,12 @@ public class UtilProd implements DreamUtil {
 		logger.debug("Sending email to {}: Subject: {},", email, subject);
 		otpMailService(email, otp, subject);
 		return true;
+
 	}
 
 	@Override
 	public boolean sendNotificationToEmail(List<Team> teamList, List<StatusDto> notificationStatus) {
+
 		if (teamList == null || notificationStatus == null) {
 			logger.warn("teamList or notificationStatus is null");
 			return false;
@@ -201,6 +202,7 @@ public class UtilProd implements DreamUtil {
 	private boolean sendBulkMailToNotification(List<String> recipients, String subject, List<StatusDto> body) {
 		Context context = new Context();
 
+
 		context.setVariable("listDto", body);
 		String content = templateEngine.process("FollowCandidateFollowupTemplete", context);
 
@@ -224,11 +226,13 @@ public class UtilProd implements DreamUtil {
 		context.setVariable("whatsAppLink", whatsAppLink);
 		String content = templateEngine.process("WhatsAppLinkContentTemplate", context);
 
+
 		MimeMessagePreparator messagePreparator = mimeMessage -> {
 
 			MimeMessageHelper messageHelper = new MimeMessageHelper(mimeMessage);
 			messageHelper.setFrom(helper.decrypt(chimpUserName));
 			for (String recepent : traineeEmail) {
+
 				messageHelper.addTo(new InternetAddress(recepent));
 			}
 			messageHelper.setSubject(subject);
@@ -241,6 +245,7 @@ public class UtilProd implements DreamUtil {
 	private boolean sendCourseContentMailChimp(String email, String recipientName)
 
 			throws MessagingException, IOException, TemplateException {
+
 
 		Context context = new Context();
 		context.setVariable("recipientName", recipientName);

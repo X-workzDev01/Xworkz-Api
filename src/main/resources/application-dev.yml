@@ -15,6 +15,7 @@ mailChimp:
   password: +mgZp4MIPWMTkaJ/pwphDw==
   smtpHostChimp: yj/mpkyGHCjMIsVaHCMyxQZ4EBNjg/Ep6CbXhjKA7v0= 
 
+
 mail:
    smtpHost: smtp.office365.com
    smtpPort: 587
