@@ -19,4 +19,7 @@ public interface WhatsAppService {
 			throws IOException;
 
 	public boolean sendWhatsAppLink(String spreadsheetId, String courseName)throws IOException;
+	
+	public ResponseEntity<List<TraineeDto>> getTraineeDetailsByCourse(String spreadsheetId, String courseName)
+			throws IOException;
 }

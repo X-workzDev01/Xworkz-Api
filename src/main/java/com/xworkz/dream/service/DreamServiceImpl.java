@@ -173,7 +173,7 @@ public class DreamServiceImpl implements DreamService {
 //				}
 				
 			}
-			repo.evictAllCachesOnTraineeDetails();
+		//	repo.evictAllCachesOnTraineeDetails();
 			return ResponseEntity.ok("Data written successfully, not added to Follow Up");
 		} catch (Exception e) {
 			logger.error("Error processing request: " + e.getMessage(), e);
@@ -1125,4 +1125,5 @@ public class DreamServiceImpl implements DreamService {
 		}
 		return followUpDtos;
 	}
+	
 }

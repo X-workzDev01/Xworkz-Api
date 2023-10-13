@@ -3,13 +3,17 @@ package com.xworkz.dream.service;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
@@ -100,11 +104,9 @@ public class WhatsAppServiceImpl implements WhatsAppService {
 	@Override
 	public List<String> getEmailByCourseName(String spreadsheetId, String courseName) throws IOException {
 		List<List<Object>> readData = repo.readData(spreadsheetId);
-		List<String> emailList = readData.stream().filter(row -> row.size() > 2 && row.get(9) instanceof String)
-				.filter(row -> courseName.equalsIgnoreCase((String) row.get(9)) && "No".equalsIgnoreCase((String) row.get(23)))
-				.map(row -> (String) row.get(2))
-				.collect(Collectors.toList());
-		
+		List<String> emailList = readData.stream().filter(row -> row.size() > 2 && row.get(9) instanceof String).filter(
+				row -> courseName.equalsIgnoreCase((String) row.get(9)) && "No".equalsIgnoreCase((String) row.get(23)))
+				.map(row -> (String) row.get(2)).collect(Collectors.toList());
 
 		return emailList;
 	}
@@ -112,22 +114,23 @@ public class WhatsAppServiceImpl implements WhatsAppService {
 	public synchronized void processAndBulkUpdate(String spreadsheetId, String courseName) throws IOException {
 		List<List<Object>> readData = repo.readData(spreadsheetId);
 		List<String> emailsToUpdate = readData.stream().filter(row -> row.size() > 2 && row.get(9) instanceof String)
-				.filter(row -> courseName.equalsIgnoreCase((String) row.get(9)) && "No".equalsIgnoreCase((String) row.get(23)))
-				.map(row -> (String) row.get(2))
-				.collect(Collectors.toList());
+				.filter(row -> courseName.equalsIgnoreCase((String) row.get(9))
+						&& "No".equalsIgnoreCase((String) row.get(23)))
+				.map(row -> (String) row.get(2)).collect(Collectors.toList());
 
 		if (!emailsToUpdate.isEmpty()) {
 			bulkUpdateWhatsAppLink(spreadsheetId, emailsToUpdate, courseName);
 		}
 	}
 
-	private void bulkUpdateWhatsAppLink(String spreadsheetId, List<String> emails, String courseName) throws IOException {
+	private void bulkUpdateWhatsAppLink(String spreadsheetId, List<String> emails, String courseName)
+			throws IOException {
 		List<List<Object>> readData = repo.readData(spreadsheetId);
-		
+
 		for (String email : emails) {
-			TraineeDto trainee = readData.stream().filter(list -> list.contains(email)).findFirst().map(wrapper::listToDto)
-					.orElse(null);
-			
+			TraineeDto trainee = readData.stream().filter(list -> list.contains(email)).findFirst()
+					.map(wrapper::listToDto).orElse(null);
+
 			trainee.getOthersDto().setSendWhatsAppLink("Yes");
 			ResponseEntity<String> update = service.update(spreadsheetId, email, trainee);
 			logger.info("Bulk update WhatsAppLinkSend: {}", update);
@@ -153,6 +156,35 @@ public class WhatsAppServiceImpl implements WhatsAppService {
 		}
 
 		return false;
+	}
+
+	@Override
+	public ResponseEntity<List<TraineeDto>> getTraineeDetailsByCourse(String spreadsheetId, String courseName)
+	        throws IOException {
+	    List<List<Object>> data = repo.readData(spreadsheetId);
+	    List<TraineeDto> traineeDetails = new ArrayList<>(); // Initialize as an empty list
+	    if (courseName != null) {
+	        if (data != null) {
+	        	List<List<Object>> sortedData = data.stream().sorted(Comparator.comparing(
+						list -> list != null && !list.isEmpty() && list.size() > 24 ? list.get(24).toString() : "",
+						Comparator.reverseOrder())).collect(Collectors.toList());
+	            traineeDetails = sortedData.stream()
+	                    .filter(row -> row.size() > 9 && row.contains(courseName))
+	                    .map(wrapper::listToDto)
+	                    .collect(Collectors.toList());
+	        }
+
+	        if (!traineeDetails.isEmpty()) {
+	            return ResponseEntity.ok(traineeDetails);
+	        } else {
+	            logger.error("No matching trainee details found for the course: " + courseName);
+	            // Return a custom response when no data is found
+	            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(Collections.emptyList());
+	        }
+	    } else {
+	        logger.error("Bad request");
+	        return ResponseEntity.badRequest().build();
+	    }
 	}
 
 }
