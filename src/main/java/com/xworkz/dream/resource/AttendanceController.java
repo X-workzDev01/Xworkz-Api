@@ -80,7 +80,6 @@ public class AttendanceController {
 	@GetMapping("/byBatchAndDate")
 	public ResponseEntity<AttadanceSheetDto> getAttendanceListByBatchAndDate(@RequestParam String batch,
 			@RequestParam String date, @RequestParam int startIndex, @RequestParam int maxRows) throws Exception {
-
 		return attendanceService.getAttendanceDetilesBatchAndDate(batch, date, startIndex, maxRows);
 
 	}

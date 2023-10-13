@@ -20,6 +20,7 @@ import org.springframework.stereotype.Service;
 import com.google.api.services.sheets.v4.model.UpdateValuesResponse;
 import com.google.api.services.sheets.v4.model.ValueRange;
 import com.xworkz.dream.dto.BatchDetails;
+import com.xworkz.dream.dto.FollowUpDto;
 import com.xworkz.dream.dto.OthersDto;
 import com.xworkz.dream.dto.TraineeDto;
 import com.xworkz.dream.repository.DreamRepository;
@@ -160,31 +161,52 @@ public class WhatsAppServiceImpl implements WhatsAppService {
 
 	@Override
 	public ResponseEntity<List<TraineeDto>> getTraineeDetailsByCourse(String spreadsheetId, String courseName)
-	        throws IOException {
-	    List<List<Object>> data = repo.readData(spreadsheetId);
-	    List<TraineeDto> traineeDetails = new ArrayList<>(); // Initialize as an empty list
-	    if (courseName != null) {
-	        if (data != null) {
-	        	List<List<Object>> sortedData = data.stream().sorted(Comparator.comparing(
+			throws IOException {
+		List<List<Object>> data = repo.readData(spreadsheetId);
+		List<TraineeDto> traineeDetails = new ArrayList<>(); // Initialize as an empty list
+		if (courseName != null) {
+			if (data != null) {
+				List<List<Object>> sortedData = data.stream().sorted(Comparator.comparing(
 						list -> list != null && !list.isEmpty() && list.size() > 24 ? list.get(24).toString() : "",
 						Comparator.reverseOrder())).collect(Collectors.toList());
-	            traineeDetails = sortedData.stream()
-	                    .filter(row -> row.size() > 9 && row.contains(courseName))
-	                    .map(wrapper::listToDto)
-	                    .collect(Collectors.toList());
-	        }
+				traineeDetails = sortedData.stream().filter(row -> row.size() > 9 && row.contains(courseName))
+						.map(wrapper::listToDto).collect(Collectors.toList());
+			}
 
-	        if (!traineeDetails.isEmpty()) {
-	            return ResponseEntity.ok(traineeDetails);
-	        } else {
-	            logger.error("No matching trainee details found for the course: " + courseName);
-	            // Return a custom response when no data is found
-	            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(Collections.emptyList());
-	        }
-	    } else {
-	        logger.error("Bad request");
-	        return ResponseEntity.badRequest().build();
-	    }
+			if (!traineeDetails.isEmpty()) {
+				return ResponseEntity.ok(traineeDetails);
+			} else {
+				logger.error("No matching trainee details found for the course: " + courseName);
+				// Return a custom response when no data is found
+				return ResponseEntity.status(HttpStatus.NOT_FOUND).body(Collections.emptyList());
+			}
+		} else {
+			logger.error("Bad request");
+			return ResponseEntity.badRequest().build();
+		}
+	}
+
+	@Override
+	public ResponseEntity<List<FollowUpDto>> getTraineeDetailsByCourseInFollowUp(String spreadsheetId, String courseName)
+			throws IOException {
+		List<List<Object>> data = repo.getFollowUpDetails(spreadsheetId);
+		List<FollowUpDto> followUpDto = new ArrayList<>();
+		if (courseName != null) {
+			if (data != null) {
+				followUpDto =data.stream().filter(row -> row.size() > 9 && row.contains(courseName))
+				.map(wrapper::listToFollowUpDTO).collect(Collectors.toList());
+			}
+			if (!followUpDto.isEmpty()) {
+				return ResponseEntity.ok(followUpDto);
+			} else {
+				logger.error("No matching trainee details found for the course: " + courseName);
+				// Return a custom response when no data is found
+				return ResponseEntity.status(HttpStatus.NOT_FOUND).body(Collections.emptyList());
+			}
+		} else {
+			logger.error("Bad request");
+			return ResponseEntity.badRequest().build();
+		}
 	}
 
 }

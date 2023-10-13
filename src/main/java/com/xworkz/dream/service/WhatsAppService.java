@@ -6,6 +6,7 @@ import java.util.List;
 import org.springframework.http.ResponseEntity;
 
 import com.xworkz.dream.dto.BatchDetails;
+import com.xworkz.dream.dto.FollowUpDto;
 import com.xworkz.dream.dto.TraineeDto;
 
 public interface WhatsAppService {
@@ -22,4 +23,7 @@ public interface WhatsAppService {
 	
 	public ResponseEntity<List<TraineeDto>> getTraineeDetailsByCourse(String spreadsheetId, String courseName)
 			throws IOException;
+
+	public ResponseEntity<List<FollowUpDto>> getTraineeDetailsByCourseInFollowUp(String spreadsheetId,
+			String courseName) throws IOException;
 }
