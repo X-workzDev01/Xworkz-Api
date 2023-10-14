@@ -27,4 +27,6 @@ public interface DreamUtil {
 	public boolean sendWhatsAppLink(List<String> traineeEmail, String subject, String whatsAppLink);
 
 	public boolean sms(TraineeDto dto);
+	
+	public boolean sendBirthadyEmail(String traineeEmail, String subject, String name);
 }

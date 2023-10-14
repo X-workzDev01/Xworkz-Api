@@ -33,7 +33,7 @@ sheets:
   batchDetailsRange: batchDetails!A2:I 
   batchIdRange: batchDetails!A2:A
   dateOfBirthDetailsSheetName: dateOfBirthDetails!
-  dateOfBirthDetailsRange: dateOfBirthDetails!A2:D
+  dateOfBirthDetailsRange: dateOfBirthDetails!A2:E
   birthdayRange: dateOfBirthDetails!A2:A
   attendanceInfoRange: attendanceInfo!A2:J
   attendanceInfoIDRange: attendanceInfo!A2:J

@@ -81,4 +81,10 @@ public class UtilLocal implements DreamUtil {
 		return false;
 	}
 
+	@Override
+	public boolean sendBirthadyEmail(String traineeEmail, String subject, String name) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
 }

@@ -1,50 +1,73 @@
 package com.xworkz.dream.service;
-
 import java.io.IOException;
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 import com.xworkz.dream.repository.DreamRepository;
+import com.xworkz.dream.util.DreamUtil;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 @Service
 public class BirthadayServiceImpl implements BirthadayService{
 	
 	@Autowired
-	DreamRepository repository;
+	private DreamRepository repository;
+	@Autowired
+	private DreamUtil util;
 	@Value("${login.sheetId}")
 	private String spreadsheetId;
 	
+	private static final Logger logger = LoggerFactory.getLogger(BirthadayServiceImpl.class);
+	
+	
+	private String findNameByEmail(String email) throws IOException {
+		List<List<Object>> birthdayDetails = repository.getBirthadayDetails(spreadsheetId);
+		 Optional<String> optionalName = birthdayDetails.stream()
+		            .filter(row -> email.equals(row.get(2)))
+		            .map(row -> (String) row.get(1))
+		            .findFirst();
+
+		    return optionalName.orElse("Unknown"); 
+		
+	}
+	
 	@Override
 	public void sendBirthdayEmails() throws IOException {
-		
+		String subject="Birthday Wishes : X-workZ";
         List<List<Object>> birthdayDetails = repository.getBirthadayDetails(spreadsheetId);
+        System.out.println("birthdayDetails : "+birthdayDetails);
         LocalDate currentDate = LocalDate.now();
+        DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");
         List<String> emailsToSend = birthdayDetails.stream()
                 .filter(row -> {
-                    LocalDate dob = LocalDate.parse((String) row.get(4));
+                    LocalDate dob = LocalDate.parse((String) row.get(4),dateFormatter);
                     return dob.getMonth() == currentDate.getMonth() && dob.getDayOfMonth() == currentDate.getDayOfMonth();
                 })
                 .map(row -> (String) row.get(2))
                 .collect(Collectors.toList());
         for (String email : emailsToSend) {
-            // SendEmail.send(email, "Birthday Greetings", "Happy Birthday!");
-            // Add logic to send the email
+        	String nameByEmail = findNameByEmail(email);
+        	util.sendBirthadyEmail(email, subject, nameByEmail);
         }
     }
 	
-	 @Scheduled(cron = "0 0 0 * * *") // Run at midnight every day
-	    public void sendBirthdayEmailsScheduled() {
+	 @Scheduled(cron = "0 0 0 * * *")
+	 @Scheduled(fixedRate = 30000)
+	 public void sendBirthdayEmailsScheduled() {
 	        try {
 	            sendBirthdayEmails();
 	        } catch (IOException e) {
-	            // Handle exception if needed
-	            e.printStackTrace();
+	        logger.info("Birthday Mail is not working : {} ",e.getMessage());
 	        }
 	    }
 
