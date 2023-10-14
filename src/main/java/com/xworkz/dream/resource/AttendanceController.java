@@ -25,8 +25,12 @@ import com.google.api.services.sheets.v4.model.DataFilter;
 import com.google.api.services.sheets.v4.model.ValueRange;
 import com.xworkz.dream.dto.AttadanceSheetDto;
 import com.xworkz.dream.dto.AttendanceDto;
+import com.xworkz.dream.dto.TraineeDto;
 import com.xworkz.dream.repository.DreamRepositoryImpl;
 import com.xworkz.dream.service.AttendanceService;
+import com.xworkz.dream.service.ChimpMailService;
+import com.xworkz.dream.util.DreamUtil;
+
 import freemarker.template.TemplateException;
 import io.swagger.annotations.ApiOperation;
 import lombok.val;
@@ -34,7 +38,10 @@ import lombok.val;
 @RestController
 @RequestMapping("/api")
 public class AttendanceController {
+	TraineeDto dto; 
 
+	@Autowired
+	private DreamUtil util; 
 	@Autowired
 	private AttendanceService attendanceService;
 	@Value("${login.sheetId}")
@@ -84,5 +91,7 @@ public class AttendanceController {
 		return attendanceService.getAttendanceDetilesBatchAndDate(batch, date, startIndex, maxRows);
 
 	}
+
+	
 
 }

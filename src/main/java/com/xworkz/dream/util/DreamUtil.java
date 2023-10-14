@@ -6,6 +6,7 @@ import java.util.List;
 import javax.mail.MessagingException;
 
 import com.xworkz.dream.dto.StatusDto;
+import com.xworkz.dream.dto.TraineeDto;
 import com.xworkz.dream.dto.utils.Team;
 
 import freemarker.template.TemplateException;
@@ -23,5 +24,7 @@ public interface DreamUtil {
 	public boolean sendCourseContent(String email, String name)
 			throws MessagingException, IOException, TemplateException;
 
-	public boolean sendWhatsAppLink(List<String> traineeEmail, String subject,String whatsAppLink);
+	public boolean sendWhatsAppLink(List<String> traineeEmail, String subject, String whatsAppLink);
+
+	public boolean sms(TraineeDto dto);
 }
