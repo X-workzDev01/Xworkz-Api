@@ -132,6 +132,7 @@ public class DreamServiceImpl implements DreamService {
 			int size = data != null ? data.size() : 0;
 			dto.setId(size += 1);
 			dto.getOthersDto().setXworkzEmail(Status.NA.toString());
+
 			dto.getOthersDto().setPreferredLocation(Status.NA.toString());
 			dto.getOthersDto().setPreferredClassType(Status.NA.toString());
 			dto.getOthersDto().setSendWhatsAppLink(Status.NO.toString());
@@ -157,6 +158,7 @@ public class DreamServiceImpl implements DreamService {
 
 			boolean writeStatus = repo.writeData(spreadsheetId, list);
 
+
 //			if (isRegisterRequest(request)) {
 //				saveBirthDayInfo(spreadsheetId, dto, request);
 //			}
@@ -179,7 +181,7 @@ public class DreamServiceImpl implements DreamService {
 //				}
 
 			}
-			repo.evictAllCachesOnTraineeDetails();
+		//	repo.evictAllCachesOnTraineeDetails();
 			return ResponseEntity.ok("Data written successfully, not added to Follow Up");
 		} catch (Exception e) {
 			logger.error("Error processing request: " + e.getMessage(), e);
@@ -187,6 +189,7 @@ public class DreamServiceImpl implements DreamService {
 		}
 
 	}
+
 
 	// Helper method to check if the request URI is "/register"
 	private boolean isRegisterRequest(HttpServletRequest request) {
@@ -1108,6 +1111,7 @@ public class DreamServiceImpl implements DreamService {
 
 		}
 		logger.info("Detiles not found ");
+
 		return null;
 
 	}
@@ -1133,4 +1137,5 @@ public class DreamServiceImpl implements DreamService {
 		}
 		return followUpDtos;
 	}
+
 }

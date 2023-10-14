@@ -38,6 +38,7 @@ public class CacheConfig {
 		caches.add(new ConcurrentMapCache("getEmail"));
 		caches.add(new ConcurrentMapCache("update"));
 
+
 		cacheManager.setCaches(caches);
 		return cacheManager;
 	}

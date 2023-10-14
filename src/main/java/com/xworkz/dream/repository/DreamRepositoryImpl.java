@@ -15,9 +15,11 @@ import javax.annotation.PostConstruct;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.ResourceLoader;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Repository;
 
 import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
@@ -37,6 +39,8 @@ import com.google.api.services.sheets.v4.model.UpdateValuesResponse;
 import com.google.api.services.sheets.v4.model.ValueRange;
 import com.google.auth.http.HttpCredentialsAdapter;
 import com.google.auth.oauth2.GoogleCredentials;
+
+import lombok.Synchronized;
 
 @Repository
 public class DreamRepositoryImpl implements DreamRepository {
@@ -148,11 +152,12 @@ public class DreamRepositoryImpl implements DreamRepository {
 		return true;
 
 	}
+	
 
 	@Override
-	@Cacheable(value = "sheetsData", key = "#spreadsheetId", unless = "#result == null")
+	@Synchronized
+	@CachePut(value = "sheetsData", key = "#spreadsheetId", unless = "#result == null")
 	public List<List<Object>> readData(String spreadsheetId) throws IOException {
-
 		ValueRange response = sheetsService.spreadsheets().values().get(spreadsheetId, range).execute();
 		return response.getValues();
 	}
@@ -184,7 +189,7 @@ public class DreamRepositoryImpl implements DreamRepository {
 	}
 
 	@Override
-	@Cacheable(value = "followUpDetails", key = "#spreadsheetId", unless = "#result == null")
+	@CachePut(value = "followUpDetails", key = "#spreadsheetId", unless = "#result == null")
 	public List<List<Object>> getFollowUpDetails(String spreadsheetId) throws IOException {
 		ValueRange response = sheetsService.spreadsheets().values().get(spreadsheetId, followUpRange).execute();
 		return response.getValues();

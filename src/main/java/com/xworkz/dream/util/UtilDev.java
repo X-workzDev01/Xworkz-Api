@@ -198,6 +198,7 @@ public class UtilDev implements DreamUtil {
 		return chimpMailService.validateAndSendMailByMailOtp(messagePreparator);
 	}
 
+
 	private boolean sendBulkMailToNotification(List<String> recipients, String subject, List<StatusDto> body) {
 		Context context = new Context();
 
