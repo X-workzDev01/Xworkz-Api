@@ -64,7 +64,7 @@ public class AttendanceRepositoryImpl implements AttendanceRepository {
 	}
 
 	@Override
-	@CachePut(value = "update", key = "#valueRange")
+	@CachePut(value = "writeAttendance", key = "#valueRange")
 	public boolean writeAttendance(String spreadsheetId, List<Object> row, String range) throws IOException {
 		List<List<Object>> values = new ArrayList<>();
 		values.add(row);
@@ -76,14 +76,14 @@ public class AttendanceRepositoryImpl implements AttendanceRepository {
 	}
 
 	@Override
-	@CachePut(value = "update", key = "#valueRange")
+	@CachePut(value = "byEmail", key = "#valueRange")
 	public List<List<Object>> attendanceDetilesByEmail(String sheetId, String email, String range) throws IOException {
 		ValueRange response = sheetsService.spreadsheets().values().get(sheetId, range).execute();
 		return response.getValues();
 	}
 
 	@Override
-	@CachePut(value = "update", key = "#valueRange")
+	@CachePut(value = "everyDayEveryDay", key = "#valueRange")
 	public boolean everyDayAttendance(String spreadsheetId, List<Object> row, String range) throws IOException {
 		List<List<Object>> values = new ArrayList<>();
 		values.add(row);
@@ -94,7 +94,7 @@ public class AttendanceRepositoryImpl implements AttendanceRepository {
 	}
 
 	@Override
-	@CachePut(value = "update", key = "#valueRange")
+	@CachePut(value = "getEmail", key = "#valueRange")
 	public List<List<Object>> getEmail(String spreadsheetId, String range) throws IOException {
 		ValueRange response = sheetsService.spreadsheets().values().get(spreadsheetId, range).execute();
 		return response.getValues();
