@@ -248,7 +248,7 @@ public class DreamServiceImpl implements DreamService {
 						return ResponseEntity.ok("Email not sent, Data written successfully, Added to follow Up");
 					}
 				}
-				repo.evictAllCachesOnTraineeDetails();
+			//	repo.evictAllCachesOnTraineeDetails();
 			}
 			return ResponseEntity.ok("Data written successfully, not added to Follow Up");
 		} catch (Exception e) {
@@ -488,7 +488,7 @@ public class DreamServiceImpl implements DreamService {
 					UpdateValuesResponse updated = repo.update(spreadsheetId, range, valueRange);
 					if (updated != null && !updated.isEmpty()) {
 						boolean followUpResponse = updateFollowUp(spreadsheetId, email, dto);
-						repo.evictAllCachesOnTraineeDetails();
+				//		repo.evictAllCachesOnTraineeDetails();
 						return ResponseEntity.ok("Updated Successfully");
 					} else {
 						return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("An error occurred ");
@@ -530,7 +530,7 @@ public class DreamServiceImpl implements DreamService {
 			UpdateValuesResponse updated = repo.updateFollow(spreadsheetId, range, valueRange);
 
 			if (updated != null && !updated.isEmpty()) {
-				repo.evictAllCachesOnTraineeDetails();
+				//repo.evictAllCachesOnTraineeDetails();
 				return true;
 			} else {
 				return false;
@@ -635,7 +635,7 @@ public class DreamServiceImpl implements DreamService {
 				boolean update = updateCurrentFollowUp(statusDto.getCallBack(), spreadsheetId,
 						statusDto.getBasicInfo().getEmail(), statusDto.getAttemptStatus(), statusDto.getAttemptedBy(),
 						statusDto.getJoiningDate());
-				repo.evictAllCachesOnTraineeDetails();
+				//repo.evictAllCachesOnTraineeDetails();
 			}
 			return ResponseEntity.ok("Follow Status Updated for ID :  " + statusDto.getId());
 		} catch (IllegalAccessException e) {
@@ -724,7 +724,7 @@ public class DreamServiceImpl implements DreamService {
 						Comparator.reverseOrder())).collect(Collectors.toList());
 				followUpDto = getFollowUpRows(sortedData, startingIndex, maxRows);
 				FollowUpDataDto followUpDataDto = new FollowUpDataDto(followUpDto, data.size());
-				repo.evictAllCachesOnTraineeDetails();
+			//	repo.evictAllCachesOnTraineeDetails();
 				return ResponseEntity.ok(followUpDataDto);
 			} else {
 				return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null); // Return a not found response if data is
@@ -783,7 +783,7 @@ public class DreamServiceImpl implements DreamService {
 				statusDto.add(dto);
 			}
 		}
-		repo.evictAllCachesOnTraineeDetails();
+		//repo.evictAllCachesOnTraineeDetails();
 		return statusDto;
 	}
 
@@ -1055,7 +1055,7 @@ public class DreamServiceImpl implements DreamService {
 			writeDataEnquiry(spreadsheetId, traineeDto, request);
 		} catch (MessagingException | TemplateException e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			logger.error("Error Writing enqiry data to sheet");
 		}
 		return true;
 
@@ -1089,7 +1089,7 @@ public class DreamServiceImpl implements DreamService {
 		if (updated.isEmpty()) {
 			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("An error occurred ");
 		} else {
-			repo.evictAllCachesOnTraineeDetails();
+		//	repo.evictAllCachesOnTraineeDetails();
 			return ResponseEntity.ok("Updated Successfully");
 		}
 	}
