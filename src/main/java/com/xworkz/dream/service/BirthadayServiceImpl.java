@@ -62,7 +62,6 @@ public class BirthadayServiceImpl implements BirthadayService{
     }
 	
 	 @Scheduled(cron = "0 0 0 * * *")
-	 @Scheduled(fixedRate = 30000)
 	 public void sendBirthdayEmailsScheduled() {
 	        try {
 	            sendBirthdayEmails();
