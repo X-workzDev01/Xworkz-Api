@@ -85,7 +85,6 @@ public class UtilProd implements DreamUtil {
 	@Value("${mailChimp.smsSuccess}")
 	private String smsSuccess;
 
-
 	@Autowired
 	private EncryptionHelper helper;
 
@@ -220,7 +219,6 @@ public class UtilProd implements DreamUtil {
 	private boolean sendBulkMailToNotification(List<String> recipients, String subject, List<StatusDto> body) {
 		Context context = new Context();
 
-
 		context.setVariable("listDto", body);
 		String content = templateEngine.process("FollowCandidateFollowupTemplete", context);
 
@@ -244,7 +242,6 @@ public class UtilProd implements DreamUtil {
 		context.setVariable("whatsAppLink", whatsAppLink);
 		String content = templateEngine.process("WhatsAppLinkContentTemplate", context);
 
-
 		MimeMessagePreparator messagePreparator = mimeMessage -> {
 
 			MimeMessageHelper messageHelper = new MimeMessageHelper(mimeMessage);
@@ -263,7 +260,6 @@ public class UtilProd implements DreamUtil {
 	private boolean sendCourseContentMailChimp(String email, String recipientName)
 
 			throws MessagingException, IOException, TemplateException {
-
 
 		Context context = new Context();
 		context.setVariable("recipientName", recipientName);
@@ -285,12 +281,12 @@ public class UtilProd implements DreamUtil {
 		String response = null;
 		String status = null;
 		try {
-//			String mobileNumber = dto.getBasicInfo().getContactNumber().toString();
-			String mobileNumber = "9900775088";
+			String mobileNumber = dto.getBasicInfo().getContactNumber().toString();
+//			String mobileNumber = "9900775088";
 
 			if (Objects.nonNull(mobileNumber)) {
 
-				String smsMessage = "Hi " + "Hareesha" + "," + "\n"
+				String smsMessage = "Hi " + dto.getBasicInfo().getTraineeName().toString() + "," + "\n"
 						+ "Thanks for enquiring with X-workZ for " + "Java Enterpirse Course" + " at " + "Rajajinagara"
 						+ "\n" + " For Queries, contact " + "9886971483/9886971480" + "." + "\n"
 						+ " Check Mail for Course content (Spam Folder)" + ".";
