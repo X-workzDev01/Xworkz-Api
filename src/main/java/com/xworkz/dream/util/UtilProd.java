@@ -23,6 +23,8 @@ import javax.mail.Session;
 import javax.mail.Transport;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
+
+import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -68,6 +70,21 @@ public class UtilProd implements DreamUtil {
 	private String chimpUserName;
 	@Autowired
 	private ChimpMailService chimpMailService;
+	@Value("${mailChimp.templateIdEnquiry}")
+	private String templateIdEnquiry;
+	@Value("${mailChimp.apiKey}")
+	private String apiKey;
+	@Value("${mailChimp.SMSusername}")
+	private String smsUserName;
+	@Value("${mailChimp.route}")
+	private String route;
+	@Value("${mailChimp.sender}")
+	private String sender;
+	@Value("${mailChimp.smsType}")
+	private String smsType;
+	@Value("${mailChimp.smsSuccess}")
+	private String smsSuccess;
+
 
 	@Autowired
 	private EncryptionHelper helper;
@@ -173,6 +190,7 @@ public class UtilProd implements DreamUtil {
 		}
 		return this.sendCourseContentMailChimp(email, recipientName);
 	}
+
 	@Override
 	public boolean sendWhatsAppLink(List<String> traineeEmail, String subject, String whatsAppLink) {
 		return sendWhatsAppLinkToChimp(traineeEmail, subject, whatsAppLink);
@@ -196,7 +214,7 @@ public class UtilProd implements DreamUtil {
 			messageHelper.setText(content, true);
 		};
 
-		return chimpMailService.validateAndSendMailByMailId(messagePreparator);
+		return chimpMailService.validateAndSendMailByMailOtp(messagePreparator);
 	}
 
 	private boolean sendBulkMailToNotification(List<String> recipients, String subject, List<StatusDto> body) {
@@ -260,4 +278,49 @@ public class UtilProd implements DreamUtil {
 
 		return chimpMailService.validateAndSendMailByMailId(messagePreparator);
 	}
+
+	@Override
+	public boolean sms(TraineeDto dto) {
+
+		String response = null;
+		String status = null;
+		try {
+//			String mobileNumber = dto.getBasicInfo().getContactNumber().toString();
+			String mobileNumber = "9900775088";
+
+			if (Objects.nonNull(mobileNumber)) {
+
+				String smsMessage = "Hi " + "Hareesha" + "," + "\n"
+						+ "Thanks for enquiring with X-workZ for " + "Java Enterpirse Course" + " at " + "Rajajinagara"
+						+ "\n" + " For Queries, contact " + "9886971483/9886971480" + "." + "\n"
+						+ " Check Mail for Course content (Spam Folder)" + ".";
+				;
+
+				logger.debug("smsType is :{} mobileNumber is :{} message is: {}", mobileNumber, smsMessage);
+
+				response = chimpMailService.sendSMS(helper.decrypt(apiKey), helper.decrypt(smsUserName),
+						helper.decrypt(sender), mobileNumber, smsMessage, helper.decrypt(smsType),
+						helper.decrypt(route), helper.decrypt(templateIdEnquiry));
+
+				logger.info("SingleSMS Result is {}", response);
+				JSONObject json = new JSONObject(response);
+				status = json.getString("message");
+				if (status.equals(helper.decrypt(smsSuccess))) {
+					return true;
+				} else {
+					logger.info("SingleSMS Result is {}", response);
+					return false;
+				}
+
+			} else {
+				logger.info("SingleSMS Result is {}", response);
+				return false;
+			}
+
+		} catch (Exception e) {
+			logger.error("\n\nMessage is {} and exception is {}\n\n\n\n\n", e.getMessage(), e);
+			return false;
+		}
+	}
+
 }

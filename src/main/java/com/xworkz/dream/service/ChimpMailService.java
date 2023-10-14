@@ -6,9 +6,10 @@ import org.springframework.scheduling.annotation.Async;
 public interface ChimpMailService {
 	public boolean validateAndSendMailByMailId(MimeMessagePreparator messagePreparator);
 
-	@Async
-	public void mailService();
+	public boolean validateAndSendMailByMailOtp(MimeMessagePreparator messagePreparator);
 
-	public boolean sendOTPSMS();
+	public boolean sms();
 
+	public String sendSMS(String apiKey, String username, String sender, String phone, String message, String smsType,
+			String route, String templateId);
 }

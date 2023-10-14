@@ -15,6 +15,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.ListIterator;
 import java.util.Map;
+import java.util.Objects;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -23,6 +24,7 @@ import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -41,6 +43,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.dataformat.yaml.snakeyaml.Yaml;
 import com.google.api.services.sheets.v4.model.UpdateValuesResponse;
 import com.google.api.services.sheets.v4.model.ValueRange;
+import com.sun.mail.handlers.message_rfc822;
 import com.xworkz.dream.constants.FollowUp;
 import com.xworkz.dream.constants.Status;
 import com.xworkz.dream.dto.AdminDto;
@@ -115,6 +118,9 @@ public class DreamServiceImpl implements DreamService {
 	@Value("${sheets.liveKey}")
 	private String API_KEY;
 
+	@Autowired
+	private ChimpMailService service;
+
 	private static final Logger logger = LoggerFactory.getLogger(DreamServiceImpl.class);
 
 	@Override
@@ -162,18 +168,18 @@ public class DreamServiceImpl implements DreamService {
 			if (status) {
 				logger.info("Data written successfully to spreadsheetId and Added to Follow Up: {}", spreadsheetId);
 //				if (isRegisterRequest(request)) {
-					saveBirthDayInfo(spreadsheetId, dto, request);
-					boolean sent = util.sendCourseContent(dto.getBasicInfo().getEmail(),
-							dto.getBasicInfo().getTraineeName());
-				
-					if (sent) {
-						return ResponseEntity.ok("Data written successfully, Added to follow Up, sent course content");
-					} else {
-						return ResponseEntity.ok("Email not sent, Data written successfully, Added to follow Up");
-					}
-					
+				saveBirthDayInfo(spreadsheetId, dto, request);
+				boolean sent = util.sendCourseContent(dto.getBasicInfo().getEmail(),
+						dto.getBasicInfo().getTraineeName());
+
+				if (sent) {
+					return ResponseEntity.ok("Data written successfully, Added to follow Up, sent course content");
+				} else {
+					return ResponseEntity.ok("Email not sent, Data written successfully, Added to follow Up");
+				}
+
 //				}
-				
+
 			}
 		//	repo.evictAllCachesOnTraineeDetails();
 			return ResponseEntity.ok("Data written successfully, not added to Follow Up");
@@ -231,6 +237,8 @@ public class DreamServiceImpl implements DreamService {
 
 			if (status) {
 				logger.info("Data written successfully to spreadsheetId and Added to Follow Up: {}", spreadsheetId);
+				util.sms(dto);
+
 				if (isRegisterRequest(request)) {
 					boolean sent = util.sendCourseContent(dto.getBasicInfo().getEmail(),
 							dto.getBasicInfo().getTraineeName());
@@ -292,8 +300,9 @@ public class DreamServiceImpl implements DreamService {
 		if (data == null) {
 			return false;
 		}
-		repo.saveToFollowUp(spreadSheetId, data);
-		return true;
+		boolean save = repo.saveToFollowUp(spreadSheetId, data);
+		return save;
+
 	}
 
 	@Override
@@ -599,10 +608,10 @@ public class DreamServiceImpl implements DreamService {
 		adminDto.setUpdatedBy(currentlyFollowedBy);
 		adminDto.setUpdatedOn(LocalDateTime.now().toString());
 		if (calBack != null && !calBack.equals("NA")) {
-			followUpDto.setCallback(calBack);
+			followUpDto.setCallback(LocalDateTime.of(LocalDate.parse(calBack), LocalTime.now()).toString());
 		}
 		if (calBack != null && calBack.equals("NA")) {
-			followUpDto.setCallback(LocalDate.now().plusDays(1).toString());
+			followUpDto.setCallback(LocalDateTime.of(LocalDate.now(), LocalTime.now()).plusDays(1).toString());
 		}
 		followUpDto.setAdminDto(adminDto);
 
@@ -939,7 +948,7 @@ public class DreamServiceImpl implements DreamService {
 				Status.Not_reachable.toString().replace('_', ' '), Status.Let_us_know.toString().replace('_', ' '),
 				Status.Need_online.toString().replace('_', ' ')).collect(Collectors.toList());
 
-		LocalTime time = LocalTime.of(17, 55, 01, 500_000_000);
+		LocalTime time = LocalTime.of(17, 59, 01, 500_000_000);
 		List<StatusDto> notificationStatus = new ArrayList<StatusDto>();
 		List<StatusDto> today = new ArrayList<StatusDto>();
 		List<StatusDto> yesterday = new ArrayList<StatusDto>();
@@ -1052,10 +1061,7 @@ public class DreamServiceImpl implements DreamService {
 
 	}
 
-	@Override
-	@CacheEvict(value = { "sheetsData", "emailData", "contactData", "getDropdowns", "followUpStatusDetails",
-			"followUpDetails" }, allEntries = true)
-	@Scheduled(fixedDelay = 43200000) // 12 hours in milliseconds
+	@Scheduled(fixedRate = 43200000) // 12 hours in milliseconds
 	public void evictAllCaches() {
 		// This method will be scheduled to run every 12 hours
 		// and will evict all entries in the specified caches
@@ -1096,13 +1102,15 @@ public class DreamServiceImpl implements DreamService {
 		if (dataList != null && date != null) {
 			List<List<Object>> list = dataList.stream().filter(item -> item.get(9).equals(date))
 					.collect(Collectors.toList());
+
 			List<FollowUpDto> dto = getLimitedRowsBatchAndDate(list, date, startIndex, endIndex);
+			Collections.reverse(dto);
 			FollowUpDataDto followUpDataDto = new FollowUpDataDto(dto, list.size());
 			logger.info("Getting detiles is {} ", followUpDataDto);
 			return ResponseEntity.ok(followUpDataDto);
 
 		}
-		logger.info("Detiles not fount ");
+		logger.info("Detiles not found ");
 
 		return null;
 

@@ -20,6 +20,8 @@ import javax.mail.Session;
 import javax.mail.Transport;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
+
+import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -169,6 +171,7 @@ public class UtilDev implements DreamUtil {
 		}
 		return this.sendCourseContentMailChimp(email, recipientName);
 	}
+
 	@Override
 	public boolean sendWhatsAppLink(List<String> traineeEmail, String subject, String whatsAppLink) {
 		return sendWhatsAppLinkToChimp(traineeEmail, subject, whatsAppLink);
@@ -192,7 +195,7 @@ public class UtilDev implements DreamUtil {
 			messageHelper.setText(content, true);
 		};
 
-		return chimpMailService.validateAndSendMailByMailId(messagePreparator);
+		return chimpMailService.validateAndSendMailByMailOtp(messagePreparator);
 	}
 
 
@@ -252,5 +255,10 @@ public class UtilDev implements DreamUtil {
 		};
 
 		return chimpMailService.validateAndSendMailByMailId(messagePreparator);
+	}
+
+	@Override
+	public boolean sms(TraineeDto dto) {
+		return true;
 	}
 }
