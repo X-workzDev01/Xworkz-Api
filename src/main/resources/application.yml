@@ -1,6 +1,7 @@
 spring:
    profiles:
-      active: prod
+      active: dev
+
    freemarker:
     template-loader-path: classpath:/templates/
 
@@ -59,13 +60,7 @@ mail:
    smtpPort: 587
    userName: xworkzdev@outlook.com
    password: KeepIT@Temp789 
-logging:
-  file: D:/file.log
-  level:
-    root: INFO
-  pattern:
-    console: "%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n"
-    file: "%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n"
+
 
     
 login:

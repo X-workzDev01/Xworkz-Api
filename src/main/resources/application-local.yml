@@ -10,10 +10,13 @@ sheets:
   liveKey: live_1c9a44377323556a9243
 
 
+
 mailChimp:
   userName: 7FzbzzHIVQSVJVz5r4n/bGa/lhNWJCXUq6oqBxBCTYQ=
   password: +mgZp4MIPWMTkaJ/pwphDw==
   smtpHostChimp: yj/mpkyGHCjMIsVaHCMyxQZ4EBNjg/Ep6CbXhjKA7v0=
+  templateIdEnquiry: 1607100000000111863
+
   
 mail:
    smtpHost: smtp.office365.com
@@ -26,3 +29,16 @@ login:
   sheetId: 1p3G4et36vkzSDs3W63cj6qnUFEWljLos2HHXIZd78Gg
   cookieDomain: localhost
 
+logging:
+  file:
+    name: ../Dream.log
+    max-size: 1MB
+    total-size-cap: 10MB
+    max-history: '10'
+    clean-history-on-start: 'true'
+  level:
+    root: INFO
+  pattern:
+    console: "%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n"
+    file: "%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n"
+    rolling-file-name: Dream-%d{yyyy-MM-dd}.%i.log
