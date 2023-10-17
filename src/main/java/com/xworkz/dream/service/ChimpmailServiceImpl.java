@@ -41,7 +41,7 @@ public class ChimpmailServiceImpl implements ChimpMailService {
 
 	private Logger logger = LoggerFactory.getLogger(ChimpmailServiceImpl.class);
 
-	@Async
+//	@Async
 	@Override
 	public boolean validateAndSendMailByMailId(MimeMessagePreparator messagePreparator) {
 		logger.info("invoked validateAndSendMailByMailId of SpringMailServiceImpl...");
