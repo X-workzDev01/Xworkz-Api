@@ -207,7 +207,7 @@ public class WhatsAppServiceImpl implements WhatsAppService {
 	                .map(row -> {
 	                    TraineeDto dto = wrapper.listToDto(row);
 	                    if (dto == null) {
-	                        return null; // Handle the case where TraineeDto is null
+	                        return null;
 	                    }
 	                    FollowUpDto followUp = null;
 	                    try {
@@ -217,7 +217,7 @@ public class WhatsAppServiceImpl implements WhatsAppService {
 	                    }
 
 	                    if (followUp == null) {
-	                        return null; // Handle the case where FollowUpDto is null
+	                        return null; 
 	                    }
 
 	                    FollowUpDto fdto = new FollowUpDto();
@@ -231,7 +231,7 @@ public class WhatsAppServiceImpl implements WhatsAppService {
 	                    fdto.setRegistrationDate(followUp.getRegistrationDate());
 	                    return fdto;
 	                })
-	                .filter(Objects::nonNull) // Remove null elements
+	                .filter(Objects::nonNull)
 	                .sorted(Comparator.comparing(FollowUpDto::getRegistrationDate)) // Sort by registration date and time
 	                .collect(Collectors.toList());
 
@@ -244,5 +244,67 @@ public class WhatsAppServiceImpl implements WhatsAppService {
 	    }
 	}
 
+	public ResponseEntity<List<FollowUpDto>> traineeDetailsByCourseAndStatusInFollowUp(String spreadsheetId,
+	        String courseName, String status) throws IOException {
+	    System.out.println("traineeDetailsByCourseAndStatusInFollowUp");
+	    try {
+	        if (spreadsheetId == null || courseName == null || repo == null || wrapper == null || service == null || status == null) {
+	            return ResponseEntity.badRequest().build();
+	        }
+
+	        List<List<Object>> followUpData = repo.getFollowUpDetails(spreadsheetId);
+	        List<List<Object>> traineeData = repo.readData(spreadsheetId);
+
+	        if (followUpData == null || traineeData == null) {
+	            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(Collections.emptyList());
+	        }
+
+	        List<FollowUpDto> followUpDto = traineeData.stream()
+	                .filter(row -> row != null && row.size() > 9 && row.contains(courseName))
+	                .map(row -> {
+	                    TraineeDto dto = wrapper.listToDto(row);
+	                    if (dto == null) {
+	                        return null;
+	                    }
+	                    FollowUpDto followUp = null;
+	                    try {
+	                        followUp = service.getFollowUpDetailsByEmail(spreadsheetId, dto.getBasicInfo().getEmail());
+	                    } catch (IOException e) {
+	                        e.printStackTrace();
+	                    }
+
+	                    if (followUp == null) {
+	                        return null;
+	                    }
+
+	                    // Check if the followUp's current status matches the provided status
+	                    if (followUp.getCurrentStatus().equalsIgnoreCase(status)) {
+	                        FollowUpDto fdto = new FollowUpDto();
+	                        fdto.setId(dto.getId());
+	                        fdto.setBasicInfo(dto.getBasicInfo());
+	                        fdto.setCourseName(dto.getCourseInfo().getCourse());
+	                        fdto.setCallback(followUp.getCallback());
+	                        fdto.setCurrentlyFollowedBy(followUp.getCurrentlyFollowedBy());
+	                        fdto.setCurrentStatus(followUp.getCurrentStatus());
+	                        fdto.setJoiningDate(followUp.getJoiningDate());
+	                        fdto.setRegistrationDate(followUp.getRegistrationDate());
+	                       
+	                        return fdto;
+	                    } else {
+	                        return null; // Skip this entry if status does not match
+	                    }
+	                })
+	                .filter(Objects::nonNull)
+	                .sorted(Comparator.comparing(FollowUpDto::getRegistrationDate)) // Sort by registration date and time
+	                .collect(Collectors.toList());
+	        
+	        return !followUpDto.isEmpty()
+	                ? ResponseEntity.ok(followUpDto)
+	                : ResponseEntity.status(HttpStatus.NOT_FOUND).body(Collections.emptyList());
+	    } catch (IOException e) {
+	        logger.error("An IOException occurred: " + e.getMessage(), e);
+	        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(Collections.emptyList());
+	    }
+	}
 
 }

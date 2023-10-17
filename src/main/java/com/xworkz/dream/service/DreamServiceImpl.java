@@ -160,18 +160,18 @@ public class DreamServiceImpl implements DreamService {
 			if (status) {
 				logger.info("Data written successfully to spreadsheetId and Added to Follow Up: {}", spreadsheetId);
 //				if (isRegisterRequest(request)) {
-					saveBirthDayInfo(spreadsheetId, dto, request);
-					boolean sent = util.sendCourseContent(dto.getBasicInfo().getEmail(),
-							dto.getBasicInfo().getTraineeName());
-				
-					if (sent) {
-						return ResponseEntity.ok("Data written successfully, Added to follow Up, sent course content");
-					} else {
-						return ResponseEntity.ok("Email not sent, Data written successfully, Added to follow Up");
-					}
-					
+				saveBirthDayInfo(spreadsheetId, dto, request);
+				boolean sent = util.sendCourseContent(dto.getBasicInfo().getEmail(),
+						dto.getBasicInfo().getTraineeName());
+
+				if (sent) {
+					return ResponseEntity.ok("Data written successfully, Added to follow Up, sent course content");
+				} else {
+					return ResponseEntity.ok("Email not sent, Data written successfully, Added to follow Up");
+				}
+
 //				}
-				
+
 			}
 			repo.evictAllCachesOnTraineeDetails();
 			return ResponseEntity.ok("Data written successfully, not added to Follow Up");
@@ -237,7 +237,7 @@ public class DreamServiceImpl implements DreamService {
 						return ResponseEntity.ok("Email not sent, Data written successfully, Added to follow Up");
 					}
 				}
-			repo.evictAllCachesOnTraineeDetails();
+				repo.evictAllCachesOnTraineeDetails();
 			}
 			return ResponseEntity.ok("Data written successfully, not added to Follow Up");
 		} catch (Exception e) {
@@ -698,6 +698,7 @@ public class DreamServiceImpl implements DreamService {
 			String status) throws IOException {
 		List<FollowUpDto> followUpDto = new ArrayList<FollowUpDto>();
 		List<List<Object>> lists = repo.getFollowUpDetails(spreadsheetId);
+		List<List<Object>> traineeData = repo.readData(spreadsheetId);
 
 		if (status != null && !status.isEmpty() && lists != null) {
 
@@ -711,6 +712,11 @@ public class DreamServiceImpl implements DreamService {
 						list -> list != null && !list.isEmpty() && list.size() > 4 ? list.get(4).toString() : "",
 						Comparator.reverseOrder())).collect(Collectors.toList());
 				followUpDto = getFollowUpRows(sortedData, startingIndex, maxRows);
+				followUpDto.stream().forEach(dto -> {
+					TraineeDto traineedto = getTraineeDtoByEmail(traineeData, dto.getBasicInfo().getEmail());
+					dto.setCourseName(traineedto.getCourseInfo().getCourse());
+				});
+
 				FollowUpDataDto followUpDataDto = new FollowUpDataDto(followUpDto, data.size());
 				repo.evictAllCachesOnTraineeDetails();
 				return ResponseEntity.ok(followUpDataDto);
@@ -722,6 +728,16 @@ public class DreamServiceImpl implements DreamService {
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null); // Return a bad request if status is null
 																				// or empty
 		}
+	}
+
+	private TraineeDto getTraineeDtoByEmail(List<List<Object>> traineeData, String email) {
+		if (traineeData == null || email == null) {
+			return null;
+		}
+
+		return traineeData.stream()
+				.filter(row -> row.size() > 2 && row.get(2) != null && row.get(2).toString().equalsIgnoreCase(email))
+				.map(wrapper::listToDto).findFirst().orElse(null);
 	}
 
 	@Override
@@ -1080,7 +1096,7 @@ public class DreamServiceImpl implements DreamService {
 		if (updated.isEmpty()) {
 			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("An error occurred ");
 		} else {
-		//	repo.evictAllCachesOnTraineeDetails();
+			// repo.evictAllCachesOnTraineeDetails();
 			return ResponseEntity.ok("Updated Successfully");
 		}
 	}
@@ -1125,5 +1141,5 @@ public class DreamServiceImpl implements DreamService {
 		}
 		return followUpDtos;
 	}
-	
+
 }

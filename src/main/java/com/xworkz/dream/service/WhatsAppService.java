@@ -26,4 +26,7 @@ public interface WhatsAppService {
 
 	public ResponseEntity<List<FollowUpDto>> getTraineeDetailsByCourseInFollowUp(String spreadsheetId,
 			String courseName) throws IOException;
+
+	public ResponseEntity<List<FollowUpDto>> traineeDetailsByCourseAndStatusInFollowUp(String spreadsheetId,
+			String courseName, String status) throws IOException;
 }
