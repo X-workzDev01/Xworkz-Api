@@ -80,5 +80,14 @@ public class CreateBatchInfoController {
 	public ResponseEntity<List<FollowUpDto>> traineeDetailsByCourseInFollowUp(@RequestHeader String spreadsheetId,
 			@RequestParam String courseName) throws IOException {
 		return whatsAppService.getTraineeDetailsByCourseInFollowUp(spreadsheetId, courseName);
-	}	
+	}
+	
+	@GetMapping("/getByCourseAndStatus")
+	@ApiOperation("To get the details of trainee based on the course and status in follow up")
+	public ResponseEntity<List<FollowUpDto>> traineeDetailsByCourseAndStatusInFollowUp(@RequestHeader String spreadsheetId,
+			@RequestParam String courseName,String status) throws IOException {
+		System.out.println("this is getByCourseAndStatus:"+courseName+" "+status);
+		return whatsAppService.traineeDetailsByCourseAndStatusInFollowUp(spreadsheetId, courseName,status);
+	}
+	
 }
