@@ -131,19 +131,24 @@ public class AttendanceServiceImpl implements AttendanceService {
 				}
 				if (attendanceList != null) {
 					logger.debug("Every day attendance detiles added sucessfully {}", attendanceList);
+					System.err.println(attendanceList);
 
 					attendanceList.stream().forEach(f -> {
 						attendanceDto = wrapper.attendanceListToDto(f);
+						if (attendanceDto.getMarkAs() != null) {
+							if (attendanceDto.getBasicInfo().getEmail().equalsIgnoreCase(dto.getBasicInfo().getEmail())
+									&& attendanceDto.getMarkAs().equals("1")) {
 
-						if (attendanceDto.getBasicInfo().getEmail().equalsIgnoreCase(dto.getBasicInfo().getEmail())
-								&& attendanceDto.getMarkAs().equals("1")) {
+								present++;
 
-							present++;
-
+							}
 						}
-						if (attendanceDto.getBasicInfo().getEmail().equalsIgnoreCase(dto.getBasicInfo().getEmail())
-								&& attendanceDto.getMarkAs().equals("0")) {
-							absent++;
+						if (attendanceDto.getMarkAs() != null) {
+
+							if (attendanceDto.getBasicInfo().getEmail().equalsIgnoreCase(dto.getBasicInfo().getEmail())
+									&& attendanceDto.getMarkAs().equals("0")) {
+								absent++;
+							}
 						}
 
 					});
@@ -169,7 +174,7 @@ public class AttendanceServiceImpl implements AttendanceService {
 					List<Object> row = data.get(i);
 					if (row.size() > 0 && row.get(2).toString().equalsIgnoreCase(email)) {
 						return i + 2;
-					} 
+					}
 				}
 			}
 		}
@@ -202,13 +207,18 @@ public class AttendanceServiceImpl implements AttendanceService {
 
 		List<List<Object>> attendanceList = attendanceRepository.attendanceDetilesByEmail(sheetId, batch,
 				attendanceInfoRange);
+
 		if (attendanceList != null) {
 			List<List<Object>> filter = attendanceList.stream().filter(e -> e.contains(batch))
 					.collect(Collectors.toList());
+			System.err.println("ffffffffffffffffffffffffffffffff" + filter);
+			
 
 			List<AttendanceDto> dtos = this.getLimitedRows(filter, startIndex, maxRows);
+
 			AttadanceSheetDto sheetDto = new AttadanceSheetDto(dtos, filter.size());
 			logger.debug("Dto is  attandance :{} ", sheetDto);
+			System.err.println("ffffffffffffffffffffffffffffffff" + sheetDto);
 
 			return ResponseEntity.ok(sheetDto);
 		}
@@ -293,7 +303,7 @@ public class AttendanceServiceImpl implements AttendanceService {
 		return null;
 	}
 
-	@Scheduled(fixedRate = 86400000) // 1000 is equal to 1 second
+	@Scheduled(fixedRate = 60 * 24 * 60 * 1000) // 1000 is equal to 1 second
 	public void schudulerAttandance() throws IOException {
 
 		attendanceRepository.clearColumnData(sheetId, "attendanceInfo!J2:J");
