@@ -235,18 +235,15 @@ public class WhatsAppServiceImpl implements WhatsAppService {
 	                .sorted(Comparator.comparing(FollowUpDto::getRegistrationDate)) // Sort by registration date and time
 	                .collect(Collectors.toList());
 
-	        return !followUpDto.isEmpty()
-	                ? ResponseEntity.ok(followUpDto)
-	                : ResponseEntity.status(HttpStatus.NOT_FOUND).body(Collections.emptyList());
+	        return ResponseEntity.ok(followUpDto);
 	    } catch (IOException e) {
 	        logger.error("An IOException occurred: " + e.getMessage(), e);
 	        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(Collections.emptyList());
 	    }
 	}
-
+	@Override
 	public ResponseEntity<List<FollowUpDto>> traineeDetailsByCourseAndStatusInFollowUp(String spreadsheetId,
 	        String courseName, String status) throws IOException {
-	    System.out.println("traineeDetailsByCourseAndStatusInFollowUp");
 	    try {
 	        if (spreadsheetId == null || courseName == null || repo == null || wrapper == null || service == null || status == null) {
 	            return ResponseEntity.badRequest().build();
@@ -295,12 +292,10 @@ public class WhatsAppServiceImpl implements WhatsAppService {
 	                    }
 	                })
 	                .filter(Objects::nonNull)
-	                .sorted(Comparator.comparing(FollowUpDto::getRegistrationDate)) // Sort by registration date and time
+	                .sorted(Comparator.comparing(FollowUpDto::getRegistrationDate).reversed()) // Sort by registration date and time
 	                .collect(Collectors.toList());
-	        
-	        return !followUpDto.isEmpty()
-	                ? ResponseEntity.ok(followUpDto)
-	                : ResponseEntity.status(HttpStatus.NOT_FOUND).body(Collections.emptyList());
+	        return  ResponseEntity.ok(followUpDto);
+	               
 	    } catch (IOException e) {
 	        logger.error("An IOException occurred: " + e.getMessage(), e);
 	        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(Collections.emptyList());

@@ -39,6 +39,7 @@ import org.springframework.web.context.request.ServletRequestAttributes;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.dataformat.yaml.snakeyaml.Yaml;
+import com.google.api.services.sheets.v4.Sheets;
 import com.google.api.services.sheets.v4.model.UpdateValuesResponse;
 import com.google.api.services.sheets.v4.model.ValueRange;
 import com.xworkz.dream.constants.FollowUp;
@@ -94,6 +95,7 @@ public class DreamServiceImpl implements DreamService {
 	private ResourceLoader resourceLoader;
 	@Value("${login.teamFile}")
 	private String userFile;
+	@Value("${sheets.range}")
 	@Autowired
 	private EmailableClient emailableClient;
 	@Value("${sheets.rowStartRange}")
@@ -173,7 +175,7 @@ public class DreamServiceImpl implements DreamService {
 //				}
 
 			}
-			repo.evictAllCachesOnTraineeDetails();
+			//repo.evictAllCachesOnTraineeDetails();
 			return ResponseEntity.ok("Data written successfully, not added to Follow Up");
 		} catch (Exception e) {
 			logger.error("Error processing request: " + e.getMessage(), e);
@@ -237,7 +239,7 @@ public class DreamServiceImpl implements DreamService {
 						return ResponseEntity.ok("Email not sent, Data written successfully, Added to follow Up");
 					}
 				}
-				repo.evictAllCachesOnTraineeDetails();
+				//repo.evictAllCachesOnTraineeDetails();
 			}
 			return ResponseEntity.ok("Data written successfully, not added to Follow Up");
 		} catch (Exception e) {
@@ -476,13 +478,12 @@ public class DreamServiceImpl implements DreamService {
 					UpdateValuesResponse updated = repo.update(spreadsheetId, range, valueRange);
 					if (updated != null && !updated.isEmpty()) {
 						boolean followUpResponse = updateFollowUp(spreadsheetId, email, dto);
-						repo.evictAllCachesOnTraineeDetails();
+						//repo.evictAllCachesOnTraineeDetails();
 						return ResponseEntity.ok("Updated Successfully");
 					} else {
 						return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("An error occurred ");
 					}
 				} catch (IllegalAccessException e) {
-					e.printStackTrace();
 					return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("An error occurred ");
 				}
 			} else {
@@ -518,7 +519,7 @@ public class DreamServiceImpl implements DreamService {
 			UpdateValuesResponse updated = repo.updateFollow(spreadsheetId, range, valueRange);
 
 			if (updated != null && !updated.isEmpty()) {
-				repo.evictAllCachesOnTraineeDetails();
+				//repo.evictAllCachesOnTraineeDetails();
 				return true;
 			} else {
 				return false;
@@ -678,6 +679,8 @@ public class DreamServiceImpl implements DreamService {
 			return new ResponseEntity<>("Email Not Found", HttpStatus.NOT_FOUND);
 		}
 	}
+
+
 
 	@Override
 	public ResponseEntity<FollowUpDto> getFollowUpByEmail(String spreadsheetId, String email,
