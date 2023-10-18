@@ -1,5 +1,6 @@
 package com.xworkz.dream.service;
 
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -73,7 +74,6 @@ import com.xworkz.dream.wrapper.DreamWrapper;
 import freemarker.template.TemplateException;
 
 @Service
-
 public class DreamServiceImpl implements DreamService {
 
 	@Autowired
@@ -707,6 +707,7 @@ public class DreamServiceImpl implements DreamService {
 			return ResponseEntity.ok(followUp);
 		}
 	}
+	
 
 	@Override
 	public ResponseEntity<FollowUpDataDto> getFollowUpDetails(String spreadsheetId, int startingIndex, int maxRows,
@@ -744,6 +745,15 @@ public class DreamServiceImpl implements DreamService {
 																				// or empty
 		}
 	}
+	private TraineeDto getTraineeDtoByEmail(List<List<Object>> traineeData, String email) {
+		if (traineeData == null || email == null) {
+			return null;
+		}
+		return traineeData.stream()
+				.filter(row -> row.size() > 2 && row.get(2) != null && row.get(2).toString().equalsIgnoreCase(email))
+				.map(wrapper::listToDto).findFirst().orElse(null);
+	}
+
 
 	private TraineeDto getTraineeDtoByEmail(List<List<Object>> traineeData, String email) {
 		if (traineeData == null || email == null) {

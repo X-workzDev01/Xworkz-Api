@@ -161,7 +161,7 @@ public class DreamRepositoryImpl implements DreamRepository {
 	}
 
 	@Override
-	//@CachePut(value = "sheetsData", key = "#spreadsheetId", unless = "#result == null")
+	@CachePut(value = "sheetsData", key = "#spreadsheetId", unless = "#result == null")
 	public UpdateValuesResponse update(String spreadsheetId, String range2, ValueRange valueRange) throws IOException {
 		System.err.println("Running cache put");
 		return sheetsService.spreadsheets().values().update(spreadsheetId, range2, valueRange)
@@ -208,7 +208,6 @@ public class DreamRepositoryImpl implements DreamRepository {
 		sheetsService.spreadsheets().values().update(spreadsheetId, currentFollowRange, body)
 				.setValueInputOption("USER_ENTERED").execute();
 		return true;
-
 	}
 
 	@Override
@@ -315,7 +314,7 @@ public class DreamRepositoryImpl implements DreamRepository {
 	}
 	
 	@Override
-	//@CachePut(value = "birthadayDetails", key = "#spreadsheetId", unless = "#result == null")
+	@CachePut(value = "birthadayDetails", key = "#spreadsheetId", unless = "#result == null")
 	public List<List<Object>> getBirthadayDetails(String spreadsheetId) throws IOException {
 		ValueRange response = sheetsService.spreadsheets().values().get(spreadsheetId, dateOfBirthDetailsRange).execute();
 		return response.getValues();

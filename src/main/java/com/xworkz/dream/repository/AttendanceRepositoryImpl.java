@@ -51,7 +51,7 @@ public class AttendanceRepositoryImpl implements AttendanceRepository {
 	private ResourceLoader resourceLoader;
 
 	@PostConstruct
-	private void setSheetsService() throws IOException, FileNotFoundException, GeneralSecurityException {
+	private void setSheetsService() throws Exception  {
 
 		Resource resource = resourceLoader.getResource(credentialsPath);
 		File file = resource.getFile();
