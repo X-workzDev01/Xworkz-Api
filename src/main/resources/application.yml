@@ -6,7 +6,7 @@ spring:
     template-loader-path: classpath:/templates/
 
 sheets:
-  
+ 
   appName: Dream Api
   range: A3:AC
   emailRange: C3:C
@@ -33,9 +33,9 @@ sheets:
   batchDetailsRange: batchDetails!A2:I 
   batchIdRange: batchDetails!A2:A
   dateOfBirthDetailsSheetName: dateOfBirthDetails!
-  dateOfBirthDetailsRange: dateOfBirthDetails!A2:D
+  dateOfBirthDetailsRange: dateOfBirthDetails!A2:E
   birthdayRange: dateOfBirthDetails!A2:A
-  attendanceInfoRange: attendanceInfo!A2:J
+  attendanceInfoRange: attendanceInfo!A2:M
   attendanceInfoIDRange: attendanceInfo!A2:J
   followUpStatusIdRange: followUpStatus!A2:A
   attendanceInfoByName: attendanceInfo!A2:E

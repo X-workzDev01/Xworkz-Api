@@ -137,7 +137,6 @@ public class DreamRepositoryImpl implements DreamRepository {
 	@Cacheable(value = "getDropdowns", key = "#spreadsheetId", unless = "#result == null")
 	public List<List<Object>> getDropdown(String spreadsheetId) throws IOException {
 		ValueRange response = sheetsService.spreadsheets().values().get(spreadsheetId, dropdownRange).execute();
-
 		return response.getValues();
 	}
 
@@ -164,6 +163,7 @@ public class DreamRepositoryImpl implements DreamRepository {
 	@Override
 	@CachePut(value = "sheetsData", key = "#spreadsheetId", unless = "#result == null")
 	public UpdateValuesResponse update(String spreadsheetId, String range2, ValueRange valueRange) throws IOException {
+		System.err.println("Running cache put");
 		return sheetsService.spreadsheets().values().update(spreadsheetId, range2, valueRange)
 				.setValueInputOption("RAW").execute();
 	}
@@ -179,7 +179,9 @@ public class DreamRepositoryImpl implements DreamRepository {
 	}
 
 	@Override
+	@CachePut(value = "followUpDetails", key = "#spreadsheetId", unless = "#result == null")
 	public boolean updateFollowUpStatus(String spreadsheetId, List<Object> statusData) throws IOException {
+		System.out.println("this is cachepu.......");
 		List<List<Object>> list = new ArrayList<List<Object>>();
 		list.add(statusData);
 		ValueRange body = new ValueRange().setValues(list);
@@ -262,6 +264,7 @@ public class DreamRepositoryImpl implements DreamRepository {
 	}
 
 	@Override
+	@CachePut(value = "followUpDetails", key = "#spreadsheetId", unless = "#result == null")
 	public UpdateValuesResponse updateFollow(String spreadsheetId, String range2, ValueRange valueRange)
 			throws IOException {
 		return sheetsService.spreadsheets().values().update(spreadsheetId, range2, valueRange)
@@ -311,7 +314,7 @@ public class DreamRepositoryImpl implements DreamRepository {
 	}
 	
 	@Override
-	@Cacheable(value = "birthadayDetails", key = "#spreadsheetId", unless = "#result == null")
+	@CachePut(value = "birthadayDetails", key = "#spreadsheetId", unless = "#result == null")
 	public List<List<Object>> getBirthadayDetails(String spreadsheetId) throws IOException {
 		ValueRange response = sheetsService.spreadsheets().values().get(spreadsheetId, dateOfBirthDetailsRange).execute();
 		return response.getValues();

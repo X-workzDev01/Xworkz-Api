@@ -64,7 +64,7 @@ public class AttendanceRepositoryImpl implements AttendanceRepository {
 	}
 
 	@Override
-	@CachePut(value = "update", key = "#valueRange")
+//	@CachePut(value = "writeAttendance", key = "#spreadsheetId", unless = "#result == null")
 	public boolean writeAttendance(String spreadsheetId, List<Object> row, String range) throws IOException {
 		List<List<Object>> values = new ArrayList<>();
 		values.add(row);
@@ -76,14 +76,15 @@ public class AttendanceRepositoryImpl implements AttendanceRepository {
 	}
 
 	@Override
-	@CachePut(value = "update", key = "#valueRange")
+//	@Cacheable(value = "byEmail", key = "#sheetId", unless = "#result == null")
+
 	public List<List<Object>> attendanceDetilesByEmail(String sheetId, String email, String range) throws IOException {
 		ValueRange response = sheetsService.spreadsheets().values().get(sheetId, range).execute();
 		return response.getValues();
 	}
 
 	@Override
-	@CachePut(value = "update", key = "#valueRange")
+//	@CachePut(value = "everyDay", key = "#spreadsheetId", unless = "#result == null")
 	public boolean everyDayAttendance(String spreadsheetId, List<Object> row, String range) throws IOException {
 		List<List<Object>> values = new ArrayList<>();
 		values.add(row);
@@ -94,14 +95,14 @@ public class AttendanceRepositoryImpl implements AttendanceRepository {
 	}
 
 	@Override
-	@CachePut(value = "update", key = "#valueRange")
+//	@Cacheable(value = "getEmail", key = "#spreadsheetId", unless = "#result == null")
 	public List<List<Object>> getEmail(String spreadsheetId, String range) throws IOException {
 		ValueRange response = sheetsService.spreadsheets().values().get(spreadsheetId, range).execute();
 		return response.getValues();
 	}
 
 	@Override
-	@CachePut(value = "update", key = "#valueRange")
+//	@CachePut(value = "update", key = "#spreadsheetId", unless = "#result == null")
 	public UpdateValuesResponse update(String spreadsheetId, String range, ValueRange valueRange) throws IOException {
 		return sheetsService.spreadsheets().values().update(spreadsheetId, range, valueRange).setValueInputOption("RAW")
 				.execute();

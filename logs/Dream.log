@@ -1,18 +1,761 @@
-23:29:23.548 [Test worker] WARN  o.s.b.t.j.DuplicateJsonObjectContextCustomizerFactory$DuplicateJsonObjectContextCustomizer - 
 
-Found multiple occurrences of org.json.JSONObject on the class path:
+12:22:00.609 [restartedMain] INFO  c.xworkz.dream.XworkzApiApplication - Starting XworkzApiApplication using Java 15.0.2 on LAPTOP-HPEIOEQL with PID 14800 (D:\Xworkz Relese Code\Xworkz-Api\bin\main started by Acer in D:\Xworkz Relese Code\Xworkz-Api)
+12:22:00.611 [restartedMain] DEBUG c.xworkz.dream.XworkzApiApplication - Running with Spring Boot v2.7.5, Spring v5.3.23
+12:22:00.612 [restartedMain] INFO  c.xworkz.dream.XworkzApiApplication - The following 1 profile is active: "prod"
+12:22:00.670 [restartedMain] INFO  o.s.b.d.e.DevToolsPropertyDefaultsPostProcessor - Devtools property defaults active! Set 'spring.devtools.add-properties' to 'false' to disable
+12:22:00.671 [restartedMain] INFO  o.s.b.d.e.DevToolsPropertyDefaultsPostProcessor - For additional web related logging consider setting the 'logging.level.web' property to 'DEBUG'
+12:22:01.838 [restartedMain] INFO  o.s.cloud.context.scope.GenericScope - BeanFactory id=3b060256-7c24-379d-9aa7-1e1ed644c886
+12:22:02.534 [restartedMain] INFO  o.s.b.w.e.tomcat.TomcatWebServer - Tomcat initialized with port(s): 8081 (http)
+12:22:02.546 [restartedMain] INFO  o.a.catalina.core.StandardService - Starting service [Tomcat]
+12:22:02.546 [restartedMain] INFO  o.a.catalina.core.StandardEngine - Starting Servlet engine: [Apache Tomcat/9.0.68]
+12:22:02.669 [restartedMain] INFO  o.a.c.c.C.[Tomcat].[localhost].[/] - Initializing Spring embedded WebApplicationContext
+12:22:02.669 [restartedMain] INFO  o.s.b.w.s.c.ServletWebServerApplicationContext - Root WebApplicationContext: initialization completed in 1986 ms
+12:22:02.733 [restartedMain] INFO  c.xworkz.dream.util.EncryptionHelper - {} is Created...........
+12:22:03.152 [restartedMain] INFO  o.s.b.d.a.OptionalLiveReloadServer - LiveReload server is running on port 35729
+12:22:04.279 [restartedMain] INFO  o.s.b.w.e.tomcat.TomcatWebServer - Tomcat started on port(s): 8081 (http) with context path ''
+12:22:04.983 [restartedMain] INFO  c.xworkz.dream.XworkzApiApplication - Started XworkzApiApplication in 4.872 seconds (JVM running for 5.438)
+12:41:50.891 [http-nio-8081-exec-1] INFO  o.a.c.c.C.[Tomcat].[localhost].[/] - Initializing Spring DispatcherServlet 'dispatcherServlet'
+12:41:50.895 [http-nio-8081-exec-1] INFO  o.s.web.servlet.DispatcherServlet - Initializing Servlet 'dispatcherServlet'
+12:41:50.951 [http-nio-8081-exec-1] INFO  o.s.web.servlet.DispatcherServlet - Completed initialization in 55 ms
+12:41:51.088 [http-nio-8081-exec-2] INFO  c.x.dream.resource.LoginController - Logging in with email: xworkzdev4@gmail.com
+12:41:51.091 [http-nio-8081-exec-2] INFO  c.x.dream.service.LoginServiceImpl - Validating login for email: xworkzdev4@gmail.com
+12:41:51.092 [http-nio-8081-exec-2] DEBUG c.x.dream.service.LoginServiceImpl - Finding user by email: xworkzdev4@gmail.com
+12:41:51.128 [http-nio-8081-exec-2] DEBUG c.x.dream.service.LoginServiceImpl - Found user by email: xworkzdev4@gmail.com
+12:41:51.129 [http-nio-8081-exec-2] DEBUG c.x.dream.service.LoginServiceImpl - Generated OTP: 562541
+12:41:51.129 [http-nio-8081-exec-2] DEBUG com.xworkz.dream.util.UtilDev - Sending email to xworkzdev4@gmail.com: Subject: OTP for Login,
+12:41:51.573 [http-nio-8081-exec-2] INFO  c.x.d.service.ChimpmailServiceImpl - invoked validateAndSendMailByMailId of SpringMailServiceImpl...
+12:41:56.711 [http-nio-8081-exec-2] INFO  c.x.d.service.ChimpmailServiceImpl - Mail sent successfully
+12:41:56.712 [http-nio-8081-exec-2] INFO  c.x.dream.service.LoginServiceImpl - OTP sent successfully for email: xworkzdev4@gmail.com
+14:30:29.634 [File Watcher] INFO  o.s.b.d.a.LocalDevToolsAutoConfiguration$RestartingClassPathChangeChangedEventListener - Restarting due to 1 class path change (0 additions, 0 deletions, 1 modification)
+14:30:29.694 [Thread-5] INFO  o.a.catalina.core.StandardService - Stopping service [Tomcat]
+14:30:29.706 [Thread-5] INFO  o.a.c.c.C.[Tomcat].[localhost].[/] - Destroying Spring FrameworkServlet 'dispatcherServlet'
+21:03:08.978 [restartedMain] INFO  c.xworkz.dream.XworkzApiApplication - Starting XworkzApiApplication using Java 15.0.2 on LAPTOP-HPEIOEQL with PID 8936 (D:\Xworkz Relese Code\Xworkz-Api\bin\main started by Acer in D:\Xworkz Relese Code\Xworkz-Api)
+21:03:08.979 [restartedMain] DEBUG c.xworkz.dream.XworkzApiApplication - Running with Spring Boot v2.7.5, Spring v5.3.23
+21:03:08.980 [restartedMain] INFO  c.xworkz.dream.XworkzApiApplication - The following 1 profile is active: "prod"
+21:03:09.516 [restartedMain] INFO  o.s.cloud.context.scope.GenericScope - BeanFactory id=3b060256-7c24-379d-9aa7-1e1ed644c886
+21:03:09.589 [restartedMain] INFO  o.s.b.w.e.tomcat.TomcatWebServer - Tomcat initialized with port(s): 8081 (http)
+21:03:09.591 [restartedMain] INFO  o.a.catalina.core.StandardService - Starting service [Tomcat]
+21:03:09.591 [restartedMain] INFO  o.a.catalina.core.StandardEngine - Starting Servlet engine: [Apache Tomcat/9.0.68]
+21:03:09.658 [restartedMain] INFO  o.a.c.c.C.[Tomcat].[localhost].[/] - Initializing Spring embedded WebApplicationContext
+21:03:09.658 [restartedMain] INFO  o.s.b.w.s.c.ServletWebServerApplicationContext - Root WebApplicationContext: initialization completed in 675 ms
+21:03:09.669 [restartedMain] INFO  c.xworkz.dream.util.EncryptionHelper - {} is Created...........
+21:03:09.767 [restartedMain] INFO  o.s.b.d.a.OptionalLiveReloadServer - LiveReload server is running on port 35729
+21:03:10.086 [restartedMain] INFO  o.s.b.w.e.tomcat.TomcatWebServer - Tomcat started on port(s): 8081 (http) with context path ''
+21:03:10.525 [restartedMain] INFO  c.xworkz.dream.XworkzApiApplication - Started XworkzApiApplication in 1.76 seconds (JVM running for 203.453)
+21:03:10.527 [restartedMain] INFO  o.s.b.d.a.ConditionEvaluationDeltaLoggingListener - Condition evaluation unchanged
+21:03:23.806 [File Watcher] INFO  o.s.b.d.a.LocalDevToolsAutoConfiguration$RestartingClassPathChangeChangedEventListener - Restarting due to 1 class path change (0 additions, 0 deletions, 1 modification)
+21:03:23.832 [Thread-27] INFO  o.a.catalina.core.StandardService - Stopping service [Tomcat]
+21:03:24.140 [restartedMain] INFO  c.xworkz.dream.XworkzApiApplication - Starting XworkzApiApplication using Java 15.0.2 on LAPTOP-HPEIOEQL with PID 8936 (D:\Xworkz Relese Code\Xworkz-Api\bin\main started by Acer in D:\Xworkz Relese Code\Xworkz-Api)
+21:03:24.141 [restartedMain] DEBUG c.xworkz.dream.XworkzApiApplication - Running with Spring Boot v2.7.5, Spring v5.3.23
+21:03:24.141 [restartedMain] INFO  c.xworkz.dream.XworkzApiApplication - The following 1 profile is active: "prod"
+21:03:24.467 [restartedMain] INFO  o.s.cloud.context.scope.GenericScope - BeanFactory id=3b060256-7c24-379d-9aa7-1e1ed644c886
+21:03:24.531 [restartedMain] INFO  o.s.b.w.e.tomcat.TomcatWebServer - Tomcat initialized with port(s): 8081 (http)
+21:03:24.532 [restartedMain] INFO  o.a.catalina.core.StandardService - Starting service [Tomcat]
+21:03:24.532 [restartedMain] INFO  o.a.catalina.core.StandardEngine - Starting Servlet engine: [Apache Tomcat/9.0.68]
+21:03:24.568 [restartedMain] INFO  o.a.c.c.C.[Tomcat].[localhost].[/] - Initializing Spring embedded WebApplicationContext
+21:03:24.568 [restartedMain] INFO  o.s.b.w.s.c.ServletWebServerApplicationContext - Root WebApplicationContext: initialization completed in 423 ms
+21:03:24.577 [restartedMain] INFO  c.xworkz.dream.util.EncryptionHelper - {} is Created...........
+21:03:24.644 [restartedMain] INFO  o.s.b.d.a.OptionalLiveReloadServer - LiveReload server is running on port 35729
+21:03:24.955 [restartedMain] INFO  o.s.b.w.e.tomcat.TomcatWebServer - Tomcat started on port(s): 8081 (http) with context path ''
+21:03:25.239 [restartedMain] INFO  c.xworkz.dream.XworkzApiApplication - Started XworkzApiApplication in 1.286 seconds (JVM running for 218.164)
+21:03:25.240 [restartedMain] INFO  o.s.b.d.a.ConditionEvaluationDeltaLoggingListener - Condition evaluation unchanged
+21:04:08.373 [File Watcher] INFO  o.s.b.d.a.LocalDevToolsAutoConfiguration$RestartingClassPathChangeChangedEventListener - Restarting due to 1 class path change (0 additions, 0 deletions, 1 modification)
+21:04:08.400 [Thread-33] INFO  o.a.catalina.core.StandardService - Stopping service [Tomcat]
+21:04:08.707 [restartedMain] INFO  c.xworkz.dream.XworkzApiApplication - Starting XworkzApiApplication using Java 15.0.2 on LAPTOP-HPEIOEQL with PID 8936 (D:\Xworkz Relese Code\Xworkz-Api\bin\main started by Acer in D:\Xworkz Relese Code\Xworkz-Api)
+21:04:08.707 [restartedMain] DEBUG c.xworkz.dream.XworkzApiApplication - Running with Spring Boot v2.7.5, Spring v5.3.23
+21:04:08.707 [restartedMain] INFO  c.xworkz.dream.XworkzApiApplication - The following 1 profile is active: "prod"
+21:04:09.042 [restartedMain] INFO  o.s.cloud.context.scope.GenericScope - BeanFactory id=3b060256-7c24-379d-9aa7-1e1ed644c886
+21:04:09.111 [restartedMain] INFO  o.s.b.w.e.tomcat.TomcatWebServer - Tomcat initialized with port(s): 8081 (http)
+21:04:09.112 [restartedMain] INFO  o.a.catalina.core.StandardService - Starting service [Tomcat]
+21:04:09.112 [restartedMain] INFO  o.a.catalina.core.StandardEngine - Starting Servlet engine: [Apache Tomcat/9.0.68]
+21:04:09.153 [restartedMain] INFO  o.a.c.c.C.[Tomcat].[localhost].[/] - Initializing Spring embedded WebApplicationContext
+21:04:09.153 [restartedMain] INFO  o.s.b.w.s.c.ServletWebServerApplicationContext - Root WebApplicationContext: initialization completed in 444 ms
+21:04:09.161 [restartedMain] INFO  c.xworkz.dream.util.EncryptionHelper - {} is Created...........
+21:04:09.226 [restartedMain] INFO  o.s.b.d.a.OptionalLiveReloadServer - LiveReload server is running on port 35729
+21:04:09.533 [restartedMain] INFO  o.s.b.w.e.tomcat.TomcatWebServer - Tomcat started on port(s): 8081 (http) with context path ''
+21:04:09.840 [restartedMain] INFO  c.xworkz.dream.XworkzApiApplication - Started XworkzApiApplication in 1.294 seconds (JVM running for 262.757)
+21:04:09.842 [restartedMain] INFO  o.s.b.d.a.ConditionEvaluationDeltaLoggingListener - Condition evaluation unchanged
+21:04:13.827 [scheduling-1] DEBUG com.xworkz.dream.util.UtilDev - Sending email to [Team(email=om@x-workz.in, name=omkar), Team(email=akshara@x-workz.in, name=akshara), Team(email=hr@x-workz.in, name=mamatha), Team(email=Amulya@x-workz.in, name=amulya), Team(email=keerthanahn.xworkz@gmail.com, name=keerthana)]: Subject: Follow Up Candidate Details,
+21:05:21.744 [File Watcher] INFO  o.s.b.d.a.LocalDevToolsAutoConfiguration$RestartingClassPathChangeChangedEventListener - Restarting due to 2 class path changes (0 additions, 0 deletions, 2 modifications)
+21:05:21.773 [Thread-39] INFO  o.a.catalina.core.StandardService - Stopping service [Tomcat]
+21:05:22.026 [restartedMain] INFO  c.xworkz.dream.XworkzApiApplication - Starting XworkzApiApplication using Java 15.0.2 on LAPTOP-HPEIOEQL with PID 8936 (D:\Xworkz Relese Code\Xworkz-Api\bin\main started by Acer in D:\Xworkz Relese Code\Xworkz-Api)
+21:05:22.026 [restartedMain] DEBUG c.xworkz.dream.XworkzApiApplication - Running with Spring Boot v2.7.5, Spring v5.3.23
+21:05:22.027 [restartedMain] INFO  c.xworkz.dream.XworkzApiApplication - The following 1 profile is active: "prod"
+21:05:22.277 [restartedMain] INFO  o.s.cloud.context.scope.GenericScope - BeanFactory id=3b060256-7c24-379d-9aa7-1e1ed644c886
+21:05:22.330 [restartedMain] INFO  o.s.b.w.e.tomcat.TomcatWebServer - Tomcat initialized with port(s): 8081 (http)
+21:05:22.332 [restartedMain] INFO  o.a.catalina.core.StandardService - Starting service [Tomcat]
+21:05:22.332 [restartedMain] INFO  o.a.catalina.core.StandardEngine - Starting Servlet engine: [Apache Tomcat/9.0.68]
+21:05:22.370 [restartedMain] INFO  o.a.c.c.C.[Tomcat].[localhost].[/] - Initializing Spring embedded WebApplicationContext
+21:05:22.370 [restartedMain] INFO  o.s.b.w.s.c.ServletWebServerApplicationContext - Root WebApplicationContext: initialization completed in 341 ms
+21:05:22.380 [restartedMain] INFO  c.xworkz.dream.util.EncryptionHelper - {} is Created...........
+21:05:22.458 [restartedMain] INFO  o.s.b.d.a.OptionalLiveReloadServer - LiveReload server is running on port 35729
+21:05:22.744 [restartedMain] INFO  o.s.b.w.e.tomcat.TomcatWebServer - Tomcat started on port(s): 8081 (http) with context path ''
+21:05:22.993 [restartedMain] INFO  c.xworkz.dream.XworkzApiApplication - Started XworkzApiApplication in 1.094 seconds (JVM running for 335.896)
+21:05:22.995 [restartedMain] INFO  o.s.b.d.a.ConditionEvaluationDeltaLoggingListener - Condition evaluation unchanged
+21:05:26.912 [scheduling-1] DEBUG com.xworkz.dream.util.UtilDev - Sending email to [Team(email=om@x-workz.in, name=omkar), Team(email=akshara@x-workz.in, name=akshara), Team(email=hr@x-workz.in, name=mamatha), Team(email=Amulya@x-workz.in, name=amulya), Team(email=keerthanahn.xworkz@gmail.com, name=keerthana)]: Subject: Follow Up Candidate Details,
+21:06:03.051 [File Watcher] INFO  o.s.b.d.a.LocalDevToolsAutoConfiguration$RestartingClassPathChangeChangedEventListener - Restarting due to 2 class path changes (0 additions, 0 deletions, 2 modifications)
+21:06:03.080 [Thread-45] INFO  o.a.catalina.core.StandardService - Stopping service [Tomcat]
+21:06:03.374 [restartedMain] INFO  c.xworkz.dream.XworkzApiApplication - Starting XworkzApiApplication using Java 15.0.2 on LAPTOP-HPEIOEQL with PID 8936 (D:\Xworkz Relese Code\Xworkz-Api\bin\main started by Acer in D:\Xworkz Relese Code\Xworkz-Api)
+21:06:03.375 [restartedMain] DEBUG c.xworkz.dream.XworkzApiApplication - Running with Spring Boot v2.7.5, Spring v5.3.23
+21:06:03.375 [restartedMain] INFO  c.xworkz.dream.XworkzApiApplication - The following 1 profile is active: "prod"
+21:06:03.618 [restartedMain] INFO  o.s.cloud.context.scope.GenericScope - BeanFactory id=3b060256-7c24-379d-9aa7-1e1ed644c886
+21:06:03.667 [restartedMain] INFO  o.s.b.w.e.tomcat.TomcatWebServer - Tomcat initialized with port(s): 8081 (http)
+21:06:03.668 [restartedMain] INFO  o.a.catalina.core.StandardService - Starting service [Tomcat]
+21:06:03.668 [restartedMain] INFO  o.a.catalina.core.StandardEngine - Starting Servlet engine: [Apache Tomcat/9.0.68]
+21:06:03.703 [restartedMain] INFO  o.a.c.c.C.[Tomcat].[localhost].[/] - Initializing Spring embedded WebApplicationContext
+21:06:03.703 [restartedMain] INFO  o.s.b.w.s.c.ServletWebServerApplicationContext - Root WebApplicationContext: initialization completed in 326 ms
+21:06:03.711 [restartedMain] INFO  c.xworkz.dream.util.EncryptionHelper - {} is Created...........
+21:06:03.779 [restartedMain] INFO  o.s.b.d.a.OptionalLiveReloadServer - LiveReload server is running on port 35729
+21:06:04.015 [restartedMain] INFO  o.s.b.w.e.tomcat.TomcatWebServer - Tomcat started on port(s): 8081 (http) with context path ''
+21:06:04.215 [restartedMain] INFO  c.xworkz.dream.XworkzApiApplication - Started XworkzApiApplication in 0.994 seconds (JVM running for 377.11)
+21:06:04.217 [restartedMain] INFO  o.s.b.d.a.ConditionEvaluationDeltaLoggingListener - Condition evaluation unchanged
+21:06:07.782 [scheduling-1] DEBUG com.xworkz.dream.util.UtilDev - Sending email to [Team(email=om@x-workz.in, name=omkar), Team(email=akshara@x-workz.in, name=akshara), Team(email=hr@x-workz.in, name=mamatha), Team(email=Amulya@x-workz.in, name=amulya), Team(email=keerthanahn.xworkz@gmail.com, name=keerthana)]: Subject: Follow Up Candidate Details,
+21:06:39.230 [File Watcher] INFO  o.s.b.d.a.LocalDevToolsAutoConfiguration$RestartingClassPathChangeChangedEventListener - Restarting due to 2 class path changes (0 additions, 1 deletion, 1 modification)
+21:06:39.257 [Thread-51] INFO  o.a.catalina.core.StandardService - Stopping service [Tomcat]
+21:06:39.514 [restartedMain] INFO  c.xworkz.dream.XworkzApiApplication - Starting XworkzApiApplication using Java 15.0.2 on LAPTOP-HPEIOEQL with PID 8936 (D:\Xworkz Relese Code\Xworkz-Api\bin\main started by Acer in D:\Xworkz Relese Code\Xworkz-Api)
+21:06:39.514 [restartedMain] DEBUG c.xworkz.dream.XworkzApiApplication - Running with Spring Boot v2.7.5, Spring v5.3.23
+21:06:39.514 [restartedMain] INFO  c.xworkz.dream.XworkzApiApplication - The following 1 profile is active: "prod"
+21:06:39.724 [restartedMain] INFO  o.s.cloud.context.scope.GenericScope - BeanFactory id=3b060256-7c24-379d-9aa7-1e1ed644c886
+21:06:39.767 [restartedMain] INFO  o.s.b.w.e.tomcat.TomcatWebServer - Tomcat initialized with port(s): 8081 (http)
+21:06:39.768 [restartedMain] INFO  o.a.catalina.core.StandardService - Starting service [Tomcat]
+21:06:39.768 [restartedMain] INFO  o.a.catalina.core.StandardEngine - Starting Servlet engine: [Apache Tomcat/9.0.68]
+21:06:39.812 [restartedMain] INFO  o.a.c.c.C.[Tomcat].[localhost].[/] - Initializing Spring embedded WebApplicationContext
+21:06:39.812 [restartedMain] INFO  o.s.b.w.s.c.ServletWebServerApplicationContext - Root WebApplicationContext: initialization completed in 296 ms
+21:06:39.821 [restartedMain] INFO  c.xworkz.dream.util.EncryptionHelper - {} is Created...........
+21:06:39.844 [restartedMain] WARN  o.s.b.w.s.c.AnnotationConfigServletWebServerApplicationContext - Exception encountered during context initialization - cancelling refresh attempt: org.springframework.beans.factory.UnsatisfiedDependencyException: Error creating bean with name 'attendanceController': Unsatisfied dependency expressed through field 'util'; nested exception is org.springframework.beans.factory.BeanCreationException: Error creating bean with name 'utilProd' defined in file [D:\Xworkz Relese Code\Xworkz-Api\bin\main\com\xworkz\dream\util\UtilProd.class]: Instantiation of bean failed; nested exception is org.springframework.beans.BeanInstantiationException: Failed to instantiate [com.xworkz.dream.util.UtilProd]: Constructor threw exception; nested exception is java.lang.Error: Unresolved compilation problem: 
+	recepents cannot be resolved to a variable
 
-	jar:file:/C:/Users/Dell/.gradle/caches/modules-2/files-2.1/org.json/json/20230227/7a0d4aca76513d8ce81f9b044ce8126b84809ad8/json-20230227.jar!/org/json/JSONObject.class
-	jar:file:/C:/Users/Dell/.gradle/caches/modules-2/files-2.1/com.vaadin.external.google/android-json/0.0.20131108.vaadin1/fa26d351fe62a6a17f5cda1287c1c6110dec413f/android-json-0.0.20131108.vaadin1.jar!/org/json/JSONObject.class
+21:06:39.844 [restartedMain] INFO  o.a.catalina.core.StandardService - Stopping service [Tomcat]
+21:06:39.856 [restartedMain] INFO  o.s.b.a.l.ConditionEvaluationReportLoggingListener - 
 
-You may wish to exclude one of them to ensure predictable runtime behavior
+Error starting ApplicationContext. To display the conditions report re-run your application with 'debug' enabled.
+21:06:39.893 [restartedMain] ERROR o.s.boot.SpringApplication - Application run failed
+org.springframework.beans.factory.UnsatisfiedDependencyException: Error creating bean with name 'attendanceController': Unsatisfied dependency expressed through field 'util'; nested exception is org.springframework.beans.factory.BeanCreationException: Error creating bean with name 'utilProd' defined in file [D:\Xworkz Relese Code\Xworkz-Api\bin\main\com\xworkz\dream\util\UtilProd.class]: Instantiation of bean failed; nested exception is org.springframework.beans.BeanInstantiationException: Failed to instantiate [com.xworkz.dream.util.UtilProd]: Constructor threw exception; nested exception is java.lang.Error: Unresolved compilation problem: 
+	recepents cannot be resolved to a variable
 
-23:29:23.648 [Test worker] INFO  c.x.dream.XworkzApiApplicationTests - Starting XworkzApiApplicationTests using Java 1.8.0_351 on DESKTOP-FT7DFR5 with PID 3508 (started by Dell in C:\Project\Project\Xworkz-Api)
-23:29:23.650 [Test worker] DEBUG c.x.dream.XworkzApiApplicationTests - Running with Spring Boot v2.7.5, Spring v5.3.23
-23:29:23.671 [Test worker] INFO  c.x.dream.XworkzApiApplicationTests - The following 1 profile is active: "prod"
-23:29:29.800 [Test worker] INFO  o.s.cloud.context.scope.GenericScope - BeanFactory id=467680c8-39bf-34f5-904c-4b63ff5918c0
-23:29:31.022 [Test worker] INFO  c.xworkz.dream.util.EncryptionHelper - {} is Created...........
-23:29:46.032 [Test worker] INFO  c.x.dream.XworkzApiApplicationTests - Started XworkzApiApplicationTests in 24.643 seconds (JVM running for 31.751)
-23:34:49.458 [restartedMain] INFO  c.xworkz.dream.XworkzApiApplication - Starting XworkzApiApplication using Java 15.0.2 on DESKTOP-FT7DFR5 with PID 592 (C:\Project\Project\Xworkz-Api\bin\main started by Dell in C:\Project\Project\Xworkz-Api)
-23:34:49.461 [restartedMain] DEBUG c.xworkz.dream.XworkzApiApplication - Running with Spring Boot v2.7.5, Spring v5.3.23
-23:34:49.463 [restartedMain] INFO  c.xworkz.dream.XworkzApiApplication - The following 1 profile is active: "prod"
+	at org.springframework.beans.factory.annotation.AutowiredAnnotationBeanPostProcessor$AutowiredFieldElement.resolveFieldValue(AutowiredAnnotationBeanPostProcessor.java:659) ~[spring-beans-5.3.23.jar:5.3.23]
+	at org.springframework.beans.factory.annotation.AutowiredAnnotationBeanPostProcessor$AutowiredFieldElement.inject(AutowiredAnnotationBeanPostProcessor.java:639) ~[spring-beans-5.3.23.jar:5.3.23]
+	at org.springframework.beans.factory.annotation.InjectionMetadata.inject(InjectionMetadata.java:119) ~[spring-beans-5.3.23.jar:5.3.23]
+	at org.springframework.beans.factory.annotation.AutowiredAnnotationBeanPostProcessor.postProcessProperties(AutowiredAnnotationBeanPostProcessor.java:399) ~[spring-beans-5.3.23.jar:5.3.23]
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.populateBean(AbstractAutowireCapableBeanFactory.java:1431) ~[spring-beans-5.3.23.jar:5.3.23]
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.doCreateBean(AbstractAutowireCapableBeanFactory.java:619) ~[spring-beans-5.3.23.jar:5.3.23]
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.createBean(AbstractAutowireCapableBeanFactory.java:542) ~[spring-beans-5.3.23.jar:5.3.23]
+	at org.springframework.beans.factory.support.AbstractBeanFactory.lambda$doGetBean$0(AbstractBeanFactory.java:335) ~[spring-beans-5.3.23.jar:5.3.23]
+	at org.springframework.beans.factory.support.DefaultSingletonBeanRegistry.getSingleton(DefaultSingletonBeanRegistry.java:234) ~[spring-beans-5.3.23.jar:5.3.23]
+	at org.springframework.beans.factory.support.AbstractBeanFactory.doGetBean(AbstractBeanFactory.java:333) ~[spring-beans-5.3.23.jar:5.3.23]
+	at org.springframework.beans.factory.support.AbstractBeanFactory.getBean(AbstractBeanFactory.java:208) ~[spring-beans-5.3.23.jar:5.3.23]
+	at org.springframework.beans.factory.support.DefaultListableBeanFactory.preInstantiateSingletons(DefaultListableBeanFactory.java:955) ~[spring-beans-5.3.23.jar:5.3.23]
+	at org.springframework.context.support.AbstractApplicationContext.finishBeanFactoryInitialization(AbstractApplicationContext.java:918) ~[spring-context-5.3.23.jar:5.3.23]
+	at org.springframework.context.support.AbstractApplicationContext.refresh(AbstractApplicationContext.java:583) ~[spring-context-5.3.23.jar:5.3.23]
+	at org.springframework.boot.web.servlet.context.ServletWebServerApplicationContext.refresh(ServletWebServerApplicationContext.java:147) ~[spring-boot-2.7.5.jar:2.7.5]
+	at org.springframework.boot.SpringApplication.refresh(SpringApplication.java:734) ~[spring-boot-2.7.5.jar:2.7.5]
+	at org.springframework.boot.SpringApplication.refreshContext(SpringApplication.java:408) ~[spring-boot-2.7.5.jar:2.7.5]
+	at org.springframework.boot.SpringApplication.run(SpringApplication.java:308) ~[spring-boot-2.7.5.jar:2.7.5]
+	at org.springframework.boot.SpringApplication.run(SpringApplication.java:1306) ~[spring-boot-2.7.5.jar:2.7.5]
+	at org.springframework.boot.SpringApplication.run(SpringApplication.java:1295) ~[spring-boot-2.7.5.jar:2.7.5]
+	at com.xworkz.dream.XworkzApiApplication.main(XworkzApiApplication.java:20) ~[main/:na]
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method) ~[na:na]
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:64) ~[na:na]
+	at java.base/jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43) ~[na:na]
+	at java.base/java.lang.reflect.Method.invoke(Method.java:564) ~[na:na]
+	at org.springframework.boot.devtools.restart.RestartLauncher.run(RestartLauncher.java:49) ~[spring-boot-devtools-2.7.5.jar:2.7.5]
+Caused by: org.springframework.beans.factory.BeanCreationException: Error creating bean with name 'utilProd' defined in file [D:\Xworkz Relese Code\Xworkz-Api\bin\main\com\xworkz\dream\util\UtilProd.class]: Instantiation of bean failed; nested exception is org.springframework.beans.BeanInstantiationException: Failed to instantiate [com.xworkz.dream.util.UtilProd]: Constructor threw exception; nested exception is java.lang.Error: Unresolved compilation problem: 
+	recepents cannot be resolved to a variable
+
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.instantiateBean(AbstractAutowireCapableBeanFactory.java:1334) ~[spring-beans-5.3.23.jar:5.3.23]
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.createBeanInstance(AbstractAutowireCapableBeanFactory.java:1232) ~[spring-beans-5.3.23.jar:5.3.23]
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.doCreateBean(AbstractAutowireCapableBeanFactory.java:582) ~[spring-beans-5.3.23.jar:5.3.23]
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.createBean(AbstractAutowireCapableBeanFactory.java:542) ~[spring-beans-5.3.23.jar:5.3.23]
+	at org.springframework.beans.factory.support.AbstractBeanFactory.lambda$doGetBean$0(AbstractBeanFactory.java:335) ~[spring-beans-5.3.23.jar:5.3.23]
+	at org.springframework.beans.factory.support.DefaultSingletonBeanRegistry.getSingleton(DefaultSingletonBeanRegistry.java:234) ~[spring-beans-5.3.23.jar:5.3.23]
+	at org.springframework.beans.factory.support.AbstractBeanFactory.doGetBean(AbstractBeanFactory.java:333) ~[spring-beans-5.3.23.jar:5.3.23]
+	at org.springframework.beans.factory.support.AbstractBeanFactory.getBean(AbstractBeanFactory.java:208) ~[spring-beans-5.3.23.jar:5.3.23]
+	at org.springframework.beans.factory.config.DependencyDescriptor.resolveCandidate(DependencyDescriptor.java:276) ~[spring-beans-5.3.23.jar:5.3.23]
+	at org.springframework.beans.factory.support.DefaultListableBeanFactory.doResolveDependency(DefaultListableBeanFactory.java:1391) ~[spring-beans-5.3.23.jar:5.3.23]
+	at org.springframework.beans.factory.support.DefaultListableBeanFactory.resolveDependency(DefaultListableBeanFactory.java:1311) ~[spring-beans-5.3.23.jar:5.3.23]
+	at org.springframework.beans.factory.annotation.AutowiredAnnotationBeanPostProcessor$AutowiredFieldElement.resolveFieldValue(AutowiredAnnotationBeanPostProcessor.java:656) ~[spring-beans-5.3.23.jar:5.3.23]
+	... 25 common frames omitted
+Caused by: org.springframework.beans.BeanInstantiationException: Failed to instantiate [com.xworkz.dream.util.UtilProd]: Constructor threw exception; nested exception is java.lang.Error: Unresolved compilation problem: 
+	recepents cannot be resolved to a variable
+
+	at org.springframework.beans.BeanUtils.instantiateClass(BeanUtils.java:224) ~[spring-beans-5.3.23.jar:5.3.23]
+	at org.springframework.beans.factory.support.SimpleInstantiationStrategy.instantiate(SimpleInstantiationStrategy.java:87) ~[spring-beans-5.3.23.jar:5.3.23]
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.instantiateBean(AbstractAutowireCapableBeanFactory.java:1326) ~[spring-beans-5.3.23.jar:5.3.23]
+	... 36 common frames omitted
+Caused by: java.lang.Error: Unresolved compilation problem: 
+	recepents cannot be resolved to a variable
+
+	at com.xworkz.dream.util.UtilProd.<init>(UtilProd.java:232) ~[main/:na]
+	at java.base/jdk.internal.reflect.NativeConstructorAccessorImpl.newInstance0(Native Method) ~[na:na]
+	at java.base/jdk.internal.reflect.NativeConstructorAccessorImpl.newInstance(NativeConstructorAccessorImpl.java:64) ~[na:na]
+	at java.base/jdk.internal.reflect.DelegatingConstructorAccessorImpl.newInstance(DelegatingConstructorAccessorImpl.java:45) ~[na:na]
+	at java.base/java.lang.reflect.Constructor.newInstanceWithCaller(Constructor.java:500) ~[na:na]
+	at java.base/java.lang.reflect.Constructor.newInstance(Constructor.java:481) ~[na:na]
+	at org.springframework.beans.BeanUtils.instantiateClass(BeanUtils.java:211) ~[spring-beans-5.3.23.jar:5.3.23]
+	... 38 common frames omitted
+21:06:51.820 [restartedMain] INFO  c.xworkz.dream.XworkzApiApplication - Starting XworkzApiApplication using Java 15.0.2 on LAPTOP-HPEIOEQL with PID 8936 (D:\Xworkz Relese Code\Xworkz-Api\bin\main started by Acer in D:\Xworkz Relese Code\Xworkz-Api)
+21:06:51.820 [restartedMain] DEBUG c.xworkz.dream.XworkzApiApplication - Running with Spring Boot v2.7.5, Spring v5.3.23
+21:06:51.820 [restartedMain] INFO  c.xworkz.dream.XworkzApiApplication - The following 1 profile is active: "prod"
+21:06:52.063 [restartedMain] INFO  o.s.cloud.context.scope.GenericScope - BeanFactory id=3b060256-7c24-379d-9aa7-1e1ed644c886
+21:06:52.111 [restartedMain] INFO  o.s.b.w.e.tomcat.TomcatWebServer - Tomcat initialized with port(s): 8081 (http)
+21:06:52.112 [restartedMain] INFO  o.a.catalina.core.StandardService - Starting service [Tomcat]
+21:06:52.112 [restartedMain] INFO  o.a.catalina.core.StandardEngine - Starting Servlet engine: [Apache Tomcat/9.0.68]
+21:06:52.162 [restartedMain] INFO  o.a.c.c.C.[Tomcat-1].[localhost].[/] - Initializing Spring embedded WebApplicationContext
+21:06:52.162 [restartedMain] INFO  o.s.b.w.s.c.ServletWebServerApplicationContext - Root WebApplicationContext: initialization completed in 340 ms
+21:06:52.171 [restartedMain] INFO  c.xworkz.dream.util.EncryptionHelper - {} is Created...........
+21:06:52.243 [restartedMain] INFO  o.s.b.d.a.OptionalLiveReloadServer - LiveReload server is running on port 35729
+21:06:52.498 [restartedMain] INFO  o.s.b.w.e.tomcat.TomcatWebServer - Tomcat started on port(s): 8081 (http) with context path ''
+21:06:52.733 [restartedMain] INFO  c.xworkz.dream.XworkzApiApplication - Started XworkzApiApplication in 1.114 seconds (JVM running for 425.619)
+21:06:52.736 [restartedMain] INFO  o.s.b.d.a.ConditionEvaluationDeltaLoggingListener - Condition evaluation unchanged
+21:06:56.224 [scheduling-1] DEBUG com.xworkz.dream.util.UtilDev - Sending email to [Team(email=om@x-workz.in, name=omkar), Team(email=akshara@x-workz.in, name=akshara), Team(email=hr@x-workz.in, name=mamatha), Team(email=Amulya@x-workz.in, name=amulya), Team(email=keerthanahn.xworkz@gmail.com, name=keerthana)]: Subject: Follow Up Candidate Details,
+21:07:10.280 [File Watcher] INFO  o.s.b.d.a.LocalDevToolsAutoConfiguration$RestartingClassPathChangeChangedEventListener - Restarting due to 2 class path changes (0 additions, 0 deletions, 2 modifications)
+21:07:10.308 [Thread-57] INFO  o.a.catalina.core.StandardService - Stopping service [Tomcat]
+21:07:10.627 [restartedMain] INFO  c.xworkz.dream.XworkzApiApplication - Starting XworkzApiApplication using Java 15.0.2 on LAPTOP-HPEIOEQL with PID 8936 (D:\Xworkz Relese Code\Xworkz-Api\bin\main started by Acer in D:\Xworkz Relese Code\Xworkz-Api)
+21:07:10.627 [restartedMain] DEBUG c.xworkz.dream.XworkzApiApplication - Running with Spring Boot v2.7.5, Spring v5.3.23
+21:07:10.627 [restartedMain] INFO  c.xworkz.dream.XworkzApiApplication - The following 1 profile is active: "prod"
+21:07:10.842 [restartedMain] INFO  o.s.cloud.context.scope.GenericScope - BeanFactory id=3b060256-7c24-379d-9aa7-1e1ed644c886
+21:07:10.902 [restartedMain] INFO  o.s.b.w.e.tomcat.TomcatWebServer - Tomcat initialized with port(s): 8081 (http)
+21:07:10.903 [restartedMain] INFO  o.a.catalina.core.StandardService - Starting service [Tomcat]
+21:07:10.903 [restartedMain] INFO  o.a.catalina.core.StandardEngine - Starting Servlet engine: [Apache Tomcat/9.0.68]
+21:07:10.941 [restartedMain] INFO  o.a.c.c.C.[Tomcat-1].[localhost].[/] - Initializing Spring embedded WebApplicationContext
+21:07:10.941 [restartedMain] INFO  o.s.b.w.s.c.ServletWebServerApplicationContext - Root WebApplicationContext: initialization completed in 311 ms
+21:07:10.950 [restartedMain] INFO  c.xworkz.dream.util.EncryptionHelper - {} is Created...........
+21:07:11.028 [restartedMain] INFO  o.s.b.d.a.OptionalLiveReloadServer - LiveReload server is running on port 35729
+21:07:11.345 [restartedMain] INFO  o.s.b.w.e.tomcat.TomcatWebServer - Tomcat started on port(s): 8081 (http) with context path ''
+21:07:11.650 [restartedMain] INFO  c.xworkz.dream.XworkzApiApplication - Started XworkzApiApplication in 1.194 seconds (JVM running for 444.532)
+21:07:11.652 [restartedMain] INFO  o.s.b.d.a.ConditionEvaluationDeltaLoggingListener - Condition evaluation unchanged
+21:07:15.064 [scheduling-1] DEBUG com.xworkz.dream.util.UtilDev - Sending email to [Team(email=om@x-workz.in, name=omkar), Team(email=akshara@x-workz.in, name=akshara), Team(email=hr@x-workz.in, name=mamatha), Team(email=Amulya@x-workz.in, name=amulya), Team(email=keerthanahn.xworkz@gmail.com, name=keerthana)]: Subject: Follow Up Candidate Details,
+21:07:51.043 [File Watcher] INFO  o.s.b.d.a.LocalDevToolsAutoConfiguration$RestartingClassPathChangeChangedEventListener - Restarting due to 2 class path changes (0 additions, 0 deletions, 2 modifications)
+21:07:51.071 [Thread-67] INFO  o.a.catalina.core.StandardService - Stopping service [Tomcat]
+21:07:51.343 [restartedMain] INFO  c.xworkz.dream.XworkzApiApplication - Starting XworkzApiApplication using Java 15.0.2 on LAPTOP-HPEIOEQL with PID 8936 (D:\Xworkz Relese Code\Xworkz-Api\bin\main started by Acer in D:\Xworkz Relese Code\Xworkz-Api)
+21:07:51.343 [restartedMain] DEBUG c.xworkz.dream.XworkzApiApplication - Running with Spring Boot v2.7.5, Spring v5.3.23
+21:07:51.343 [restartedMain] INFO  c.xworkz.dream.XworkzApiApplication - The following 1 profile is active: "prod"
+21:07:51.548 [restartedMain] INFO  o.s.cloud.context.scope.GenericScope - BeanFactory id=3b060256-7c24-379d-9aa7-1e1ed644c886
+21:07:51.590 [restartedMain] INFO  o.s.b.w.e.tomcat.TomcatWebServer - Tomcat initialized with port(s): 8081 (http)
+21:07:51.591 [restartedMain] INFO  o.a.catalina.core.StandardService - Starting service [Tomcat]
+21:07:51.591 [restartedMain] INFO  o.a.catalina.core.StandardEngine - Starting Servlet engine: [Apache Tomcat/9.0.68]
+21:07:51.620 [restartedMain] INFO  o.a.c.c.C.[Tomcat-1].[localhost].[/] - Initializing Spring embedded WebApplicationContext
+21:07:51.620 [restartedMain] INFO  o.s.b.w.s.c.ServletWebServerApplicationContext - Root WebApplicationContext: initialization completed in 275 ms
+21:07:51.626 [restartedMain] INFO  c.xworkz.dream.util.EncryptionHelper - {} is Created...........
+21:07:51.685 [restartedMain] INFO  o.s.b.d.a.OptionalLiveReloadServer - LiveReload server is running on port 35729
+21:07:51.958 [restartedMain] INFO  o.s.b.w.e.tomcat.TomcatWebServer - Tomcat started on port(s): 8081 (http) with context path ''
+21:07:52.172 [restartedMain] INFO  c.xworkz.dream.XworkzApiApplication - Started XworkzApiApplication in 0.949 seconds (JVM running for 485.047)
+21:07:52.174 [restartedMain] INFO  o.s.b.d.a.ConditionEvaluationDeltaLoggingListener - Condition evaluation unchanged
+21:07:55.208 [scheduling-1] DEBUG com.xworkz.dream.util.UtilDev - Sending email to [Team(email=om@x-workz.in, name=omkar), Team(email=akshara@x-workz.in, name=akshara), Team(email=hr@x-workz.in, name=mamatha), Team(email=Amulya@x-workz.in, name=amulya), Team(email=keerthanahn.xworkz@gmail.com, name=keerthana)]: Subject: Follow Up Candidate Details,
+21:08:33.290 [File Watcher] INFO  o.s.b.d.a.LocalDevToolsAutoConfiguration$RestartingClassPathChangeChangedEventListener - Restarting due to 2 class path changes (0 additions, 0 deletions, 2 modifications)
+21:08:33.318 [Thread-73] INFO  o.a.catalina.core.StandardService - Stopping service [Tomcat]
+21:08:33.591 [restartedMain] INFO  c.xworkz.dream.XworkzApiApplication - Starting XworkzApiApplication using Java 15.0.2 on LAPTOP-HPEIOEQL with PID 8936 (D:\Xworkz Relese Code\Xworkz-Api\bin\main started by Acer in D:\Xworkz Relese Code\Xworkz-Api)
+21:08:33.591 [restartedMain] DEBUG c.xworkz.dream.XworkzApiApplication - Running with Spring Boot v2.7.5, Spring v5.3.23
+21:08:33.591 [restartedMain] INFO  c.xworkz.dream.XworkzApiApplication - The following 1 profile is active: "prod"
+21:08:33.816 [restartedMain] INFO  o.s.cloud.context.scope.GenericScope - BeanFactory id=3b060256-7c24-379d-9aa7-1e1ed644c886
+21:08:33.871 [restartedMain] INFO  o.s.b.w.e.tomcat.TomcatWebServer - Tomcat initialized with port(s): 8081 (http)
+21:08:33.872 [restartedMain] INFO  o.a.catalina.core.StandardService - Starting service [Tomcat]
+21:08:33.872 [restartedMain] INFO  o.a.catalina.core.StandardEngine - Starting Servlet engine: [Apache Tomcat/9.0.68]
+21:08:33.902 [restartedMain] INFO  o.a.c.c.C.[Tomcat-1].[localhost].[/] - Initializing Spring embedded WebApplicationContext
+21:08:33.903 [restartedMain] INFO  o.s.b.w.s.c.ServletWebServerApplicationContext - Root WebApplicationContext: initialization completed in 310 ms
+21:08:33.910 [restartedMain] INFO  c.xworkz.dream.util.EncryptionHelper - {} is Created...........
+21:08:33.969 [restartedMain] INFO  o.s.b.d.a.OptionalLiveReloadServer - LiveReload server is running on port 35729
+21:08:34.224 [restartedMain] INFO  o.s.b.w.e.tomcat.TomcatWebServer - Tomcat started on port(s): 8081 (http) with context path ''
+21:08:34.463 [restartedMain] INFO  c.xworkz.dream.XworkzApiApplication - Started XworkzApiApplication in 0.987 seconds (JVM running for 527.329)
+21:08:34.465 [restartedMain] INFO  o.s.b.d.a.ConditionEvaluationDeltaLoggingListener - Condition evaluation unchanged
+21:08:38.235 [scheduling-1] DEBUG com.xworkz.dream.util.UtilDev - Sending email to [Team(email=om@x-workz.in, name=omkar), Team(email=akshara@x-workz.in, name=akshara), Team(email=hr@x-workz.in, name=mamatha), Team(email=Amulya@x-workz.in, name=amulya), Team(email=keerthanahn.xworkz@gmail.com, name=keerthana)]: Subject: Follow Up Candidate Details,
+21:09:14.542 [File Watcher] INFO  o.s.b.d.a.LocalDevToolsAutoConfiguration$RestartingClassPathChangeChangedEventListener - Restarting due to 2 class path changes (0 additions, 0 deletions, 2 modifications)
+21:09:14.568 [Thread-79] INFO  o.a.catalina.core.StandardService - Stopping service [Tomcat]
+21:09:14.830 [restartedMain] INFO  c.xworkz.dream.XworkzApiApplication - Starting XworkzApiApplication using Java 15.0.2 on LAPTOP-HPEIOEQL with PID 8936 (D:\Xworkz Relese Code\Xworkz-Api\bin\main started by Acer in D:\Xworkz Relese Code\Xworkz-Api)
+21:09:14.831 [restartedMain] DEBUG c.xworkz.dream.XworkzApiApplication - Running with Spring Boot v2.7.5, Spring v5.3.23
+21:09:14.831 [restartedMain] INFO  c.xworkz.dream.XworkzApiApplication - The following 1 profile is active: "prod"
+21:09:15.058 [restartedMain] INFO  o.s.cloud.context.scope.GenericScope - BeanFactory id=3b060256-7c24-379d-9aa7-1e1ed644c886
+21:09:15.108 [restartedMain] INFO  o.s.b.w.e.tomcat.TomcatWebServer - Tomcat initialized with port(s): 8081 (http)
+21:09:15.109 [restartedMain] INFO  o.a.catalina.core.StandardService - Starting service [Tomcat]
+21:09:15.109 [restartedMain] INFO  o.a.catalina.core.StandardEngine - Starting Servlet engine: [Apache Tomcat/9.0.68]
+21:09:15.159 [restartedMain] INFO  o.a.c.c.C.[Tomcat-1].[localhost].[/] - Initializing Spring embedded WebApplicationContext
+21:09:15.159 [restartedMain] INFO  o.s.b.w.s.c.ServletWebServerApplicationContext - Root WebApplicationContext: initialization completed in 326 ms
+21:09:15.166 [restartedMain] INFO  c.xworkz.dream.util.EncryptionHelper - {} is Created...........
+21:09:15.232 [restartedMain] INFO  o.s.b.d.a.OptionalLiveReloadServer - LiveReload server is running on port 35729
+21:09:15.462 [restartedMain] INFO  o.s.b.w.e.tomcat.TomcatWebServer - Tomcat started on port(s): 8081 (http) with context path ''
+21:09:15.651 [restartedMain] INFO  c.xworkz.dream.XworkzApiApplication - Started XworkzApiApplication in 0.933 seconds (JVM running for 568.511)
+21:09:15.654 [restartedMain] INFO  o.s.b.d.a.ConditionEvaluationDeltaLoggingListener - Condition evaluation unchanged
+21:09:19.199 [scheduling-1] DEBUG com.xworkz.dream.util.UtilDev - Sending email to [Team(email=om@x-workz.in, name=omkar), Team(email=akshara@x-workz.in, name=akshara), Team(email=hr@x-workz.in, name=mamatha), Team(email=Amulya@x-workz.in, name=amulya), Team(email=keerthanahn.xworkz@gmail.com, name=keerthana)]: Subject: Follow Up Candidate Details,
+21:09:26.116 [File Watcher] INFO  o.s.b.d.a.LocalDevToolsAutoConfiguration$RestartingClassPathChangeChangedEventListener - Restarting due to 2 class path changes (0 additions, 0 deletions, 2 modifications)
+21:09:26.142 [Thread-85] INFO  o.a.catalina.core.StandardService - Stopping service [Tomcat]
+21:09:26.514 [restartedMain] INFO  c.xworkz.dream.XworkzApiApplication - Starting XworkzApiApplication using Java 15.0.2 on LAPTOP-HPEIOEQL with PID 8936 (D:\Xworkz Relese Code\Xworkz-Api\bin\main started by Acer in D:\Xworkz Relese Code\Xworkz-Api)
+21:09:26.515 [restartedMain] DEBUG c.xworkz.dream.XworkzApiApplication - Running with Spring Boot v2.7.5, Spring v5.3.23
+21:09:26.515 [restartedMain] INFO  c.xworkz.dream.XworkzApiApplication - The following 1 profile is active: "prod"
+21:09:26.758 [restartedMain] INFO  o.s.cloud.context.scope.GenericScope - BeanFactory id=3b060256-7c24-379d-9aa7-1e1ed644c886
+21:09:26.849 [restartedMain] INFO  o.s.b.w.e.tomcat.TomcatWebServer - Tomcat initialized with port(s): 8081 (http)
+21:09:26.850 [restartedMain] INFO  o.a.catalina.core.StandardService - Starting service [Tomcat]
+21:09:26.851 [restartedMain] INFO  o.a.catalina.core.StandardEngine - Starting Servlet engine: [Apache Tomcat/9.0.68]
+21:09:26.894 [restartedMain] INFO  o.a.c.c.C.[Tomcat-1].[localhost].[/] - Initializing Spring embedded WebApplicationContext
+21:09:26.894 [restartedMain] INFO  o.s.b.w.s.c.ServletWebServerApplicationContext - Root WebApplicationContext: initialization completed in 376 ms
+21:09:26.901 [restartedMain] INFO  c.xworkz.dream.util.EncryptionHelper - {} is Created...........
+21:09:26.955 [restartedMain] INFO  o.s.b.d.a.OptionalLiveReloadServer - LiveReload server is running on port 35729
+21:09:27.183 [restartedMain] INFO  o.s.b.w.e.tomcat.TomcatWebServer - Tomcat started on port(s): 8081 (http) with context path ''
+21:09:27.397 [restartedMain] INFO  c.xworkz.dream.XworkzApiApplication - Started XworkzApiApplication in 1.098 seconds (JVM running for 580.254)
+21:09:27.400 [restartedMain] INFO  o.s.b.d.a.ConditionEvaluationDeltaLoggingListener - Condition evaluation unchanged
+21:09:30.670 [scheduling-1] DEBUG com.xworkz.dream.util.UtilDev - Sending email to [Team(email=om@x-workz.in, name=omkar), Team(email=akshara@x-workz.in, name=akshara), Team(email=hr@x-workz.in, name=mamatha), Team(email=Amulya@x-workz.in, name=amulya), Team(email=keerthanahn.xworkz@gmail.com, name=keerthana)]: Subject: Follow Up Candidate Details,
+21:09:32.663 [File Watcher] INFO  o.s.b.d.a.LocalDevToolsAutoConfiguration$RestartingClassPathChangeChangedEventListener - Restarting due to 2 class path changes (0 additions, 0 deletions, 2 modifications)
+21:09:32.690 [Thread-91] INFO  o.a.catalina.core.StandardService - Stopping service [Tomcat]
+21:09:33.028 [restartedMain] INFO  c.xworkz.dream.XworkzApiApplication - Starting XworkzApiApplication using Java 15.0.2 on LAPTOP-HPEIOEQL with PID 8936 (D:\Xworkz Relese Code\Xworkz-Api\bin\main started by Acer in D:\Xworkz Relese Code\Xworkz-Api)
+21:09:33.028 [restartedMain] DEBUG c.xworkz.dream.XworkzApiApplication - Running with Spring Boot v2.7.5, Spring v5.3.23
+21:09:33.028 [restartedMain] INFO  c.xworkz.dream.XworkzApiApplication - The following 1 profile is active: "prod"
+21:09:33.222 [restartedMain] INFO  o.s.cloud.context.scope.GenericScope - BeanFactory id=3b060256-7c24-379d-9aa7-1e1ed644c886
+21:09:33.261 [restartedMain] INFO  o.s.b.w.e.tomcat.TomcatWebServer - Tomcat initialized with port(s): 8081 (http)
+21:09:33.262 [restartedMain] INFO  o.a.catalina.core.StandardService - Starting service [Tomcat]
+21:09:33.262 [restartedMain] INFO  o.a.catalina.core.StandardEngine - Starting Servlet engine: [Apache Tomcat/9.0.68]
+21:09:33.301 [restartedMain] INFO  o.a.c.c.C.[Tomcat-1].[localhost].[/] - Initializing Spring embedded WebApplicationContext
+21:09:33.302 [restartedMain] INFO  o.s.b.w.s.c.ServletWebServerApplicationContext - Root WebApplicationContext: initialization completed in 273 ms
+21:09:33.307 [restartedMain] INFO  c.xworkz.dream.util.EncryptionHelper - {} is Created...........
+21:09:33.365 [restartedMain] INFO  o.s.b.d.a.OptionalLiveReloadServer - LiveReload server is running on port 35729
+21:09:33.640 [restartedMain] INFO  o.s.b.w.e.tomcat.TomcatWebServer - Tomcat started on port(s): 8081 (http) with context path ''
+21:09:33.844 [restartedMain] INFO  c.xworkz.dream.XworkzApiApplication - Started XworkzApiApplication in 0.999 seconds (JVM running for 586.699)
+21:09:33.846 [restartedMain] INFO  o.s.b.d.a.ConditionEvaluationDeltaLoggingListener - Condition evaluation unchanged
+21:09:36.614 [scheduling-1] DEBUG com.xworkz.dream.util.UtilDev - Sending email to [Team(email=om@x-workz.in, name=omkar), Team(email=akshara@x-workz.in, name=akshara), Team(email=hr@x-workz.in, name=mamatha), Team(email=Amulya@x-workz.in, name=amulya), Team(email=keerthanahn.xworkz@gmail.com, name=keerthana)]: Subject: Follow Up Candidate Details,
+21:09:36.618 [scheduling-1] ERROR o.s.s.s.TaskUtils$LoggingErrorHandler - Unexpected error occurred in scheduled task
+java.lang.Error: Unresolved compilation problem: 
+	messageHelper cannot be resolved to a variable
+
+	at com.xworkz.dream.util.UtilProd.sendBulkMailToNotification(UtilProd.java:242) ~[main/:na]
+	at com.xworkz.dream.util.UtilProd.sendNotificationToEmail(UtilProd.java:133) ~[main/:na]
+	at com.xworkz.dream.service.DreamServiceImpl.notification(DreamServiceImpl.java:1015) ~[main/:na]
+	at com.xworkz.dream.service.DreamServiceImpl.notification(DreamServiceImpl.java:933) ~[main/:na]
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method) ~[na:na]
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:64) ~[na:na]
+	at java.base/jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43) ~[na:na]
+	at java.base/java.lang.reflect.Method.invoke(Method.java:564) ~[na:na]
+	at org.springframework.scheduling.support.ScheduledMethodRunnable.run(ScheduledMethodRunnable.java:84) ~[spring-context-5.3.23.jar:5.3.23]
+	at org.springframework.scheduling.support.DelegatingErrorHandlingRunnable.run(DelegatingErrorHandlingRunnable.java:54) ~[spring-context-5.3.23.jar:5.3.23]
+	at java.base/java.util.concurrent.Executors$RunnableAdapter.call(Executors.java:515) ~[na:na]
+	at java.base/java.util.concurrent.FutureTask.runAndReset(FutureTask.java:305) ~[na:na]
+	at java.base/java.util.concurrent.ScheduledThreadPoolExecutor$ScheduledFutureTask.run(ScheduledThreadPoolExecutor.java:305) ~[na:na]
+	at java.base/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1130) ~[na:na]
+	at java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:630) ~[na:na]
+	at java.base/java.lang.Thread.run(Thread.java:832) ~[na:na]
+21:09:41.151 [File Watcher] INFO  o.s.b.d.a.LocalDevToolsAutoConfiguration$RestartingClassPathChangeChangedEventListener - Restarting due to 2 class path changes (0 additions, 0 deletions, 2 modifications)
+21:09:41.164 [Thread-97] INFO  o.a.catalina.core.StandardService - Stopping service [Tomcat]
+21:09:41.360 [restartedMain] INFO  c.xworkz.dream.XworkzApiApplication - Starting XworkzApiApplication using Java 15.0.2 on LAPTOP-HPEIOEQL with PID 8936 (D:\Xworkz Relese Code\Xworkz-Api\bin\main started by Acer in D:\Xworkz Relese Code\Xworkz-Api)
+21:09:41.360 [restartedMain] DEBUG c.xworkz.dream.XworkzApiApplication - Running with Spring Boot v2.7.5, Spring v5.3.23
+21:09:41.360 [restartedMain] INFO  c.xworkz.dream.XworkzApiApplication - The following 1 profile is active: "prod"
+21:09:41.585 [restartedMain] INFO  o.s.cloud.context.scope.GenericScope - BeanFactory id=3b060256-7c24-379d-9aa7-1e1ed644c886
+21:09:41.625 [restartedMain] INFO  o.s.b.w.e.tomcat.TomcatWebServer - Tomcat initialized with port(s): 8081 (http)
+21:09:41.626 [restartedMain] INFO  o.a.catalina.core.StandardService - Starting service [Tomcat]
+21:09:41.626 [restartedMain] INFO  o.a.catalina.core.StandardEngine - Starting Servlet engine: [Apache Tomcat/9.0.68]
+21:09:41.676 [restartedMain] INFO  o.a.c.c.C.[Tomcat-1].[localhost].[/] - Initializing Spring embedded WebApplicationContext
+21:09:41.676 [restartedMain] INFO  o.s.b.w.s.c.ServletWebServerApplicationContext - Root WebApplicationContext: initialization completed in 314 ms
+21:09:41.682 [restartedMain] INFO  c.xworkz.dream.util.EncryptionHelper - {} is Created...........
+21:09:41.745 [restartedMain] INFO  o.s.b.d.a.OptionalLiveReloadServer - LiveReload server is running on port 35729
+21:09:41.991 [restartedMain] INFO  o.s.b.w.e.tomcat.TomcatWebServer - Tomcat started on port(s): 8081 (http) with context path ''
+21:09:42.177 [restartedMain] INFO  c.xworkz.dream.XworkzApiApplication - Started XworkzApiApplication in 0.93 seconds (JVM running for 595.03)
+21:09:42.178 [restartedMain] INFO  o.s.b.d.a.ConditionEvaluationDeltaLoggingListener - Condition evaluation unchanged
+21:09:45.213 [scheduling-1] DEBUG com.xworkz.dream.util.UtilDev - Sending email to [Team(email=om@x-workz.in, name=omkar), Team(email=akshara@x-workz.in, name=akshara), Team(email=hr@x-workz.in, name=mamatha), Team(email=Amulya@x-workz.in, name=amulya), Team(email=keerthanahn.xworkz@gmail.com, name=keerthana)]: Subject: Follow Up Candidate Details,
+21:10:40.199 [File Watcher] INFO  o.s.b.d.a.LocalDevToolsAutoConfiguration$RestartingClassPathChangeChangedEventListener - Restarting due to 2 class path changes (0 additions, 0 deletions, 2 modifications)
+21:10:40.213 [Thread-103] INFO  o.a.catalina.core.StandardService - Stopping service [Tomcat]
+21:10:40.424 [restartedMain] INFO  c.xworkz.dream.XworkzApiApplication - Starting XworkzApiApplication using Java 15.0.2 on LAPTOP-HPEIOEQL with PID 8936 (D:\Xworkz Relese Code\Xworkz-Api\bin\main started by Acer in D:\Xworkz Relese Code\Xworkz-Api)
+21:10:40.424 [restartedMain] DEBUG c.xworkz.dream.XworkzApiApplication - Running with Spring Boot v2.7.5, Spring v5.3.23
+21:10:40.424 [restartedMain] INFO  c.xworkz.dream.XworkzApiApplication - The following 1 profile is active: "prod"
+21:10:40.627 [restartedMain] INFO  o.s.cloud.context.scope.GenericScope - BeanFactory id=3b060256-7c24-379d-9aa7-1e1ed644c886
+21:10:40.667 [restartedMain] INFO  o.s.b.w.e.tomcat.TomcatWebServer - Tomcat initialized with port(s): 8081 (http)
+21:10:40.668 [restartedMain] INFO  o.a.catalina.core.StandardService - Starting service [Tomcat]
+21:10:40.668 [restartedMain] INFO  o.a.catalina.core.StandardEngine - Starting Servlet engine: [Apache Tomcat/9.0.68]
+21:10:40.709 [restartedMain] INFO  o.a.c.c.C.[Tomcat-1].[localhost].[/] - Initializing Spring embedded WebApplicationContext
+21:10:40.709 [restartedMain] INFO  o.s.b.w.s.c.ServletWebServerApplicationContext - Root WebApplicationContext: initialization completed in 284 ms
+21:10:40.714 [restartedMain] INFO  c.xworkz.dream.util.EncryptionHelper - {} is Created...........
+21:10:40.765 [restartedMain] INFO  o.s.b.d.a.OptionalLiveReloadServer - LiveReload server is running on port 35729
+21:10:40.999 [restartedMain] INFO  o.s.b.w.e.tomcat.TomcatWebServer - Tomcat started on port(s): 8081 (http) with context path ''
+21:10:41.175 [restartedMain] INFO  c.xworkz.dream.XworkzApiApplication - Started XworkzApiApplication in 0.87 seconds (JVM running for 654.018)
+21:10:41.177 [restartedMain] INFO  o.s.b.d.a.ConditionEvaluationDeltaLoggingListener - Condition evaluation unchanged
+21:10:45.435 [scheduling-1] DEBUG com.xworkz.dream.util.UtilDev - Sending email to [Team(email=om@x-workz.in, name=omkar), Team(email=akshara@x-workz.in, name=akshara), Team(email=hr@x-workz.in, name=mamatha), Team(email=Amulya@x-workz.in, name=amulya), Team(email=keerthanahn.xworkz@gmail.com, name=keerthana)]: Subject: Follow Up Candidate Details,
+21:10:55.693 [File Watcher] INFO  o.s.b.d.a.LocalDevToolsAutoConfiguration$RestartingClassPathChangeChangedEventListener - Restarting due to 2 class path changes (0 additions, 0 deletions, 2 modifications)
+21:10:55.723 [Thread-109] INFO  o.a.catalina.core.StandardService - Stopping service [Tomcat]
+21:10:56.032 [restartedMain] INFO  c.xworkz.dream.XworkzApiApplication - Starting XworkzApiApplication using Java 15.0.2 on LAPTOP-HPEIOEQL with PID 8936 (D:\Xworkz Relese Code\Xworkz-Api\bin\main started by Acer in D:\Xworkz Relese Code\Xworkz-Api)
+21:10:56.032 [restartedMain] DEBUG c.xworkz.dream.XworkzApiApplication - Running with Spring Boot v2.7.5, Spring v5.3.23
+21:10:56.032 [restartedMain] INFO  c.xworkz.dream.XworkzApiApplication - The following 1 profile is active: "prod"
+21:10:56.228 [restartedMain] INFO  o.s.cloud.context.scope.GenericScope - BeanFactory id=3b060256-7c24-379d-9aa7-1e1ed644c886
+21:10:56.272 [restartedMain] INFO  o.s.b.w.e.tomcat.TomcatWebServer - Tomcat initialized with port(s): 8081 (http)
+21:10:56.272 [restartedMain] INFO  o.a.catalina.core.StandardService - Starting service [Tomcat]
+21:10:56.273 [restartedMain] INFO  o.a.catalina.core.StandardEngine - Starting Servlet engine: [Apache Tomcat/9.0.68]
+21:10:56.317 [restartedMain] INFO  o.a.c.c.C.[Tomcat-1].[localhost].[/] - Initializing Spring embedded WebApplicationContext
+21:10:56.317 [restartedMain] INFO  o.s.b.w.s.c.ServletWebServerApplicationContext - Root WebApplicationContext: initialization completed in 283 ms
+21:10:56.323 [restartedMain] INFO  c.xworkz.dream.util.EncryptionHelper - {} is Created...........
+21:10:56.372 [restartedMain] INFO  o.s.b.d.a.OptionalLiveReloadServer - LiveReload server is running on port 35729
+21:10:56.581 [restartedMain] INFO  o.s.b.w.e.tomcat.TomcatWebServer - Tomcat started on port(s): 8081 (http) with context path ''
+21:10:56.753 [restartedMain] INFO  c.xworkz.dream.XworkzApiApplication - Started XworkzApiApplication in 0.862 seconds (JVM running for 669.593)
+21:10:56.754 [restartedMain] INFO  o.s.b.d.a.ConditionEvaluationDeltaLoggingListener - Condition evaluation unchanged
+21:11:00.389 [scheduling-1] DEBUG com.xworkz.dream.util.UtilDev - Sending email to [Team(email=om@x-workz.in, name=omkar), Team(email=akshara@x-workz.in, name=akshara), Team(email=hr@x-workz.in, name=mamatha), Team(email=Amulya@x-workz.in, name=amulya), Team(email=keerthanahn.xworkz@gmail.com, name=keerthana)]: Subject: Follow Up Candidate Details,
+21:11:04.114 [File Watcher] INFO  o.s.b.d.a.LocalDevToolsAutoConfiguration$RestartingClassPathChangeChangedEventListener - Restarting due to 2 class path changes (0 additions, 0 deletions, 2 modifications)
+21:11:04.141 [Thread-115] INFO  o.a.catalina.core.StandardService - Stopping service [Tomcat]
+21:11:04.435 [restartedMain] INFO  c.xworkz.dream.XworkzApiApplication - Starting XworkzApiApplication using Java 15.0.2 on LAPTOP-HPEIOEQL with PID 8936 (D:\Xworkz Relese Code\Xworkz-Api\bin\main started by Acer in D:\Xworkz Relese Code\Xworkz-Api)
+21:11:04.435 [restartedMain] DEBUG c.xworkz.dream.XworkzApiApplication - Running with Spring Boot v2.7.5, Spring v5.3.23
+21:11:04.435 [restartedMain] INFO  c.xworkz.dream.XworkzApiApplication - The following 1 profile is active: "prod"
+21:11:04.679 [restartedMain] INFO  o.s.cloud.context.scope.GenericScope - BeanFactory id=3b060256-7c24-379d-9aa7-1e1ed644c886
+21:11:04.721 [restartedMain] INFO  o.s.b.w.e.tomcat.TomcatWebServer - Tomcat initialized with port(s): 8081 (http)
+21:11:04.722 [restartedMain] INFO  o.a.catalina.core.StandardService - Starting service [Tomcat]
+21:11:04.722 [restartedMain] INFO  o.a.catalina.core.StandardEngine - Starting Servlet engine: [Apache Tomcat/9.0.68]
+21:11:04.762 [restartedMain] INFO  o.a.c.c.C.[Tomcat-1].[localhost].[/] - Initializing Spring embedded WebApplicationContext
+21:11:04.762 [restartedMain] INFO  o.s.b.w.s.c.ServletWebServerApplicationContext - Root WebApplicationContext: initialization completed in 325 ms
+21:11:04.768 [restartedMain] INFO  c.xworkz.dream.util.EncryptionHelper - {} is Created...........
+21:11:04.816 [restartedMain] INFO  o.s.b.d.a.OptionalLiveReloadServer - LiveReload server is running on port 35729
+21:11:05.021 [restartedMain] INFO  o.s.b.w.e.tomcat.TomcatWebServer - Tomcat started on port(s): 8081 (http) with context path ''
+21:11:05.188 [restartedMain] INFO  c.xworkz.dream.XworkzApiApplication - Started XworkzApiApplication in 0.891 seconds (JVM running for 678.026)
+21:11:05.189 [restartedMain] INFO  o.s.b.d.a.ConditionEvaluationDeltaLoggingListener - Condition evaluation unchanged
+21:11:08.682 [scheduling-1] DEBUG com.xworkz.dream.util.UtilDev - Sending email to [Team(email=om@x-workz.in, name=omkar), Team(email=akshara@x-workz.in, name=akshara), Team(email=hr@x-workz.in, name=mamatha), Team(email=Amulya@x-workz.in, name=amulya), Team(email=keerthanahn.xworkz@gmail.com, name=keerthana)]: Subject: Follow Up Candidate Details,
+21:11:22.796 [File Watcher] INFO  o.s.b.d.a.LocalDevToolsAutoConfiguration$RestartingClassPathChangeChangedEventListener - Restarting due to 2 class path changes (0 additions, 0 deletions, 2 modifications)
+21:11:22.823 [Thread-121] INFO  o.a.catalina.core.StandardService - Stopping service [Tomcat]
+21:11:23.087 [restartedMain] INFO  c.xworkz.dream.XworkzApiApplication - Starting XworkzApiApplication using Java 15.0.2 on LAPTOP-HPEIOEQL with PID 8936 (D:\Xworkz Relese Code\Xworkz-Api\bin\main started by Acer in D:\Xworkz Relese Code\Xworkz-Api)
+21:11:23.087 [restartedMain] DEBUG c.xworkz.dream.XworkzApiApplication - Running with Spring Boot v2.7.5, Spring v5.3.23
+21:11:23.087 [restartedMain] INFO  c.xworkz.dream.XworkzApiApplication - The following 1 profile is active: "prod"
+21:11:23.286 [restartedMain] INFO  o.s.cloud.context.scope.GenericScope - BeanFactory id=3b060256-7c24-379d-9aa7-1e1ed644c886
+21:11:23.334 [restartedMain] INFO  o.s.b.w.e.tomcat.TomcatWebServer - Tomcat initialized with port(s): 8081 (http)
+21:11:23.334 [restartedMain] INFO  o.a.catalina.core.StandardService - Starting service [Tomcat]
+21:11:23.335 [restartedMain] INFO  o.a.catalina.core.StandardEngine - Starting Servlet engine: [Apache Tomcat/9.0.68]
+21:11:23.365 [restartedMain] INFO  o.a.c.c.C.[Tomcat-1].[localhost].[/] - Initializing Spring embedded WebApplicationContext
+21:11:23.365 [restartedMain] INFO  o.s.b.w.s.c.ServletWebServerApplicationContext - Root WebApplicationContext: initialization completed in 276 ms
+21:11:23.375 [restartedMain] INFO  c.xworkz.dream.util.EncryptionHelper - {} is Created...........
+21:11:23.425 [restartedMain] INFO  o.s.b.d.a.OptionalLiveReloadServer - LiveReload server is running on port 35729
+21:11:23.645 [restartedMain] INFO  o.s.b.w.e.tomcat.TomcatWebServer - Tomcat started on port(s): 8081 (http) with context path ''
+21:11:23.831 [restartedMain] INFO  c.xworkz.dream.XworkzApiApplication - Started XworkzApiApplication in 0.852 seconds (JVM running for 696.665)
+21:11:23.832 [restartedMain] INFO  o.s.b.d.a.ConditionEvaluationDeltaLoggingListener - Condition evaluation unchanged
+21:11:28.245 [scheduling-1] DEBUG com.xworkz.dream.util.UtilDev - Sending email to [Team(email=om@x-workz.in, name=omkar), Team(email=akshara@x-workz.in, name=akshara), Team(email=hr@x-workz.in, name=mamatha), Team(email=Amulya@x-workz.in, name=amulya), Team(email=keerthanahn.xworkz@gmail.com, name=keerthana)]: Subject: Follow Up Candidate Details,
+21:11:28.248 [scheduling-1] ERROR o.s.s.s.TaskUtils$LoggingErrorHandler - Unexpected error occurred in scheduled task
+java.lang.Error: Unresolved compilation problem: 
+	Syntax error on token "content", delete this token
+
+	at com.xworkz.dream.util.UtilProd.sendBulkMailToNotification(UtilProd.java:227) ~[main/:na]
+	at com.xworkz.dream.util.UtilProd.sendNotificationToEmail(UtilProd.java:133) ~[main/:na]
+	at com.xworkz.dream.service.DreamServiceImpl.notification(DreamServiceImpl.java:1015) ~[main/:na]
+	at com.xworkz.dream.service.DreamServiceImpl.notification(DreamServiceImpl.java:933) ~[main/:na]
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method) ~[na:na]
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:64) ~[na:na]
+	at java.base/jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43) ~[na:na]
+	at java.base/java.lang.reflect.Method.invoke(Method.java:564) ~[na:na]
+	at org.springframework.scheduling.support.ScheduledMethodRunnable.run(ScheduledMethodRunnable.java:84) ~[spring-context-5.3.23.jar:5.3.23]
+	at org.springframework.scheduling.support.DelegatingErrorHandlingRunnable.run(DelegatingErrorHandlingRunnable.java:54) ~[spring-context-5.3.23.jar:5.3.23]
+	at java.base/java.util.concurrent.Executors$RunnableAdapter.call(Executors.java:515) ~[na:na]
+	at java.base/java.util.concurrent.FutureTask.runAndReset(FutureTask.java:305) ~[na:na]
+	at java.base/java.util.concurrent.ScheduledThreadPoolExecutor$ScheduledFutureTask.run(ScheduledThreadPoolExecutor.java:305) ~[na:na]
+	at java.base/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1130) ~[na:na]
+	at java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:630) ~[na:na]
+	at java.base/java.lang.Thread.run(Thread.java:832) ~[na:na]
+21:11:28.497 [File Watcher] INFO  o.s.b.d.a.LocalDevToolsAutoConfiguration$RestartingClassPathChangeChangedEventListener - Restarting due to 2 class path changes (0 additions, 0 deletions, 2 modifications)
+21:11:28.509 [Thread-127] INFO  o.a.catalina.core.StandardService - Stopping service [Tomcat]
+21:11:28.699 [restartedMain] INFO  c.xworkz.dream.XworkzApiApplication - Starting XworkzApiApplication using Java 15.0.2 on LAPTOP-HPEIOEQL with PID 8936 (D:\Xworkz Relese Code\Xworkz-Api\bin\main started by Acer in D:\Xworkz Relese Code\Xworkz-Api)
+21:11:28.699 [restartedMain] DEBUG c.xworkz.dream.XworkzApiApplication - Running with Spring Boot v2.7.5, Spring v5.3.23
+21:11:28.699 [restartedMain] INFO  c.xworkz.dream.XworkzApiApplication - The following 1 profile is active: "prod"
+21:11:28.950 [restartedMain] INFO  o.s.cloud.context.scope.GenericScope - BeanFactory id=3b060256-7c24-379d-9aa7-1e1ed644c886
+21:11:28.993 [restartedMain] INFO  o.s.b.w.e.tomcat.TomcatWebServer - Tomcat initialized with port(s): 8081 (http)
+21:11:28.993 [restartedMain] INFO  o.a.catalina.core.StandardService - Starting service [Tomcat]
+21:11:28.993 [restartedMain] INFO  o.a.catalina.core.StandardEngine - Starting Servlet engine: [Apache Tomcat/9.0.68]
+21:11:29.035 [restartedMain] INFO  o.a.c.c.C.[Tomcat-1].[localhost].[/] - Initializing Spring embedded WebApplicationContext
+21:11:29.035 [restartedMain] INFO  o.s.b.w.s.c.ServletWebServerApplicationContext - Root WebApplicationContext: initialization completed in 334 ms
+21:11:29.042 [restartedMain] INFO  c.xworkz.dream.util.EncryptionHelper - {} is Created...........
+21:11:29.099 [restartedMain] INFO  o.s.b.d.a.OptionalLiveReloadServer - LiveReload server is running on port 35729
+21:11:29.337 [restartedMain] INFO  o.s.b.w.e.tomcat.TomcatWebServer - Tomcat started on port(s): 8081 (http) with context path ''
+21:11:29.527 [restartedMain] INFO  c.xworkz.dream.XworkzApiApplication - Started XworkzApiApplication in 0.936 seconds (JVM running for 702.361)
+21:11:29.529 [restartedMain] INFO  o.s.b.d.a.ConditionEvaluationDeltaLoggingListener - Condition evaluation unchanged
+21:11:33.367 [scheduling-1] DEBUG com.xworkz.dream.util.UtilDev - Sending email to [Team(email=om@x-workz.in, name=omkar), Team(email=akshara@x-workz.in, name=akshara), Team(email=hr@x-workz.in, name=mamatha), Team(email=Amulya@x-workz.in, name=amulya), Team(email=keerthanahn.xworkz@gmail.com, name=keerthana)]: Subject: Follow Up Candidate Details,
+21:42:43.297 [File Watcher] INFO  o.s.b.d.a.LocalDevToolsAutoConfiguration$RestartingClassPathChangeChangedEventListener - Restarting due to 2 class path changes (0 additions, 0 deletions, 2 modifications)
+21:42:43.308 [Thread-133] INFO  o.a.catalina.core.StandardService - Stopping service [Tomcat]
+21:42:43.453 [restartedMain] INFO  c.xworkz.dream.XworkzApiApplication - Starting XworkzApiApplication using Java 15.0.2 on LAPTOP-HPEIOEQL with PID 8936 (D:\Xworkz Relese Code\Xworkz-Api\bin\main started by Acer in D:\Xworkz Relese Code\Xworkz-Api)
+21:42:43.453 [restartedMain] DEBUG c.xworkz.dream.XworkzApiApplication - Running with Spring Boot v2.7.5, Spring v5.3.23
+21:42:43.454 [restartedMain] INFO  c.xworkz.dream.XworkzApiApplication - The following 1 profile is active: "prod"
+21:42:43.642 [restartedMain] INFO  o.s.cloud.context.scope.GenericScope - BeanFactory id=3b060256-7c24-379d-9aa7-1e1ed644c886
+21:42:43.683 [restartedMain] INFO  o.s.b.w.e.tomcat.TomcatWebServer - Tomcat initialized with port(s): 8081 (http)
+21:42:43.684 [restartedMain] INFO  o.a.catalina.core.StandardService - Starting service [Tomcat]
+21:42:43.684 [restartedMain] INFO  o.a.catalina.core.StandardEngine - Starting Servlet engine: [Apache Tomcat/9.0.68]
+21:42:43.714 [restartedMain] INFO  o.a.c.c.C.[Tomcat-1].[localhost].[/] - Initializing Spring embedded WebApplicationContext
+21:42:43.714 [restartedMain] INFO  o.s.b.w.s.c.ServletWebServerApplicationContext - Root WebApplicationContext: initialization completed in 258 ms
+21:42:43.720 [restartedMain] INFO  c.xworkz.dream.util.EncryptionHelper - {} is Created...........
+21:42:43.767 [restartedMain] INFO  o.s.b.d.a.OptionalLiveReloadServer - LiveReload server is running on port 35729
+21:42:43.968 [restartedMain] INFO  o.s.b.w.e.tomcat.TomcatWebServer - Tomcat started on port(s): 8081 (http) with context path ''
+21:42:44.159 [restartedMain] INFO  c.xworkz.dream.XworkzApiApplication - Started XworkzApiApplication in 0.783 seconds (JVM running for 2576.993)
+21:42:44.160 [restartedMain] INFO  o.s.b.d.a.ConditionEvaluationDeltaLoggingListener - Condition evaluation unchanged
+21:43:41.525 [File Watcher] INFO  o.s.b.d.a.LocalDevToolsAutoConfiguration$RestartingClassPathChangeChangedEventListener - Restarting due to 1 class path change (0 additions, 0 deletions, 1 modification)
+21:43:41.551 [Thread-139] INFO  o.a.catalina.core.StandardService - Stopping service [Tomcat]
+21:43:41.935 [restartedMain] INFO  c.xworkz.dream.XworkzApiApplication - Starting XworkzApiApplication using Java 15.0.2 on LAPTOP-HPEIOEQL with PID 8936 (D:\Xworkz Relese Code\Xworkz-Api\bin\main started by Acer in D:\Xworkz Relese Code\Xworkz-Api)
+21:43:41.935 [restartedMain] DEBUG c.xworkz.dream.XworkzApiApplication - Running with Spring Boot v2.7.5, Spring v5.3.23
+21:43:41.936 [restartedMain] INFO  c.xworkz.dream.XworkzApiApplication - The following 1 profile is active: "prod"
+21:43:42.200 [restartedMain] INFO  o.s.cloud.context.scope.GenericScope - BeanFactory id=3b060256-7c24-379d-9aa7-1e1ed644c886
+21:43:42.245 [restartedMain] INFO  o.s.b.w.e.tomcat.TomcatWebServer - Tomcat initialized with port(s): 8081 (http)
+21:43:42.246 [restartedMain] INFO  o.a.catalina.core.StandardService - Starting service [Tomcat]
+21:43:42.246 [restartedMain] INFO  o.a.catalina.core.StandardEngine - Starting Servlet engine: [Apache Tomcat/9.0.68]
+21:43:42.290 [restartedMain] INFO  o.a.c.c.C.[Tomcat-1].[localhost].[/] - Initializing Spring embedded WebApplicationContext
+21:43:42.290 [restartedMain] INFO  o.s.b.w.s.c.ServletWebServerApplicationContext - Root WebApplicationContext: initialization completed in 352 ms
+21:43:42.297 [restartedMain] INFO  c.xworkz.dream.util.EncryptionHelper - {} is Created...........
+21:43:42.350 [restartedMain] INFO  o.s.b.d.a.OptionalLiveReloadServer - LiveReload server is running on port 35729
+21:43:42.568 [restartedMain] INFO  o.s.b.w.e.tomcat.TomcatWebServer - Tomcat started on port(s): 8081 (http) with context path ''
+21:43:42.769 [restartedMain] INFO  c.xworkz.dream.XworkzApiApplication - Started XworkzApiApplication in 1.062 seconds (JVM running for 2635.604)
+21:43:42.771 [restartedMain] INFO  o.s.b.d.a.ConditionEvaluationDeltaLoggingListener - Condition evaluation unchanged
+21:44:05.457 [File Watcher] INFO  o.s.b.d.a.LocalDevToolsAutoConfiguration$RestartingClassPathChangeChangedEventListener - Restarting due to 1 class path change (0 additions, 0 deletions, 1 modification)
+21:44:05.484 [Thread-145] INFO  o.a.catalina.core.StandardService - Stopping service [Tomcat]
+21:44:05.806 [restartedMain] INFO  c.xworkz.dream.XworkzApiApplication - Starting XworkzApiApplication using Java 15.0.2 on LAPTOP-HPEIOEQL with PID 8936 (D:\Xworkz Relese Code\Xworkz-Api\bin\main started by Acer in D:\Xworkz Relese Code\Xworkz-Api)
+21:44:05.806 [restartedMain] DEBUG c.xworkz.dream.XworkzApiApplication - Running with Spring Boot v2.7.5, Spring v5.3.23
+21:44:05.806 [restartedMain] INFO  c.xworkz.dream.XworkzApiApplication - The following 1 profile is active: "prod"
+21:44:06.010 [restartedMain] INFO  o.s.cloud.context.scope.GenericScope - BeanFactory id=3b060256-7c24-379d-9aa7-1e1ed644c886
+21:44:06.058 [restartedMain] INFO  o.s.b.w.e.tomcat.TomcatWebServer - Tomcat initialized with port(s): 8081 (http)
+21:44:06.058 [restartedMain] INFO  o.a.catalina.core.StandardService - Starting service [Tomcat]
+21:44:06.058 [restartedMain] INFO  o.a.catalina.core.StandardEngine - Starting Servlet engine: [Apache Tomcat/9.0.68]
+21:44:06.100 [restartedMain] INFO  o.a.c.c.C.[Tomcat-1].[localhost].[/] - Initializing Spring embedded WebApplicationContext
+21:44:06.100 [restartedMain] INFO  o.s.b.w.s.c.ServletWebServerApplicationContext - Root WebApplicationContext: initialization completed in 292 ms
+21:44:06.108 [restartedMain] INFO  c.xworkz.dream.util.EncryptionHelper - {} is Created...........
+21:44:06.169 [restartedMain] INFO  o.s.b.d.a.OptionalLiveReloadServer - LiveReload server is running on port 35729
+21:44:06.369 [restartedMain] INFO  o.s.b.w.e.tomcat.TomcatWebServer - Tomcat started on port(s): 8081 (http) with context path ''
+21:44:06.559 [restartedMain] INFO  c.xworkz.dream.XworkzApiApplication - Started XworkzApiApplication in 0.926 seconds (JVM running for 2659.393)
+21:44:06.560 [restartedMain] INFO  o.s.b.d.a.ConditionEvaluationDeltaLoggingListener - Condition evaluation unchanged
+21:44:09.795 [File Watcher] INFO  o.s.b.d.a.LocalDevToolsAutoConfiguration$RestartingClassPathChangeChangedEventListener - Restarting due to 2 class path changes (0 additions, 0 deletions, 2 modifications)
+21:44:09.809 [Thread-151] INFO  o.a.catalina.core.StandardService - Stopping service [Tomcat]
+21:44:09.995 [restartedMain] INFO  c.xworkz.dream.XworkzApiApplication - Starting XworkzApiApplication using Java 15.0.2 on LAPTOP-HPEIOEQL with PID 8936 (D:\Xworkz Relese Code\Xworkz-Api\bin\main started by Acer in D:\Xworkz Relese Code\Xworkz-Api)
+21:44:09.995 [restartedMain] DEBUG c.xworkz.dream.XworkzApiApplication - Running with Spring Boot v2.7.5, Spring v5.3.23
+21:44:09.995 [restartedMain] INFO  c.xworkz.dream.XworkzApiApplication - The following 1 profile is active: "prod"
+21:44:10.198 [restartedMain] INFO  o.s.cloud.context.scope.GenericScope - BeanFactory id=3b060256-7c24-379d-9aa7-1e1ed644c886
+21:44:10.237 [restartedMain] INFO  o.s.b.w.e.tomcat.TomcatWebServer - Tomcat initialized with port(s): 8081 (http)
+21:44:10.238 [restartedMain] INFO  o.a.catalina.core.StandardService - Starting service [Tomcat]
+21:44:10.238 [restartedMain] INFO  o.a.catalina.core.StandardEngine - Starting Servlet engine: [Apache Tomcat/9.0.68]
+21:44:10.292 [restartedMain] INFO  o.a.c.c.C.[Tomcat-1].[localhost].[/] - Initializing Spring embedded WebApplicationContext
+21:44:10.292 [restartedMain] INFO  o.s.b.w.s.c.ServletWebServerApplicationContext - Root WebApplicationContext: initialization completed in 295 ms
+21:44:10.300 [restartedMain] INFO  c.xworkz.dream.util.EncryptionHelper - {} is Created...........
+21:44:10.354 [restartedMain] INFO  o.s.b.d.a.OptionalLiveReloadServer - LiveReload server is running on port 35729
+21:44:10.560 [restartedMain] INFO  o.s.b.w.e.tomcat.TomcatWebServer - Tomcat started on port(s): 8081 (http) with context path ''
+21:44:10.726 [restartedMain] INFO  c.xworkz.dream.XworkzApiApplication - Started XworkzApiApplication in 0.84 seconds (JVM running for 2663.561)
+21:44:10.727 [restartedMain] INFO  o.s.b.d.a.ConditionEvaluationDeltaLoggingListener - Condition evaluation unchanged
+21:44:41.667 [File Watcher] INFO  o.s.b.d.a.LocalDevToolsAutoConfiguration$RestartingClassPathChangeChangedEventListener - Restarting due to 1 class path change (0 additions, 0 deletions, 1 modification)
+21:44:41.693 [Thread-157] INFO  o.a.catalina.core.StandardService - Stopping service [Tomcat]
+21:44:42.066 [restartedMain] INFO  c.xworkz.dream.XworkzApiApplication - Starting XworkzApiApplication using Java 15.0.2 on LAPTOP-HPEIOEQL with PID 8936 (D:\Xworkz Relese Code\Xworkz-Api\bin\main started by Acer in D:\Xworkz Relese Code\Xworkz-Api)
+21:44:42.067 [restartedMain] DEBUG c.xworkz.dream.XworkzApiApplication - Running with Spring Boot v2.7.5, Spring v5.3.23
+21:44:42.067 [restartedMain] INFO  c.xworkz.dream.XworkzApiApplication - The following 1 profile is active: "prod"
+21:44:42.269 [restartedMain] INFO  o.s.cloud.context.scope.GenericScope - BeanFactory id=3b060256-7c24-379d-9aa7-1e1ed644c886
+21:44:42.311 [restartedMain] INFO  o.s.b.w.e.tomcat.TomcatWebServer - Tomcat initialized with port(s): 8081 (http)
+21:44:42.312 [restartedMain] INFO  o.a.catalina.core.StandardService - Starting service [Tomcat]
+21:44:42.312 [restartedMain] INFO  o.a.catalina.core.StandardEngine - Starting Servlet engine: [Apache Tomcat/9.0.68]
+21:44:42.363 [restartedMain] INFO  o.a.c.c.C.[Tomcat-1].[localhost].[/] - Initializing Spring embedded WebApplicationContext
+21:44:42.363 [restartedMain] INFO  o.s.b.w.s.c.ServletWebServerApplicationContext - Root WebApplicationContext: initialization completed in 294 ms
+21:44:42.371 [restartedMain] INFO  c.xworkz.dream.util.EncryptionHelper - {} is Created...........
+21:44:42.428 [restartedMain] INFO  o.s.b.d.a.OptionalLiveReloadServer - LiveReload server is running on port 35729
+21:44:42.677 [restartedMain] INFO  o.s.b.w.e.tomcat.TomcatWebServer - Tomcat started on port(s): 8081 (http) with context path ''
+21:44:42.844 [restartedMain] INFO  c.xworkz.dream.XworkzApiApplication - Started XworkzApiApplication in 1.002 seconds (JVM running for 2695.679)
+21:44:42.846 [restartedMain] INFO  o.s.b.d.a.ConditionEvaluationDeltaLoggingListener - Condition evaluation unchanged
+21:44:45.599 [scheduling-1] DEBUG com.xworkz.dream.util.UtilDev - Sending email to [Team(email=om@x-workz.in, name=omkar), Team(email=akshara@x-workz.in, name=akshara), Team(email=hr@x-workz.in, name=mamatha), Team(email=Amulya@x-workz.in, name=amulya), Team(email=keerthanahn.xworkz@gmail.com, name=keerthana)]: Subject: Follow Up Candidate Details,
+21:44:45.639 [task-1] INFO  c.x.d.service.ChimpmailServiceImpl - invoked validateAndSendMailByMailId of SpringMailServiceImpl...
+21:44:45.640 [task-1] INFO  c.x.d.service.ChimpmailServiceImpl - Mail sent successfully
+21:44:45.640 [scheduling-1] ERROR o.s.s.s.TaskUtils$LoggingErrorHandler - Unexpected error occurred in scheduled task
+org.springframework.aop.AopInvocationException: Null return value from advice does not match primitive return type for: public abstract boolean com.xworkz.dream.service.ChimpMailService.validateAndSendMailByMailId(org.springframework.mail.javamail.MimeMessagePreparator)
+	at org.springframework.aop.framework.JdkDynamicAopProxy.invoke(JdkDynamicAopProxy.java:229) ~[spring-aop-5.3.23.jar:5.3.23]
+	at com.sun.proxy.$Proxy221.validateAndSendMailByMailId(Unknown Source) ~[na:na]
+	at com.xworkz.dream.util.UtilProd.sendBulkMailToNotification(UtilProd.java:236) ~[main/:na]
+	at com.xworkz.dream.util.UtilProd.sendNotificationToEmail(UtilProd.java:133) ~[main/:na]
+	at com.xworkz.dream.service.DreamServiceImpl.notification(DreamServiceImpl.java:1015) ~[main/:na]
+	at com.xworkz.dream.service.DreamServiceImpl.notification(DreamServiceImpl.java:933) ~[main/:na]
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method) ~[na:na]
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:64) ~[na:na]
+	at java.base/jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43) ~[na:na]
+	at java.base/java.lang.reflect.Method.invoke(Method.java:564) ~[na:na]
+	at org.springframework.scheduling.support.ScheduledMethodRunnable.run(ScheduledMethodRunnable.java:84) ~[spring-context-5.3.23.jar:5.3.23]
+	at org.springframework.scheduling.support.DelegatingErrorHandlingRunnable.run(DelegatingErrorHandlingRunnable.java:54) ~[spring-context-5.3.23.jar:5.3.23]
+	at java.base/java.util.concurrent.Executors$RunnableAdapter.call(Executors.java:515) ~[na:na]
+	at java.base/java.util.concurrent.FutureTask.runAndReset(FutureTask.java:305) ~[na:na]
+	at java.base/java.util.concurrent.ScheduledThreadPoolExecutor$ScheduledFutureTask.run(ScheduledThreadPoolExecutor.java:305) ~[na:na]
+	at java.base/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1130) ~[na:na]
+	at java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:630) ~[na:na]
+	at java.base/java.lang.Thread.run(Thread.java:832) ~[na:na]
+21:46:26.614 [File Watcher] INFO  o.s.b.d.a.LocalDevToolsAutoConfiguration$RestartingClassPathChangeChangedEventListener - Restarting due to 1 class path change (0 additions, 0 deletions, 1 modification)
+21:46:26.641 [Thread-163] INFO  o.a.catalina.core.StandardService - Stopping service [Tomcat]
+21:46:26.905 [restartedMain] INFO  c.xworkz.dream.XworkzApiApplication - Starting XworkzApiApplication using Java 15.0.2 on LAPTOP-HPEIOEQL with PID 8936 (D:\Xworkz Relese Code\Xworkz-Api\bin\main started by Acer in D:\Xworkz Relese Code\Xworkz-Api)
+21:46:26.905 [restartedMain] DEBUG c.xworkz.dream.XworkzApiApplication - Running with Spring Boot v2.7.5, Spring v5.3.23
+21:46:26.905 [restartedMain] INFO  c.xworkz.dream.XworkzApiApplication - The following 1 profile is active: "prod"
+21:46:27.109 [restartedMain] INFO  o.s.cloud.context.scope.GenericScope - BeanFactory id=3b060256-7c24-379d-9aa7-1e1ed644c886
+21:46:27.144 [restartedMain] INFO  o.s.b.w.e.tomcat.TomcatWebServer - Tomcat initialized with port(s): 8081 (http)
+21:46:27.144 [restartedMain] INFO  o.a.catalina.core.StandardService - Starting service [Tomcat]
+21:46:27.144 [restartedMain] INFO  o.a.catalina.core.StandardEngine - Starting Servlet engine: [Apache Tomcat/9.0.68]
+21:46:27.184 [restartedMain] INFO  o.a.c.c.C.[Tomcat-1].[localhost].[/] - Initializing Spring embedded WebApplicationContext
+21:46:27.184 [restartedMain] INFO  o.s.b.w.s.c.ServletWebServerApplicationContext - Root WebApplicationContext: initialization completed in 277 ms
+21:46:27.190 [restartedMain] INFO  c.xworkz.dream.util.EncryptionHelper - {} is Created...........
+21:46:27.231 [restartedMain] INFO  o.s.b.d.a.OptionalLiveReloadServer - LiveReload server is running on port 35729
+21:46:27.426 [restartedMain] INFO  o.s.b.w.e.tomcat.TomcatWebServer - Tomcat started on port(s): 8081 (http) with context path ''
+21:46:27.602 [restartedMain] INFO  c.xworkz.dream.XworkzApiApplication - Started XworkzApiApplication in 0.821 seconds (JVM running for 2800.437)
+21:46:27.604 [restartedMain] INFO  o.s.b.d.a.ConditionEvaluationDeltaLoggingListener - Condition evaluation unchanged
+21:46:30.948 [scheduling-1] DEBUG com.xworkz.dream.util.UtilDev - Sending email to [Team(email=om@x-workz.in, name=omkar), Team(email=akshara@x-workz.in, name=akshara), Team(email=hr@x-workz.in, name=mamatha), Team(email=Amulya@x-workz.in, name=amulya), Team(email=keerthanahn.xworkz@gmail.com, name=keerthana)]: Subject: Follow Up Candidate Details,
+21:46:30.975 [task-1] INFO  c.x.d.service.ChimpmailServiceImpl - invoked validateAndSendMailByMailId of SpringMailServiceImpl...
+21:46:30.975 [task-1] INFO  c.x.d.service.ChimpmailServiceImpl - Mail sent successfully
+21:46:30.976 [scheduling-1] ERROR o.s.s.s.TaskUtils$LoggingErrorHandler - Unexpected error occurred in scheduled task
+org.springframework.aop.AopInvocationException: Null return value from advice does not match primitive return type for: public abstract boolean com.xworkz.dream.service.ChimpMailService.validateAndSendMailByMailId(org.springframework.mail.javamail.MimeMessagePreparator)
+	at org.springframework.aop.framework.JdkDynamicAopProxy.invoke(JdkDynamicAopProxy.java:229) ~[spring-aop-5.3.23.jar:5.3.23]
+	at com.sun.proxy.$Proxy225.validateAndSendMailByMailId(Unknown Source) ~[na:na]
+	at com.xworkz.dream.util.UtilProd.sendBulkMailToNotification(UtilProd.java:236) ~[main/:na]
+	at com.xworkz.dream.util.UtilProd.sendNotificationToEmail(UtilProd.java:133) ~[main/:na]
+	at com.xworkz.dream.service.DreamServiceImpl.notification(DreamServiceImpl.java:1015) ~[main/:na]
+	at com.xworkz.dream.service.DreamServiceImpl.notification(DreamServiceImpl.java:933) ~[main/:na]
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method) ~[na:na]
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:64) ~[na:na]
+	at java.base/jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43) ~[na:na]
+	at java.base/java.lang.reflect.Method.invoke(Method.java:564) ~[na:na]
+	at org.springframework.scheduling.support.ScheduledMethodRunnable.run(ScheduledMethodRunnable.java:84) ~[spring-context-5.3.23.jar:5.3.23]
+	at org.springframework.scheduling.support.DelegatingErrorHandlingRunnable.run(DelegatingErrorHandlingRunnable.java:54) ~[spring-context-5.3.23.jar:5.3.23]
+	at java.base/java.util.concurrent.Executors$RunnableAdapter.call(Executors.java:515) ~[na:na]
+	at java.base/java.util.concurrent.FutureTask.runAndReset(FutureTask.java:305) ~[na:na]
+	at java.base/java.util.concurrent.ScheduledThreadPoolExecutor$ScheduledFutureTask.run(ScheduledThreadPoolExecutor.java:305) ~[na:na]
+	at java.base/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1130) ~[na:na]
+	at java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:630) ~[na:na]
+	at java.base/java.lang.Thread.run(Thread.java:832) ~[na:na]
+21:47:16.025 [File Watcher] INFO  o.s.b.d.a.LocalDevToolsAutoConfiguration$RestartingClassPathChangeChangedEventListener - Restarting due to 2 class path changes (0 additions, 0 deletions, 2 modifications)
+21:47:16.053 [Thread-169] INFO  o.a.catalina.core.StandardService - Stopping service [Tomcat]
+21:47:16.368 [restartedMain] INFO  c.xworkz.dream.XworkzApiApplication - Starting XworkzApiApplication using Java 15.0.2 on LAPTOP-HPEIOEQL with PID 8936 (D:\Xworkz Relese Code\Xworkz-Api\bin\main started by Acer in D:\Xworkz Relese Code\Xworkz-Api)
+21:47:16.369 [restartedMain] DEBUG c.xworkz.dream.XworkzApiApplication - Running with Spring Boot v2.7.5, Spring v5.3.23
+21:47:16.369 [restartedMain] INFO  c.xworkz.dream.XworkzApiApplication - The following 1 profile is active: "prod"
+21:47:16.585 [restartedMain] INFO  o.s.cloud.context.scope.GenericScope - BeanFactory id=3b060256-7c24-379d-9aa7-1e1ed644c886
+21:47:16.628 [restartedMain] INFO  o.s.b.w.e.tomcat.TomcatWebServer - Tomcat initialized with port(s): 8081 (http)
+21:47:16.629 [restartedMain] INFO  o.a.catalina.core.StandardService - Starting service [Tomcat]
+21:47:16.629 [restartedMain] INFO  o.a.catalina.core.StandardEngine - Starting Servlet engine: [Apache Tomcat/9.0.68]
+21:47:16.662 [restartedMain] INFO  o.a.c.c.C.[Tomcat-1].[localhost].[/] - Initializing Spring embedded WebApplicationContext
+21:47:16.662 [restartedMain] INFO  o.s.b.w.s.c.ServletWebServerApplicationContext - Root WebApplicationContext: initialization completed in 292 ms
+21:47:16.668 [restartedMain] INFO  c.xworkz.dream.util.EncryptionHelper - {} is Created...........
+21:47:16.715 [restartedMain] INFO  o.s.b.d.a.OptionalLiveReloadServer - LiveReload server is running on port 35729
+21:47:16.931 [restartedMain] INFO  o.s.b.w.e.tomcat.TomcatWebServer - Tomcat started on port(s): 8081 (http) with context path ''
+21:47:17.103 [restartedMain] INFO  c.xworkz.dream.XworkzApiApplication - Started XworkzApiApplication in 0.889 seconds (JVM running for 2849.938)
+21:47:17.104 [restartedMain] INFO  o.s.b.d.a.ConditionEvaluationDeltaLoggingListener - Condition evaluation unchanged
+21:47:20.348 [File Watcher] INFO  o.s.b.d.a.LocalDevToolsAutoConfiguration$RestartingClassPathChangeChangedEventListener - Restarting due to 2 class path changes (0 additions, 0 deletions, 2 modifications)
+21:47:20.371 [Thread-175] INFO  o.a.catalina.core.StandardService - Stopping service [Tomcat]
+21:47:20.562 [restartedMain] INFO  c.xworkz.dream.XworkzApiApplication - Starting XworkzApiApplication using Java 15.0.2 on LAPTOP-HPEIOEQL with PID 8936 (D:\Xworkz Relese Code\Xworkz-Api\bin\main started by Acer in D:\Xworkz Relese Code\Xworkz-Api)
+21:47:20.563 [restartedMain] DEBUG c.xworkz.dream.XworkzApiApplication - Running with Spring Boot v2.7.5, Spring v5.3.23
+21:47:20.563 [restartedMain] INFO  c.xworkz.dream.XworkzApiApplication - The following 1 profile is active: "prod"
+21:47:20.712 [scheduling-1] DEBUG com.xworkz.dream.util.UtilDev - Sending email to [Team(email=om@x-workz.in, name=omkar), Team(email=akshara@x-workz.in, name=akshara), Team(email=hr@x-workz.in, name=mamatha), Team(email=Amulya@x-workz.in, name=amulya), Team(email=keerthanahn.xworkz@gmail.com, name=keerthana)]: Subject: Follow Up Candidate Details,
+21:47:20.722 [scheduling-1] ERROR o.s.s.s.TaskUtils$LoggingErrorHandler - Unexpected error occurred in scheduled task
+org.springframework.beans.factory.BeanCreationException: Error creating bean with name 'applicationTaskExecutor' defined in class path resource [org/springframework/boot/autoconfigure/task/TaskExecutionAutoConfiguration.class]: BeanPostProcessor before instantiation of bean failed; nested exception is org.springframework.beans.factory.BeanCreationException: Error creating bean with name 'org.springframework.cache.annotation.ProxyCachingConfiguration': Initialization of bean failed; nested exception is org.springframework.beans.factory.NoSuchBeanDefinitionException: No bean named 'org.springframework.context.annotation.ConfigurationClassPostProcessor.importRegistry' available
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.createBean(AbstractAutowireCapableBeanFactory.java:537) ~[spring-beans-5.3.23.jar:5.3.23]
+	at org.springframework.beans.factory.support.AbstractBeanFactory.lambda$doGetBean$0(AbstractBeanFactory.java:335) ~[spring-beans-5.3.23.jar:5.3.23]
+	at org.springframework.beans.factory.support.DefaultSingletonBeanRegistry.getSingleton(DefaultSingletonBeanRegistry.java:234) ~[spring-beans-5.3.23.jar:5.3.23]
+	at org.springframework.beans.factory.support.AbstractBeanFactory.doGetBean(AbstractBeanFactory.java:333) ~[spring-beans-5.3.23.jar:5.3.23]
+	at org.springframework.beans.factory.support.AbstractBeanFactory.getBean(AbstractBeanFactory.java:213) ~[spring-beans-5.3.23.jar:5.3.23]
+	at org.springframework.aop.interceptor.AsyncExecutionAspectSupport.getDefaultExecutor(AsyncExecutionAspectSupport.java:239) ~[spring-aop-5.3.23.jar:5.3.23]
+	at org.springframework.aop.interceptor.AsyncExecutionInterceptor.getDefaultExecutor(AsyncExecutionInterceptor.java:157) ~[spring-aop-5.3.23.jar:5.3.23]
+	at org.springframework.aop.interceptor.AsyncExecutionAspectSupport.lambda$configure$2(AsyncExecutionAspectSupport.java:119) ~[spring-aop-5.3.23.jar:5.3.23]
+	at org.springframework.util.function.SingletonSupplier.get(SingletonSupplier.java:100) ~[spring-core-5.3.23.jar:5.3.23]
+	at org.springframework.aop.interceptor.AsyncExecutionAspectSupport.determineAsyncExecutor(AsyncExecutionAspectSupport.java:172) ~[spring-aop-5.3.23.jar:5.3.23]
+	at org.springframework.aop.interceptor.AsyncExecutionInterceptor.invoke(AsyncExecutionInterceptor.java:107) ~[spring-aop-5.3.23.jar:5.3.23]
+	at org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:186) ~[spring-aop-5.3.23.jar:5.3.23]
+	at org.springframework.aop.framework.JdkDynamicAopProxy.invoke(JdkDynamicAopProxy.java:215) ~[spring-aop-5.3.23.jar:5.3.23]
+	at com.sun.proxy.$Proxy229.validateAndSendMailByMailId(Unknown Source) ~[na:na]
+	at com.xworkz.dream.util.UtilProd.sendBulkMailToNotification(UtilProd.java:237) ~[main/:na]
+	at com.xworkz.dream.util.UtilProd.sendNotificationToEmail(UtilProd.java:133) ~[main/:na]
+	at com.xworkz.dream.service.DreamServiceImpl.notification(DreamServiceImpl.java:1015) ~[main/:na]
+	at com.xworkz.dream.service.DreamServiceImpl.notification(DreamServiceImpl.java:933) ~[main/:na]
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method) ~[na:na]
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:64) ~[na:na]
+	at java.base/jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43) ~[na:na]
+	at java.base/java.lang.reflect.Method.invoke(Method.java:564) ~[na:na]
+	at org.springframework.scheduling.support.ScheduledMethodRunnable.run(ScheduledMethodRunnable.java:84) ~[spring-context-5.3.23.jar:5.3.23]
+	at org.springframework.scheduling.support.DelegatingErrorHandlingRunnable.run(DelegatingErrorHandlingRunnable.java:54) ~[spring-context-5.3.23.jar:5.3.23]
+	at java.base/java.util.concurrent.Executors$RunnableAdapter.call(Executors.java:515) ~[na:na]
+	at java.base/java.util.concurrent.FutureTask.runAndReset(FutureTask.java:305) ~[na:na]
+	at java.base/java.util.concurrent.ScheduledThreadPoolExecutor$ScheduledFutureTask.run(ScheduledThreadPoolExecutor.java:305) ~[na:na]
+	at java.base/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1130) ~[na:na]
+	at java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:630) ~[na:na]
+	at java.base/java.lang.Thread.run(Thread.java:832) ~[na:na]
+Caused by: org.springframework.beans.factory.BeanCreationException: Error creating bean with name 'org.springframework.cache.annotation.ProxyCachingConfiguration': Initialization of bean failed; nested exception is org.springframework.beans.factory.NoSuchBeanDefinitionException: No bean named 'org.springframework.context.annotation.ConfigurationClassPostProcessor.importRegistry' available
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.doCreateBean(AbstractAutowireCapableBeanFactory.java:628) ~[spring-beans-5.3.23.jar:5.3.23]
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.createBean(AbstractAutowireCapableBeanFactory.java:542) ~[spring-beans-5.3.23.jar:5.3.23]
+	at org.springframework.beans.factory.support.AbstractBeanFactory.lambda$doGetBean$0(AbstractBeanFactory.java:335) ~[spring-beans-5.3.23.jar:5.3.23]
+	at org.springframework.beans.factory.support.DefaultSingletonBeanRegistry.getSingleton(DefaultSingletonBeanRegistry.java:234) ~[spring-beans-5.3.23.jar:5.3.23]
+	at org.springframework.beans.factory.support.AbstractBeanFactory.doGetBean(AbstractBeanFactory.java:333) ~[spring-beans-5.3.23.jar:5.3.23]
+	at org.springframework.beans.factory.support.AbstractBeanFactory.getBean(AbstractBeanFactory.java:208) ~[spring-beans-5.3.23.jar:5.3.23]
+	at org.springframework.beans.factory.support.ConstructorResolver.instantiateUsingFactoryMethod(ConstructorResolver.java:410) ~[spring-beans-5.3.23.jar:5.3.23]
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.instantiateUsingFactoryMethod(AbstractAutowireCapableBeanFactory.java:1352) ~[spring-beans-5.3.23.jar:5.3.23]
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.createBeanInstance(AbstractAutowireCapableBeanFactory.java:1195) ~[spring-beans-5.3.23.jar:5.3.23]
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.doCreateBean(AbstractAutowireCapableBeanFactory.java:582) ~[spring-beans-5.3.23.jar:5.3.23]
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.createBean(AbstractAutowireCapableBeanFactory.java:542) ~[spring-beans-5.3.23.jar:5.3.23]
+	at org.springframework.beans.factory.support.AbstractBeanFactory.lambda$doGetBean$0(AbstractBeanFactory.java:335) ~[spring-beans-5.3.23.jar:5.3.23]
+	at org.springframework.beans.factory.support.DefaultSingletonBeanRegistry.getSingleton(DefaultSingletonBeanRegistry.java:234) ~[spring-beans-5.3.23.jar:5.3.23]
+	at org.springframework.beans.factory.support.AbstractBeanFactory.doGetBean(AbstractBeanFactory.java:333) ~[spring-beans-5.3.23.jar:5.3.23]
+	at org.springframework.beans.factory.support.AbstractBeanFactory.getBean(AbstractBeanFactory.java:213) ~[spring-beans-5.3.23.jar:5.3.23]
+	at org.springframework.aop.framework.autoproxy.BeanFactoryAdvisorRetrievalHelper.findAdvisorBeans(BeanFactoryAdvisorRetrievalHelper.java:91) ~[spring-aop-5.3.23.jar:5.3.23]
+	at org.springframework.aop.framework.autoproxy.AbstractAdvisorAutoProxyCreator.findCandidateAdvisors(AbstractAdvisorAutoProxyCreator.java:111) ~[spring-aop-5.3.23.jar:5.3.23]
+	at org.springframework.aop.aspectj.annotation.AnnotationAwareAspectJAutoProxyCreator.findCandidateAdvisors(AnnotationAwareAspectJAutoProxyCreator.java:92) ~[spring-aop-5.3.23.jar:5.3.23]
+	at org.springframework.aop.aspectj.autoproxy.AspectJAwareAdvisorAutoProxyCreator.shouldSkip(AspectJAwareAdvisorAutoProxyCreator.java:101) ~[spring-aop-5.3.23.jar:5.3.23]
+	at org.springframework.aop.framework.autoproxy.AbstractAutoProxyCreator.postProcessBeforeInstantiation(AbstractAutoProxyCreator.java:255) ~[spring-aop-5.3.23.jar:5.3.23]
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.applyBeanPostProcessorsBeforeInstantiation(AbstractAutowireCapableBeanFactory.java:1160) ~[spring-beans-5.3.23.jar:5.3.23]
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.resolveBeforeInstantiation(AbstractAutowireCapableBeanFactory.java:1135) ~[spring-beans-5.3.23.jar:5.3.23]
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.createBean(AbstractAutowireCapableBeanFactory.java:531) ~[spring-beans-5.3.23.jar:5.3.23]
+	... 29 common frames omitted
+Caused by: org.springframework.beans.factory.NoSuchBeanDefinitionException: No bean named 'org.springframework.context.annotation.ConfigurationClassPostProcessor.importRegistry' available
+	at org.springframework.beans.factory.support.DefaultListableBeanFactory.getBeanDefinition(DefaultListableBeanFactory.java:874) ~[spring-beans-5.3.23.jar:5.3.23]
+	at org.springframework.beans.factory.support.AbstractBeanFactory.getMergedLocalBeanDefinition(AbstractBeanFactory.java:1344) ~[spring-beans-5.3.23.jar:5.3.23]
+	at org.springframework.beans.factory.support.AbstractBeanFactory.doGetBean(AbstractBeanFactory.java:309) ~[spring-beans-5.3.23.jar:5.3.23]
+	at org.springframework.beans.factory.support.AbstractBeanFactory.getBean(AbstractBeanFactory.java:213) ~[spring-beans-5.3.23.jar:5.3.23]
+	at org.springframework.context.annotation.ConfigurationClassPostProcessor$ImportAwareBeanPostProcessor.postProcessBeforeInitialization(ConfigurationClassPostProcessor.java:481) ~[spring-context-5.3.23.jar:5.3.23]
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.applyBeanPostProcessorsBeforeInitialization(AbstractAutowireCapableBeanFactory.java:440) ~[spring-beans-5.3.23.jar:5.3.23]
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.initializeBean(AbstractAutowireCapableBeanFactory.java:1796) ~[spring-beans-5.3.23.jar:5.3.23]
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.doCreateBean(AbstractAutowireCapableBeanFactory.java:620) ~[spring-beans-5.3.23.jar:5.3.23]
+	... 51 common frames omitted
+21:47:20.786 [restartedMain] INFO  o.s.cloud.context.scope.GenericScope - BeanFactory id=3b060256-7c24-379d-9aa7-1e1ed644c886
+21:47:20.828 [restartedMain] INFO  o.s.b.w.e.tomcat.TomcatWebServer - Tomcat initialized with port(s): 8081 (http)
+21:47:20.829 [restartedMain] INFO  o.a.catalina.core.StandardService - Starting service [Tomcat]
+21:47:20.829 [restartedMain] INFO  o.a.catalina.core.StandardEngine - Starting Servlet engine: [Apache Tomcat/9.0.68]
+21:47:20.860 [restartedMain] INFO  o.a.c.c.C.[Tomcat-1].[localhost].[/] - Initializing Spring embedded WebApplicationContext
+21:47:20.860 [restartedMain] INFO  o.s.b.w.s.c.ServletWebServerApplicationContext - Root WebApplicationContext: initialization completed in 296 ms
+21:47:20.865 [restartedMain] INFO  c.xworkz.dream.util.EncryptionHelper - {} is Created...........
+21:47:20.920 [restartedMain] INFO  o.s.b.d.a.OptionalLiveReloadServer - LiveReload server is running on port 35729
+21:47:21.125 [restartedMain] INFO  o.s.b.w.e.tomcat.TomcatWebServer - Tomcat started on port(s): 8081 (http) with context path ''
+21:47:21.299 [restartedMain] INFO  c.xworkz.dream.XworkzApiApplication - Started XworkzApiApplication in 0.848 seconds (JVM running for 2854.134)
+21:47:21.300 [restartedMain] INFO  o.s.b.d.a.ConditionEvaluationDeltaLoggingListener - Condition evaluation unchanged
+21:47:24.604 [scheduling-1] DEBUG com.xworkz.dream.util.UtilDev - Sending email to [Team(email=om@x-workz.in, name=omkar), Team(email=akshara@x-workz.in, name=akshara), Team(email=hr@x-workz.in, name=mamatha), Team(email=Amulya@x-workz.in, name=amulya), Team(email=keerthanahn.xworkz@gmail.com, name=keerthana)]: Subject: Follow Up Candidate Details,
+21:47:24.644 [task-1] INFO  c.x.d.service.ChimpmailServiceImpl - invoked validateAndSendMailByMailId of SpringMailServiceImpl...
+21:47:24.645 [task-1] INFO  c.x.d.service.ChimpmailServiceImpl - Mail sent successfully
+21:47:24.646 [scheduling-1] ERROR o.s.s.s.TaskUtils$LoggingErrorHandler - Unexpected error occurred in scheduled task
+org.springframework.aop.AopInvocationException: Null return value from advice does not match primitive return type for: public abstract boolean com.xworkz.dream.service.ChimpMailService.validateAndSendMailByMailId(org.springframework.mail.javamail.MimeMessagePreparator)
+	at org.springframework.aop.framework.JdkDynamicAopProxy.invoke(JdkDynamicAopProxy.java:229) ~[spring-aop-5.3.23.jar:5.3.23]
+	at com.sun.proxy.$Proxy233.validateAndSendMailByMailId(Unknown Source) ~[na:na]
+	at com.xworkz.dream.util.UtilProd.sendBulkMailToNotification(UtilProd.java:237) ~[main/:na]
+	at com.xworkz.dream.util.UtilProd.sendNotificationToEmail(UtilProd.java:133) ~[main/:na]
+	at com.xworkz.dream.service.DreamServiceImpl.notification(DreamServiceImpl.java:1015) ~[main/:na]
+	at com.xworkz.dream.service.DreamServiceImpl.notification(DreamServiceImpl.java:933) ~[main/:na]
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method) ~[na:na]
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:64) ~[na:na]
+	at java.base/jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43) ~[na:na]
+	at java.base/java.lang.reflect.Method.invoke(Method.java:564) ~[na:na]
+	at org.springframework.scheduling.support.ScheduledMethodRunnable.run(ScheduledMethodRunnable.java:84) ~[spring-context-5.3.23.jar:5.3.23]
+	at org.springframework.scheduling.support.DelegatingErrorHandlingRunnable.run(DelegatingErrorHandlingRunnable.java:54) ~[spring-context-5.3.23.jar:5.3.23]
+	at java.base/java.util.concurrent.Executors$RunnableAdapter.call(Executors.java:515) ~[na:na]
+	at java.base/java.util.concurrent.FutureTask.runAndReset(FutureTask.java:305) ~[na:na]
+	at java.base/java.util.concurrent.ScheduledThreadPoolExecutor$ScheduledFutureTask.run(ScheduledThreadPoolExecutor.java:305) ~[na:na]
+	at java.base/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1130) ~[na:na]
+	at java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:630) ~[na:na]
+	at java.base/java.lang.Thread.run(Thread.java:832) ~[na:na]
+21:48:13.846 [File Watcher] INFO  o.s.b.d.a.LocalDevToolsAutoConfiguration$RestartingClassPathChangeChangedEventListener - Restarting due to 2 class path changes (0 additions, 0 deletions, 2 modifications)
+21:48:13.875 [Thread-181] INFO  o.a.catalina.core.StandardService - Stopping service [Tomcat]
+21:48:14.253 [restartedMain] INFO  c.xworkz.dream.XworkzApiApplication - Starting XworkzApiApplication using Java 15.0.2 on LAPTOP-HPEIOEQL with PID 8936 (D:\Xworkz Relese Code\Xworkz-Api\bin\main started by Acer in D:\Xworkz Relese Code\Xworkz-Api)
+21:48:14.253 [restartedMain] DEBUG c.xworkz.dream.XworkzApiApplication - Running with Spring Boot v2.7.5, Spring v5.3.23
+21:48:14.253 [restartedMain] INFO  c.xworkz.dream.XworkzApiApplication - The following 1 profile is active: "prod"
+21:48:14.471 [restartedMain] INFO  o.s.cloud.context.scope.GenericScope - BeanFactory id=3b060256-7c24-379d-9aa7-1e1ed644c886
+21:48:14.516 [restartedMain] INFO  o.s.b.w.e.tomcat.TomcatWebServer - Tomcat initialized with port(s): 8081 (http)
+21:48:14.517 [restartedMain] INFO  o.a.catalina.core.StandardService - Starting service [Tomcat]
+21:48:14.517 [restartedMain] INFO  o.a.catalina.core.StandardEngine - Starting Servlet engine: [Apache Tomcat/9.0.68]
+21:48:14.548 [restartedMain] INFO  o.a.c.c.C.[Tomcat-1].[localhost].[/] - Initializing Spring embedded WebApplicationContext
+21:48:14.548 [restartedMain] INFO  o.s.b.w.s.c.ServletWebServerApplicationContext - Root WebApplicationContext: initialization completed in 293 ms
+21:48:14.555 [restartedMain] INFO  c.xworkz.dream.util.EncryptionHelper - {} is Created...........
+21:48:14.617 [restartedMain] INFO  o.s.b.d.a.OptionalLiveReloadServer - LiveReload server is running on port 35729
+21:48:14.889 [restartedMain] INFO  o.s.b.w.e.tomcat.TomcatWebServer - Tomcat started on port(s): 8081 (http) with context path ''
+21:48:15.075 [restartedMain] INFO  c.xworkz.dream.XworkzApiApplication - Started XworkzApiApplication in 1.029 seconds (JVM running for 2907.91)
+21:48:15.076 [restartedMain] INFO  o.s.b.d.a.ConditionEvaluationDeltaLoggingListener - Condition evaluation unchanged
+21:48:18.646 [scheduling-1] DEBUG com.xworkz.dream.util.UtilDev - Sending email to [Team(email=om@x-workz.in, name=omkar), Team(email=akshara@x-workz.in, name=akshara), Team(email=hr@x-workz.in, name=mamatha), Team(email=Amulya@x-workz.in, name=amulya), Team(email=keerthanahn.xworkz@gmail.com, name=keerthana)]: Subject: Follow Up Candidate Details,
+21:48:18.672 [task-1] INFO  c.x.d.service.ChimpmailServiceImpl - invoked validateAndSendMailByMailId of SpringMailServiceImpl...
+21:48:18.673 [task-1] INFO  c.x.d.service.ChimpmailServiceImpl - Mail sent successfully
+21:48:18.674 [scheduling-1] ERROR o.s.s.s.TaskUtils$LoggingErrorHandler - Unexpected error occurred in scheduled task
+org.springframework.aop.AopInvocationException: Null return value from advice does not match primitive return type for: public abstract boolean com.xworkz.dream.service.ChimpMailService.validateAndSendMailByMailId(org.springframework.mail.javamail.MimeMessagePreparator)
+	at org.springframework.aop.framework.JdkDynamicAopProxy.invoke(JdkDynamicAopProxy.java:229) ~[spring-aop-5.3.23.jar:5.3.23]
+	at com.sun.proxy.$Proxy237.validateAndSendMailByMailId(Unknown Source) ~[na:na]
+	at com.xworkz.dream.util.UtilProd.sendBulkMailToNotification(UtilProd.java:236) ~[main/:na]
+	at com.xworkz.dream.util.UtilProd.sendNotificationToEmail(UtilProd.java:133) ~[main/:na]
+	at com.xworkz.dream.service.DreamServiceImpl.notification(DreamServiceImpl.java:1015) ~[main/:na]
+	at com.xworkz.dream.service.DreamServiceImpl.notification(DreamServiceImpl.java:933) ~[main/:na]
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method) ~[na:na]
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:64) ~[na:na]
+	at java.base/jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43) ~[na:na]
+	at java.base/java.lang.reflect.Method.invoke(Method.java:564) ~[na:na]
+	at org.springframework.scheduling.support.ScheduledMethodRunnable.run(ScheduledMethodRunnable.java:84) ~[spring-context-5.3.23.jar:5.3.23]
+	at org.springframework.scheduling.support.DelegatingErrorHandlingRunnable.run(DelegatingErrorHandlingRunnable.java:54) ~[spring-context-5.3.23.jar:5.3.23]
+	at java.base/java.util.concurrent.Executors$RunnableAdapter.call(Executors.java:515) ~[na:na]
+	at java.base/java.util.concurrent.FutureTask.runAndReset(FutureTask.java:305) ~[na:na]
+	at java.base/java.util.concurrent.ScheduledThreadPoolExecutor$ScheduledFutureTask.run(ScheduledThreadPoolExecutor.java:305) ~[na:na]
+	at java.base/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1130) ~[na:na]
+	at java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:630) ~[na:na]
+	at java.base/java.lang.Thread.run(Thread.java:832) ~[na:na]
+21:48:26.503 [File Watcher] INFO  o.s.b.d.a.LocalDevToolsAutoConfiguration$RestartingClassPathChangeChangedEventListener - Restarting due to 1 class path change (0 additions, 0 deletions, 1 modification)
+21:48:26.531 [Thread-187] INFO  o.a.catalina.core.StandardService - Stopping service [Tomcat]
+

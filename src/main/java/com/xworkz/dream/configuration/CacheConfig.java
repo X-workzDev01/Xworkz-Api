@@ -34,7 +34,7 @@ public class CacheConfig {
 		caches.add(new ConcurrentMapCache("followUpStatusDetails"));
 		caches.add(new ConcurrentMapCache("byEmail"));
 		caches.add(new ConcurrentMapCache("writeAttendance"));
-		caches.add(new ConcurrentMapCache("everyDayEveryDay"));
+		caches.add(new ConcurrentMapCache("everyDay"));
 		caches.add(new ConcurrentMapCache("getEmail"));
 		caches.add(new ConcurrentMapCache("update"));
 

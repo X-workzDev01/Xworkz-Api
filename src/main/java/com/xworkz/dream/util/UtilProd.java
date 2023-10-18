@@ -85,7 +85,6 @@ public class UtilProd implements DreamUtil {
 	@Value("${mailChimp.smsSuccess}")
 	private String smsSuccess;
 
-
 	@Autowired
 	private EncryptionHelper helper;
 
@@ -196,7 +195,16 @@ public class UtilProd implements DreamUtil {
 		return sendWhatsAppLinkToChimp(traineeEmail, subject, whatsAppLink);
 
 	}
-
+	
+	@Override
+	public boolean sendBirthadyEmail(String traineeEmail, String subject, String name) {
+		if(traineeEmail ==null || name ==null) {
+			logger.warn("Email or name is null");
+			return false;
+		}
+		return sendBirthadyEmailChimp(traineeEmail, subject, name);
+	}
+	
 	// ================================================================================================
 	// this is mail chimp if use below code send mail through contact@xworkz.in
 	private boolean otpMailService(String email, int otp, String subject) {
@@ -219,7 +227,6 @@ public class UtilProd implements DreamUtil {
 
 	private boolean sendBulkMailToNotification(List<String> recipients, String subject, List<StatusDto> body) {
 		Context context = new Context();
-
 
 		context.setVariable("listDto", body);
 		String content = templateEngine.process("FollowCandidateFollowupTemplete", context);
@@ -244,7 +251,6 @@ public class UtilProd implements DreamUtil {
 		context.setVariable("whatsAppLink", whatsAppLink);
 		String content = templateEngine.process("WhatsAppLinkContentTemplate", context);
 
-
 		MimeMessagePreparator messagePreparator = mimeMessage -> {
 
 			MimeMessageHelper messageHelper = new MimeMessageHelper(mimeMessage);
@@ -263,7 +269,6 @@ public class UtilProd implements DreamUtil {
 	private boolean sendCourseContentMailChimp(String email, String recipientName)
 
 			throws MessagingException, IOException, TemplateException {
-
 
 		Context context = new Context();
 		context.setVariable("recipientName", recipientName);
@@ -285,12 +290,12 @@ public class UtilProd implements DreamUtil {
 		String response = null;
 		String status = null;
 		try {
-//			String mobileNumber = dto.getBasicInfo().getContactNumber().toString();
-			String mobileNumber = "9900775088";
+			String mobileNumber = dto.getBasicInfo().getContactNumber().toString();
+//			String mobileNumber = "9900775088";
 
 			if (Objects.nonNull(mobileNumber)) {
 
-				String smsMessage = "Hi " + "Hareesha" + "," + "\n"
+				String smsMessage = "Hi " + dto.getBasicInfo().getTraineeName().toString() + "," + "\n"
 						+ "Thanks for enquiring with X-workZ for " + "Java Enterpirse Course" + " at " + "Rajajinagara"
 						+ "\n" + " For Queries, contact " + "9886971483/9886971480" + "." + "\n"
 						+ " Check Mail for Course content (Spam Folder)" + ".";
@@ -321,6 +326,26 @@ public class UtilProd implements DreamUtil {
 			logger.error("\n\nMessage is {} and exception is {}\n\n\n\n\n", e.getMessage(), e);
 			return false;
 		}
+	}
+	
+	private boolean sendBirthadyEmailChimp(String traineeEmail, String subject, String name) {
+		Context context = new Context();
+
+		context.setVariable("name", name);
+		String content = templateEngine.process("BirthadyaMail", context);
+
+		MimeMessagePreparator messagePreparator = mimeMessage -> {
+
+			MimeMessageHelper messageHelper = new MimeMessageHelper(mimeMessage);
+			messageHelper.setFrom(helper.decrypt(chimpUserName));
+
+			messageHelper.addBcc(new InternetAddress(traineeEmail));
+
+			messageHelper.setSubject(subject);
+			messageHelper.setText(content, true);
+		};
+
+		return chimpMailService.validateAndSendMailByMailId(messagePreparator);
 	}
 
 }

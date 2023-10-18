@@ -98,6 +98,7 @@ public class DreamServiceImpl implements DreamService {
 	private ResourceLoader resourceLoader;
 	@Value("${login.teamFile}")
 	private String userFile;
+	@Value("${sheets.range}")
 	@Autowired
 	private EmailableClient emailableClient;
 	@Value("${sheets.rowStartRange}")
@@ -182,7 +183,7 @@ public class DreamServiceImpl implements DreamService {
 //				}
 
 			}
-		//	repo.evictAllCachesOnTraineeDetails();
+			//repo.evictAllCachesOnTraineeDetails();
 			return ResponseEntity.ok("Data written successfully, not added to Follow Up");
 		} catch (Exception e) {
 			logger.error("Error processing request: " + e.getMessage(), e);
@@ -249,7 +250,7 @@ public class DreamServiceImpl implements DreamService {
 						return ResponseEntity.ok("Email not sent, Data written successfully, Added to follow Up");
 					}
 				}
-				repo.evictAllCachesOnTraineeDetails();
+				//repo.evictAllCachesOnTraineeDetails();
 			}
 			return ResponseEntity.ok("Data written successfully, not added to Follow Up");
 		} catch (Exception e) {
@@ -489,13 +490,12 @@ public class DreamServiceImpl implements DreamService {
 					UpdateValuesResponse updated = repo.update(spreadsheetId, range, valueRange);
 					if (updated != null && !updated.isEmpty()) {
 						boolean followUpResponse = updateFollowUp(spreadsheetId, email, dto);
-						repo.evictAllCachesOnTraineeDetails();
+						//repo.evictAllCachesOnTraineeDetails();
 						return ResponseEntity.ok("Updated Successfully");
 					} else {
 						return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("An error occurred ");
 					}
 				} catch (IllegalAccessException e) {
-					e.printStackTrace();
 					return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("An error occurred ");
 				}
 			} else {
@@ -531,7 +531,7 @@ public class DreamServiceImpl implements DreamService {
 			UpdateValuesResponse updated = repo.updateFollow(spreadsheetId, range, valueRange);
 
 			if (updated != null && !updated.isEmpty()) {
-				repo.evictAllCachesOnTraineeDetails();
+				//repo.evictAllCachesOnTraineeDetails();
 				return true;
 			} else {
 				return false;
@@ -692,6 +692,8 @@ public class DreamServiceImpl implements DreamService {
 		}
 	}
 
+
+
 	@Override
 	public ResponseEntity<FollowUpDto> getFollowUpByEmail(String spreadsheetId, String email,
 			HttpServletRequest request) throws IOException {
@@ -752,6 +754,16 @@ public class DreamServiceImpl implements DreamService {
 				.map(wrapper::listToDto).findFirst().orElse(null);
 	}
 
+
+	private TraineeDto getTraineeDtoByEmail(List<List<Object>> traineeData, String email) {
+		if (traineeData == null || email == null) {
+			return null;
+		}
+
+		return traineeData.stream()
+				.filter(row -> row.size() > 2 && row.get(2) != null && row.get(2).toString().equalsIgnoreCase(email))
+				.map(wrapper::listToDto).findFirst().orElse(null);
+	}
 
 	@Override
 	public List<FollowUpDto> getFollowUpRows(List<List<Object>> values, int startingIndex, int maxRows) {
@@ -1072,7 +1084,7 @@ public class DreamServiceImpl implements DreamService {
 			writeDataEnquiry(spreadsheetId, traineeDto, request);
 		} catch (MessagingException | TemplateException e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			logger.error("Error Writing enqiry data to sheet");
 		}
 		return true;
 
@@ -1106,7 +1118,7 @@ public class DreamServiceImpl implements DreamService {
 		if (updated.isEmpty()) {
 			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("An error occurred ");
 		} else {
-			repo.evictAllCachesOnTraineeDetails();
+			// repo.evictAllCachesOnTraineeDetails();
 			return ResponseEntity.ok("Updated Successfully");
 		}
 	}
