@@ -155,14 +155,14 @@ public class DreamRepositoryImpl implements DreamRepository {
 	
 
 	@Override
-	@Synchronized
-	@CachePut(value = "sheetsData", key = "#spreadsheetId", unless = "#result == null")
+	@Cacheable(value = "sheetsData", key = "#spreadsheetId", unless = "#result == null")
 	public List<List<Object>> readData(String spreadsheetId) throws IOException {
 		ValueRange response = sheetsService.spreadsheets().values().get(spreadsheetId, range).execute();
 		return response.getValues();
 	}
 
 	@Override
+	@CachePut(value = "sheetsData", key = "#spreadsheetId", unless = "#result == null")
 	public UpdateValuesResponse update(String spreadsheetId, String range2, ValueRange valueRange) throws IOException {
 		return sheetsService.spreadsheets().values().update(spreadsheetId, range2, valueRange)
 				.setValueInputOption("RAW").execute();
@@ -189,13 +189,14 @@ public class DreamRepositoryImpl implements DreamRepository {
 	}
 
 	@Override
-	@CachePut(value = "followUpDetails", key = "#spreadsheetId", unless = "#result == null")
+	@Cacheable(value = "followUpDetails", key = "#spreadsheetId", unless = "#result == null")
 	public List<List<Object>> getFollowUpDetails(String spreadsheetId) throws IOException {
 		ValueRange response = sheetsService.spreadsheets().values().get(spreadsheetId, followUpRange).execute();
 		return response.getValues();
 	}
 
 	@Override
+	@CachePut(value = "followUpDetails", key = "#spreadsheetId", unless = "#result == null")
 	public boolean updateCurrentFollowUpStatus(String spreadsheetId, String currentFollowRange, List<Object> data)
 			throws IOException {
 		List<List<Object>> list = new ArrayList<List<Object>>();
@@ -205,7 +206,6 @@ public class DreamRepositoryImpl implements DreamRepository {
 		sheetsService.spreadsheets().values().update(spreadsheetId, currentFollowRange, body)
 				.setValueInputOption("USER_ENTERED").execute();
 		return true;
-
 	}
 
 	@Override

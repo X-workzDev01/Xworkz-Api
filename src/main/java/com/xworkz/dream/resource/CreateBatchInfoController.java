@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.xworkz.dream.dto.BatchDetails;
 import com.xworkz.dream.dto.BatchDetailsDto;
+import com.xworkz.dream.dto.FollowUpDto;
 import com.xworkz.dream.dto.TraineeDto;
 import com.xworkz.dream.service.DreamService;
 import com.xworkz.dream.service.WhatsAppService;
@@ -73,4 +74,20 @@ public class CreateBatchInfoController {
 			@RequestParam String courseName) throws IOException {
 		return whatsAppService.getTraineeDetailsByCourse(spreadsheetId, courseName);
 	}	
+	
+	@GetMapping("/getTraineeDetails")
+	@ApiOperation("To get the details of trainee based on the course in follow up")
+	public ResponseEntity<List<FollowUpDto>> traineeDetailsByCourseInFollowUp(@RequestHeader String spreadsheetId,
+			@RequestParam String courseName) throws IOException {
+		return whatsAppService.getTraineeDetailsByCourseInFollowUp(spreadsheetId, courseName);
+	}
+	
+	@GetMapping("/getByCourseAndStatus")
+	@ApiOperation("To get the details of trainee based on the course and status in follow up")
+	public ResponseEntity<List<FollowUpDto>> traineeDetailsByCourseAndStatusInFollowUp(@RequestHeader String spreadsheetId,
+			@RequestParam String courseName,String status) throws IOException {
+		System.out.println("this is getByCourseAndStatus:"+courseName+" "+status);
+		return whatsAppService.traineeDetailsByCourseAndStatusInFollowUp(spreadsheetId, courseName,status);
+	}
+	
 }
