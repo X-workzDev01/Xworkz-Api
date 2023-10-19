@@ -1,8 +1,6 @@
 package com.xworkz.dream.resource;
 
 import java.io.IOException;
-import java.util.List;
-
 import javax.servlet.http.HttpServletRequest;
 
 import org.slf4j.Logger;
@@ -20,9 +18,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.xworkz.dream.dto.BatchDetails;
 import com.xworkz.dream.dto.BatchDetailsDto;
-import com.xworkz.dream.dto.FollowUpDataDto;
-import com.xworkz.dream.dto.FollowUpDto;
-import com.xworkz.dream.dto.TraineeDto;
 import com.xworkz.dream.service.DreamService;
 import com.xworkz.dream.service.WhatsAppService;
 
@@ -67,37 +62,6 @@ public class CreateBatchInfoController {
 			throws IOException {
 		boolean sendWhatsAppLink = whatsAppService.sendWhatsAppLink(spreadsheetId, courseName);
 		return sendWhatsAppLink;
-	}
-
-	@GetMapping("/traineeDetails")
-	@ApiOperation("To get the details of trainee based on the active course")
-	public ResponseEntity<List<TraineeDto>> traineeDetailsByCourse(@RequestHeader String spreadsheetId,
-			@RequestParam String courseName) throws IOException {
-		return whatsAppService.getTraineeDetailsByCourse(spreadsheetId, courseName);
 	}	
-	
-	@GetMapping("/getTraineeDetails")
-	@ApiOperation("To get the details of trainee based on the course in follow up")
-	public ResponseEntity<List<FollowUpDto>> traineeDetailsByCourseInFollowUp(@RequestHeader String spreadsheetId,
-			@RequestParam String courseName) throws IOException {
-		return whatsAppService.getTraineeDetailsByCourseInFollowUp(spreadsheetId, courseName);
-	}
-	
-	@GetMapping("/getByCourseAndStatus")
-	@ApiOperation("To get the details of trainee based on the course and status in follow up")
-	public ResponseEntity<List<FollowUpDto>> traineeDetailsByCourseAndStatusInFollowUp(@RequestHeader String spreadsheetId,
-			@RequestParam String courseName,String status) throws IOException {
-		System.out.println("this is getByCourseAndStatus:"+courseName+" "+status);
-		return whatsAppService.traineeDetailsByCourseAndStatusInFollowUp(spreadsheetId, courseName,status);
-	}
-	
-	@GetMapping("/getGroupStatus")
-	@ApiOperation("To get the details by groupped status")
-	public ResponseEntity<List<FollowUpDto>> getGroupStatus(@RequestHeader String spreadsheetId,
-			String status) throws IOException {
-		System.out.println("this is getByCourseAndStatus:"+status);
-		return whatsAppService.getGroupStatus(spreadsheetId,status);
-	}
-	
 	
 }

@@ -4,13 +4,9 @@ import java.io.IOException;
 import java.security.SecureRandom;
 import java.util.ArrayList;
 import java.util.Base64;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Properties;
 import java.util.Random;
-import java.util.Set;
-import java.util.stream.Collectors;
 import java.util.Objects;
 import javax.mail.Authenticator;
 import javax.mail.Message;
@@ -20,34 +16,22 @@ import javax.mail.Session;
 import javax.mail.Transport;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
-
-import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Profile;
-import org.springframework.mail.javamail.JavaMailSender;
-import org.springframework.mail.javamail.JavaMailSenderImpl;
+
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.mail.javamail.MimeMessagePreparator;
-import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
-import org.springframework.ui.Model;
-import org.springframework.ui.freemarker.FreeMarkerTemplateUtils;
-import org.springframework.web.servlet.view.freemarker.FreeMarkerConfigurer;
+
 import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.context.Context;
-
-import com.google.api.client.util.ArrayMap;
 import com.xworkz.dream.dto.StatusDto;
 import com.xworkz.dream.dto.TraineeDto;
 import com.xworkz.dream.dto.utils.Team;
 import com.xworkz.dream.service.ChimpMailService;
-
-import freemarker.template.Configuration;
-import freemarker.template.Template;
 import freemarker.template.TemplateException;
 
 @Component
@@ -75,8 +59,6 @@ public class UtilDev implements DreamUtil {
 	private static final Logger logger = LoggerFactory.getLogger(UtilDev.class);
 
 	public int generateOTP() {
-		// Generate a random OTP
-		int otpLength = 6;
 		int otpMinValue = 100000;
 		int otpMaxValue = 999999;
 		Random random = new Random();
