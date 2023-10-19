@@ -5,9 +5,11 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
@@ -300,6 +302,41 @@ public class WhatsAppServiceImpl implements WhatsAppService {
 	        logger.error("An IOException occurred: " + e.getMessage(), e);
 	        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(Collections.emptyList());
 	    }
+	}
+
+	@Override
+	public ResponseEntity<List<FollowUpDto>> getGroupStatus(String spreadsheetId, String status) throws IOException {
+		System.out.println("this is getGroupStatus");
+		 List<List<Object>> followUpData = repo.getFollowUpDetails(spreadsheetId);
+	        List<List<Object>> traineeData = repo.readData(spreadsheetId);
+	        Set<String> interestStatus = new HashSet<>(Arrays.asList("Interested", "RNR", "Not reachable", "Not available", "CallDrop", "Incoming", "Not available"));
+	        Set<String> rnrStatus = new HashSet<>(Arrays.asList("Busy", "RNR", "Not reachable", "Not available", "CallDrop", "Incoming", "Not available"));
+	        Set<String> notInterested = new HashSet<>(Arrays.asList("Drop after course" , "drop after placement", "higher studies", "joined other institute", "not joining"," wrong number"));
+	        
+	        
+	        if (spreadsheetId == null || repo == null || wrapper == null || service == null || status == null) {
+	            return ResponseEntity.badRequest().build();
+	        }
+	        if (followUpData == null || traineeData == null||interestStatus==null||rnrStatus==null||notInterested==null) {
+	            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(Collections.emptyList());
+	        }
+	        if(status.equalsIgnoreCase("Interested")) {
+	        	System.out.println("status is I");
+	        	List<FollowUpDto> followUpDto = (List<FollowUpDto>) followUpData.stream()
+	  	                .filter(row -> row != null && row.size() > 9 && containsGroupStatus(row, interestStatus));
+	        System.out.println(followUpDto.toString());
+	        }
+		return null;
+	}
+
+	private boolean containsGroupStatus(List<Object> row, Set<String> interestStatus) {
+		// TODO Auto-generated method stub
+		for (String status : interestStatus) {
+	        if (row.contains(status)) {
+	            return true;
+	        }
+	    }
+		return false;
 	}
 
 

@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.xworkz.dream.dto.BatchDetails;
 import com.xworkz.dream.dto.BatchDetailsDto;
+import com.xworkz.dream.dto.FollowUpDataDto;
 import com.xworkz.dream.dto.FollowUpDto;
 import com.xworkz.dream.dto.TraineeDto;
 import com.xworkz.dream.service.DreamService;
@@ -89,5 +90,14 @@ public class CreateBatchInfoController {
 		System.out.println("this is getByCourseAndStatus:"+courseName+" "+status);
 		return whatsAppService.traineeDetailsByCourseAndStatusInFollowUp(spreadsheetId, courseName,status);
 	}
+	
+	@GetMapping("/getGroupStatus")
+	@ApiOperation("To get the details by groupped status")
+	public ResponseEntity<List<FollowUpDto>> getGroupStatus(@RequestHeader String spreadsheetId,
+			String status) throws IOException {
+		System.out.println("this is getByCourseAndStatus:"+status);
+		return whatsAppService.getGroupStatus(spreadsheetId,status);
+	}
+	
 	
 }

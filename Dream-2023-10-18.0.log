@@ -1,0 +1,1462 @@
+00:38:23.966 [restartedMain] INFO  c.xworkz.dream.XworkzApiApplication - Starting XworkzApiApplication using Java 15.0.2 on DESKTOP-FT7DFR5 with PID 4272 (C:\Project\Project\Xworkz-Api\bin\main started by Dell in C:\Project\Project\Xworkz-Api)
+00:38:23.979 [restartedMain] INFO  c.xworkz.dream.XworkzApiApplication - The following 1 profile is active: "dev"
+00:38:24.341 [restartedMain] INFO  o.s.b.d.e.DevToolsPropertyDefaultsPostProcessor - Devtools property defaults active! Set 'spring.devtools.add-properties' to 'false' to disable
+00:38:24.344 [restartedMain] INFO  o.s.b.d.e.DevToolsPropertyDefaultsPostProcessor - For additional web related logging consider setting the 'logging.level.web' property to 'DEBUG'
+00:38:28.353 [restartedMain] INFO  o.s.cloud.context.scope.GenericScope - BeanFactory id=e896d73f-a328-3a65-b69d-5d05173964e8
+00:38:30.399 [restartedMain] INFO  o.s.b.w.e.tomcat.TomcatWebServer - Tomcat initialized with port(s): 8081 (http)
+00:38:30.427 [restartedMain] INFO  o.a.catalina.core.StandardService - Starting service [Tomcat]
+00:38:30.428 [restartedMain] INFO  o.a.catalina.core.StandardEngine - Starting Servlet engine: [Apache Tomcat/9.0.68]
+00:38:30.825 [restartedMain] INFO  o.a.c.c.C.[Tomcat].[localhost].[/] - Initializing Spring embedded WebApplicationContext
+00:38:30.827 [restartedMain] INFO  o.s.b.w.s.c.ServletWebServerApplicationContext - Root WebApplicationContext: initialization completed in 6480 ms
+00:38:30.993 [restartedMain] INFO  c.xworkz.dream.util.EncryptionHelper - {} is Created...........
+00:38:31.995 [restartedMain] INFO  o.s.b.d.a.OptionalLiveReloadServer - LiveReload server is running on port 35729
+00:38:34.735 [restartedMain] INFO  o.s.b.w.e.tomcat.TomcatWebServer - Tomcat started on port(s): 8081 (http) with context path ''
+00:38:36.440 [restartedMain] INFO  c.xworkz.dream.XworkzApiApplication - Started XworkzApiApplication in 14.119 seconds (JVM running for 17.523)
+11:33:58.604 [restartedMain] INFO  c.xworkz.dream.XworkzApiApplication - Starting XworkzApiApplication using Java 15.0.2 on DESKTOP-FT7DFR5 with PID 7940 (C:\Project\Project\Xworkz-Api\bin\main started by Dell in C:\Project\Project\Xworkz-Api)
+11:33:58.617 [restartedMain] INFO  c.xworkz.dream.XworkzApiApplication - The following 1 profile is active: "local"
+11:33:58.859 [restartedMain] INFO  o.s.b.d.e.DevToolsPropertyDefaultsPostProcessor - Devtools property defaults active! Set 'spring.devtools.add-properties' to 'false' to disable
+11:33:58.860 [restartedMain] INFO  o.s.b.d.e.DevToolsPropertyDefaultsPostProcessor - For additional web related logging consider setting the 'logging.level.web' property to 'DEBUG'
+11:34:02.999 [restartedMain] INFO  o.s.cloud.context.scope.GenericScope - BeanFactory id=c992a949-1209-3dc3-b6c9-b9b103e0971f
+11:34:05.094 [restartedMain] INFO  o.s.b.w.e.tomcat.TomcatWebServer - Tomcat initialized with port(s): 8081 (http)
+11:34:05.122 [restartedMain] INFO  o.a.catalina.core.StandardService - Starting service [Tomcat]
+11:34:05.124 [restartedMain] INFO  o.a.catalina.core.StandardEngine - Starting Servlet engine: [Apache Tomcat/9.0.68]
+11:34:05.579 [restartedMain] INFO  o.a.c.c.C.[Tomcat].[localhost].[/] - Initializing Spring embedded WebApplicationContext
+11:34:05.580 [restartedMain] INFO  o.s.b.w.s.c.ServletWebServerApplicationContext - Root WebApplicationContext: initialization completed in 6719 ms
+11:34:05.838 [restartedMain] INFO  c.xworkz.dream.util.EncryptionHelper - {} is Created...........
+11:34:06.833 [restartedMain] INFO  o.s.b.d.a.OptionalLiveReloadServer - LiveReload server is running on port 35729
+11:34:09.828 [restartedMain] INFO  o.s.b.w.e.tomcat.TomcatWebServer - Tomcat started on port(s): 8081 (http) with context path ''
+11:34:12.354 [restartedMain] INFO  c.xworkz.dream.XworkzApiApplication - Started XworkzApiApplication in 15.607 seconds (JVM running for 18.234)
+11:37:33.170 [File Watcher] INFO  o.s.b.d.a.LocalDevToolsAutoConfiguration$RestartingClassPathChangeChangedEventListener - Restarting due to 1 class path change (0 additions, 0 deletions, 1 modification)
+11:37:33.513 [Thread-5] INFO  o.a.catalina.core.StandardService - Stopping service [Tomcat]
+11:37:34.404 [restartedMain] INFO  c.xworkz.dream.XworkzApiApplication - Starting XworkzApiApplication using Java 15.0.2 on DESKTOP-FT7DFR5 with PID 7940 (C:\Project\Project\Xworkz-Api\bin\main started by Dell in C:\Project\Project\Xworkz-Api)
+11:37:34.405 [restartedMain] INFO  c.xworkz.dream.XworkzApiApplication - The following 1 profile is active: "local"
+11:37:39.681 [restartedMain] INFO  o.s.cloud.context.scope.GenericScope - BeanFactory id=c992a949-1209-3dc3-b6c9-b9b103e0971f
+11:37:40.053 [restartedMain] INFO  o.s.b.w.e.tomcat.TomcatWebServer - Tomcat initialized with port(s): 8081 (http)
+11:37:40.059 [restartedMain] INFO  o.a.catalina.core.StandardService - Starting service [Tomcat]
+11:37:40.060 [restartedMain] INFO  o.a.catalina.core.StandardEngine - Starting Servlet engine: [Apache Tomcat/9.0.68]
+11:37:40.203 [restartedMain] INFO  o.a.c.c.C.[Tomcat].[localhost].[/] - Initializing Spring embedded WebApplicationContext
+11:37:40.203 [restartedMain] INFO  o.s.b.w.s.c.ServletWebServerApplicationContext - Root WebApplicationContext: initialization completed in 5782 ms
+11:37:40.279 [restartedMain] INFO  c.xworkz.dream.util.EncryptionHelper - {} is Created...........
+11:37:40.421 [restartedMain] WARN  o.s.b.w.s.c.AnnotationConfigServletWebServerApplicationContext - Exception encountered during context initialization - cancelling refresh attempt: org.springframework.beans.factory.UnsatisfiedDependencyException: Error creating bean with name 'createBatchInfoController': Unsatisfied dependency expressed through field 'service'; nested exception is org.springframework.beans.factory.BeanCreationException: Error creating bean with name 'dreamServiceImpl' defined in file [C:\Project\Project\Xworkz-Api\bin\main\com\xworkz\dream\service\DreamServiceImpl.class]: Instantiation of bean failed; nested exception is org.springframework.beans.BeanInstantiationException: Failed to instantiate [com.xworkz.dream.service.DreamServiceImpl]: Constructor threw exception; nested exception is java.lang.Error: Unresolved compilation problems: 
+	The type java.io.FileNotFoundException cannot be resolved. It is indirectly referenced from required .class files
+	The constructor FileInputStream(File) refers to the missing type FileNotFoundException
+
+11:37:40.437 [restartedMain] INFO  o.a.catalina.core.StandardService - Stopping service [Tomcat]
+11:37:40.468 [restartedMain] INFO  o.s.b.a.l.ConditionEvaluationReportLoggingListener - 
+
+Error starting ApplicationContext. To display the conditions report re-run your application with 'debug' enabled.
+11:37:40.575 [restartedMain] ERROR o.s.boot.SpringApplication - Application run failed
+org.springframework.beans.factory.UnsatisfiedDependencyException: Error creating bean with name 'createBatchInfoController': Unsatisfied dependency expressed through field 'service'; nested exception is org.springframework.beans.factory.BeanCreationException: Error creating bean with name 'dreamServiceImpl' defined in file [C:\Project\Project\Xworkz-Api\bin\main\com\xworkz\dream\service\DreamServiceImpl.class]: Instantiation of bean failed; nested exception is org.springframework.beans.BeanInstantiationException: Failed to instantiate [com.xworkz.dream.service.DreamServiceImpl]: Constructor threw exception; nested exception is java.lang.Error: Unresolved compilation problems: 
+	The type java.io.FileNotFoundException cannot be resolved. It is indirectly referenced from required .class files
+	The constructor FileInputStream(File) refers to the missing type FileNotFoundException
+
+	at org.springframework.beans.factory.annotation.AutowiredAnnotationBeanPostProcessor$AutowiredFieldElement.resolveFieldValue(AutowiredAnnotationBeanPostProcessor.java:659) ~[spring-beans-5.3.23.jar:5.3.23]
+	at org.springframework.beans.factory.annotation.AutowiredAnnotationBeanPostProcessor$AutowiredFieldElement.inject(AutowiredAnnotationBeanPostProcessor.java:639) ~[spring-beans-5.3.23.jar:5.3.23]
+	at org.springframework.beans.factory.annotation.InjectionMetadata.inject(InjectionMetadata.java:119) ~[spring-beans-5.3.23.jar:5.3.23]
+	at org.springframework.beans.factory.annotation.AutowiredAnnotationBeanPostProcessor.postProcessProperties(AutowiredAnnotationBeanPostProcessor.java:399) ~[spring-beans-5.3.23.jar:5.3.23]
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.populateBean(AbstractAutowireCapableBeanFactory.java:1431) ~[spring-beans-5.3.23.jar:5.3.23]
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.doCreateBean(AbstractAutowireCapableBeanFactory.java:619) ~[spring-beans-5.3.23.jar:5.3.23]
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.createBean(AbstractAutowireCapableBeanFactory.java:542) ~[spring-beans-5.3.23.jar:5.3.23]
+	at org.springframework.beans.factory.support.AbstractBeanFactory.lambda$doGetBean$0(AbstractBeanFactory.java:335) ~[spring-beans-5.3.23.jar:5.3.23]
+	at org.springframework.beans.factory.support.DefaultSingletonBeanRegistry.getSingleton(DefaultSingletonBeanRegistry.java:234) ~[spring-beans-5.3.23.jar:5.3.23]
+	at org.springframework.beans.factory.support.AbstractBeanFactory.doGetBean(AbstractBeanFactory.java:333) ~[spring-beans-5.3.23.jar:5.3.23]
+	at org.springframework.beans.factory.support.AbstractBeanFactory.getBean(AbstractBeanFactory.java:208) ~[spring-beans-5.3.23.jar:5.3.23]
+	at org.springframework.beans.factory.support.DefaultListableBeanFactory.preInstantiateSingletons(DefaultListableBeanFactory.java:955) ~[spring-beans-5.3.23.jar:5.3.23]
+	at org.springframework.context.support.AbstractApplicationContext.finishBeanFactoryInitialization(AbstractApplicationContext.java:918) ~[spring-context-5.3.23.jar:5.3.23]
+	at org.springframework.context.support.AbstractApplicationContext.refresh(AbstractApplicationContext.java:583) ~[spring-context-5.3.23.jar:5.3.23]
+	at org.springframework.boot.web.servlet.context.ServletWebServerApplicationContext.refresh(ServletWebServerApplicationContext.java:147) ~[spring-boot-2.7.5.jar:2.7.5]
+	at org.springframework.boot.SpringApplication.refresh(SpringApplication.java:734) ~[spring-boot-2.7.5.jar:2.7.5]
+	at org.springframework.boot.SpringApplication.refreshContext(SpringApplication.java:408) ~[spring-boot-2.7.5.jar:2.7.5]
+	at org.springframework.boot.SpringApplication.run(SpringApplication.java:308) ~[spring-boot-2.7.5.jar:2.7.5]
+	at org.springframework.boot.SpringApplication.run(SpringApplication.java:1306) ~[spring-boot-2.7.5.jar:2.7.5]
+	at org.springframework.boot.SpringApplication.run(SpringApplication.java:1295) ~[spring-boot-2.7.5.jar:2.7.5]
+	at com.xworkz.dream.XworkzApiApplication.main(XworkzApiApplication.java:20) ~[main/:na]
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method) ~[na:na]
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:64) ~[na:na]
+	at java.base/jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43) ~[na:na]
+	at java.base/java.lang.reflect.Method.invoke(Method.java:564) ~[na:na]
+	at org.springframework.boot.devtools.restart.RestartLauncher.run(RestartLauncher.java:49) ~[spring-boot-devtools-2.7.5.jar:2.7.5]
+Caused by: org.springframework.beans.factory.BeanCreationException: Error creating bean with name 'dreamServiceImpl' defined in file [C:\Project\Project\Xworkz-Api\bin\main\com\xworkz\dream\service\DreamServiceImpl.class]: Instantiation of bean failed; nested exception is org.springframework.beans.BeanInstantiationException: Failed to instantiate [com.xworkz.dream.service.DreamServiceImpl]: Constructor threw exception; nested exception is java.lang.Error: Unresolved compilation problems: 
+	The type java.io.FileNotFoundException cannot be resolved. It is indirectly referenced from required .class files
+	The constructor FileInputStream(File) refers to the missing type FileNotFoundException
+
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.instantiateBean(AbstractAutowireCapableBeanFactory.java:1334) ~[spring-beans-5.3.23.jar:5.3.23]
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.createBeanInstance(AbstractAutowireCapableBeanFactory.java:1232) ~[spring-beans-5.3.23.jar:5.3.23]
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.doCreateBean(AbstractAutowireCapableBeanFactory.java:582) ~[spring-beans-5.3.23.jar:5.3.23]
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.createBean(AbstractAutowireCapableBeanFactory.java:542) ~[spring-beans-5.3.23.jar:5.3.23]
+	at org.springframework.beans.factory.support.AbstractBeanFactory.lambda$doGetBean$0(AbstractBeanFactory.java:335) ~[spring-beans-5.3.23.jar:5.3.23]
+	at org.springframework.beans.factory.support.DefaultSingletonBeanRegistry.getSingleton(DefaultSingletonBeanRegistry.java:234) ~[spring-beans-5.3.23.jar:5.3.23]
+	at org.springframework.beans.factory.support.AbstractBeanFactory.doGetBean(AbstractBeanFactory.java:333) ~[spring-beans-5.3.23.jar:5.3.23]
+	at org.springframework.beans.factory.support.AbstractBeanFactory.getBean(AbstractBeanFactory.java:208) ~[spring-beans-5.3.23.jar:5.3.23]
+	at org.springframework.beans.factory.config.DependencyDescriptor.resolveCandidate(DependencyDescriptor.java:276) ~[spring-beans-5.3.23.jar:5.3.23]
+	at org.springframework.beans.factory.support.DefaultListableBeanFactory.doResolveDependency(DefaultListableBeanFactory.java:1391) ~[spring-beans-5.3.23.jar:5.3.23]
+	at org.springframework.beans.factory.support.DefaultListableBeanFactory.resolveDependency(DefaultListableBeanFactory.java:1311) ~[spring-beans-5.3.23.jar:5.3.23]
+	at org.springframework.beans.factory.annotation.AutowiredAnnotationBeanPostProcessor$AutowiredFieldElement.resolveFieldValue(AutowiredAnnotationBeanPostProcessor.java:656) ~[spring-beans-5.3.23.jar:5.3.23]
+	... 25 common frames omitted
+Caused by: org.springframework.beans.BeanInstantiationException: Failed to instantiate [com.xworkz.dream.service.DreamServiceImpl]: Constructor threw exception; nested exception is java.lang.Error: Unresolved compilation problems: 
+	The type java.io.FileNotFoundException cannot be resolved. It is indirectly referenced from required .class files
+	The constructor FileInputStream(File) refers to the missing type FileNotFoundException
+
+	at org.springframework.beans.BeanUtils.instantiateClass(BeanUtils.java:224) ~[spring-beans-5.3.23.jar:5.3.23]
+	at org.springframework.beans.factory.support.SimpleInstantiationStrategy.instantiate(SimpleInstantiationStrategy.java:87) ~[spring-beans-5.3.23.jar:5.3.23]
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.instantiateBean(AbstractAutowireCapableBeanFactory.java:1326) ~[spring-beans-5.3.23.jar:5.3.23]
+	... 36 common frames omitted
+Caused by: java.lang.Error: Unresolved compilation problems: 
+	The type java.io.FileNotFoundException cannot be resolved. It is indirectly referenced from required .class files
+	The constructor FileInputStream(File) refers to the missing type FileNotFoundException
+
+	at com.xworkz.dream.service.DreamServiceImpl.<init>(DreamServiceImpl.java:918) ~[main/:na]
+	at java.base/jdk.internal.reflect.NativeConstructorAccessorImpl.newInstance0(Native Method) ~[na:na]
+	at java.base/jdk.internal.reflect.NativeConstructorAccessorImpl.newInstance(NativeConstructorAccessorImpl.java:64) ~[na:na]
+	at java.base/jdk.internal.reflect.DelegatingConstructorAccessorImpl.newInstance(DelegatingConstructorAccessorImpl.java:45) ~[na:na]
+	at java.base/java.lang.reflect.Constructor.newInstanceWithCaller(Constructor.java:500) ~[na:na]
+	at java.base/java.lang.reflect.Constructor.newInstance(Constructor.java:481) ~[na:na]
+	at org.springframework.beans.BeanUtils.instantiateClass(BeanUtils.java:211) ~[spring-beans-5.3.23.jar:5.3.23]
+	... 38 common frames omitted
+11:38:22.268 [restartedMain] INFO  c.xworkz.dream.XworkzApiApplication - Starting XworkzApiApplication using Java 15.0.2 on DESKTOP-FT7DFR5 with PID 7940 (C:\Project\Project\Xworkz-Api\bin\main started by Dell in C:\Project\Project\Xworkz-Api)
+11:38:22.269 [restartedMain] INFO  c.xworkz.dream.XworkzApiApplication - The following 1 profile is active: "local"
+11:38:23.390 [restartedMain] INFO  o.s.cloud.context.scope.GenericScope - BeanFactory id=c992a949-1209-3dc3-b6c9-b9b103e0971f
+11:38:23.563 [restartedMain] INFO  o.s.b.w.e.tomcat.TomcatWebServer - Tomcat initialized with port(s): 8081 (http)
+11:38:23.565 [restartedMain] INFO  o.a.catalina.core.StandardService - Starting service [Tomcat]
+11:38:23.566 [restartedMain] INFO  o.a.catalina.core.StandardEngine - Starting Servlet engine: [Apache Tomcat/9.0.68]
+11:38:23.672 [restartedMain] INFO  o.a.c.c.C.[Tomcat-1].[localhost].[/] - Initializing Spring embedded WebApplicationContext
+11:38:23.672 [restartedMain] INFO  o.s.b.w.s.c.ServletWebServerApplicationContext - Root WebApplicationContext: initialization completed in 1390 ms
+11:38:23.697 [restartedMain] INFO  c.xworkz.dream.util.EncryptionHelper - {} is Created...........
+11:38:23.705 [restartedMain] WARN  o.s.b.w.s.c.AnnotationConfigServletWebServerApplicationContext - Exception encountered during context initialization - cancelling refresh attempt: org.springframework.beans.factory.BeanCreationException: Error creating bean with name 'attendanceRepositoryImpl': Lookup method resolution failed; nested exception is java.lang.IllegalStateException: Failed to introspect Class [com.xworkz.dream.repository.AttendanceRepositoryImpl] from ClassLoader [org.springframework.boot.devtools.restart.classloader.RestartClassLoader@7aeab071]
+11:38:23.707 [restartedMain] INFO  o.a.catalina.core.StandardService - Stopping service [Tomcat]
+11:38:23.721 [restartedMain] INFO  o.s.b.a.l.ConditionEvaluationReportLoggingListener - 
+
+Error starting ApplicationContext. To display the conditions report re-run your application with 'debug' enabled.
+11:38:23.738 [restartedMain] ERROR o.s.boot.SpringApplication - Application run failed
+org.springframework.beans.factory.BeanCreationException: Error creating bean with name 'attendanceRepositoryImpl': Lookup method resolution failed; nested exception is java.lang.IllegalStateException: Failed to introspect Class [com.xworkz.dream.repository.AttendanceRepositoryImpl] from ClassLoader [org.springframework.boot.devtools.restart.classloader.RestartClassLoader@7aeab071]
+	at org.springframework.beans.factory.annotation.AutowiredAnnotationBeanPostProcessor.determineCandidateConstructors(AutowiredAnnotationBeanPostProcessor.java:289) ~[spring-beans-5.3.23.jar:5.3.23]
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.determineConstructorsFromBeanPostProcessors(AbstractAutowireCapableBeanFactory.java:1302) ~[spring-beans-5.3.23.jar:5.3.23]
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.createBeanInstance(AbstractAutowireCapableBeanFactory.java:1219) ~[spring-beans-5.3.23.jar:5.3.23]
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.doCreateBean(AbstractAutowireCapableBeanFactory.java:582) ~[spring-beans-5.3.23.jar:5.3.23]
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.createBean(AbstractAutowireCapableBeanFactory.java:542) ~[spring-beans-5.3.23.jar:5.3.23]
+	at org.springframework.beans.factory.support.AbstractBeanFactory.lambda$doGetBean$0(AbstractBeanFactory.java:335) ~[spring-beans-5.3.23.jar:5.3.23]
+	at org.springframework.beans.factory.support.DefaultSingletonBeanRegistry.getSingleton(DefaultSingletonBeanRegistry.java:234) ~[spring-beans-5.3.23.jar:5.3.23]
+	at org.springframework.beans.factory.support.AbstractBeanFactory.doGetBean(AbstractBeanFactory.java:333) ~[spring-beans-5.3.23.jar:5.3.23]
+	at org.springframework.beans.factory.support.AbstractBeanFactory.getBean(AbstractBeanFactory.java:208) ~[spring-beans-5.3.23.jar:5.3.23]
+	at org.springframework.beans.factory.support.DefaultListableBeanFactory.preInstantiateSingletons(DefaultListableBeanFactory.java:955) ~[spring-beans-5.3.23.jar:5.3.23]
+	at org.springframework.context.support.AbstractApplicationContext.finishBeanFactoryInitialization(AbstractApplicationContext.java:918) ~[spring-context-5.3.23.jar:5.3.23]
+	at org.springframework.context.support.AbstractApplicationContext.refresh(AbstractApplicationContext.java:583) ~[spring-context-5.3.23.jar:5.3.23]
+	at org.springframework.boot.web.servlet.context.ServletWebServerApplicationContext.refresh(ServletWebServerApplicationContext.java:147) ~[spring-boot-2.7.5.jar:2.7.5]
+	at org.springframework.boot.SpringApplication.refresh(SpringApplication.java:734) ~[spring-boot-2.7.5.jar:2.7.5]
+	at org.springframework.boot.SpringApplication.refreshContext(SpringApplication.java:408) ~[spring-boot-2.7.5.jar:2.7.5]
+	at org.springframework.boot.SpringApplication.run(SpringApplication.java:308) ~[spring-boot-2.7.5.jar:2.7.5]
+	at org.springframework.boot.SpringApplication.run(SpringApplication.java:1306) ~[spring-boot-2.7.5.jar:2.7.5]
+	at org.springframework.boot.SpringApplication.run(SpringApplication.java:1295) ~[spring-boot-2.7.5.jar:2.7.5]
+	at com.xworkz.dream.XworkzApiApplication.main(XworkzApiApplication.java:20) ~[main/:na]
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method) ~[na:na]
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:64) ~[na:na]
+	at java.base/jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43) ~[na:na]
+	at java.base/java.lang.reflect.Method.invoke(Method.java:564) ~[na:na]
+	at org.springframework.boot.devtools.restart.RestartLauncher.run(RestartLauncher.java:49) ~[spring-boot-devtools-2.7.5.jar:2.7.5]
+Caused by: java.lang.IllegalStateException: Failed to introspect Class [com.xworkz.dream.repository.AttendanceRepositoryImpl] from ClassLoader [org.springframework.boot.devtools.restart.classloader.RestartClassLoader@7aeab071]
+	at org.springframework.util.ReflectionUtils.getDeclaredMethods(ReflectionUtils.java:485) ~[spring-core-5.3.23.jar:5.3.23]
+	at org.springframework.util.ReflectionUtils.doWithLocalMethods(ReflectionUtils.java:321) ~[spring-core-5.3.23.jar:5.3.23]
+	at org.springframework.beans.factory.annotation.AutowiredAnnotationBeanPostProcessor.determineCandidateConstructors(AutowiredAnnotationBeanPostProcessor.java:267) ~[spring-beans-5.3.23.jar:5.3.23]
+	... 23 common frames omitted
+Caused by: java.lang.NoClassDefFoundError: FileNotFoundException
+	at java.base/java.lang.Class.getDeclaredMethods0(Native Method) ~[na:na]
+	at java.base/java.lang.Class.privateGetDeclaredMethods(Class.java:3325) ~[na:na]
+	at java.base/java.lang.Class.getDeclaredMethods(Class.java:2466) ~[na:na]
+	at org.springframework.util.ReflectionUtils.getDeclaredMethods(ReflectionUtils.java:467) ~[spring-core-5.3.23.jar:5.3.23]
+	... 25 common frames omitted
+Caused by: java.lang.ClassNotFoundException: FileNotFoundException
+	at java.base/jdk.internal.loader.BuiltinClassLoader.loadClass(BuiltinClassLoader.java:606) ~[na:na]
+	at java.base/jdk.internal.loader.ClassLoaders$AppClassLoader.loadClass(ClassLoaders.java:168) ~[na:na]
+	at java.base/java.lang.ClassLoader.loadClass(ClassLoader.java:522) ~[na:na]
+	at java.base/java.lang.Class.forName0(Native Method) ~[na:na]
+	at java.base/java.lang.Class.forName(Class.java:468) ~[na:na]
+	at org.springframework.boot.devtools.restart.classloader.RestartClassLoader.loadClass(RestartClassLoader.java:145) ~[spring-boot-devtools-2.7.5.jar:2.7.5]
+	at java.base/java.lang.ClassLoader.loadClass(ClassLoader.java:522) ~[na:na]
+	... 29 common frames omitted
+11:40:07.332 [restartedMain] INFO  c.xworkz.dream.XworkzApiApplication - Starting XworkzApiApplication using Java 15.0.2 on DESKTOP-FT7DFR5 with PID 7940 (C:\Project\Project\Xworkz-Api\bin\main started by Dell in C:\Project\Project\Xworkz-Api)
+11:40:07.341 [restartedMain] INFO  c.xworkz.dream.XworkzApiApplication - The following 1 profile is active: "local"
+11:40:09.934 [restartedMain] INFO  o.s.cloud.context.scope.GenericScope - BeanFactory id=c992a949-1209-3dc3-b6c9-b9b103e0971f
+11:40:10.326 [restartedMain] INFO  o.s.b.w.e.tomcat.TomcatWebServer - Tomcat initialized with port(s): 8081 (http)
+11:40:10.331 [restartedMain] INFO  o.a.catalina.core.StandardService - Starting service [Tomcat]
+11:40:10.332 [restartedMain] INFO  o.a.catalina.core.StandardEngine - Starting Servlet engine: [Apache Tomcat/9.0.68]
+11:40:10.538 [restartedMain] INFO  o.a.c.c.C.[Tomcat-2].[localhost].[/] - Initializing Spring embedded WebApplicationContext
+11:40:10.539 [restartedMain] INFO  o.s.b.w.s.c.ServletWebServerApplicationContext - Root WebApplicationContext: initialization completed in 2855 ms
+11:40:10.687 [restartedMain] INFO  c.xworkz.dream.util.EncryptionHelper - {} is Created...........
+11:40:10.787 [restartedMain] WARN  o.s.b.w.s.c.AnnotationConfigServletWebServerApplicationContext - Exception encountered during context initialization - cancelling refresh attempt: org.springframework.beans.factory.BeanCreationException: Error creating bean with name 'attendanceRepositoryImpl': Lookup method resolution failed; nested exception is java.lang.IllegalStateException: Failed to introspect Class [com.xworkz.dream.repository.AttendanceRepositoryImpl] from ClassLoader [org.springframework.boot.devtools.restart.classloader.RestartClassLoader@4fc79dfd]
+11:40:10.788 [restartedMain] INFO  o.a.catalina.core.StandardService - Stopping service [Tomcat]
+11:40:10.820 [restartedMain] INFO  o.s.b.a.l.ConditionEvaluationReportLoggingListener - 
+
+Error starting ApplicationContext. To display the conditions report re-run your application with 'debug' enabled.
+11:40:10.877 [restartedMain] ERROR o.s.boot.SpringApplication - Application run failed
+org.springframework.beans.factory.BeanCreationException: Error creating bean with name 'attendanceRepositoryImpl': Lookup method resolution failed; nested exception is java.lang.IllegalStateException: Failed to introspect Class [com.xworkz.dream.repository.AttendanceRepositoryImpl] from ClassLoader [org.springframework.boot.devtools.restart.classloader.RestartClassLoader@4fc79dfd]
+	at org.springframework.beans.factory.annotation.AutowiredAnnotationBeanPostProcessor.determineCandidateConstructors(AutowiredAnnotationBeanPostProcessor.java:289) ~[spring-beans-5.3.23.jar:5.3.23]
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.determineConstructorsFromBeanPostProcessors(AbstractAutowireCapableBeanFactory.java:1302) ~[spring-beans-5.3.23.jar:5.3.23]
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.createBeanInstance(AbstractAutowireCapableBeanFactory.java:1219) ~[spring-beans-5.3.23.jar:5.3.23]
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.doCreateBean(AbstractAutowireCapableBeanFactory.java:582) ~[spring-beans-5.3.23.jar:5.3.23]
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.createBean(AbstractAutowireCapableBeanFactory.java:542) ~[spring-beans-5.3.23.jar:5.3.23]
+	at org.springframework.beans.factory.support.AbstractBeanFactory.lambda$doGetBean$0(AbstractBeanFactory.java:335) ~[spring-beans-5.3.23.jar:5.3.23]
+	at org.springframework.beans.factory.support.DefaultSingletonBeanRegistry.getSingleton(DefaultSingletonBeanRegistry.java:234) ~[spring-beans-5.3.23.jar:5.3.23]
+	at org.springframework.beans.factory.support.AbstractBeanFactory.doGetBean(AbstractBeanFactory.java:333) ~[spring-beans-5.3.23.jar:5.3.23]
+	at org.springframework.beans.factory.support.AbstractBeanFactory.getBean(AbstractBeanFactory.java:208) ~[spring-beans-5.3.23.jar:5.3.23]
+	at org.springframework.beans.factory.support.DefaultListableBeanFactory.preInstantiateSingletons(DefaultListableBeanFactory.java:955) ~[spring-beans-5.3.23.jar:5.3.23]
+	at org.springframework.context.support.AbstractApplicationContext.finishBeanFactoryInitialization(AbstractApplicationContext.java:918) ~[spring-context-5.3.23.jar:5.3.23]
+	at org.springframework.context.support.AbstractApplicationContext.refresh(AbstractApplicationContext.java:583) ~[spring-context-5.3.23.jar:5.3.23]
+	at org.springframework.boot.web.servlet.context.ServletWebServerApplicationContext.refresh(ServletWebServerApplicationContext.java:147) ~[spring-boot-2.7.5.jar:2.7.5]
+	at org.springframework.boot.SpringApplication.refresh(SpringApplication.java:734) ~[spring-boot-2.7.5.jar:2.7.5]
+	at org.springframework.boot.SpringApplication.refreshContext(SpringApplication.java:408) ~[spring-boot-2.7.5.jar:2.7.5]
+	at org.springframework.boot.SpringApplication.run(SpringApplication.java:308) ~[spring-boot-2.7.5.jar:2.7.5]
+	at org.springframework.boot.SpringApplication.run(SpringApplication.java:1306) ~[spring-boot-2.7.5.jar:2.7.5]
+	at org.springframework.boot.SpringApplication.run(SpringApplication.java:1295) ~[spring-boot-2.7.5.jar:2.7.5]
+	at com.xworkz.dream.XworkzApiApplication.main(XworkzApiApplication.java:20) ~[main/:na]
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method) ~[na:na]
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:64) ~[na:na]
+	at java.base/jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43) ~[na:na]
+	at java.base/java.lang.reflect.Method.invoke(Method.java:564) ~[na:na]
+	at org.springframework.boot.devtools.restart.RestartLauncher.run(RestartLauncher.java:49) ~[spring-boot-devtools-2.7.5.jar:2.7.5]
+Caused by: java.lang.IllegalStateException: Failed to introspect Class [com.xworkz.dream.repository.AttendanceRepositoryImpl] from ClassLoader [org.springframework.boot.devtools.restart.classloader.RestartClassLoader@4fc79dfd]
+	at org.springframework.util.ReflectionUtils.getDeclaredMethods(ReflectionUtils.java:485) ~[spring-core-5.3.23.jar:5.3.23]
+	at org.springframework.util.ReflectionUtils.doWithLocalMethods(ReflectionUtils.java:321) ~[spring-core-5.3.23.jar:5.3.23]
+	at org.springframework.beans.factory.annotation.AutowiredAnnotationBeanPostProcessor.determineCandidateConstructors(AutowiredAnnotationBeanPostProcessor.java:267) ~[spring-beans-5.3.23.jar:5.3.23]
+	... 23 common frames omitted
+Caused by: java.lang.NoClassDefFoundError: FileNotFoundException
+	at java.base/java.lang.Class.getDeclaredMethods0(Native Method) ~[na:na]
+	at java.base/java.lang.Class.privateGetDeclaredMethods(Class.java:3325) ~[na:na]
+	at java.base/java.lang.Class.getDeclaredMethods(Class.java:2466) ~[na:na]
+	at org.springframework.util.ReflectionUtils.getDeclaredMethods(ReflectionUtils.java:467) ~[spring-core-5.3.23.jar:5.3.23]
+	... 25 common frames omitted
+Caused by: java.lang.ClassNotFoundException: FileNotFoundException
+	at java.base/jdk.internal.loader.BuiltinClassLoader.loadClass(BuiltinClassLoader.java:606) ~[na:na]
+	at java.base/jdk.internal.loader.ClassLoaders$AppClassLoader.loadClass(ClassLoaders.java:168) ~[na:na]
+	at java.base/java.lang.ClassLoader.loadClass(ClassLoader.java:522) ~[na:na]
+	at java.base/java.lang.Class.forName0(Native Method) ~[na:na]
+	at java.base/java.lang.Class.forName(Class.java:468) ~[na:na]
+	at org.springframework.boot.devtools.restart.classloader.RestartClassLoader.loadClass(RestartClassLoader.java:145) ~[spring-boot-devtools-2.7.5.jar:2.7.5]
+	at java.base/java.lang.ClassLoader.loadClass(ClassLoader.java:522) ~[na:na]
+	... 29 common frames omitted
+11:40:52.939 [restartedMain] INFO  c.xworkz.dream.XworkzApiApplication - Starting XworkzApiApplication using Java 15.0.2 on DESKTOP-FT7DFR5 with PID 7940 (C:\Project\Project\Xworkz-Api\bin\main started by Dell in C:\Project\Project\Xworkz-Api)
+11:40:52.939 [restartedMain] INFO  c.xworkz.dream.XworkzApiApplication - The following 1 profile is active: "local"
+11:40:54.488 [restartedMain] INFO  o.s.cloud.context.scope.GenericScope - BeanFactory id=c992a949-1209-3dc3-b6c9-b9b103e0971f
+11:40:55.295 [restartedMain] INFO  o.s.b.w.e.tomcat.TomcatWebServer - Tomcat initialized with port(s): 8081 (http)
+11:40:55.297 [restartedMain] INFO  o.a.catalina.core.StandardService - Starting service [Tomcat]
+11:40:55.298 [restartedMain] INFO  o.a.catalina.core.StandardEngine - Starting Servlet engine: [Apache Tomcat/9.0.68]
+11:40:55.410 [restartedMain] INFO  o.a.c.c.C.[Tomcat-3].[localhost].[/] - Initializing Spring embedded WebApplicationContext
+11:40:55.411 [restartedMain] INFO  o.s.b.w.s.c.ServletWebServerApplicationContext - Root WebApplicationContext: initialization completed in 2465 ms
+11:40:55.490 [restartedMain] INFO  c.xworkz.dream.util.EncryptionHelper - {} is Created...........
+11:40:55.528 [restartedMain] WARN  o.s.b.w.s.c.AnnotationConfigServletWebServerApplicationContext - Exception encountered during context initialization - cancelling refresh attempt: org.springframework.beans.factory.BeanCreationException: Error creating bean with name 'attendanceRepositoryImpl': Lookup method resolution failed; nested exception is java.lang.IllegalStateException: Failed to introspect Class [com.xworkz.dream.repository.AttendanceRepositoryImpl] from ClassLoader [org.springframework.boot.devtools.restart.classloader.RestartClassLoader@64b84546]
+11:40:55.530 [restartedMain] INFO  o.a.catalina.core.StandardService - Stopping service [Tomcat]
+11:40:55.549 [restartedMain] INFO  o.s.b.a.l.ConditionEvaluationReportLoggingListener - 
+
+Error starting ApplicationContext. To display the conditions report re-run your application with 'debug' enabled.
+11:40:55.569 [restartedMain] ERROR o.s.boot.SpringApplication - Application run failed
+org.springframework.beans.factory.BeanCreationException: Error creating bean with name 'attendanceRepositoryImpl': Lookup method resolution failed; nested exception is java.lang.IllegalStateException: Failed to introspect Class [com.xworkz.dream.repository.AttendanceRepositoryImpl] from ClassLoader [org.springframework.boot.devtools.restart.classloader.RestartClassLoader@64b84546]
+	at org.springframework.beans.factory.annotation.AutowiredAnnotationBeanPostProcessor.determineCandidateConstructors(AutowiredAnnotationBeanPostProcessor.java:289) ~[spring-beans-5.3.23.jar:5.3.23]
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.determineConstructorsFromBeanPostProcessors(AbstractAutowireCapableBeanFactory.java:1302) ~[spring-beans-5.3.23.jar:5.3.23]
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.createBeanInstance(AbstractAutowireCapableBeanFactory.java:1219) ~[spring-beans-5.3.23.jar:5.3.23]
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.doCreateBean(AbstractAutowireCapableBeanFactory.java:582) ~[spring-beans-5.3.23.jar:5.3.23]
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.createBean(AbstractAutowireCapableBeanFactory.java:542) ~[spring-beans-5.3.23.jar:5.3.23]
+	at org.springframework.beans.factory.support.AbstractBeanFactory.lambda$doGetBean$0(AbstractBeanFactory.java:335) ~[spring-beans-5.3.23.jar:5.3.23]
+	at org.springframework.beans.factory.support.DefaultSingletonBeanRegistry.getSingleton(DefaultSingletonBeanRegistry.java:234) ~[spring-beans-5.3.23.jar:5.3.23]
+	at org.springframework.beans.factory.support.AbstractBeanFactory.doGetBean(AbstractBeanFactory.java:333) ~[spring-beans-5.3.23.jar:5.3.23]
+	at org.springframework.beans.factory.support.AbstractBeanFactory.getBean(AbstractBeanFactory.java:208) ~[spring-beans-5.3.23.jar:5.3.23]
+	at org.springframework.beans.factory.support.DefaultListableBeanFactory.preInstantiateSingletons(DefaultListableBeanFactory.java:955) ~[spring-beans-5.3.23.jar:5.3.23]
+	at org.springframework.context.support.AbstractApplicationContext.finishBeanFactoryInitialization(AbstractApplicationContext.java:918) ~[spring-context-5.3.23.jar:5.3.23]
+	at org.springframework.context.support.AbstractApplicationContext.refresh(AbstractApplicationContext.java:583) ~[spring-context-5.3.23.jar:5.3.23]
+	at org.springframework.boot.web.servlet.context.ServletWebServerApplicationContext.refresh(ServletWebServerApplicationContext.java:147) ~[spring-boot-2.7.5.jar:2.7.5]
+	at org.springframework.boot.SpringApplication.refresh(SpringApplication.java:734) ~[spring-boot-2.7.5.jar:2.7.5]
+	at org.springframework.boot.SpringApplication.refreshContext(SpringApplication.java:408) ~[spring-boot-2.7.5.jar:2.7.5]
+	at org.springframework.boot.SpringApplication.run(SpringApplication.java:308) ~[spring-boot-2.7.5.jar:2.7.5]
+	at org.springframework.boot.SpringApplication.run(SpringApplication.java:1306) ~[spring-boot-2.7.5.jar:2.7.5]
+	at org.springframework.boot.SpringApplication.run(SpringApplication.java:1295) ~[spring-boot-2.7.5.jar:2.7.5]
+	at com.xworkz.dream.XworkzApiApplication.main(XworkzApiApplication.java:20) ~[main/:na]
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method) ~[na:na]
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:64) ~[na:na]
+	at java.base/jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43) ~[na:na]
+	at java.base/java.lang.reflect.Method.invoke(Method.java:564) ~[na:na]
+	at org.springframework.boot.devtools.restart.RestartLauncher.run(RestartLauncher.java:49) ~[spring-boot-devtools-2.7.5.jar:2.7.5]
+Caused by: java.lang.IllegalStateException: Failed to introspect Class [com.xworkz.dream.repository.AttendanceRepositoryImpl] from ClassLoader [org.springframework.boot.devtools.restart.classloader.RestartClassLoader@64b84546]
+	at org.springframework.util.ReflectionUtils.getDeclaredMethods(ReflectionUtils.java:485) ~[spring-core-5.3.23.jar:5.3.23]
+	at org.springframework.util.ReflectionUtils.doWithLocalMethods(ReflectionUtils.java:321) ~[spring-core-5.3.23.jar:5.3.23]
+	at org.springframework.beans.factory.annotation.AutowiredAnnotationBeanPostProcessor.determineCandidateConstructors(AutowiredAnnotationBeanPostProcessor.java:267) ~[spring-beans-5.3.23.jar:5.3.23]
+	... 23 common frames omitted
+Caused by: java.lang.NoClassDefFoundError: FileNotFoundException
+	at java.base/java.lang.Class.getDeclaredMethods0(Native Method) ~[na:na]
+	at java.base/java.lang.Class.privateGetDeclaredMethods(Class.java:3325) ~[na:na]
+	at java.base/java.lang.Class.getDeclaredMethods(Class.java:2466) ~[na:na]
+	at org.springframework.util.ReflectionUtils.getDeclaredMethods(ReflectionUtils.java:467) ~[spring-core-5.3.23.jar:5.3.23]
+	... 25 common frames omitted
+Caused by: java.lang.ClassNotFoundException: FileNotFoundException
+	at java.base/jdk.internal.loader.BuiltinClassLoader.loadClass(BuiltinClassLoader.java:606) ~[na:na]
+	at java.base/jdk.internal.loader.ClassLoaders$AppClassLoader.loadClass(ClassLoaders.java:168) ~[na:na]
+	at java.base/java.lang.ClassLoader.loadClass(ClassLoader.java:522) ~[na:na]
+	at java.base/java.lang.Class.forName0(Native Method) ~[na:na]
+	at java.base/java.lang.Class.forName(Class.java:468) ~[na:na]
+	at org.springframework.boot.devtools.restart.classloader.RestartClassLoader.loadClass(RestartClassLoader.java:145) ~[spring-boot-devtools-2.7.5.jar:2.7.5]
+	at java.base/java.lang.ClassLoader.loadClass(ClassLoader.java:522) ~[na:na]
+	... 29 common frames omitted
+11:41:44.085 [restartedMain] INFO  c.xworkz.dream.XworkzApiApplication - Starting XworkzApiApplication using Java 15.0.2 on DESKTOP-FT7DFR5 with PID 7940 (C:\Project\Project\Xworkz-Api\bin\main started by Dell in C:\Project\Project\Xworkz-Api)
+11:41:44.086 [restartedMain] INFO  c.xworkz.dream.XworkzApiApplication - The following 1 profile is active: "local"
+11:41:46.225 [restartedMain] INFO  o.s.cloud.context.scope.GenericScope - BeanFactory id=c992a949-1209-3dc3-b6c9-b9b103e0971f
+11:41:46.537 [restartedMain] INFO  o.s.b.w.e.tomcat.TomcatWebServer - Tomcat initialized with port(s): 8081 (http)
+11:41:46.539 [restartedMain] INFO  o.a.catalina.core.StandardService - Starting service [Tomcat]
+11:41:46.540 [restartedMain] INFO  o.a.catalina.core.StandardEngine - Starting Servlet engine: [Apache Tomcat/9.0.68]
+11:41:46.773 [restartedMain] INFO  o.a.c.c.C.[Tomcat-4].[localhost].[/] - Initializing Spring embedded WebApplicationContext
+11:41:46.774 [restartedMain] INFO  o.s.b.w.s.c.ServletWebServerApplicationContext - Root WebApplicationContext: initialization completed in 2674 ms
+11:41:46.842 [restartedMain] INFO  c.xworkz.dream.util.EncryptionHelper - {} is Created...........
+11:41:46.847 [restartedMain] WARN  o.s.b.w.s.c.AnnotationConfigServletWebServerApplicationContext - Exception encountered during context initialization - cancelling refresh attempt: org.springframework.beans.factory.BeanCreationException: Error creating bean with name 'attendanceRepositoryImpl': Lookup method resolution failed; nested exception is java.lang.IllegalStateException: Failed to introspect Class [com.xworkz.dream.repository.AttendanceRepositoryImpl] from ClassLoader [org.springframework.boot.devtools.restart.classloader.RestartClassLoader@1ac0822d]
+11:41:46.849 [restartedMain] INFO  o.a.catalina.core.StandardService - Stopping service [Tomcat]
+11:41:46.885 [restartedMain] INFO  o.s.b.a.l.ConditionEvaluationReportLoggingListener - 
+
+Error starting ApplicationContext. To display the conditions report re-run your application with 'debug' enabled.
+11:41:46.902 [restartedMain] ERROR o.s.boot.SpringApplication - Application run failed
+org.springframework.beans.factory.BeanCreationException: Error creating bean with name 'attendanceRepositoryImpl': Lookup method resolution failed; nested exception is java.lang.IllegalStateException: Failed to introspect Class [com.xworkz.dream.repository.AttendanceRepositoryImpl] from ClassLoader [org.springframework.boot.devtools.restart.classloader.RestartClassLoader@1ac0822d]
+	at org.springframework.beans.factory.annotation.AutowiredAnnotationBeanPostProcessor.determineCandidateConstructors(AutowiredAnnotationBeanPostProcessor.java:289) ~[spring-beans-5.3.23.jar:5.3.23]
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.determineConstructorsFromBeanPostProcessors(AbstractAutowireCapableBeanFactory.java:1302) ~[spring-beans-5.3.23.jar:5.3.23]
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.createBeanInstance(AbstractAutowireCapableBeanFactory.java:1219) ~[spring-beans-5.3.23.jar:5.3.23]
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.doCreateBean(AbstractAutowireCapableBeanFactory.java:582) ~[spring-beans-5.3.23.jar:5.3.23]
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.createBean(AbstractAutowireCapableBeanFactory.java:542) ~[spring-beans-5.3.23.jar:5.3.23]
+	at org.springframework.beans.factory.support.AbstractBeanFactory.lambda$doGetBean$0(AbstractBeanFactory.java:335) ~[spring-beans-5.3.23.jar:5.3.23]
+	at org.springframework.beans.factory.support.DefaultSingletonBeanRegistry.getSingleton(DefaultSingletonBeanRegistry.java:234) ~[spring-beans-5.3.23.jar:5.3.23]
+	at org.springframework.beans.factory.support.AbstractBeanFactory.doGetBean(AbstractBeanFactory.java:333) ~[spring-beans-5.3.23.jar:5.3.23]
+	at org.springframework.beans.factory.support.AbstractBeanFactory.getBean(AbstractBeanFactory.java:208) ~[spring-beans-5.3.23.jar:5.3.23]
+	at org.springframework.beans.factory.support.DefaultListableBeanFactory.preInstantiateSingletons(DefaultListableBeanFactory.java:955) ~[spring-beans-5.3.23.jar:5.3.23]
+	at org.springframework.context.support.AbstractApplicationContext.finishBeanFactoryInitialization(AbstractApplicationContext.java:918) ~[spring-context-5.3.23.jar:5.3.23]
+	at org.springframework.context.support.AbstractApplicationContext.refresh(AbstractApplicationContext.java:583) ~[spring-context-5.3.23.jar:5.3.23]
+	at org.springframework.boot.web.servlet.context.ServletWebServerApplicationContext.refresh(ServletWebServerApplicationContext.java:147) ~[spring-boot-2.7.5.jar:2.7.5]
+	at org.springframework.boot.SpringApplication.refresh(SpringApplication.java:734) ~[spring-boot-2.7.5.jar:2.7.5]
+	at org.springframework.boot.SpringApplication.refreshContext(SpringApplication.java:408) ~[spring-boot-2.7.5.jar:2.7.5]
+	at org.springframework.boot.SpringApplication.run(SpringApplication.java:308) ~[spring-boot-2.7.5.jar:2.7.5]
+	at org.springframework.boot.SpringApplication.run(SpringApplication.java:1306) ~[spring-boot-2.7.5.jar:2.7.5]
+	at org.springframework.boot.SpringApplication.run(SpringApplication.java:1295) ~[spring-boot-2.7.5.jar:2.7.5]
+	at com.xworkz.dream.XworkzApiApplication.main(XworkzApiApplication.java:20) ~[main/:na]
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method) ~[na:na]
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:64) ~[na:na]
+	at java.base/jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43) ~[na:na]
+	at java.base/java.lang.reflect.Method.invoke(Method.java:564) ~[na:na]
+	at org.springframework.boot.devtools.restart.RestartLauncher.run(RestartLauncher.java:49) ~[spring-boot-devtools-2.7.5.jar:2.7.5]
+Caused by: java.lang.IllegalStateException: Failed to introspect Class [com.xworkz.dream.repository.AttendanceRepositoryImpl] from ClassLoader [org.springframework.boot.devtools.restart.classloader.RestartClassLoader@1ac0822d]
+	at org.springframework.util.ReflectionUtils.getDeclaredMethods(ReflectionUtils.java:485) ~[spring-core-5.3.23.jar:5.3.23]
+	at org.springframework.util.ReflectionUtils.doWithLocalMethods(ReflectionUtils.java:321) ~[spring-core-5.3.23.jar:5.3.23]
+	at org.springframework.beans.factory.annotation.AutowiredAnnotationBeanPostProcessor.determineCandidateConstructors(AutowiredAnnotationBeanPostProcessor.java:267) ~[spring-beans-5.3.23.jar:5.3.23]
+	... 23 common frames omitted
+Caused by: java.lang.NoClassDefFoundError: FileNotFoundException
+	at java.base/java.lang.Class.getDeclaredMethods0(Native Method) ~[na:na]
+	at java.base/java.lang.Class.privateGetDeclaredMethods(Class.java:3325) ~[na:na]
+	at java.base/java.lang.Class.getDeclaredMethods(Class.java:2466) ~[na:na]
+	at org.springframework.util.ReflectionUtils.getDeclaredMethods(ReflectionUtils.java:467) ~[spring-core-5.3.23.jar:5.3.23]
+	... 25 common frames omitted
+Caused by: java.lang.ClassNotFoundException: FileNotFoundException
+	at java.base/jdk.internal.loader.BuiltinClassLoader.loadClass(BuiltinClassLoader.java:606) ~[na:na]
+	at java.base/jdk.internal.loader.ClassLoaders$AppClassLoader.loadClass(ClassLoaders.java:168) ~[na:na]
+	at java.base/java.lang.ClassLoader.loadClass(ClassLoader.java:522) ~[na:na]
+	at java.base/java.lang.Class.forName0(Native Method) ~[na:na]
+	at java.base/java.lang.Class.forName(Class.java:468) ~[na:na]
+	at org.springframework.boot.devtools.restart.classloader.RestartClassLoader.loadClass(RestartClassLoader.java:145) ~[spring-boot-devtools-2.7.5.jar:2.7.5]
+	at java.base/java.lang.ClassLoader.loadClass(ClassLoader.java:522) ~[na:na]
+	... 29 common frames omitted
+11:47:08.386 [restartedMain] INFO  c.xworkz.dream.XworkzApiApplication - Starting XworkzApiApplication using Java 15.0.2 on DESKTOP-FT7DFR5 with PID 7940 (C:\Project\Project\Xworkz-Api\bin\main started by Dell in C:\Project\Project\Xworkz-Api)
+11:47:08.387 [restartedMain] INFO  c.xworkz.dream.XworkzApiApplication - The following 1 profile is active: "local"
+11:47:11.787 [restartedMain] INFO  o.s.cloud.context.scope.GenericScope - BeanFactory id=c992a949-1209-3dc3-b6c9-b9b103e0971f
+11:47:12.193 [restartedMain] INFO  o.s.b.w.e.tomcat.TomcatWebServer - Tomcat initialized with port(s): 8081 (http)
+11:47:12.195 [restartedMain] INFO  o.a.catalina.core.StandardService - Starting service [Tomcat]
+11:47:12.195 [restartedMain] INFO  o.a.catalina.core.StandardEngine - Starting Servlet engine: [Apache Tomcat/9.0.68]
+11:47:12.340 [restartedMain] INFO  o.a.c.c.C.[Tomcat-5].[localhost].[/] - Initializing Spring embedded WebApplicationContext
+11:47:12.340 [restartedMain] INFO  o.s.b.w.s.c.ServletWebServerApplicationContext - Root WebApplicationContext: initialization completed in 3946 ms
+11:47:12.366 [restartedMain] INFO  c.xworkz.dream.util.EncryptionHelper - {} is Created...........
+11:47:12.371 [restartedMain] WARN  o.s.b.w.s.c.AnnotationConfigServletWebServerApplicationContext - Exception encountered during context initialization - cancelling refresh attempt: org.springframework.beans.factory.BeanCreationException: Error creating bean with name 'attendanceRepositoryImpl': Lookup method resolution failed; nested exception is java.lang.IllegalStateException: Failed to introspect Class [com.xworkz.dream.repository.AttendanceRepositoryImpl] from ClassLoader [org.springframework.boot.devtools.restart.classloader.RestartClassLoader@3586c03c]
+11:47:12.372 [restartedMain] INFO  o.a.catalina.core.StandardService - Stopping service [Tomcat]
+11:47:12.385 [restartedMain] INFO  o.s.b.a.l.ConditionEvaluationReportLoggingListener - 
+
+Error starting ApplicationContext. To display the conditions report re-run your application with 'debug' enabled.
+11:47:12.405 [restartedMain] ERROR o.s.boot.SpringApplication - Application run failed
+org.springframework.beans.factory.BeanCreationException: Error creating bean with name 'attendanceRepositoryImpl': Lookup method resolution failed; nested exception is java.lang.IllegalStateException: Failed to introspect Class [com.xworkz.dream.repository.AttendanceRepositoryImpl] from ClassLoader [org.springframework.boot.devtools.restart.classloader.RestartClassLoader@3586c03c]
+	at org.springframework.beans.factory.annotation.AutowiredAnnotationBeanPostProcessor.determineCandidateConstructors(AutowiredAnnotationBeanPostProcessor.java:289) ~[spring-beans-5.3.23.jar:5.3.23]
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.determineConstructorsFromBeanPostProcessors(AbstractAutowireCapableBeanFactory.java:1302) ~[spring-beans-5.3.23.jar:5.3.23]
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.createBeanInstance(AbstractAutowireCapableBeanFactory.java:1219) ~[spring-beans-5.3.23.jar:5.3.23]
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.doCreateBean(AbstractAutowireCapableBeanFactory.java:582) ~[spring-beans-5.3.23.jar:5.3.23]
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.createBean(AbstractAutowireCapableBeanFactory.java:542) ~[spring-beans-5.3.23.jar:5.3.23]
+	at org.springframework.beans.factory.support.AbstractBeanFactory.lambda$doGetBean$0(AbstractBeanFactory.java:335) ~[spring-beans-5.3.23.jar:5.3.23]
+	at org.springframework.beans.factory.support.DefaultSingletonBeanRegistry.getSingleton(DefaultSingletonBeanRegistry.java:234) ~[spring-beans-5.3.23.jar:5.3.23]
+	at org.springframework.beans.factory.support.AbstractBeanFactory.doGetBean(AbstractBeanFactory.java:333) ~[spring-beans-5.3.23.jar:5.3.23]
+	at org.springframework.beans.factory.support.AbstractBeanFactory.getBean(AbstractBeanFactory.java:208) ~[spring-beans-5.3.23.jar:5.3.23]
+	at org.springframework.beans.factory.support.DefaultListableBeanFactory.preInstantiateSingletons(DefaultListableBeanFactory.java:955) ~[spring-beans-5.3.23.jar:5.3.23]
+	at org.springframework.context.support.AbstractApplicationContext.finishBeanFactoryInitialization(AbstractApplicationContext.java:918) ~[spring-context-5.3.23.jar:5.3.23]
+	at org.springframework.context.support.AbstractApplicationContext.refresh(AbstractApplicationContext.java:583) ~[spring-context-5.3.23.jar:5.3.23]
+	at org.springframework.boot.web.servlet.context.ServletWebServerApplicationContext.refresh(ServletWebServerApplicationContext.java:147) ~[spring-boot-2.7.5.jar:2.7.5]
+	at org.springframework.boot.SpringApplication.refresh(SpringApplication.java:734) ~[spring-boot-2.7.5.jar:2.7.5]
+	at org.springframework.boot.SpringApplication.refreshContext(SpringApplication.java:408) ~[spring-boot-2.7.5.jar:2.7.5]
+	at org.springframework.boot.SpringApplication.run(SpringApplication.java:308) ~[spring-boot-2.7.5.jar:2.7.5]
+	at org.springframework.boot.SpringApplication.run(SpringApplication.java:1306) ~[spring-boot-2.7.5.jar:2.7.5]
+	at org.springframework.boot.SpringApplication.run(SpringApplication.java:1295) ~[spring-boot-2.7.5.jar:2.7.5]
+	at com.xworkz.dream.XworkzApiApplication.main(XworkzApiApplication.java:20) ~[main/:na]
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method) ~[na:na]
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:64) ~[na:na]
+	at java.base/jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43) ~[na:na]
+	at java.base/java.lang.reflect.Method.invoke(Method.java:564) ~[na:na]
+	at org.springframework.boot.devtools.restart.RestartLauncher.run(RestartLauncher.java:49) ~[spring-boot-devtools-2.7.5.jar:2.7.5]
+Caused by: java.lang.IllegalStateException: Failed to introspect Class [com.xworkz.dream.repository.AttendanceRepositoryImpl] from ClassLoader [org.springframework.boot.devtools.restart.classloader.RestartClassLoader@3586c03c]
+	at org.springframework.util.ReflectionUtils.getDeclaredMethods(ReflectionUtils.java:485) ~[spring-core-5.3.23.jar:5.3.23]
+	at org.springframework.util.ReflectionUtils.doWithLocalMethods(ReflectionUtils.java:321) ~[spring-core-5.3.23.jar:5.3.23]
+	at org.springframework.beans.factory.annotation.AutowiredAnnotationBeanPostProcessor.determineCandidateConstructors(AutowiredAnnotationBeanPostProcessor.java:267) ~[spring-beans-5.3.23.jar:5.3.23]
+	... 23 common frames omitted
+Caused by: java.lang.NoClassDefFoundError: FileNotFoundException
+	at java.base/java.lang.Class.getDeclaredMethods0(Native Method) ~[na:na]
+	at java.base/java.lang.Class.privateGetDeclaredMethods(Class.java:3325) ~[na:na]
+	at java.base/java.lang.Class.getDeclaredMethods(Class.java:2466) ~[na:na]
+	at org.springframework.util.ReflectionUtils.getDeclaredMethods(ReflectionUtils.java:467) ~[spring-core-5.3.23.jar:5.3.23]
+	... 25 common frames omitted
+Caused by: java.lang.ClassNotFoundException: FileNotFoundException
+	at java.base/jdk.internal.loader.BuiltinClassLoader.loadClass(BuiltinClassLoader.java:606) ~[na:na]
+	at java.base/jdk.internal.loader.ClassLoaders$AppClassLoader.loadClass(ClassLoaders.java:168) ~[na:na]
+	at java.base/java.lang.ClassLoader.loadClass(ClassLoader.java:522) ~[na:na]
+	at java.base/java.lang.Class.forName0(Native Method) ~[na:na]
+	at java.base/java.lang.Class.forName(Class.java:468) ~[na:na]
+	at org.springframework.boot.devtools.restart.classloader.RestartClassLoader.loadClass(RestartClassLoader.java:145) ~[spring-boot-devtools-2.7.5.jar:2.7.5]
+	at java.base/java.lang.ClassLoader.loadClass(ClassLoader.java:522) ~[na:na]
+	... 29 common frames omitted
+12:21:55.635 [Test worker] WARN  o.s.b.t.j.DuplicateJsonObjectContextCustomizerFactory$DuplicateJsonObjectContextCustomizer - 
+
+Found multiple occurrences of org.json.JSONObject on the class path:
+
+	jar:file:/C:/Users/Dell/.gradle/caches/modules-2/files-2.1/org.json/json/20230227/7a0d4aca76513d8ce81f9b044ce8126b84809ad8/json-20230227.jar!/org/json/JSONObject.class
+	jar:file:/C:/Users/Dell/.gradle/caches/modules-2/files-2.1/com.vaadin.external.google/android-json/0.0.20131108.vaadin1/fa26d351fe62a6a17f5cda1287c1c6110dec413f/android-json-0.0.20131108.vaadin1.jar!/org/json/JSONObject.class
+
+You may wish to exclude one of them to ensure predictable runtime behavior
+
+12:21:55.784 [Test worker] INFO  c.x.dream.XworkzApiApplicationTests - Starting XworkzApiApplicationTests using Java 15.0.2 on DESKTOP-FT7DFR5 with PID 17428 (started by Dell in C:\Project\Project\Xworkz-Api)
+12:21:55.787 [Test worker] INFO  c.x.dream.XworkzApiApplicationTests - The following 1 profile is active: "local"
+12:22:02.220 [Test worker] INFO  o.s.cloud.context.scope.GenericScope - BeanFactory id=aced4df1-617b-3dc9-9cda-66a52e18b5a6
+12:22:03.378 [Test worker] INFO  c.xworkz.dream.util.EncryptionHelper - {} is Created...........
+12:22:21.149 [Test worker] INFO  c.x.dream.XworkzApiApplicationTests - Started XworkzApiApplicationTests in 27.265 seconds (JVM running for 32.799)
+12:56:05.736 [restartedMain] INFO  c.xworkz.dream.XworkzApiApplication - Starting XworkzApiApplication using Java 15.0.2 on DESKTOP-FT7DFR5 with PID 9024 (C:\Project\Project\Xworkz-Api\bin\main started by Dell in C:\Project\Project\Xworkz-Api)
+12:56:05.740 [restartedMain] INFO  c.xworkz.dream.XworkzApiApplication - The following 1 profile is active: "local"
+12:56:06.007 [restartedMain] INFO  o.s.b.d.e.DevToolsPropertyDefaultsPostProcessor - Devtools property defaults active! Set 'spring.devtools.add-properties' to 'false' to disable
+12:56:06.013 [restartedMain] INFO  o.s.b.d.e.DevToolsPropertyDefaultsPostProcessor - For additional web related logging consider setting the 'logging.level.web' property to 'DEBUG'
+12:56:09.566 [restartedMain] INFO  o.s.cloud.context.scope.GenericScope - BeanFactory id=c992a949-1209-3dc3-b6c9-b9b103e0971f
+12:56:13.120 [restartedMain] INFO  o.s.b.w.e.tomcat.TomcatWebServer - Tomcat initialized with port(s): 8081 (http)
+12:56:13.159 [restartedMain] INFO  o.a.catalina.core.StandardService - Starting service [Tomcat]
+12:56:13.164 [restartedMain] INFO  o.a.catalina.core.StandardEngine - Starting Servlet engine: [Apache Tomcat/9.0.68]
+12:56:13.601 [restartedMain] INFO  o.a.c.c.C.[Tomcat].[localhost].[/] - Initializing Spring embedded WebApplicationContext
+12:56:13.602 [restartedMain] INFO  o.s.b.w.s.c.ServletWebServerApplicationContext - Root WebApplicationContext: initialization completed in 7586 ms
+12:56:13.760 [restartedMain] INFO  c.xworkz.dream.util.EncryptionHelper - {} is Created...........
+12:56:14.652 [restartedMain] INFO  o.s.b.d.a.OptionalLiveReloadServer - LiveReload server is running on port 35729
+12:56:17.376 [restartedMain] INFO  o.s.b.w.e.tomcat.TomcatWebServer - Tomcat started on port(s): 8081 (http) with context path ''
+12:56:19.560 [restartedMain] INFO  c.xworkz.dream.XworkzApiApplication - Started XworkzApiApplication in 15.46 seconds (JVM running for 18.094)
+13:04:01.521 [http-nio-8081-exec-1] INFO  o.a.c.c.C.[Tomcat].[localhost].[/] - Initializing Spring DispatcherServlet 'dispatcherServlet'
+13:04:01.522 [http-nio-8081-exec-1] INFO  o.s.web.servlet.DispatcherServlet - Initializing Servlet 'dispatcherServlet'
+13:04:01.543 [http-nio-8081-exec-1] INFO  o.s.web.servlet.DispatcherServlet - Completed initialization in 20 ms
+13:04:01.728 [http-nio-8081-exec-2] INFO  c.x.dream.resource.LoginController - Logging in with email: xworkzdev4@gmail.com
+13:04:01.743 [http-nio-8081-exec-2] INFO  c.x.dream.service.LoginServiceImpl - Validating login for email: xworkzdev4@gmail.com
+13:04:01.792 [http-nio-8081-exec-2] INFO  c.x.dream.service.LoginServiceImpl - OTP sent successfully for email: xworkzdev4@gmail.com
+13:04:09.586 [http-nio-8081-exec-4] INFO  c.x.dream.resource.LoginController - Validating OTP for email: xworkzdev4@gmail.com, OTP: 123456
+13:04:09.586 [http-nio-8081-exec-4] INFO  c.x.dream.service.LoginServiceImpl - Validating OTP for email: xworkzdev4@gmail.com, OTP: 123456
+13:04:09.601 [http-nio-8081-exec-4] INFO  c.x.dream.service.LoginServiceImpl - Updating login info for user: xworkzdev4@gmail.com
+13:04:10.967 [http-nio-8081-exec-4] INFO  c.x.dream.service.LoginServiceImpl - Login successful for email: xworkzdev4@gmail.com
+13:04:11.243 [http-nio-8081-exec-1] INFO  c.x.d.resource.DreamApiController - Getting CourseName : Active
+13:04:12.079 [http-nio-8081-exec-10] INFO  c.x.dream.resource.OptionController - Getting Dropddown data
+13:04:12.242 [http-nio-8081-exec-4] INFO  c.x.d.resource.DreamApiController - Getting CourseName : Active
+13:04:23.472 [http-nio-8081-exec-1] INFO  c.x.d.resource.DreamApiController - Getting CourseName : Active
+13:04:23.472 [http-nio-8081-exec-10] INFO  c.x.dream.resource.OptionController - Getting Dropddown data
+13:04:23.491 [http-nio-8081-exec-4] INFO  c.x.dream.resource.OptionController - Getting Dropddown data
+13:04:26.145 [http-nio-8081-exec-6] INFO  c.x.d.resource.DreamApiController - Getting CourseDetails : NA
+13:04:39.715 [http-nio-8081-exec-2] INFO  c.x.d.resource.DreamApiController - Getting CourseDetails : Sep-28
+13:04:56.318 [http-nio-8081-exec-1] INFO  c.x.dream.resource.OptionController - Getting Dropddown data
+13:04:56.320 [http-nio-8081-exec-10] INFO  c.x.d.resource.DreamApiController - Getting CourseName : Active
+13:04:56.336 [http-nio-8081-exec-4] INFO  c.x.d.resource.DreamApiController - Getting CourseName : Active
+13:25:15.002 [http-nio-8081-exec-1] INFO  c.x.d.resource.DreamApiController - Getting CourseName : Active
+13:25:15.021 [http-nio-8081-exec-9] INFO  c.x.dream.resource.OptionController - Getting Dropddown data
+13:26:11.418 [http-nio-8081-exec-10] INFO  c.x.dream.resource.OptionController - Getting Dropddown data
+13:26:11.425 [http-nio-8081-exec-1] INFO  c.x.d.resource.DreamApiController - Getting CourseName : Active
+13:26:11.478 [http-nio-8081-exec-4] INFO  c.x.d.resource.DreamApiController - Getting CourseName : Active
+13:26:14.260 [http-nio-8081-exec-8] ERROR c.x.d.service.WhatsAppServiceImpl - No matching trainee details found for the course: July-10
+13:27:52.256 [http-nio-8081-exec-4] INFO  c.x.d.resource.DreamApiController - Getting CourseName : Active
+13:27:52.257 [http-nio-8081-exec-1] INFO  c.x.dream.resource.OptionController - Getting Dropddown data
+13:27:52.268 [http-nio-8081-exec-10] INFO  c.x.dream.resource.OptionController - Getting Dropddown data
+13:27:53.510 [http-nio-8081-exec-6] INFO  c.x.d.resource.DreamApiController - Getting CourseDetails : Oct-10
+13:29:17.361 [http-nio-8081-exec-4] INFO  c.x.dream.resource.OptionController - Getting Dropddown data
+13:30:24.724 [http-nio-8081-exec-3] INFO  c.x.d.resource.DreamApiController - Checking contact number: 35433434333
+13:30:25.311 [http-nio-8081-exec-3] INFO  c.x.dream.service.DreamServiceImpl - Contact Number does not exist in spreadsheetId: 1p3G4et36vkzSDs3W63cj6qnUFEWljLos2HHXIZd78Gg
+13:30:26.428 [http-nio-8081-exec-8] INFO  c.x.d.resource.DreamApiController - Checking contact number: 3543343433
+13:30:26.429 [http-nio-8081-exec-8] INFO  c.x.dream.service.DreamServiceImpl - Contact Number does not exist in spreadsheetId: 1p3G4et36vkzSDs3W63cj6qnUFEWljLos2HHXIZd78Gg
+13:30:44.234 [http-nio-8081-exec-2] INFO  c.x.dream.service.DreamServiceImpl - Data written successfully to spreadsheetId and Added to Follow Up: 1p3G4et36vkzSDs3W63cj6qnUFEWljLos2HHXIZd78Gg
+13:30:51.344 [http-nio-8081-exec-5] INFO  c.x.dream.resource.OptionController - Getting Dropddown data
+13:30:51.351 [http-nio-8081-exec-10] INFO  c.x.d.resource.DreamApiController - Getting CourseName : Active
+13:30:51.398 [http-nio-8081-exec-6] INFO  c.x.d.resource.DreamApiController - Getting CourseName : Active
+13:31:12.943 [http-nio-8081-exec-10] INFO  c.x.dream.resource.OptionController - Getting Dropddown data
+13:31:12.943 [http-nio-8081-exec-6] INFO  c.x.d.resource.DreamApiController - Getting CourseName : Active
+13:31:12.955 [http-nio-8081-exec-4] INFO  c.x.dream.resource.OptionController - Getting Dropddown data
+13:31:14.723 [http-nio-8081-exec-3] INFO  c.x.d.resource.DreamApiController - Getting CourseDetails : NA
+13:31:25.410 [http-nio-8081-exec-10] INFO  c.x.d.resource.DreamApiController - Getting CourseDetails : NA
+13:32:07.552 [http-nio-8081-exec-5] INFO  c.x.d.resource.DreamApiController - Getting CourseDetails : NA
+13:32:21.498 [http-nio-8081-exec-1] INFO  c.x.d.resource.DreamApiController - Getting CourseDetails : NA
+13:32:42.325 [http-nio-8081-exec-10] ERROR o.a.c.c.C.[.[.[.[dispatcherServlet] - Servlet.service() for servlet [dispatcherServlet] in context with path [] threw exception [Request processing failed; nested exception is feign.FeignException$FeignClientException: [402 Payment Required] during [GET] to [https://api.emailable.com/v1/verify?email=sam.xworkz%40gmail.com&api_key=live_1c9a44377323556a9243] [EmailableClient#verifyEmail(String,String)]: [{"message":"Your account is out of credits. Please visit https://app.emailable.com/checkout/credits to purchase more."}]] with root cause
+feign.FeignException$FeignClientException: [402 Payment Required] during [GET] to [https://api.emailable.com/v1/verify?email=sam.xworkz%40gmail.com&api_key=live_1c9a44377323556a9243] [EmailableClient#verifyEmail(String,String)]: [{"message":"Your account is out of credits. Please visit https://app.emailable.com/checkout/credits to purchase more."}]
+	at feign.FeignException.clientErrorStatus(FeignException.java:235)
+	at feign.FeignException.errorStatus(FeignException.java:194)
+	at feign.FeignException.errorStatus(FeignException.java:185)
+	at feign.codec.ErrorDecoder$Default.decode(ErrorDecoder.java:92)
+	at feign.AsyncResponseHandler.handleResponse(AsyncResponseHandler.java:96)
+	at feign.SynchronousMethodHandler.executeAndDecode(SynchronousMethodHandler.java:138)
+	at feign.SynchronousMethodHandler.invoke(SynchronousMethodHandler.java:89)
+	at feign.ReflectiveFeign$FeignInvocationHandler.invoke(ReflectiveFeign.java:100)
+	at org.springframework.cloud.openfeign.FeignCachingInvocationHandlerFactory$1.proceed(FeignCachingInvocationHandlerFactory.java:66)
+	at org.springframework.cache.interceptor.CacheInterceptor.lambda$invoke$0(CacheInterceptor.java:54)
+	at org.springframework.cache.interceptor.CacheAspectSupport.execute(CacheAspectSupport.java:351)
+	at org.springframework.cache.interceptor.CacheInterceptor.invoke(CacheInterceptor.java:64)
+	at org.springframework.cloud.openfeign.FeignCachingInvocationHandlerFactory.lambda$create$1(FeignCachingInvocationHandlerFactory.java:53)
+	at com.sun.proxy.$Proxy101.verifyEmail(Unknown Source)
+	at com.xworkz.dream.service.DreamServiceImpl.verifyEmails(DreamServiceImpl.java:1056)
+	at com.xworkz.dream.resource.DreamApiController.verifydEmails(DreamApiController.java:215)
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:64)
+	at java.base/jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:564)
+	at org.springframework.web.method.support.InvocableHandlerMethod.doInvoke(InvocableHandlerMethod.java:205)
+	at org.springframework.web.method.support.InvocableHandlerMethod.invokeForRequest(InvocableHandlerMethod.java:150)
+	at org.springframework.web.servlet.mvc.method.annotation.ServletInvocableHandlerMethod.invokeAndHandle(ServletInvocableHandlerMethod.java:117)
+	at org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter.invokeHandlerMethod(RequestMappingHandlerAdapter.java:895)
+	at org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter.handleInternal(RequestMappingHandlerAdapter.java:808)
+	at org.springframework.web.servlet.mvc.method.AbstractHandlerMethodAdapter.handle(AbstractHandlerMethodAdapter.java:87)
+	at org.springframework.web.servlet.DispatcherServlet.doDispatch(DispatcherServlet.java:1071)
+	at org.springframework.web.servlet.DispatcherServlet.doService(DispatcherServlet.java:964)
+	at org.springframework.web.servlet.FrameworkServlet.processRequest(FrameworkServlet.java:1006)
+	at org.springframework.web.servlet.FrameworkServlet.doGet(FrameworkServlet.java:898)
+	at javax.servlet.http.HttpServlet.service(HttpServlet.java:670)
+	at org.springframework.web.servlet.FrameworkServlet.service(FrameworkServlet.java:883)
+	at javax.servlet.http.HttpServlet.service(HttpServlet.java:779)
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:227)
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:162)
+	at org.apache.tomcat.websocket.server.WsFilter.doFilter(WsFilter.java:53)
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:189)
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:162)
+	at org.springframework.web.filter.CharacterEncodingFilter.doFilterInternal(CharacterEncodingFilter.java:201)
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:117)
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:189)
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:162)
+	at org.apache.catalina.core.StandardWrapperValve.invoke(StandardWrapperValve.java:197)
+	at org.apache.catalina.core.StandardContextValve.invoke(StandardContextValve.java:97)
+	at org.apache.catalina.authenticator.AuthenticatorBase.invoke(AuthenticatorBase.java:541)
+	at org.apache.catalina.core.StandardHostValve.invoke(StandardHostValve.java:135)
+	at org.apache.catalina.valves.ErrorReportValve.invoke(ErrorReportValve.java:92)
+	at org.apache.catalina.core.StandardEngineValve.invoke(StandardEngineValve.java:78)
+	at org.apache.catalina.connector.CoyoteAdapter.service(CoyoteAdapter.java:360)
+	at org.apache.coyote.http11.Http11Processor.service(Http11Processor.java:399)
+	at org.apache.coyote.AbstractProcessorLight.process(AbstractProcessorLight.java:65)
+	at org.apache.coyote.AbstractProtocol$ConnectionHandler.process(AbstractProtocol.java:893)
+	at org.apache.tomcat.util.net.NioEndpoint$SocketProcessor.doRun(NioEndpoint.java:1789)
+	at org.apache.tomcat.util.net.SocketProcessorBase.run(SocketProcessorBase.java:49)
+	at org.apache.tomcat.util.threads.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1191)
+	at org.apache.tomcat.util.threads.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:659)
+	at org.apache.tomcat.util.threads.TaskThread$WrappingRunnable.run(TaskThread.java:61)
+	at java.base/java.lang.Thread.run(Thread.java:832)
+13:35:36.660 [File Watcher] INFO  o.s.b.d.a.LocalDevToolsAutoConfiguration$RestartingClassPathChangeChangedEventListener - Restarting due to 1 class path change (0 additions, 0 deletions, 1 modification)
+13:35:36.718 [Thread-5] INFO  o.a.catalina.core.StandardService - Stopping service [Tomcat]
+13:35:36.730 [Thread-5] INFO  o.a.c.c.C.[Tomcat].[localhost].[/] - Destroying Spring FrameworkServlet 'dispatcherServlet'
+13:35:37.860 [restartedMain] INFO  c.xworkz.dream.XworkzApiApplication - Starting XworkzApiApplication using Java 15.0.2 on DESKTOP-FT7DFR5 with PID 9024 (C:\Project\Project\Xworkz-Api\bin\main started by Dell in C:\Project\Project\Xworkz-Api)
+13:35:37.861 [restartedMain] INFO  c.xworkz.dream.XworkzApiApplication - The following 1 profile is active: "local"
+13:35:39.146 [restartedMain] INFO  o.s.cloud.context.scope.GenericScope - BeanFactory id=c992a949-1209-3dc3-b6c9-b9b103e0971f
+13:35:39.368 [restartedMain] INFO  o.s.b.w.e.tomcat.TomcatWebServer - Tomcat initialized with port(s): 8081 (http)
+13:35:39.369 [restartedMain] INFO  o.a.catalina.core.StandardService - Starting service [Tomcat]
+13:35:39.370 [restartedMain] INFO  o.a.catalina.core.StandardEngine - Starting Servlet engine: [Apache Tomcat/9.0.68]
+13:35:39.471 [restartedMain] INFO  o.a.c.c.C.[Tomcat].[localhost].[/] - Initializing Spring embedded WebApplicationContext
+13:35:39.471 [restartedMain] INFO  o.s.b.w.s.c.ServletWebServerApplicationContext - Root WebApplicationContext: initialization completed in 1599 ms
+13:35:39.508 [restartedMain] INFO  c.xworkz.dream.util.EncryptionHelper - {} is Created...........
+13:35:39.823 [restartedMain] INFO  o.s.b.d.a.OptionalLiveReloadServer - LiveReload server is running on port 35729
+13:35:41.027 [restartedMain] INFO  o.s.b.w.e.tomcat.TomcatWebServer - Tomcat started on port(s): 8081 (http) with context path ''
+13:35:43.676 [restartedMain] INFO  c.xworkz.dream.XworkzApiApplication - Started XworkzApiApplication in 6.186 seconds (JVM running for 2382.226)
+13:35:43.681 [restartedMain] INFO  o.s.b.d.a.ConditionEvaluationDeltaLoggingListener - Condition evaluation unchanged
+13:36:01.196 [File Watcher] INFO  o.s.b.d.a.LocalDevToolsAutoConfiguration$RestartingClassPathChangeChangedEventListener - Restarting due to 1 class path change (0 additions, 0 deletions, 1 modification)
+13:36:01.222 [Thread-9] INFO  o.a.catalina.core.StandardService - Stopping service [Tomcat]
+13:36:02.216 [restartedMain] INFO  c.xworkz.dream.XworkzApiApplication - Starting XworkzApiApplication using Java 15.0.2 on DESKTOP-FT7DFR5 with PID 9024 (C:\Project\Project\Xworkz-Api\bin\main started by Dell in C:\Project\Project\Xworkz-Api)
+13:36:02.217 [restartedMain] INFO  c.xworkz.dream.XworkzApiApplication - The following 1 profile is active: "local"
+13:36:04.017 [restartedMain] INFO  o.s.cloud.context.scope.GenericScope - BeanFactory id=c992a949-1209-3dc3-b6c9-b9b103e0971f
+13:36:04.245 [restartedMain] INFO  o.s.b.w.e.tomcat.TomcatWebServer - Tomcat initialized with port(s): 8081 (http)
+13:36:04.248 [restartedMain] INFO  o.a.catalina.core.StandardService - Starting service [Tomcat]
+13:36:04.248 [restartedMain] INFO  o.a.catalina.core.StandardEngine - Starting Servlet engine: [Apache Tomcat/9.0.68]
+13:36:04.605 [restartedMain] INFO  o.a.c.c.C.[Tomcat].[localhost].[/] - Initializing Spring embedded WebApplicationContext
+13:36:04.605 [restartedMain] INFO  o.s.b.w.s.c.ServletWebServerApplicationContext - Root WebApplicationContext: initialization completed in 2378 ms
+13:36:04.665 [restartedMain] INFO  c.xworkz.dream.util.EncryptionHelper - {} is Created...........
+13:36:04.942 [restartedMain] INFO  o.s.b.d.a.OptionalLiveReloadServer - LiveReload server is running on port 35729
+13:36:06.992 [restartedMain] INFO  o.s.b.w.e.tomcat.TomcatWebServer - Tomcat started on port(s): 8081 (http) with context path ''
+13:36:07.747 [restartedMain] INFO  c.xworkz.dream.XworkzApiApplication - Started XworkzApiApplication in 6.393 seconds (JVM running for 2406.297)
+13:36:07.751 [restartedMain] INFO  o.s.b.d.a.ConditionEvaluationDeltaLoggingListener - Condition evaluation unchanged
+13:36:25.947 [http-nio-8081-exec-1] INFO  o.a.c.c.C.[Tomcat].[localhost].[/] - Initializing Spring DispatcherServlet 'dispatcherServlet'
+13:36:25.948 [http-nio-8081-exec-1] INFO  o.s.web.servlet.DispatcherServlet - Initializing Servlet 'dispatcherServlet'
+13:36:25.950 [http-nio-8081-exec-1] INFO  o.s.web.servlet.DispatcherServlet - Completed initialization in 2 ms
+13:36:26.025 [http-nio-8081-exec-6] INFO  c.x.d.resource.DreamApiController - Getting CourseName : Active
+13:36:26.718 [http-nio-8081-exec-9] INFO  c.x.d.resource.DreamApiController - Getting CourseName : Active
+13:36:26.885 [http-nio-8081-exec-7] INFO  c.x.dream.resource.OptionController - Getting Dropddown data
+13:36:36.863 [http-nio-8081-exec-4] INFO  c.x.dream.resource.OptionController - Getting Dropddown data
+13:36:36.870 [http-nio-8081-exec-5] INFO  c.x.d.resource.DreamApiController - Getting CourseName : Active
+13:36:36.887 [http-nio-8081-exec-6] INFO  c.x.dream.resource.OptionController - Getting Dropddown data
+13:36:39.048 [http-nio-8081-exec-10] INFO  c.x.d.resource.DreamApiController - Getting CourseDetails : NA
+13:36:57.196 [http-nio-8081-exec-1] INFO  c.x.d.resource.DreamApiController - Getting CourseDetails : NA
+13:41:41.261 [http-nio-8081-exec-9] INFO  c.x.dream.resource.OptionController - Getting Dropddown data
+13:43:28.797 [http-nio-8081-exec-6] INFO  c.x.dream.resource.OptionController - Getting Dropddown data
+13:45:32.164 [http-nio-8081-exec-1] INFO  c.x.dream.resource.OptionController - Getting Dropddown data
+13:47:31.638 [http-nio-8081-exec-9] INFO  c.x.dream.resource.LoginController - Logging in with email: xworkzdev4@gmail.com
+13:47:31.639 [http-nio-8081-exec-9] INFO  c.x.dream.service.LoginServiceImpl - Validating login for email: xworkzdev4@gmail.com
+13:47:31.688 [http-nio-8081-exec-9] INFO  c.x.dream.service.LoginServiceImpl - OTP sent successfully for email: xworkzdev4@gmail.com
+13:47:36.939 [http-nio-8081-exec-8] INFO  c.x.dream.resource.LoginController - Validating OTP for email: xworkzdev4@gmail.com, OTP: 123456
+13:47:36.940 [http-nio-8081-exec-8] INFO  c.x.dream.service.LoginServiceImpl - Validating OTP for email: xworkzdev4@gmail.com, OTP: 123456
+13:47:36.944 [http-nio-8081-exec-8] INFO  c.x.dream.service.LoginServiceImpl - Updating login info for user: xworkzdev4@gmail.com
+13:47:37.646 [http-nio-8081-exec-8] INFO  c.x.dream.service.LoginServiceImpl - Login successful for email: xworkzdev4@gmail.com
+13:47:38.004 [http-nio-8081-exec-2] INFO  c.x.dream.resource.OptionController - Getting Dropddown data
+13:47:38.012 [http-nio-8081-exec-6] INFO  c.x.d.resource.DreamApiController - Getting CourseName : Active
+13:47:38.040 [http-nio-8081-exec-7] INFO  c.x.d.resource.DreamApiController - Getting CourseName : Active
+13:47:43.150 [http-nio-8081-exec-4] INFO  c.x.dream.resource.OptionController - Getting Dropddown data
+13:47:43.266 [http-nio-8081-exec-3] INFO  c.x.d.resource.DreamApiController - Getting CourseName : Active
+13:47:43.281 [http-nio-8081-exec-10] INFO  c.x.dream.resource.OptionController - Getting Dropddown data
+13:50:47.834 [http-nio-8081-exec-9] INFO  c.x.dream.resource.OptionController - Getting Dropddown data
+13:50:47.841 [http-nio-8081-exec-6] INFO  c.x.d.resource.DreamApiController - Getting CourseName : Active
+13:50:47.894 [http-nio-8081-exec-2] INFO  c.x.d.resource.DreamApiController - Getting CourseName : Active
+13:50:50.145 [http-nio-8081-exec-6] INFO  c.x.dream.resource.OptionController - Getting Dropddown data
+13:50:50.149 [http-nio-8081-exec-6] INFO  c.x.d.resource.DreamApiController - Getting CourseName : Active
+13:50:50.160 [http-nio-8081-exec-2] INFO  c.x.dream.resource.OptionController - Getting Dropddown data
+13:50:51.223 [http-nio-8081-exec-1] INFO  c.x.dream.resource.OptionController - Getting Dropddown data
+13:50:51.291 [http-nio-8081-exec-3] INFO  c.x.dream.resource.OptionController - Getting Dropddown data
+13:50:51.336 [http-nio-8081-exec-4] INFO  c.x.dream.resource.OptionController - Getting Dropddown data
+13:51:35.633 [http-nio-8081-exec-6] INFO  c.x.d.resource.DreamApiController - updating follow up status : StatusDto(id=7, basicInfo=BasicInfoDto(traineeName=Swandana, email=9238487239@dummy.com, contactNumber=9238487239, dateOfBirth=NA), courseInfo=CourseDto(course=Sep-28, branch=BTM, trainerName=Sunil, batchType=Morning, batchTiming=08:00, startTime=06-09-2024, offeredAs=NA), attemptedOn=null, attemptedBy=xworkzdev4@gmail.com, attemptStatus=Joined other institute, comments=NA, callDuration=NA, callBack=NA, callBackTime=NA, joiningDate=NA)
+13:52:59.103 [http-nio-8081-exec-8] INFO  c.x.dream.resource.OptionController - Getting Dropddown data
+13:53:07.414 [http-nio-8081-exec-7] INFO  c.x.dream.resource.OptionController - Getting Dropddown data
+13:53:07.419 [http-nio-8081-exec-9] INFO  c.x.d.resource.DreamApiController - Getting CourseName : Active
+13:53:07.468 [http-nio-8081-exec-6] INFO  c.x.d.resource.DreamApiController - Getting CourseName : Active
+13:53:10.173 [http-nio-8081-exec-7] INFO  c.x.dream.resource.OptionController - Getting Dropddown data
+13:53:10.175 [http-nio-8081-exec-9] INFO  c.x.d.resource.DreamApiController - Getting CourseName : Active
+13:53:10.186 [http-nio-8081-exec-6] INFO  c.x.dream.resource.OptionController - Getting Dropddown data
+13:53:41.398 [http-nio-8081-exec-3] INFO  c.x.d.resource.DreamApiController - updating follow up status : StatusDto(id=8, basicInfo=BasicInfoDto(traineeName=Sam, email=sam.xworkz@gmail.com, contactNumber=3543343433, dateOfBirth=NA), courseInfo=CourseDto(course=NA, branch=NA, trainerName=NA, batchType=NA, batchTiming=NA, startTime=NA, offeredAs=NA), attemptedOn=null, attemptedBy=xworkzdev4@gmail.com, attemptStatus=Joined, comments=he joined on 992372873444444444444444444444, callDuration=NA, callBack=NA, callBackTime=NA, joiningDate=NA)
+13:53:41.622 [http-nio-8081-exec-6] INFO  c.x.d.resource.DreamApiController - updating follow up status : StatusDto(id=8, basicInfo=BasicInfoDto(traineeName=Sam, email=sam.xworkz@gmail.com, contactNumber=3543343433, dateOfBirth=NA), courseInfo=CourseDto(course=NA, branch=NA, trainerName=NA, batchType=NA, batchTiming=NA, startTime=NA, offeredAs=NA), attemptedOn=null, attemptedBy=xworkzdev4@gmail.com, attemptStatus=Joined, comments=he joined on 992372873444444444444444444444, callDuration=NA, callBack=NA, callBackTime=NA, joiningDate=NA)
+13:53:42.284 [http-nio-8081-exec-7] ERROR o.a.c.c.C.[.[.[.[dispatcherServlet] - Servlet.service() for servlet [dispatcherServlet] in context with path [] threw exception [Request processing failed; nested exception is java.lang.IllegalArgumentException: Null key returned for cache operation (maybe you are using named params on classes without debug info?) Builder[public boolean com.xworkz.dream.repository.AttendanceRepositoryImpl.writeAttendance(java.lang.String,java.util.List,java.lang.String) throws java.io.IOException] caches=[update] | key='#valueRange' | keyGenerator='' | cacheManager='' | cacheResolver='' | condition='' | unless=''] with root cause
+java.lang.IllegalArgumentException: Null key returned for cache operation (maybe you are using named params on classes without debug info?) Builder[public boolean com.xworkz.dream.repository.AttendanceRepositoryImpl.writeAttendance(java.lang.String,java.util.List,java.lang.String) throws java.io.IOException] caches=[update] | key='#valueRange' | keyGenerator='' | cacheManager='' | cacheResolver='' | condition='' | unless=''
+	at org.springframework.cache.interceptor.CacheAspectSupport.generateKey(CacheAspectSupport.java:595) ~[spring-context-5.3.23.jar:5.3.23]
+	at org.springframework.cache.interceptor.CacheAspectSupport.collectPutRequests(CacheAspectSupport.java:562) ~[spring-context-5.3.23.jar:5.3.23]
+	at org.springframework.cache.interceptor.CacheAspectSupport.execute(CacheAspectSupport.java:426) ~[spring-context-5.3.23.jar:5.3.23]
+	at org.springframework.cache.interceptor.CacheAspectSupport.execute(CacheAspectSupport.java:345) ~[spring-context-5.3.23.jar:5.3.23]
+	at org.springframework.cache.interceptor.CacheInterceptor.invoke(CacheInterceptor.java:64) ~[spring-context-5.3.23.jar:5.3.23]
+	at org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:186) ~[spring-aop-5.3.23.jar:5.3.23]
+	at org.springframework.aop.framework.CglibAopProxy$CglibMethodInvocation.proceed(CglibAopProxy.java:763) ~[spring-aop-5.3.23.jar:5.3.23]
+	at org.springframework.aop.framework.CglibAopProxy$DynamicAdvisedInterceptor.intercept(CglibAopProxy.java:708) ~[spring-aop-5.3.23.jar:5.3.23]
+	at com.xworkz.dream.repository.AttendanceRepositoryImpl$$EnhancerBySpringCGLIB$$c69765c5.writeAttendance(<generated>) ~[main/:na]
+	at com.xworkz.dream.service.AttendanceServiceImpl.writeAttendance(AttendanceServiceImpl.java:89) ~[main/:na]
+	at com.xworkz.dream.resource.AttendanceController.registerAttendance(AttendanceController.java:59) ~[main/:na]
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method) ~[na:na]
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:64) ~[na:na]
+	at java.base/jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43) ~[na:na]
+	at java.base/java.lang.reflect.Method.invoke(Method.java:564) ~[na:na]
+	at org.springframework.web.method.support.InvocableHandlerMethod.doInvoke(InvocableHandlerMethod.java:205) ~[spring-web-5.3.23.jar:5.3.23]
+	at org.springframework.web.method.support.InvocableHandlerMethod.invokeForRequest(InvocableHandlerMethod.java:150) ~[spring-web-5.3.23.jar:5.3.23]
+	at org.springframework.web.servlet.mvc.method.annotation.ServletInvocableHandlerMethod.invokeAndHandle(ServletInvocableHandlerMethod.java:117) ~[spring-webmvc-5.3.23.jar:5.3.23]
+	at org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter.invokeHandlerMethod(RequestMappingHandlerAdapter.java:895) ~[spring-webmvc-5.3.23.jar:5.3.23]
+	at org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter.handleInternal(RequestMappingHandlerAdapter.java:808) ~[spring-webmvc-5.3.23.jar:5.3.23]
+	at org.springframework.web.servlet.mvc.method.AbstractHandlerMethodAdapter.handle(AbstractHandlerMethodAdapter.java:87) ~[spring-webmvc-5.3.23.jar:5.3.23]
+	at org.springframework.web.servlet.DispatcherServlet.doDispatch(DispatcherServlet.java:1071) ~[spring-webmvc-5.3.23.jar:5.3.23]
+	at org.springframework.web.servlet.DispatcherServlet.doService(DispatcherServlet.java:964) ~[spring-webmvc-5.3.23.jar:5.3.23]
+	at org.springframework.web.servlet.FrameworkServlet.processRequest(FrameworkServlet.java:1006) ~[spring-webmvc-5.3.23.jar:5.3.23]
+	at org.springframework.web.servlet.FrameworkServlet.doPost(FrameworkServlet.java:909) ~[spring-webmvc-5.3.23.jar:5.3.23]
+	at javax.servlet.http.HttpServlet.service(HttpServlet.java:696) ~[tomcat-embed-core-9.0.68.jar:4.0.FR]
+	at org.springframework.web.servlet.FrameworkServlet.service(FrameworkServlet.java:883) ~[spring-webmvc-5.3.23.jar:5.3.23]
+	at javax.servlet.http.HttpServlet.service(HttpServlet.java:779) ~[tomcat-embed-core-9.0.68.jar:4.0.FR]
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:227) ~[tomcat-embed-core-9.0.68.jar:9.0.68]
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:162) ~[tomcat-embed-core-9.0.68.jar:9.0.68]
+	at org.apache.tomcat.websocket.server.WsFilter.doFilter(WsFilter.java:53) ~[tomcat-embed-websocket-9.0.68.jar:9.0.68]
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:189) ~[tomcat-embed-core-9.0.68.jar:9.0.68]
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:162) ~[tomcat-embed-core-9.0.68.jar:9.0.68]
+	at org.springframework.web.filter.CharacterEncodingFilter.doFilterInternal(CharacterEncodingFilter.java:201) ~[spring-web-5.3.23.jar:5.3.23]
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:117) ~[spring-web-5.3.23.jar:5.3.23]
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:189) ~[tomcat-embed-core-9.0.68.jar:9.0.68]
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:162) ~[tomcat-embed-core-9.0.68.jar:9.0.68]
+	at org.apache.catalina.core.StandardWrapperValve.invoke(StandardWrapperValve.java:197) ~[tomcat-embed-core-9.0.68.jar:9.0.68]
+	at org.apache.catalina.core.StandardContextValve.invoke(StandardContextValve.java:97) ~[tomcat-embed-core-9.0.68.jar:9.0.68]
+	at org.apache.catalina.authenticator.AuthenticatorBase.invoke(AuthenticatorBase.java:541) ~[tomcat-embed-core-9.0.68.jar:9.0.68]
+	at org.apache.catalina.core.StandardHostValve.invoke(StandardHostValve.java:135) ~[tomcat-embed-core-9.0.68.jar:9.0.68]
+	at org.apache.catalina.valves.ErrorReportValve.invoke(ErrorReportValve.java:92) ~[tomcat-embed-core-9.0.68.jar:9.0.68]
+	at org.apache.catalina.core.StandardEngineValve.invoke(StandardEngineValve.java:78) ~[tomcat-embed-core-9.0.68.jar:9.0.68]
+	at org.apache.catalina.connector.CoyoteAdapter.service(CoyoteAdapter.java:360) ~[tomcat-embed-core-9.0.68.jar:9.0.68]
+	at org.apache.coyote.http11.Http11Processor.service(Http11Processor.java:399) ~[tomcat-embed-core-9.0.68.jar:9.0.68]
+	at org.apache.coyote.AbstractProcessorLight.process(AbstractProcessorLight.java:65) ~[tomcat-embed-core-9.0.68.jar:9.0.68]
+	at org.apache.coyote.AbstractProtocol$ConnectionHandler.process(AbstractProtocol.java:893) ~[tomcat-embed-core-9.0.68.jar:9.0.68]
+	at org.apache.tomcat.util.net.NioEndpoint$SocketProcessor.doRun(NioEndpoint.java:1789) ~[tomcat-embed-core-9.0.68.jar:9.0.68]
+	at org.apache.tomcat.util.net.SocketProcessorBase.run(SocketProcessorBase.java:49) ~[tomcat-embed-core-9.0.68.jar:9.0.68]
+	at org.apache.tomcat.util.threads.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1191) ~[tomcat-embed-core-9.0.68.jar:9.0.68]
+	at org.apache.tomcat.util.threads.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:659) ~[tomcat-embed-core-9.0.68.jar:9.0.68]
+	at org.apache.tomcat.util.threads.TaskThread$WrappingRunnable.run(TaskThread.java:61) ~[tomcat-embed-core-9.0.68.jar:9.0.68]
+	at java.base/java.lang.Thread.run(Thread.java:832) ~[na:na]
+13:53:42.284 [http-nio-8081-exec-9] ERROR o.a.c.c.C.[.[.[.[dispatcherServlet] - Servlet.service() for servlet [dispatcherServlet] in context with path [] threw exception [Request processing failed; nested exception is java.lang.IllegalArgumentException: Null key returned for cache operation (maybe you are using named params on classes without debug info?) Builder[public boolean com.xworkz.dream.repository.AttendanceRepositoryImpl.writeAttendance(java.lang.String,java.util.List,java.lang.String) throws java.io.IOException] caches=[update] | key='#valueRange' | keyGenerator='' | cacheManager='' | cacheResolver='' | condition='' | unless=''] with root cause
+java.lang.IllegalArgumentException: Null key returned for cache operation (maybe you are using named params on classes without debug info?) Builder[public boolean com.xworkz.dream.repository.AttendanceRepositoryImpl.writeAttendance(java.lang.String,java.util.List,java.lang.String) throws java.io.IOException] caches=[update] | key='#valueRange' | keyGenerator='' | cacheManager='' | cacheResolver='' | condition='' | unless=''
+	at org.springframework.cache.interceptor.CacheAspectSupport.generateKey(CacheAspectSupport.java:595) ~[spring-context-5.3.23.jar:5.3.23]
+	at org.springframework.cache.interceptor.CacheAspectSupport.collectPutRequests(CacheAspectSupport.java:562) ~[spring-context-5.3.23.jar:5.3.23]
+	at org.springframework.cache.interceptor.CacheAspectSupport.execute(CacheAspectSupport.java:426) ~[spring-context-5.3.23.jar:5.3.23]
+	at org.springframework.cache.interceptor.CacheAspectSupport.execute(CacheAspectSupport.java:345) ~[spring-context-5.3.23.jar:5.3.23]
+	at org.springframework.cache.interceptor.CacheInterceptor.invoke(CacheInterceptor.java:64) ~[spring-context-5.3.23.jar:5.3.23]
+	at org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:186) ~[spring-aop-5.3.23.jar:5.3.23]
+	at org.springframework.aop.framework.CglibAopProxy$CglibMethodInvocation.proceed(CglibAopProxy.java:763) ~[spring-aop-5.3.23.jar:5.3.23]
+	at org.springframework.aop.framework.CglibAopProxy$DynamicAdvisedInterceptor.intercept(CglibAopProxy.java:708) ~[spring-aop-5.3.23.jar:5.3.23]
+	at com.xworkz.dream.repository.AttendanceRepositoryImpl$$EnhancerBySpringCGLIB$$c69765c5.writeAttendance(<generated>) ~[main/:na]
+	at com.xworkz.dream.service.AttendanceServiceImpl.writeAttendance(AttendanceServiceImpl.java:89) ~[main/:na]
+	at com.xworkz.dream.resource.AttendanceController.registerAttendance(AttendanceController.java:59) ~[main/:na]
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method) ~[na:na]
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:64) ~[na:na]
+	at java.base/jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43) ~[na:na]
+	at java.base/java.lang.reflect.Method.invoke(Method.java:564) ~[na:na]
+	at org.springframework.web.method.support.InvocableHandlerMethod.doInvoke(InvocableHandlerMethod.java:205) ~[spring-web-5.3.23.jar:5.3.23]
+	at org.springframework.web.method.support.InvocableHandlerMethod.invokeForRequest(InvocableHandlerMethod.java:150) ~[spring-web-5.3.23.jar:5.3.23]
+	at org.springframework.web.servlet.mvc.method.annotation.ServletInvocableHandlerMethod.invokeAndHandle(ServletInvocableHandlerMethod.java:117) ~[spring-webmvc-5.3.23.jar:5.3.23]
+	at org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter.invokeHandlerMethod(RequestMappingHandlerAdapter.java:895) ~[spring-webmvc-5.3.23.jar:5.3.23]
+	at org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter.handleInternal(RequestMappingHandlerAdapter.java:808) ~[spring-webmvc-5.3.23.jar:5.3.23]
+	at org.springframework.web.servlet.mvc.method.AbstractHandlerMethodAdapter.handle(AbstractHandlerMethodAdapter.java:87) ~[spring-webmvc-5.3.23.jar:5.3.23]
+	at org.springframework.web.servlet.DispatcherServlet.doDispatch(DispatcherServlet.java:1071) ~[spring-webmvc-5.3.23.jar:5.3.23]
+	at org.springframework.web.servlet.DispatcherServlet.doService(DispatcherServlet.java:964) ~[spring-webmvc-5.3.23.jar:5.3.23]
+	at org.springframework.web.servlet.FrameworkServlet.processRequest(FrameworkServlet.java:1006) ~[spring-webmvc-5.3.23.jar:5.3.23]
+	at org.springframework.web.servlet.FrameworkServlet.doPost(FrameworkServlet.java:909) ~[spring-webmvc-5.3.23.jar:5.3.23]
+	at javax.servlet.http.HttpServlet.service(HttpServlet.java:696) ~[tomcat-embed-core-9.0.68.jar:4.0.FR]
+	at org.springframework.web.servlet.FrameworkServlet.service(FrameworkServlet.java:883) ~[spring-webmvc-5.3.23.jar:5.3.23]
+	at javax.servlet.http.HttpServlet.service(HttpServlet.java:779) ~[tomcat-embed-core-9.0.68.jar:4.0.FR]
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:227) ~[tomcat-embed-core-9.0.68.jar:9.0.68]
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:162) ~[tomcat-embed-core-9.0.68.jar:9.0.68]
+	at org.apache.tomcat.websocket.server.WsFilter.doFilter(WsFilter.java:53) ~[tomcat-embed-websocket-9.0.68.jar:9.0.68]
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:189) ~[tomcat-embed-core-9.0.68.jar:9.0.68]
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:162) ~[tomcat-embed-core-9.0.68.jar:9.0.68]
+	at org.springframework.web.filter.CharacterEncodingFilter.doFilterInternal(CharacterEncodingFilter.java:201) ~[spring-web-5.3.23.jar:5.3.23]
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:117) ~[spring-web-5.3.23.jar:5.3.23]
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:189) ~[tomcat-embed-core-9.0.68.jar:9.0.68]
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:162) ~[tomcat-embed-core-9.0.68.jar:9.0.68]
+	at org.apache.catalina.core.StandardWrapperValve.invoke(StandardWrapperValve.java:197) ~[tomcat-embed-core-9.0.68.jar:9.0.68]
+	at org.apache.catalina.core.StandardContextValve.invoke(StandardContextValve.java:97) ~[tomcat-embed-core-9.0.68.jar:9.0.68]
+	at org.apache.catalina.authenticator.AuthenticatorBase.invoke(AuthenticatorBase.java:541) ~[tomcat-embed-core-9.0.68.jar:9.0.68]
+	at org.apache.catalina.core.StandardHostValve.invoke(StandardHostValve.java:135) ~[tomcat-embed-core-9.0.68.jar:9.0.68]
+	at org.apache.catalina.valves.ErrorReportValve.invoke(ErrorReportValve.java:92) ~[tomcat-embed-core-9.0.68.jar:9.0.68]
+	at org.apache.catalina.core.StandardEngineValve.invoke(StandardEngineValve.java:78) ~[tomcat-embed-core-9.0.68.jar:9.0.68]
+	at org.apache.catalina.connector.CoyoteAdapter.service(CoyoteAdapter.java:360) ~[tomcat-embed-core-9.0.68.jar:9.0.68]
+	at org.apache.coyote.http11.Http11Processor.service(Http11Processor.java:399) ~[tomcat-embed-core-9.0.68.jar:9.0.68]
+	at org.apache.coyote.AbstractProcessorLight.process(AbstractProcessorLight.java:65) ~[tomcat-embed-core-9.0.68.jar:9.0.68]
+	at org.apache.coyote.AbstractProtocol$ConnectionHandler.process(AbstractProtocol.java:893) ~[tomcat-embed-core-9.0.68.jar:9.0.68]
+	at org.apache.tomcat.util.net.NioEndpoint$SocketProcessor.doRun(NioEndpoint.java:1789) ~[tomcat-embed-core-9.0.68.jar:9.0.68]
+	at org.apache.tomcat.util.net.SocketProcessorBase.run(SocketProcessorBase.java:49) ~[tomcat-embed-core-9.0.68.jar:9.0.68]
+	at org.apache.tomcat.util.threads.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1191) ~[tomcat-embed-core-9.0.68.jar:9.0.68]
+	at org.apache.tomcat.util.threads.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:659) ~[tomcat-embed-core-9.0.68.jar:9.0.68]
+	at org.apache.tomcat.util.threads.TaskThread$WrappingRunnable.run(TaskThread.java:61) ~[tomcat-embed-core-9.0.68.jar:9.0.68]
+	at java.base/java.lang.Thread.run(Thread.java:832) ~[na:na]
+13:54:53.921 [http-nio-8081-exec-2] INFO  c.x.d.resource.DreamApiController - updating follow up status : StatusDto(id=8, basicInfo=BasicInfoDto(traineeName=Sam, email=sam.xworkz@gmail.com, contactNumber=3543343433, dateOfBirth=NA), courseInfo=CourseDto(course=NA, branch=NA, trainerName=NA, batchType=NA, batchTiming=NA, startTime=NA, offeredAs=NA), attemptedOn=null, attemptedBy=xworkzdev4@gmail.com, attemptStatus=Higher studies, comments=he joined MBA in bangalore BIT college, callDuration=NA, callBack=NA, callBackTime=NA, joiningDate=NA)
+13:55:47.090 [http-nio-8081-exec-9] INFO  c.x.dream.resource.OptionController - Getting Dropddown data
+13:56:42.133 [http-nio-8081-exec-2] INFO  c.x.dream.resource.OptionController - Getting Dropddown data
+13:56:57.101 [http-nio-8081-exec-5] INFO  c.x.dream.resource.OptionController - Getting Dropddown data
+13:58:05.076 [http-nio-8081-exec-3] INFO  c.x.dream.resource.OptionController - Getting Dropddown data
+13:58:08.630 [http-nio-8081-exec-2] INFO  c.x.dream.resource.OptionController - Getting Dropddown data
+13:58:08.643 [http-nio-8081-exec-5] INFO  c.x.d.resource.DreamApiController - Getting CourseName : Active
+13:58:08.655 [http-nio-8081-exec-6] INFO  c.x.d.resource.DreamApiController - Getting CourseName : Active
+13:58:12.212 [http-nio-8081-exec-4] INFO  c.x.dream.resource.OptionController - Getting Dropddown data
+13:58:12.217 [http-nio-8081-exec-1] INFO  c.x.d.resource.DreamApiController - Getting CourseName : Active
+13:58:12.225 [http-nio-8081-exec-2] INFO  c.x.dream.resource.OptionController - Getting Dropddown data
+13:58:47.340 [http-nio-8081-exec-8] INFO  c.x.d.resource.DreamApiController - updating follow up status : StatusDto(id=8, basicInfo=BasicInfoDto(traineeName=Sam, email=sam.xworkz@gmail.com, contactNumber=3543343433, dateOfBirth=NA), courseInfo=CourseDto(course=NA, branch=NA, trainerName=NA, batchType=NA, batchTiming=NA, startTime=NA, offeredAs=NA), attemptedOn=null, attemptedBy=xworkzdev4@gmail.com, attemptStatus=Let us know, comments=he will call us back once he reach , callDuration=NA, callBack=NA, callBackTime=NA, joiningDate=NA)
+14:09:58.386 [File Watcher] INFO  o.s.b.d.a.LocalDevToolsAutoConfiguration$RestartingClassPathChangeChangedEventListener - Restarting due to 1 class path change (0 additions, 0 deletions, 1 modification)
+14:09:58.478 [Thread-15] INFO  o.a.catalina.core.StandardService - Stopping service [Tomcat]
+14:09:58.479 [Thread-15] INFO  o.a.c.c.C.[Tomcat].[localhost].[/] - Destroying Spring FrameworkServlet 'dispatcherServlet'
+14:09:59.238 [restartedMain] INFO  c.xworkz.dream.XworkzApiApplication - Starting XworkzApiApplication using Java 15.0.2 on DESKTOP-FT7DFR5 with PID 9024 (C:\Project\Project\Xworkz-Api\bin\main started by Dell in C:\Project\Project\Xworkz-Api)
+14:09:59.239 [restartedMain] INFO  c.xworkz.dream.XworkzApiApplication - The following 1 profile is active: "local"
+14:10:00.612 [restartedMain] INFO  o.s.cloud.context.scope.GenericScope - BeanFactory id=c992a949-1209-3dc3-b6c9-b9b103e0971f
+14:10:00.810 [restartedMain] INFO  o.s.b.w.e.tomcat.TomcatWebServer - Tomcat initialized with port(s): 8081 (http)
+14:10:00.819 [restartedMain] INFO  o.a.catalina.core.StandardService - Starting service [Tomcat]
+14:10:00.821 [restartedMain] INFO  o.a.catalina.core.StandardEngine - Starting Servlet engine: [Apache Tomcat/9.0.68]
+14:10:00.968 [restartedMain] INFO  o.a.c.c.C.[Tomcat].[localhost].[/] - Initializing Spring embedded WebApplicationContext
+14:10:00.968 [restartedMain] INFO  o.s.b.w.s.c.ServletWebServerApplicationContext - Root WebApplicationContext: initialization completed in 1721 ms
+14:10:01.267 [restartedMain] INFO  c.xworkz.dream.util.EncryptionHelper - {} is Created...........
+14:10:02.103 [restartedMain] INFO  o.s.b.d.a.OptionalLiveReloadServer - LiveReload server is running on port 35729
+14:10:03.393 [restartedMain] INFO  o.s.b.w.e.tomcat.TomcatWebServer - Tomcat started on port(s): 8081 (http) with context path ''
+14:10:05.319 [restartedMain] INFO  c.xworkz.dream.XworkzApiApplication - Started XworkzApiApplication in 6.616 seconds (JVM running for 4443.869)
+14:10:05.323 [restartedMain] INFO  o.s.b.d.a.ConditionEvaluationDeltaLoggingListener - Condition evaluation unchanged
+14:10:25.086 [File Watcher] INFO  o.s.b.d.a.LocalDevToolsAutoConfiguration$RestartingClassPathChangeChangedEventListener - Restarting due to 1 class path change (0 additions, 0 deletions, 1 modification)
+14:10:25.114 [Thread-21] INFO  o.a.catalina.core.StandardService - Stopping service [Tomcat]
+14:10:25.682 [restartedMain] INFO  c.xworkz.dream.XworkzApiApplication - Starting XworkzApiApplication using Java 15.0.2 on DESKTOP-FT7DFR5 with PID 9024 (C:\Project\Project\Xworkz-Api\bin\main started by Dell in C:\Project\Project\Xworkz-Api)
+14:10:25.683 [restartedMain] INFO  c.xworkz.dream.XworkzApiApplication - The following 1 profile is active: "local"
+14:10:27.225 [restartedMain] INFO  o.s.cloud.context.scope.GenericScope - BeanFactory id=c992a949-1209-3dc3-b6c9-b9b103e0971f
+14:10:27.582 [restartedMain] INFO  o.s.b.w.e.tomcat.TomcatWebServer - Tomcat initialized with port(s): 8081 (http)
+14:10:27.584 [restartedMain] INFO  o.a.catalina.core.StandardService - Starting service [Tomcat]
+14:10:27.585 [restartedMain] INFO  o.a.catalina.core.StandardEngine - Starting Servlet engine: [Apache Tomcat/9.0.68]
+14:10:27.881 [restartedMain] INFO  o.a.c.c.C.[Tomcat].[localhost].[/] - Initializing Spring embedded WebApplicationContext
+14:10:27.882 [restartedMain] INFO  o.s.b.w.s.c.ServletWebServerApplicationContext - Root WebApplicationContext: initialization completed in 2191 ms
+14:10:28.270 [restartedMain] INFO  c.xworkz.dream.util.EncryptionHelper - {} is Created...........
+14:10:28.663 [restartedMain] INFO  o.s.b.d.a.OptionalLiveReloadServer - LiveReload server is running on port 35729
+14:10:29.553 [restartedMain] INFO  o.s.b.w.e.tomcat.TomcatWebServer - Tomcat started on port(s): 8081 (http) with context path ''
+14:10:30.983 [restartedMain] INFO  c.xworkz.dream.XworkzApiApplication - Started XworkzApiApplication in 5.68 seconds (JVM running for 4469.534)
+14:10:30.988 [restartedMain] INFO  o.s.b.d.a.ConditionEvaluationDeltaLoggingListener - Condition evaluation unchanged
+14:10:38.217 [File Watcher] INFO  o.s.b.d.a.LocalDevToolsAutoConfiguration$RestartingClassPathChangeChangedEventListener - Restarting due to 1 class path change (0 additions, 0 deletions, 1 modification)
+14:10:38.257 [Thread-27] INFO  o.a.catalina.core.StandardService - Stopping service [Tomcat]
+14:10:38.869 [restartedMain] INFO  c.xworkz.dream.XworkzApiApplication - Starting XworkzApiApplication using Java 15.0.2 on DESKTOP-FT7DFR5 with PID 9024 (C:\Project\Project\Xworkz-Api\bin\main started by Dell in C:\Project\Project\Xworkz-Api)
+14:10:38.870 [restartedMain] INFO  c.xworkz.dream.XworkzApiApplication - The following 1 profile is active: "local"
+14:10:39.986 [restartedMain] INFO  o.s.cloud.context.scope.GenericScope - BeanFactory id=c992a949-1209-3dc3-b6c9-b9b103e0971f
+14:10:40.299 [restartedMain] INFO  o.s.b.w.e.tomcat.TomcatWebServer - Tomcat initialized with port(s): 8081 (http)
+14:10:40.304 [restartedMain] INFO  o.a.catalina.core.StandardService - Starting service [Tomcat]
+14:10:40.305 [restartedMain] INFO  o.a.catalina.core.StandardEngine - Starting Servlet engine: [Apache Tomcat/9.0.68]
+14:10:40.452 [restartedMain] INFO  o.a.c.c.C.[Tomcat].[localhost].[/] - Initializing Spring embedded WebApplicationContext
+14:10:40.453 [restartedMain] INFO  o.s.b.w.s.c.ServletWebServerApplicationContext - Root WebApplicationContext: initialization completed in 1571 ms
+14:10:40.479 [restartedMain] INFO  c.xworkz.dream.util.EncryptionHelper - {} is Created...........
+14:10:41.056 [restartedMain] INFO  o.s.b.d.a.OptionalLiveReloadServer - LiveReload server is running on port 35729
+14:10:42.035 [restartedMain] INFO  o.s.b.w.e.tomcat.TomcatWebServer - Tomcat started on port(s): 8081 (http) with context path ''
+14:10:42.829 [restartedMain] INFO  c.xworkz.dream.XworkzApiApplication - Started XworkzApiApplication in 4.354 seconds (JVM running for 4481.379)
+14:10:42.834 [restartedMain] INFO  o.s.b.d.a.ConditionEvaluationDeltaLoggingListener - Condition evaluation unchanged
+14:21:04.578 [http-nio-8081-exec-1] INFO  o.a.c.c.C.[Tomcat].[localhost].[/] - Initializing Spring DispatcherServlet 'dispatcherServlet'
+14:21:04.578 [http-nio-8081-exec-1] INFO  o.s.web.servlet.DispatcherServlet - Initializing Servlet 'dispatcherServlet'
+14:21:04.581 [http-nio-8081-exec-1] INFO  o.s.web.servlet.DispatcherServlet - Completed initialization in 2 ms
+14:21:06.540 [http-nio-8081-exec-7] INFO  c.x.d.resource.DreamApiController - Getting CourseName : Active
+14:21:06.936 [http-nio-8081-exec-9] INFO  c.x.dream.resource.OptionController - Getting Dropddown data
+14:21:08.945 [http-nio-8081-exec-3] INFO  c.x.dream.resource.OptionController - Getting Dropddown data
+14:21:08.968 [http-nio-8081-exec-1] INFO  c.x.d.resource.DreamApiController - Getting CourseName : Active
+14:21:08.990 [http-nio-8081-exec-5] INFO  c.x.d.resource.DreamApiController - Getting CourseName : Active
+14:21:12.662 [http-nio-8081-exec-9] INFO  c.x.dream.resource.OptionController - Getting Dropddown data
+14:21:12.664 [http-nio-8081-exec-10] INFO  c.x.d.resource.DreamApiController - Getting CourseName : Active
+14:21:12.673 [http-nio-8081-exec-3] INFO  c.x.dream.resource.OptionController - Getting Dropddown data
+14:24:23.124 [http-nio-8081-exec-9] INFO  c.x.dream.resource.OptionController - Getting Dropddown data
+14:24:31.135 [http-nio-8081-exec-10] INFO  c.x.dream.resource.OptionController - Getting Dropddown data
+14:28:21.107 [http-nio-8081-exec-2] INFO  c.x.dream.resource.OptionController - Getting Dropddown data
+15:33:33.932 [http-nio-8081-exec-4] INFO  c.x.dream.resource.LoginController - Logging in with email: xworkzdev4@gmail.com
+15:33:33.933 [http-nio-8081-exec-4] INFO  c.x.dream.service.LoginServiceImpl - Validating login for email: xworkzdev4@gmail.com
+15:33:33.942 [http-nio-8081-exec-4] INFO  c.x.dream.service.LoginServiceImpl - OTP sent successfully for email: xworkzdev4@gmail.com
+15:33:41.118 [http-nio-8081-exec-7] INFO  c.x.dream.resource.LoginController - Validating OTP for email: xworkzdev4@gmail.com, OTP: 123456
+15:33:41.121 [http-nio-8081-exec-7] INFO  c.x.dream.service.LoginServiceImpl - Validating OTP for email: xworkzdev4@gmail.com, OTP: 123456
+15:33:41.125 [http-nio-8081-exec-7] INFO  c.x.dream.service.LoginServiceImpl - Updating login info for user: xworkzdev4@gmail.com
+15:33:41.929 [http-nio-8081-exec-7] INFO  c.x.dream.service.LoginServiceImpl - Login successful for email: xworkzdev4@gmail.com
+15:33:42.113 [http-nio-8081-exec-4] INFO  c.x.d.resource.DreamApiController - Getting CourseName : Active
+15:33:42.843 [http-nio-8081-exec-1] ERROR c.x.dream.service.UtilServiceImpl - Error in getDropdown
+com.google.api.client.googleapis.json.GoogleJsonResponseException: 403 Forbidden
+GET https://sheets.googleapis.com/v4/spreadsheets/1HI3nKYRbXNl2cu9rKwqKp3tznOZ7ziOupokU_daFZ8E/values/dropDowns!A2:I
+{
+  "code": 403,
+  "errors": [
+    {
+      "domain": "global",
+      "message": "The caller does not have permission",
+      "reason": "forbidden"
+    }
+  ],
+  "message": "The caller does not have permission",
+  "status": "PERMISSION_DENIED"
+}
+	at com.google.api.client.googleapis.json.GoogleJsonResponseException.from(GoogleJsonResponseException.java:146) ~[google-api-client-1.31.2.jar:1.31.2]
+	at com.google.api.client.googleapis.services.json.AbstractGoogleJsonClientRequest.newExceptionOnError(AbstractGoogleJsonClientRequest.java:118) ~[google-api-client-1.31.2.jar:1.31.2]
+	at com.google.api.client.googleapis.services.json.AbstractGoogleJsonClientRequest.newExceptionOnError(AbstractGoogleJsonClientRequest.java:37) ~[google-api-client-1.31.2.jar:1.31.2]
+	at com.google.api.client.googleapis.services.AbstractGoogleClientRequest$1.interceptResponse(AbstractGoogleClientRequest.java:428) ~[google-api-client-1.31.2.jar:1.31.2]
+	at com.google.api.client.http.HttpRequest.execute(HttpRequest.java:1111) ~[google-http-client-1.42.3.jar:1.42.3]
+	at com.google.api.client.googleapis.services.AbstractGoogleClientRequest.executeUnparsed(AbstractGoogleClientRequest.java:514) ~[google-api-client-1.31.2.jar:1.31.2]
+	at com.google.api.client.googleapis.services.AbstractGoogleClientRequest.executeUnparsed(AbstractGoogleClientRequest.java:455) ~[google-api-client-1.31.2.jar:1.31.2]
+	at com.google.api.client.googleapis.services.AbstractGoogleClientRequest.execute(AbstractGoogleClientRequest.java:565) ~[google-api-client-1.31.2.jar:1.31.2]
+	at com.xworkz.dream.repository.DreamRepositoryImpl.getDropdown(DreamRepositoryImpl.java:139) ~[main/:na]
+	at com.xworkz.dream.repository.DreamRepositoryImpl$$FastClassBySpringCGLIB$$30aed6c4.invoke(<generated>) ~[main/:na]
+	at org.springframework.cglib.proxy.MethodProxy.invoke(MethodProxy.java:218) ~[spring-core-5.3.23.jar:5.3.23]
+	at org.springframework.aop.framework.CglibAopProxy$CglibMethodInvocation.invokeJoinpoint(CglibAopProxy.java:793) ~[spring-aop-5.3.23.jar:5.3.23]
+	at org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:163) ~[spring-aop-5.3.23.jar:5.3.23]
+	at org.springframework.aop.framework.CglibAopProxy$CglibMethodInvocation.proceed(CglibAopProxy.java:763) ~[spring-aop-5.3.23.jar:5.3.23]
+	at org.springframework.cache.interceptor.CacheInterceptor.lambda$invoke$0(CacheInterceptor.java:54) ~[spring-context-5.3.23.jar:5.3.23]
+	at org.springframework.cache.interceptor.CacheAspectSupport.invokeOperation(CacheAspectSupport.java:366) ~[spring-context-5.3.23.jar:5.3.23]
+	at org.springframework.cache.interceptor.CacheAspectSupport.execute(CacheAspectSupport.java:421) ~[spring-context-5.3.23.jar:5.3.23]
+	at org.springframework.cache.interceptor.CacheAspectSupport.execute(CacheAspectSupport.java:345) ~[spring-context-5.3.23.jar:5.3.23]
+	at org.springframework.cache.interceptor.CacheInterceptor.invoke(CacheInterceptor.java:64) ~[spring-context-5.3.23.jar:5.3.23]
+	at org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:186) ~[spring-aop-5.3.23.jar:5.3.23]
+	at org.springframework.aop.framework.CglibAopProxy$CglibMethodInvocation.proceed(CglibAopProxy.java:763) ~[spring-aop-5.3.23.jar:5.3.23]
+	at org.springframework.aop.framework.CglibAopProxy$DynamicAdvisedInterceptor.intercept(CglibAopProxy.java:708) ~[spring-aop-5.3.23.jar:5.3.23]
+	at com.xworkz.dream.repository.DreamRepositoryImpl$$EnhancerBySpringCGLIB$$b79a567d.getDropdown(<generated>) ~[main/:na]
+	at com.xworkz.dream.service.UtilServiceImpl.getDropdown(UtilServiceImpl.java:23) ~[main/:na]
+	at com.xworkz.dream.resource.OptionController.getDropDowns(OptionController.java:36) ~[main/:na]
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method) ~[na:na]
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:64) ~[na:na]
+	at java.base/jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43) ~[na:na]
+	at java.base/java.lang.reflect.Method.invoke(Method.java:564) ~[na:na]
+	at org.springframework.web.method.support.InvocableHandlerMethod.doInvoke(InvocableHandlerMethod.java:205) ~[spring-web-5.3.23.jar:5.3.23]
+	at org.springframework.web.method.support.InvocableHandlerMethod.invokeForRequest(InvocableHandlerMethod.java:150) ~[spring-web-5.3.23.jar:5.3.23]
+	at org.springframework.web.servlet.mvc.method.annotation.ServletInvocableHandlerMethod.invokeAndHandle(ServletInvocableHandlerMethod.java:117) ~[spring-webmvc-5.3.23.jar:5.3.23]
+	at org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter.invokeHandlerMethod(RequestMappingHandlerAdapter.java:895) ~[spring-webmvc-5.3.23.jar:5.3.23]
+	at org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter.handleInternal(RequestMappingHandlerAdapter.java:808) ~[spring-webmvc-5.3.23.jar:5.3.23]
+	at org.springframework.web.servlet.mvc.method.AbstractHandlerMethodAdapter.handle(AbstractHandlerMethodAdapter.java:87) ~[spring-webmvc-5.3.23.jar:5.3.23]
+	at org.springframework.web.servlet.DispatcherServlet.doDispatch(DispatcherServlet.java:1071) ~[spring-webmvc-5.3.23.jar:5.3.23]
+	at org.springframework.web.servlet.DispatcherServlet.doService(DispatcherServlet.java:964) ~[spring-webmvc-5.3.23.jar:5.3.23]
+	at org.springframework.web.servlet.FrameworkServlet.processRequest(FrameworkServlet.java:1006) ~[spring-webmvc-5.3.23.jar:5.3.23]
+	at org.springframework.web.servlet.FrameworkServlet.doGet(FrameworkServlet.java:898) ~[spring-webmvc-5.3.23.jar:5.3.23]
+	at javax.servlet.http.HttpServlet.service(HttpServlet.java:670) ~[tomcat-embed-core-9.0.68.jar:4.0.FR]
+	at org.springframework.web.servlet.FrameworkServlet.service(FrameworkServlet.java:883) ~[spring-webmvc-5.3.23.jar:5.3.23]
+	at javax.servlet.http.HttpServlet.service(HttpServlet.java:779) ~[tomcat-embed-core-9.0.68.jar:4.0.FR]
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:227) ~[tomcat-embed-core-9.0.68.jar:9.0.68]
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:162) ~[tomcat-embed-core-9.0.68.jar:9.0.68]
+	at org.apache.tomcat.websocket.server.WsFilter.doFilter(WsFilter.java:53) ~[tomcat-embed-websocket-9.0.68.jar:9.0.68]
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:189) ~[tomcat-embed-core-9.0.68.jar:9.0.68]
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:162) ~[tomcat-embed-core-9.0.68.jar:9.0.68]
+	at org.springframework.web.filter.CharacterEncodingFilter.doFilterInternal(CharacterEncodingFilter.java:201) ~[spring-web-5.3.23.jar:5.3.23]
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:117) ~[spring-web-5.3.23.jar:5.3.23]
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:189) ~[tomcat-embed-core-9.0.68.jar:9.0.68]
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:162) ~[tomcat-embed-core-9.0.68.jar:9.0.68]
+	at org.apache.catalina.core.StandardWrapperValve.invoke(StandardWrapperValve.java:197) ~[tomcat-embed-core-9.0.68.jar:9.0.68]
+	at org.apache.catalina.core.StandardContextValve.invoke(StandardContextValve.java:97) ~[tomcat-embed-core-9.0.68.jar:9.0.68]
+	at org.apache.catalina.authenticator.AuthenticatorBase.invoke(AuthenticatorBase.java:541) ~[tomcat-embed-core-9.0.68.jar:9.0.68]
+	at org.apache.catalina.core.StandardHostValve.invoke(StandardHostValve.java:135) ~[tomcat-embed-core-9.0.68.jar:9.0.68]
+	at org.apache.catalina.valves.ErrorReportValve.invoke(ErrorReportValve.java:92) ~[tomcat-embed-core-9.0.68.jar:9.0.68]
+	at org.apache.catalina.core.StandardEngineValve.invoke(StandardEngineValve.java:78) ~[tomcat-embed-core-9.0.68.jar:9.0.68]
+	at org.apache.catalina.connector.CoyoteAdapter.service(CoyoteAdapter.java:360) ~[tomcat-embed-core-9.0.68.jar:9.0.68]
+	at org.apache.coyote.http11.Http11Processor.service(Http11Processor.java:399) ~[tomcat-embed-core-9.0.68.jar:9.0.68]
+	at org.apache.coyote.AbstractProcessorLight.process(AbstractProcessorLight.java:65) ~[tomcat-embed-core-9.0.68.jar:9.0.68]
+	at org.apache.coyote.AbstractProtocol$ConnectionHandler.process(AbstractProtocol.java:893) ~[tomcat-embed-core-9.0.68.jar:9.0.68]
+	at org.apache.tomcat.util.net.NioEndpoint$SocketProcessor.doRun(NioEndpoint.java:1789) ~[tomcat-embed-core-9.0.68.jar:9.0.68]
+	at org.apache.tomcat.util.net.SocketProcessorBase.run(SocketProcessorBase.java:49) ~[tomcat-embed-core-9.0.68.jar:9.0.68]
+	at org.apache.tomcat.util.threads.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1191) ~[tomcat-embed-core-9.0.68.jar:9.0.68]
+	at org.apache.tomcat.util.threads.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:659) ~[tomcat-embed-core-9.0.68.jar:9.0.68]
+	at org.apache.tomcat.util.threads.TaskThread$WrappingRunnable.run(TaskThread.java:61) ~[tomcat-embed-core-9.0.68.jar:9.0.68]
+	at java.base/java.lang.Thread.run(Thread.java:832) ~[na:na]
+15:33:42.846 [http-nio-8081-exec-1] INFO  c.x.dream.resource.OptionController - Getting Dropddown data
+15:33:42.935 [http-nio-8081-exec-7] INFO  c.x.d.resource.DreamApiController - Getting CourseName : Active
+15:34:11.374 [restartedMain] INFO  c.xworkz.dream.XworkzApiApplication - Starting XworkzApiApplication using Java 15.0.2 on DESKTOP-FT7DFR5 with PID 13636 (C:\Project\Project\Xworkz-Api\bin\main started by Dell in C:\Project\Project\Xworkz-Api)
+15:34:11.377 [restartedMain] INFO  c.xworkz.dream.XworkzApiApplication - The following 1 profile is active: "local"
+15:34:11.628 [restartedMain] INFO  o.s.b.d.e.DevToolsPropertyDefaultsPostProcessor - Devtools property defaults active! Set 'spring.devtools.add-properties' to 'false' to disable
+15:34:11.629 [restartedMain] INFO  o.s.b.d.e.DevToolsPropertyDefaultsPostProcessor - For additional web related logging consider setting the 'logging.level.web' property to 'DEBUG'
+15:34:14.972 [restartedMain] INFO  o.s.cloud.context.scope.GenericScope - BeanFactory id=c992a949-1209-3dc3-b6c9-b9b103e0971f
+15:34:17.263 [restartedMain] INFO  o.s.b.w.e.tomcat.TomcatWebServer - Tomcat initialized with port(s): 8081 (http)
+15:34:17.301 [restartedMain] INFO  o.a.catalina.core.StandardService - Starting service [Tomcat]
+15:34:17.303 [restartedMain] INFO  o.a.catalina.core.StandardEngine - Starting Servlet engine: [Apache Tomcat/9.0.68]
+15:34:17.660 [restartedMain] INFO  o.a.c.c.C.[Tomcat].[localhost].[/] - Initializing Spring embedded WebApplicationContext
+15:34:17.660 [restartedMain] INFO  o.s.b.w.s.c.ServletWebServerApplicationContext - Root WebApplicationContext: initialization completed in 6014 ms
+15:34:17.832 [restartedMain] INFO  c.xworkz.dream.util.EncryptionHelper - {} is Created...........
+15:34:18.821 [restartedMain] INFO  o.s.b.d.a.OptionalLiveReloadServer - LiveReload server is running on port 35729
+15:34:21.545 [restartedMain] INFO  o.s.b.w.e.tomcat.TomcatWebServer - Tomcat started on port(s): 8081 (http) with context path ''
+15:34:23.484 [restartedMain] INFO  c.xworkz.dream.XworkzApiApplication - Started XworkzApiApplication in 13.737 seconds (JVM running for 15.767)
+15:34:38.072 [http-nio-8081-exec-3] INFO  o.a.c.c.C.[Tomcat].[localhost].[/] - Initializing Spring DispatcherServlet 'dispatcherServlet'
+15:34:38.073 [http-nio-8081-exec-3] INFO  o.s.web.servlet.DispatcherServlet - Initializing Servlet 'dispatcherServlet'
+15:34:38.087 [http-nio-8081-exec-3] INFO  o.s.web.servlet.DispatcherServlet - Completed initialization in 14 ms
+15:34:38.424 [http-nio-8081-exec-1] INFO  c.x.d.resource.DreamApiController - Getting CourseName : Active
+15:34:39.349 [http-nio-8081-exec-2] ERROR c.x.dream.service.UtilServiceImpl - Error in getDropdown
+com.google.api.client.googleapis.json.GoogleJsonResponseException: 403 Forbidden
+GET https://sheets.googleapis.com/v4/spreadsheets/1HI3nKYRbXNl2cu9rKwqKp3tznOZ7ziOupokU_daFZ8E/values/dropDowns!A2:I
+{
+  "code": 403,
+  "errors": [
+    {
+      "domain": "global",
+      "message": "The caller does not have permission",
+      "reason": "forbidden"
+    }
+  ],
+  "message": "The caller does not have permission",
+  "status": "PERMISSION_DENIED"
+}
+	at com.google.api.client.googleapis.json.GoogleJsonResponseException.from(GoogleJsonResponseException.java:146)
+	at com.google.api.client.googleapis.services.json.AbstractGoogleJsonClientRequest.newExceptionOnError(AbstractGoogleJsonClientRequest.java:118)
+	at com.google.api.client.googleapis.services.json.AbstractGoogleJsonClientRequest.newExceptionOnError(AbstractGoogleJsonClientRequest.java:37)
+	at com.google.api.client.googleapis.services.AbstractGoogleClientRequest$1.interceptResponse(AbstractGoogleClientRequest.java:428)
+	at com.google.api.client.http.HttpRequest.execute(HttpRequest.java:1111)
+	at com.google.api.client.googleapis.services.AbstractGoogleClientRequest.executeUnparsed(AbstractGoogleClientRequest.java:514)
+	at com.google.api.client.googleapis.services.AbstractGoogleClientRequest.executeUnparsed(AbstractGoogleClientRequest.java:455)
+	at com.google.api.client.googleapis.services.AbstractGoogleClientRequest.execute(AbstractGoogleClientRequest.java:565)
+	at com.xworkz.dream.repository.DreamRepositoryImpl.getDropdown(DreamRepositoryImpl.java:139)
+	at com.xworkz.dream.repository.DreamRepositoryImpl$$FastClassBySpringCGLIB$$30aed6c4.invoke(<generated>)
+	at org.springframework.cglib.proxy.MethodProxy.invoke(MethodProxy.java:218)
+	at org.springframework.aop.framework.CglibAopProxy$CglibMethodInvocation.invokeJoinpoint(CglibAopProxy.java:793)
+	at org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:163)
+	at org.springframework.aop.framework.CglibAopProxy$CglibMethodInvocation.proceed(CglibAopProxy.java:763)
+	at org.springframework.cache.interceptor.CacheInterceptor.lambda$invoke$0(CacheInterceptor.java:54)
+	at org.springframework.cache.interceptor.CacheAspectSupport.invokeOperation(CacheAspectSupport.java:366)
+	at org.springframework.cache.interceptor.CacheAspectSupport.execute(CacheAspectSupport.java:421)
+	at org.springframework.cache.interceptor.CacheAspectSupport.execute(CacheAspectSupport.java:345)
+	at org.springframework.cache.interceptor.CacheInterceptor.invoke(CacheInterceptor.java:64)
+	at org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:186)
+	at org.springframework.aop.framework.CglibAopProxy$CglibMethodInvocation.proceed(CglibAopProxy.java:763)
+	at org.springframework.aop.framework.CglibAopProxy$DynamicAdvisedInterceptor.intercept(CglibAopProxy.java:708)
+	at com.xworkz.dream.repository.DreamRepositoryImpl$$EnhancerBySpringCGLIB$$911e4779.getDropdown(<generated>)
+	at com.xworkz.dream.service.UtilServiceImpl.getDropdown(UtilServiceImpl.java:23)
+	at com.xworkz.dream.resource.OptionController.getDropDowns(OptionController.java:36)
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:64)
+	at java.base/jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:564)
+	at org.springframework.web.method.support.InvocableHandlerMethod.doInvoke(InvocableHandlerMethod.java:205)
+	at org.springframework.web.method.support.InvocableHandlerMethod.invokeForRequest(InvocableHandlerMethod.java:150)
+	at org.springframework.web.servlet.mvc.method.annotation.ServletInvocableHandlerMethod.invokeAndHandle(ServletInvocableHandlerMethod.java:117)
+	at org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter.invokeHandlerMethod(RequestMappingHandlerAdapter.java:895)
+	at org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter.handleInternal(RequestMappingHandlerAdapter.java:808)
+	at org.springframework.web.servlet.mvc.method.AbstractHandlerMethodAdapter.handle(AbstractHandlerMethodAdapter.java:87)
+	at org.springframework.web.servlet.DispatcherServlet.doDispatch(DispatcherServlet.java:1071)
+	at org.springframework.web.servlet.DispatcherServlet.doService(DispatcherServlet.java:964)
+	at org.springframework.web.servlet.FrameworkServlet.processRequest(FrameworkServlet.java:1006)
+	at org.springframework.web.servlet.FrameworkServlet.doGet(FrameworkServlet.java:898)
+	at javax.servlet.http.HttpServlet.service(HttpServlet.java:670)
+	at org.springframework.web.servlet.FrameworkServlet.service(FrameworkServlet.java:883)
+	at javax.servlet.http.HttpServlet.service(HttpServlet.java:779)
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:227)
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:162)
+	at org.apache.tomcat.websocket.server.WsFilter.doFilter(WsFilter.java:53)
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:189)
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:162)
+	at org.springframework.web.filter.CharacterEncodingFilter.doFilterInternal(CharacterEncodingFilter.java:201)
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:117)
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:189)
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:162)
+	at org.apache.catalina.core.StandardWrapperValve.invoke(StandardWrapperValve.java:197)
+	at org.apache.catalina.core.StandardContextValve.invoke(StandardContextValve.java:97)
+	at org.apache.catalina.authenticator.AuthenticatorBase.invoke(AuthenticatorBase.java:541)
+	at org.apache.catalina.core.StandardHostValve.invoke(StandardHostValve.java:135)
+	at org.apache.catalina.valves.ErrorReportValve.invoke(ErrorReportValve.java:92)
+	at org.apache.catalina.core.StandardEngineValve.invoke(StandardEngineValve.java:78)
+	at org.apache.catalina.connector.CoyoteAdapter.service(CoyoteAdapter.java:360)
+	at org.apache.coyote.http11.Http11Processor.service(Http11Processor.java:399)
+	at org.apache.coyote.AbstractProcessorLight.process(AbstractProcessorLight.java:65)
+	at org.apache.coyote.AbstractProtocol$ConnectionHandler.process(AbstractProtocol.java:893)
+	at org.apache.tomcat.util.net.NioEndpoint$SocketProcessor.doRun(NioEndpoint.java:1789)
+	at org.apache.tomcat.util.net.SocketProcessorBase.run(SocketProcessorBase.java:49)
+	at org.apache.tomcat.util.threads.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1191)
+	at org.apache.tomcat.util.threads.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:659)
+	at org.apache.tomcat.util.threads.TaskThread$WrappingRunnable.run(TaskThread.java:61)
+	at java.base/java.lang.Thread.run(Thread.java:832)
+15:34:39.350 [http-nio-8081-exec-2] INFO  c.x.dream.resource.OptionController - Getting Dropddown data
+15:34:39.499 [http-nio-8081-exec-7] INFO  c.x.d.resource.DreamApiController - Getting CourseName : Active
+15:34:40.080 [http-nio-8081-exec-8] INFO  c.x.d.resource.DreamApiController - Getting CourseName : Active
+15:34:40.191 [http-nio-8081-exec-6] ERROR c.x.dream.service.UtilServiceImpl - Error in getDropdown
+com.google.api.client.googleapis.json.GoogleJsonResponseException: 403 Forbidden
+GET https://sheets.googleapis.com/v4/spreadsheets/1HI3nKYRbXNl2cu9rKwqKp3tznOZ7ziOupokU_daFZ8E/values/dropDowns!A2:I
+{
+  "code": 403,
+  "errors": [
+    {
+      "domain": "global",
+      "message": "The caller does not have permission",
+      "reason": "forbidden"
+    }
+  ],
+  "message": "The caller does not have permission",
+  "status": "PERMISSION_DENIED"
+}
+	at com.google.api.client.googleapis.json.GoogleJsonResponseException.from(GoogleJsonResponseException.java:146)
+	at com.google.api.client.googleapis.services.json.AbstractGoogleJsonClientRequest.newExceptionOnError(AbstractGoogleJsonClientRequest.java:118)
+	at com.google.api.client.googleapis.services.json.AbstractGoogleJsonClientRequest.newExceptionOnError(AbstractGoogleJsonClientRequest.java:37)
+	at com.google.api.client.googleapis.services.AbstractGoogleClientRequest$1.interceptResponse(AbstractGoogleClientRequest.java:428)
+	at com.google.api.client.http.HttpRequest.execute(HttpRequest.java:1111)
+	at com.google.api.client.googleapis.services.AbstractGoogleClientRequest.executeUnparsed(AbstractGoogleClientRequest.java:514)
+	at com.google.api.client.googleapis.services.AbstractGoogleClientRequest.executeUnparsed(AbstractGoogleClientRequest.java:455)
+	at com.google.api.client.googleapis.services.AbstractGoogleClientRequest.execute(AbstractGoogleClientRequest.java:565)
+	at com.xworkz.dream.repository.DreamRepositoryImpl.getDropdown(DreamRepositoryImpl.java:139)
+	at com.xworkz.dream.repository.DreamRepositoryImpl$$FastClassBySpringCGLIB$$30aed6c4.invoke(<generated>)
+	at org.springframework.cglib.proxy.MethodProxy.invoke(MethodProxy.java:218)
+	at org.springframework.aop.framework.CglibAopProxy$CglibMethodInvocation.invokeJoinpoint(CglibAopProxy.java:793)
+	at org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:163)
+	at org.springframework.aop.framework.CglibAopProxy$CglibMethodInvocation.proceed(CglibAopProxy.java:763)
+	at org.springframework.cache.interceptor.CacheInterceptor.lambda$invoke$0(CacheInterceptor.java:54)
+	at org.springframework.cache.interceptor.CacheAspectSupport.invokeOperation(CacheAspectSupport.java:366)
+	at org.springframework.cache.interceptor.CacheAspectSupport.execute(CacheAspectSupport.java:421)
+	at org.springframework.cache.interceptor.CacheAspectSupport.execute(CacheAspectSupport.java:345)
+	at org.springframework.cache.interceptor.CacheInterceptor.invoke(CacheInterceptor.java:64)
+	at org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:186)
+	at org.springframework.aop.framework.CglibAopProxy$CglibMethodInvocation.proceed(CglibAopProxy.java:763)
+	at org.springframework.aop.framework.CglibAopProxy$DynamicAdvisedInterceptor.intercept(CglibAopProxy.java:708)
+	at com.xworkz.dream.repository.DreamRepositoryImpl$$EnhancerBySpringCGLIB$$911e4779.getDropdown(<generated>)
+	at com.xworkz.dream.service.UtilServiceImpl.getDropdown(UtilServiceImpl.java:23)
+	at com.xworkz.dream.resource.OptionController.getDropDowns(OptionController.java:36)
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:64)
+	at java.base/jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:564)
+	at org.springframework.web.method.support.InvocableHandlerMethod.doInvoke(InvocableHandlerMethod.java:205)
+	at org.springframework.web.method.support.InvocableHandlerMethod.invokeForRequest(InvocableHandlerMethod.java:150)
+	at org.springframework.web.servlet.mvc.method.annotation.ServletInvocableHandlerMethod.invokeAndHandle(ServletInvocableHandlerMethod.java:117)
+	at org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter.invokeHandlerMethod(RequestMappingHandlerAdapter.java:895)
+	at org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter.handleInternal(RequestMappingHandlerAdapter.java:808)
+	at org.springframework.web.servlet.mvc.method.AbstractHandlerMethodAdapter.handle(AbstractHandlerMethodAdapter.java:87)
+	at org.springframework.web.servlet.DispatcherServlet.doDispatch(DispatcherServlet.java:1071)
+	at org.springframework.web.servlet.DispatcherServlet.doService(DispatcherServlet.java:964)
+	at org.springframework.web.servlet.FrameworkServlet.processRequest(FrameworkServlet.java:1006)
+	at org.springframework.web.servlet.FrameworkServlet.doGet(FrameworkServlet.java:898)
+	at javax.servlet.http.HttpServlet.service(HttpServlet.java:670)
+	at org.springframework.web.servlet.FrameworkServlet.service(FrameworkServlet.java:883)
+	at javax.servlet.http.HttpServlet.service(HttpServlet.java:779)
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:227)
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:162)
+	at org.apache.tomcat.websocket.server.WsFilter.doFilter(WsFilter.java:53)
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:189)
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:162)
+	at org.springframework.web.filter.CharacterEncodingFilter.doFilterInternal(CharacterEncodingFilter.java:201)
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:117)
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:189)
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:162)
+	at org.apache.catalina.core.StandardWrapperValve.invoke(StandardWrapperValve.java:197)
+	at org.apache.catalina.core.StandardContextValve.invoke(StandardContextValve.java:97)
+	at org.apache.catalina.authenticator.AuthenticatorBase.invoke(AuthenticatorBase.java:541)
+	at org.apache.catalina.core.StandardHostValve.invoke(StandardHostValve.java:135)
+	at org.apache.catalina.valves.ErrorReportValve.invoke(ErrorReportValve.java:92)
+	at org.apache.catalina.core.StandardEngineValve.invoke(StandardEngineValve.java:78)
+	at org.apache.catalina.connector.CoyoteAdapter.service(CoyoteAdapter.java:360)
+	at org.apache.coyote.http11.Http11Processor.service(Http11Processor.java:399)
+	at org.apache.coyote.AbstractProcessorLight.process(AbstractProcessorLight.java:65)
+	at org.apache.coyote.AbstractProtocol$ConnectionHandler.process(AbstractProtocol.java:893)
+	at org.apache.tomcat.util.net.NioEndpoint$SocketProcessor.doRun(NioEndpoint.java:1789)
+	at org.apache.tomcat.util.net.SocketProcessorBase.run(SocketProcessorBase.java:49)
+	at org.apache.tomcat.util.threads.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1191)
+	at org.apache.tomcat.util.threads.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:659)
+	at org.apache.tomcat.util.threads.TaskThread$WrappingRunnable.run(TaskThread.java:61)
+	at java.base/java.lang.Thread.run(Thread.java:832)
+15:34:40.192 [http-nio-8081-exec-6] INFO  c.x.dream.resource.OptionController - Getting Dropddown data
+15:36:26.165 [http-nio-8081-exec-5] INFO  c.x.d.resource.DreamApiController - Getting CourseName : Active
+15:36:26.707 [http-nio-8081-exec-8] INFO  c.x.d.resource.DreamApiController - Getting CourseName : Active
+15:36:26.775 [http-nio-8081-exec-4] INFO  c.x.dream.resource.OptionController - Getting Dropddown data
+15:36:52.471 [http-nio-8081-exec-5] INFO  c.x.dream.resource.OptionController - Getting Dropddown data
+15:36:52.478 [http-nio-8081-exec-5] INFO  c.x.d.resource.DreamApiController - Getting CourseName : Active
+15:36:54.651 [http-nio-8081-exec-6] INFO  c.x.dream.resource.OptionController - Getting Dropddown data
+15:36:54.658 [http-nio-8081-exec-10] INFO  c.x.d.resource.DreamApiController - Getting CourseName : Active
+15:36:54.681 [http-nio-8081-exec-2] INFO  c.x.d.resource.DreamApiController - Getting CourseName : Active
+15:36:57.297 [http-nio-8081-exec-10] INFO  c.x.dream.resource.OptionController - Getting Dropddown data
+15:36:57.298 [http-nio-8081-exec-2] INFO  c.x.d.resource.DreamApiController - Getting CourseName : Active
+15:36:57.321 [http-nio-8081-exec-4] INFO  c.x.dream.resource.OptionController - Getting Dropddown data
+22:33:59.869 [restartedMain] INFO  c.xworkz.dream.XworkzApiApplication - Starting XworkzApiApplication using Java 15.0.2 on DESKTOP-FT7DFR5 with PID 5000 (C:\Project\Project\Xworkz-Api\bin\main started by Dell in C:\Project\Project\Xworkz-Api)
+22:33:59.874 [restartedMain] INFO  c.xworkz.dream.XworkzApiApplication - The following 1 profile is active: "local"
+22:34:00.162 [restartedMain] INFO  o.s.b.d.e.DevToolsPropertyDefaultsPostProcessor - Devtools property defaults active! Set 'spring.devtools.add-properties' to 'false' to disable
+22:34:00.175 [restartedMain] INFO  o.s.b.d.e.DevToolsPropertyDefaultsPostProcessor - For additional web related logging consider setting the 'logging.level.web' property to 'DEBUG'
+22:34:07.326 [restartedMain] INFO  o.s.cloud.context.scope.GenericScope - BeanFactory id=c992a949-1209-3dc3-b6c9-b9b103e0971f
+22:34:12.419 [restartedMain] INFO  o.s.b.w.e.tomcat.TomcatWebServer - Tomcat initialized with port(s): 8081 (http)
+22:34:12.513 [restartedMain] INFO  o.a.catalina.core.StandardService - Starting service [Tomcat]
+22:34:12.515 [restartedMain] INFO  o.a.catalina.core.StandardEngine - Starting Servlet engine: [Apache Tomcat/9.0.68]
+22:34:13.422 [restartedMain] INFO  o.a.c.c.C.[Tomcat].[localhost].[/] - Initializing Spring embedded WebApplicationContext
+22:34:13.424 [restartedMain] INFO  o.s.b.w.s.c.ServletWebServerApplicationContext - Root WebApplicationContext: initialization completed in 13227 ms
+22:34:13.877 [restartedMain] INFO  c.xworkz.dream.util.EncryptionHelper - {} is Created...........
+22:34:15.180 [restartedMain] INFO  o.s.b.d.a.OptionalLiveReloadServer - LiveReload server is running on port 35729
+22:34:18.678 [restartedMain] INFO  o.s.b.w.e.tomcat.TomcatWebServer - Tomcat started on port(s): 8081 (http) with context path ''
+22:34:21.071 [restartedMain] INFO  c.xworkz.dream.XworkzApiApplication - Started XworkzApiApplication in 23.631 seconds (JVM running for 30.632)
+22:35:12.330 [http-nio-8081-exec-3] INFO  o.a.c.c.C.[Tomcat].[localhost].[/] - Initializing Spring DispatcherServlet 'dispatcherServlet'
+22:35:12.332 [http-nio-8081-exec-3] INFO  o.s.web.servlet.DispatcherServlet - Initializing Servlet 'dispatcherServlet'
+22:35:12.346 [http-nio-8081-exec-3] INFO  o.s.web.servlet.DispatcherServlet - Completed initialization in 11 ms
+22:35:14.530 [http-nio-8081-exec-2] INFO  c.x.d.resource.DreamApiController - Getting CourseName : Active
+22:35:15.011 [http-nio-8081-exec-6] INFO  c.x.d.resource.DreamApiController - Getting CourseName : Active
+22:35:15.108 [http-nio-8081-exec-4] INFO  c.x.dream.resource.OptionController - Getting Dropddown data
+22:35:19.702 [http-nio-8081-exec-10] INFO  c.x.dream.resource.OptionController - Getting Dropddown data
+22:35:19.713 [http-nio-8081-exec-1] INFO  c.x.d.resource.DreamApiController - Getting CourseName : Active
+22:35:19.727 [http-nio-8081-exec-2] INFO  c.x.dream.resource.OptionController - Getting Dropddown data
+22:35:21.072 [http-nio-8081-exec-5] INFO  c.x.d.resource.DreamApiController - Getting CourseDetails : NA
+22:35:48.546 [http-nio-8081-exec-9] INFO  c.x.dream.resource.OptionController - Getting Dropddown data
+22:35:48.546 [http-nio-8081-exec-10] INFO  c.x.d.resource.DreamApiController - Getting CourseName : Active
+22:35:50.510 [http-nio-8081-exec-7] INFO  c.x.dream.resource.OptionController - Getting Dropddown data
+22:35:50.509 [http-nio-8081-exec-2] INFO  c.x.d.resource.DreamApiController - Getting CourseName : Active
+22:35:50.536 [http-nio-8081-exec-4] INFO  c.x.d.resource.DreamApiController - Getting CourseName : Active
+22:35:57.326 [http-nio-8081-exec-2] INFO  c.x.dream.resource.OptionController - Getting Dropddown data
+22:35:57.330 [http-nio-8081-exec-4] INFO  c.x.d.resource.DreamApiController - Getting CourseName : Active
+22:35:57.338 [http-nio-8081-exec-4] INFO  c.x.dream.resource.OptionController - Getting Dropddown data
+22:37:41.383 [http-nio-8081-exec-4] INFO  c.x.dream.resource.OptionController - Getting Dropddown data
+22:37:41.387 [http-nio-8081-exec-3] INFO  c.x.d.resource.DreamApiController - Getting CourseName : Active
+22:37:43.202 [http-nio-8081-exec-1] INFO  c.x.dream.resource.OptionController - Getting Dropddown data
+22:37:43.212 [http-nio-8081-exec-5] INFO  c.x.d.resource.DreamApiController - Getting CourseName : Active
+22:37:43.263 [http-nio-8081-exec-10] INFO  c.x.d.resource.DreamApiController - Getting CourseName : Active
+22:37:46.513 [http-nio-8081-exec-9] INFO  c.x.dream.resource.OptionController - Getting Dropddown data
+22:37:46.517 [http-nio-8081-exec-9] INFO  c.x.d.resource.DreamApiController - Getting CourseName : Active
+22:39:00.795 [http-nio-8081-exec-6] INFO  c.x.dream.resource.OptionController - Getting Dropddown data
+22:39:00.809 [http-nio-8081-exec-8] INFO  c.x.d.resource.DreamApiController - Getting CourseName : Active
+22:39:00.856 [http-nio-8081-exec-9] INFO  c.x.d.resource.DreamApiController - Getting CourseName : Active
+22:39:06.264 [http-nio-8081-exec-3] INFO  c.x.dream.resource.OptionController - Getting Dropddown data
+22:39:06.277 [http-nio-8081-exec-2] INFO  c.x.d.resource.DreamApiController - Getting CourseName : Active
+22:42:25.454 [http-nio-8081-exec-8] INFO  c.x.dream.resource.OptionController - Getting Dropddown data
+22:42:25.457 [http-nio-8081-exec-6] INFO  c.x.d.resource.DreamApiController - Getting CourseName : Active
+22:42:25.472 [http-nio-8081-exec-9] INFO  c.x.d.resource.DreamApiController - Getting CourseName : Active
+22:42:40.969 [http-nio-8081-exec-4] INFO  c.x.dream.resource.OptionController - Getting Dropddown data
+22:42:40.977 [http-nio-8081-exec-3] INFO  c.x.d.resource.DreamApiController - Getting CourseName : Active
+22:42:40.989 [http-nio-8081-exec-7] INFO  c.x.d.resource.DreamApiController - Getting CourseName : Active
+22:45:38.696 [http-nio-8081-exec-10] INFO  c.x.d.resource.DreamApiController - Getting CourseName : Active
+22:45:38.703 [http-nio-8081-exec-7] INFO  c.x.dream.resource.OptionController - Getting Dropddown data
+22:45:38.724 [http-nio-8081-exec-8] INFO  c.x.dream.resource.OptionController - Getting Dropddown data
+22:46:59.333 [http-nio-8081-exec-5] INFO  c.x.dream.resource.OptionController - Getting Dropddown data
+22:46:59.349 [http-nio-8081-exec-9] INFO  c.x.d.resource.DreamApiController - Getting CourseName : Active
+22:46:59.433 [http-nio-8081-exec-1] INFO  c.x.d.resource.DreamApiController - Getting CourseName : Active
+22:47:11.291 [http-nio-8081-exec-9] INFO  c.x.d.resource.DreamApiController - Getting CourseName : Active
+22:47:11.292 [http-nio-8081-exec-1] INFO  c.x.dream.resource.OptionController - Getting Dropddown data
+22:47:11.301 [http-nio-8081-exec-8] INFO  c.x.dream.resource.OptionController - Getting Dropddown data
+22:51:14.424 [http-nio-8081-exec-10] INFO  c.x.dream.resource.OptionController - Getting Dropddown data
+22:51:14.427 [http-nio-8081-exec-3] INFO  c.x.d.resource.DreamApiController - Getting CourseName : Active
+22:51:16.368 [http-nio-8081-exec-7] INFO  c.x.dream.resource.OptionController - Getting Dropddown data
+22:51:16.390 [http-nio-8081-exec-5] INFO  c.x.d.resource.DreamApiController - Getting CourseName : Active
+22:51:16.415 [http-nio-8081-exec-9] INFO  c.x.d.resource.DreamApiController - Getting CourseName : Active
+22:51:19.769 [http-nio-8081-exec-10] INFO  c.x.dream.resource.OptionController - Getting Dropddown data
+22:51:19.777 [http-nio-8081-exec-3] INFO  c.x.d.resource.DreamApiController - Getting CourseName : Active
+22:51:19.779 [http-nio-8081-exec-7] INFO  c.x.dream.resource.OptionController - Getting Dropddown data
+22:51:30.884 [http-nio-8081-exec-4] INFO  c.x.d.resource.DreamApiController - updating follow up status : StatusDto(id=8, basicInfo=BasicInfoDto(traineeName=Sam, email=sam.xworkz@gmail.com, contactNumber=3543343433, dateOfBirth=NA), courseInfo=CourseDto(course=NA, branch=NA, trainerName=NA, batchType=NA, batchTiming=NA, startTime=NA, offeredAs=NA), attemptedOn=null, attemptedBy=xworkzdev4@gmail.com, attemptStatus=Joined other institute, comments=NA, callDuration=NA, callBack=NA, callBackTime=NA, joiningDate=NA)
+23:07:37.358 [restartedMain] INFO  c.xworkz.dream.XworkzApiApplication - Starting XworkzApiApplication using Java 15.0.2 on DESKTOP-FT7DFR5 with PID 6348 (C:\Project\Project\Xworkz-Api\bin\main started by Dell in C:\Project\Project\Xworkz-Api)
+23:07:37.362 [restartedMain] INFO  c.xworkz.dream.XworkzApiApplication - The following 1 profile is active: "local"
+23:07:37.779 [restartedMain] INFO  o.s.b.d.e.DevToolsPropertyDefaultsPostProcessor - Devtools property defaults active! Set 'spring.devtools.add-properties' to 'false' to disable
+23:07:37.780 [restartedMain] INFO  o.s.b.d.e.DevToolsPropertyDefaultsPostProcessor - For additional web related logging consider setting the 'logging.level.web' property to 'DEBUG'
+23:07:43.666 [restartedMain] INFO  o.s.cloud.context.scope.GenericScope - BeanFactory id=c992a949-1209-3dc3-b6c9-b9b103e0971f
+23:07:46.221 [restartedMain] INFO  o.s.b.w.e.tomcat.TomcatWebServer - Tomcat initialized with port(s): 8081 (http)
+23:07:46.247 [restartedMain] INFO  o.a.catalina.core.StandardService - Starting service [Tomcat]
+23:07:46.248 [restartedMain] INFO  o.a.catalina.core.StandardEngine - Starting Servlet engine: [Apache Tomcat/9.0.68]
+23:07:46.649 [restartedMain] INFO  o.a.c.c.C.[Tomcat].[localhost].[/] - Initializing Spring embedded WebApplicationContext
+23:07:46.650 [restartedMain] INFO  o.s.b.w.s.c.ServletWebServerApplicationContext - Root WebApplicationContext: initialization completed in 8863 ms
+23:07:46.816 [restartedMain] INFO  c.xworkz.dream.util.EncryptionHelper - {} is Created...........
+23:07:47.714 [restartedMain] INFO  o.s.b.d.a.OptionalLiveReloadServer - LiveReload server is running on port 35729
+23:07:50.638 [restartedMain] INFO  o.s.b.w.e.tomcat.TomcatWebServer - Tomcat started on port(s): 8081 (http) with context path ''
+23:07:52.862 [restartedMain] INFO  c.xworkz.dream.XworkzApiApplication - Started XworkzApiApplication in 17.61 seconds (JVM running for 21.021)
+23:08:50.779 [http-nio-8081-exec-1] INFO  o.a.c.c.C.[Tomcat].[localhost].[/] - Initializing Spring DispatcherServlet 'dispatcherServlet'
+23:08:50.780 [http-nio-8081-exec-1] INFO  o.s.web.servlet.DispatcherServlet - Initializing Servlet 'dispatcherServlet'
+23:08:50.791 [http-nio-8081-exec-1] INFO  o.s.web.servlet.DispatcherServlet - Completed initialization in 10 ms
+23:08:51.063 [http-nio-8081-exec-1] INFO  c.x.dream.resource.LoginController - Logging in with email: xworkzdev4@gmail.com
+23:08:51.080 [http-nio-8081-exec-1] INFO  c.x.dream.service.LoginServiceImpl - Validating login for email: xworkzdev4@gmail.com
+23:08:51.623 [http-nio-8081-exec-1] INFO  c.x.dream.service.LoginServiceImpl - OTP sent successfully for email: xworkzdev4@gmail.com
+23:08:56.054 [http-nio-8081-exec-2] INFO  c.x.dream.resource.LoginController - Validating OTP for email: xworkzdev4@gmail.com, OTP: 123456
+23:08:56.055 [http-nio-8081-exec-2] INFO  c.x.dream.service.LoginServiceImpl - Validating OTP for email: xworkzdev4@gmail.com, OTP: 123456
+23:08:56.079 [http-nio-8081-exec-2] INFO  c.x.dream.service.LoginServiceImpl - Updating login info for user: xworkzdev4@gmail.com
+23:08:57.274 [http-nio-8081-exec-2] INFO  c.x.dream.service.LoginServiceImpl - Login successful for email: xworkzdev4@gmail.com
+23:08:57.870 [http-nio-8081-exec-8] INFO  c.x.d.resource.DreamApiController - Getting CourseName : Active
+23:08:58.622 [http-nio-8081-exec-2] INFO  c.x.d.resource.DreamApiController - Getting CourseName : Active
+23:08:58.682 [http-nio-8081-exec-10] INFO  c.x.dream.resource.OptionController - Getting Dropddown data
+23:09:01.589 [http-nio-8081-exec-7] INFO  c.x.dream.resource.OptionController - Getting Dropddown data
+23:09:01.597 [http-nio-8081-exec-4] INFO  c.x.d.resource.DreamApiController - Getting CourseName : Active
+23:09:17.714 [http-nio-8081-exec-9] INFO  c.x.d.resource.DreamApiController - Checking email: swapna.xworkz@gmail.c
+23:09:17.891 [http-nio-8081-exec-2] INFO  c.x.d.resource.DreamApiController - Checking email: swapna.xworkz@gmail.co
+23:09:18.103 [http-nio-8081-exec-10] INFO  c.x.d.resource.DreamApiController - Checking email: swapna.xworkz@gmail.com
+23:09:18.262 [http-nio-8081-exec-9] INFO  c.x.dream.service.DreamServiceImpl - Email does not exist in spreadsheetId: 1p3G4et36vkzSDs3W63cj6qnUFEWljLos2HHXIZd78Gg
+23:09:18.408 [http-nio-8081-exec-2] INFO  c.x.dream.service.DreamServiceImpl - Email does not exist in spreadsheetId: 1p3G4et36vkzSDs3W63cj6qnUFEWljLos2HHXIZd78Gg
+23:09:18.576 [http-nio-8081-exec-10] INFO  c.x.dream.service.DreamServiceImpl - Email does not exist in spreadsheetId: 1p3G4et36vkzSDs3W63cj6qnUFEWljLos2HHXIZd78Gg
+23:09:20.119 [http-nio-8081-exec-1] ERROR o.a.c.c.C.[.[.[.[dispatcherServlet] - Servlet.service() for servlet [dispatcherServlet] in context with path [] threw exception [Request processing failed; nested exception is feign.FeignException$FeignClientException: [402 Payment Required] during [GET] to [https://api.emailable.com/v1/verify?email=swapna.xworkz%40gmail.com&api_key=live_1c9a44377323556a9243] [EmailableClient#verifyEmail(String,String)]: [{"message":"Your account is out of credits. Please visit https://app.emailable.com/checkout/credits to purchase more."}]] with root cause
+feign.FeignException$FeignClientException: [402 Payment Required] during [GET] to [https://api.emailable.com/v1/verify?email=swapna.xworkz%40gmail.com&api_key=live_1c9a44377323556a9243] [EmailableClient#verifyEmail(String,String)]: [{"message":"Your account is out of credits. Please visit https://app.emailable.com/checkout/credits to purchase more."}]
+	at feign.FeignException.clientErrorStatus(FeignException.java:235)
+	at feign.FeignException.errorStatus(FeignException.java:194)
+	at feign.FeignException.errorStatus(FeignException.java:185)
+	at feign.codec.ErrorDecoder$Default.decode(ErrorDecoder.java:92)
+	at feign.AsyncResponseHandler.handleResponse(AsyncResponseHandler.java:96)
+	at feign.SynchronousMethodHandler.executeAndDecode(SynchronousMethodHandler.java:138)
+	at feign.SynchronousMethodHandler.invoke(SynchronousMethodHandler.java:89)
+	at feign.ReflectiveFeign$FeignInvocationHandler.invoke(ReflectiveFeign.java:100)
+	at org.springframework.cloud.openfeign.FeignCachingInvocationHandlerFactory$1.proceed(FeignCachingInvocationHandlerFactory.java:66)
+	at org.springframework.cache.interceptor.CacheInterceptor.lambda$invoke$0(CacheInterceptor.java:54)
+	at org.springframework.cache.interceptor.CacheAspectSupport.execute(CacheAspectSupport.java:351)
+	at org.springframework.cache.interceptor.CacheInterceptor.invoke(CacheInterceptor.java:64)
+	at org.springframework.cloud.openfeign.FeignCachingInvocationHandlerFactory.lambda$create$1(FeignCachingInvocationHandlerFactory.java:53)
+	at com.sun.proxy.$Proxy101.verifyEmail(Unknown Source)
+	at com.xworkz.dream.service.DreamServiceImpl.verifyEmails(DreamServiceImpl.java:1056)
+	at com.xworkz.dream.resource.DreamApiController.verifydEmails(DreamApiController.java:215)
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:64)
+	at java.base/jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:564)
+	at org.springframework.web.method.support.InvocableHandlerMethod.doInvoke(InvocableHandlerMethod.java:205)
+	at org.springframework.web.method.support.InvocableHandlerMethod.invokeForRequest(InvocableHandlerMethod.java:150)
+	at org.springframework.web.servlet.mvc.method.annotation.ServletInvocableHandlerMethod.invokeAndHandle(ServletInvocableHandlerMethod.java:117)
+	at org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter.invokeHandlerMethod(RequestMappingHandlerAdapter.java:895)
+	at org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter.handleInternal(RequestMappingHandlerAdapter.java:808)
+	at org.springframework.web.servlet.mvc.method.AbstractHandlerMethodAdapter.handle(AbstractHandlerMethodAdapter.java:87)
+	at org.springframework.web.servlet.DispatcherServlet.doDispatch(DispatcherServlet.java:1071)
+	at org.springframework.web.servlet.DispatcherServlet.doService(DispatcherServlet.java:964)
+	at org.springframework.web.servlet.FrameworkServlet.processRequest(FrameworkServlet.java:1006)
+	at org.springframework.web.servlet.FrameworkServlet.doGet(FrameworkServlet.java:898)
+	at javax.servlet.http.HttpServlet.service(HttpServlet.java:670)
+	at org.springframework.web.servlet.FrameworkServlet.service(FrameworkServlet.java:883)
+	at javax.servlet.http.HttpServlet.service(HttpServlet.java:779)
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:227)
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:162)
+	at org.apache.tomcat.websocket.server.WsFilter.doFilter(WsFilter.java:53)
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:189)
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:162)
+	at org.springframework.web.filter.CharacterEncodingFilter.doFilterInternal(CharacterEncodingFilter.java:201)
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:117)
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:189)
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:162)
+	at org.apache.catalina.core.StandardWrapperValve.invoke(StandardWrapperValve.java:197)
+	at org.apache.catalina.core.StandardContextValve.invoke(StandardContextValve.java:97)
+	at org.apache.catalina.authenticator.AuthenticatorBase.invoke(AuthenticatorBase.java:541)
+	at org.apache.catalina.core.StandardHostValve.invoke(StandardHostValve.java:135)
+	at org.apache.catalina.valves.ErrorReportValve.invoke(ErrorReportValve.java:92)
+	at org.apache.catalina.core.StandardEngineValve.invoke(StandardEngineValve.java:78)
+	at org.apache.catalina.connector.CoyoteAdapter.service(CoyoteAdapter.java:360)
+	at org.apache.coyote.http11.Http11Processor.service(Http11Processor.java:399)
+	at org.apache.coyote.AbstractProcessorLight.process(AbstractProcessorLight.java:65)
+	at org.apache.coyote.AbstractProtocol$ConnectionHandler.process(AbstractProtocol.java:893)
+	at org.apache.tomcat.util.net.NioEndpoint$SocketProcessor.doRun(NioEndpoint.java:1789)
+	at org.apache.tomcat.util.net.SocketProcessorBase.run(SocketProcessorBase.java:49)
+	at org.apache.tomcat.util.threads.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1191)
+	at org.apache.tomcat.util.threads.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:659)
+	at org.apache.tomcat.util.threads.TaskThread$WrappingRunnable.run(TaskThread.java:61)
+	at java.base/java.lang.Thread.run(Thread.java:832)
+23:09:25.869 [http-nio-8081-exec-4] INFO  c.x.d.resource.DreamApiController - Checking contact number: 8397487334
+23:09:26.411 [http-nio-8081-exec-4] INFO  c.x.dream.service.DreamServiceImpl - Contact Number does not exist in spreadsheetId: 1p3G4et36vkzSDs3W63cj6qnUFEWljLos2HHXIZd78Gg
+23:09:39.545 [http-nio-8081-exec-5] INFO  c.x.d.resource.DreamApiController - Getting CourseDetails : 
+23:09:42.254 [http-nio-8081-exec-6] INFO  c.x.d.resource.DreamApiController - Getting CourseDetails : Aug-21
+23:09:50.930 [http-nio-8081-exec-9] INFO  c.x.d.resource.DreamApiController - Registering trainee details: TraineeDto(id=null, basicInfo=BasicInfoDto(traineeName=swapna, email=swapna.xworkz@gmail.com, contactNumber=8397487334, dateOfBirth=2023-09-26), educationInfo=EducationInfoDto(qualification=BSC, stream=Biomedical Engineering, yearOfPassout=2019, collegeName=Alva`s Institute of Engineering and Technology,Moodabidri, Dakshina Kannada), courseInfo=CourseDto(course=Aug-21, branch=Rajajinagr, trainerName=Vinoda, batchType=Evening, batchTiming=06:00, startTime=21-08-2023, offeredAs=Trinee Referral), othersDto=OthersDto(referalName=null, referalContactNumber=null, comments=null, xworkzEmail=null, working=null, PreferredLocation=null, PreferredClassType=null, sendWhatsAppLink=null, registrationDate=null), adminDto=AdminDto(createdBy=xworkzdev4@gmail.com, createdOn=null, updatedBy=null, updatedOn=null))
+23:09:52.523 [http-nio-8081-exec-9] INFO  c.x.dream.service.DreamServiceImpl - Data written successfully to spreadsheetId and Added to Follow Up: 1p3G4et36vkzSDs3W63cj6qnUFEWljLos2HHXIZd78Gg
+23:09:59.281 [http-nio-8081-exec-1] INFO  c.x.dream.resource.OptionController - Getting Dropddown data
+23:09:59.300 [http-nio-8081-exec-7] INFO  c.x.d.resource.DreamApiController - Getting CourseName : Active
+23:09:59.351 [http-nio-8081-exec-3] INFO  c.x.d.resource.DreamApiController - Getting CourseName : Active
+23:10:03.156 [http-nio-8081-exec-7] INFO  c.x.dream.resource.OptionController - Getting Dropddown data
+23:10:03.162 [http-nio-8081-exec-7] INFO  c.x.d.resource.DreamApiController - Getting CourseName : Active
+23:10:03.192 [http-nio-8081-exec-3] INFO  c.x.dream.resource.OptionController - Getting Dropddown data
+23:10:05.873 [http-nio-8081-exec-6] INFO  c.x.d.resource.DreamApiController - Getting CourseDetails : NA
+23:10:09.265 [http-nio-8081-exec-10] INFO  c.x.d.resource.DreamApiController - Getting CourseName : Active
+23:10:09.265 [http-nio-8081-exec-3] INFO  c.x.dream.resource.OptionController - Getting Dropddown data
+23:10:09.289 [http-nio-8081-exec-8] INFO  c.x.d.resource.DreamApiController - Getting CourseName : Active
+23:10:15.517 [http-nio-8081-exec-5] INFO  c.x.dream.resource.OptionController - Getting Dropddown data
+23:10:16.617 [http-nio-8081-exec-1] INFO  c.x.dream.resource.OptionController - Getting Dropddown data
+23:10:16.626 [http-nio-8081-exec-1] INFO  c.x.d.resource.DreamApiController - Getting CourseName : Active
+23:10:18.381 [http-nio-8081-exec-10] INFO  c.x.dream.resource.OptionController - Getting Dropddown data
+23:10:25.744 [http-nio-8081-exec-8] INFO  c.x.d.resource.DreamApiController - Checking contact number: 7826135263
+23:10:26.599 [http-nio-8081-exec-8] INFO  c.x.dream.service.DreamServiceImpl - Contact Number does not exist in spreadsheetId: 1p3G4et36vkzSDs3W63cj6qnUFEWljLos2HHXIZd78Gg
+23:10:29.157 [http-nio-8081-exec-6] INFO  c.x.dream.service.DreamServiceImpl - Data written successfully to spreadsheetId and Added to Follow Up: 1p3G4et36vkzSDs3W63cj6qnUFEWljLos2HHXIZd78Gg
+23:10:31.609 [http-nio-8081-exec-5] INFO  c.x.dream.resource.OptionController - Getting Dropddown data
+23:10:31.614 [http-nio-8081-exec-2] INFO  c.x.d.resource.DreamApiController - Getting CourseName : Active
+23:10:31.635 [http-nio-8081-exec-7] INFO  c.x.d.resource.DreamApiController - Getting CourseName : Active
+23:10:36.626 [http-nio-8081-exec-2] INFO  c.x.dream.resource.OptionController - Getting Dropddown data
+23:10:36.627 [http-nio-8081-exec-7] INFO  c.x.d.resource.DreamApiController - Getting CourseName : Active
+23:10:36.638 [http-nio-8081-exec-7] INFO  c.x.dream.resource.OptionController - Getting Dropddown data
+23:10:38.399 [http-nio-8081-exec-1] INFO  c.x.d.resource.DreamApiController - Getting CourseDetails : NA
+23:10:52.375 [http-nio-8081-exec-8] ERROR o.a.c.c.C.[.[.[.[dispatcherServlet] - Servlet.service() for servlet [dispatcherServlet] in context with path [] threw exception [Request processing failed; nested exception is feign.FeignException$FeignClientException: [402 Payment Required] during [GET] to [https://api.emailable.com/v1/verify?email=kumar.xworkz%40gmail.com&api_key=live_1c9a44377323556a9243] [EmailableClient#verifyEmail(String,String)]: [{"message":"Your account is out of credits. Please visit https://app.emailable.com/checkout/credits to purchase more."}]] with root cause
+feign.FeignException$FeignClientException: [402 Payment Required] during [GET] to [https://api.emailable.com/v1/verify?email=kumar.xworkz%40gmail.com&api_key=live_1c9a44377323556a9243] [EmailableClient#verifyEmail(String,String)]: [{"message":"Your account is out of credits. Please visit https://app.emailable.com/checkout/credits to purchase more."}]
+	at feign.FeignException.clientErrorStatus(FeignException.java:235)
+	at feign.FeignException.errorStatus(FeignException.java:194)
+	at feign.FeignException.errorStatus(FeignException.java:185)
+	at feign.codec.ErrorDecoder$Default.decode(ErrorDecoder.java:92)
+	at feign.AsyncResponseHandler.handleResponse(AsyncResponseHandler.java:96)
+	at feign.SynchronousMethodHandler.executeAndDecode(SynchronousMethodHandler.java:138)
+	at feign.SynchronousMethodHandler.invoke(SynchronousMethodHandler.java:89)
+	at feign.ReflectiveFeign$FeignInvocationHandler.invoke(ReflectiveFeign.java:100)
+	at org.springframework.cloud.openfeign.FeignCachingInvocationHandlerFactory$1.proceed(FeignCachingInvocationHandlerFactory.java:66)
+	at org.springframework.cache.interceptor.CacheInterceptor.lambda$invoke$0(CacheInterceptor.java:54)
+	at org.springframework.cache.interceptor.CacheAspectSupport.execute(CacheAspectSupport.java:351)
+	at org.springframework.cache.interceptor.CacheInterceptor.invoke(CacheInterceptor.java:64)
+	at org.springframework.cloud.openfeign.FeignCachingInvocationHandlerFactory.lambda$create$1(FeignCachingInvocationHandlerFactory.java:53)
+	at com.sun.proxy.$Proxy101.verifyEmail(Unknown Source)
+	at com.xworkz.dream.service.DreamServiceImpl.verifyEmails(DreamServiceImpl.java:1056)
+	at com.xworkz.dream.resource.DreamApiController.verifydEmails(DreamApiController.java:215)
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:64)
+	at java.base/jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:564)
+	at org.springframework.web.method.support.InvocableHandlerMethod.doInvoke(InvocableHandlerMethod.java:205)
+	at org.springframework.web.method.support.InvocableHandlerMethod.invokeForRequest(InvocableHandlerMethod.java:150)
+	at org.springframework.web.servlet.mvc.method.annotation.ServletInvocableHandlerMethod.invokeAndHandle(ServletInvocableHandlerMethod.java:117)
+	at org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter.invokeHandlerMethod(RequestMappingHandlerAdapter.java:895)
+	at org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter.handleInternal(RequestMappingHandlerAdapter.java:808)
+	at org.springframework.web.servlet.mvc.method.AbstractHandlerMethodAdapter.handle(AbstractHandlerMethodAdapter.java:87)
+	at org.springframework.web.servlet.DispatcherServlet.doDispatch(DispatcherServlet.java:1071)
+	at org.springframework.web.servlet.DispatcherServlet.doService(DispatcherServlet.java:964)
+	at org.springframework.web.servlet.FrameworkServlet.processRequest(FrameworkServlet.java:1006)
+	at org.springframework.web.servlet.FrameworkServlet.doGet(FrameworkServlet.java:898)
+	at javax.servlet.http.HttpServlet.service(HttpServlet.java:670)
+	at org.springframework.web.servlet.FrameworkServlet.service(FrameworkServlet.java:883)
+	at javax.servlet.http.HttpServlet.service(HttpServlet.java:779)
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:227)
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:162)
+	at org.apache.tomcat.websocket.server.WsFilter.doFilter(WsFilter.java:53)
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:189)
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:162)
+	at org.springframework.web.filter.CharacterEncodingFilter.doFilterInternal(CharacterEncodingFilter.java:201)
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:117)
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:189)
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:162)
+	at org.apache.catalina.core.StandardWrapperValve.invoke(StandardWrapperValve.java:197)
+	at org.apache.catalina.core.StandardContextValve.invoke(StandardContextValve.java:97)
+	at org.apache.catalina.authenticator.AuthenticatorBase.invoke(AuthenticatorBase.java:541)
+	at org.apache.catalina.core.StandardHostValve.invoke(StandardHostValve.java:135)
+	at org.apache.catalina.valves.ErrorReportValve.invoke(ErrorReportValve.java:92)
+	at org.apache.catalina.core.StandardEngineValve.invoke(StandardEngineValve.java:78)
+	at org.apache.catalina.connector.CoyoteAdapter.service(CoyoteAdapter.java:360)
+	at org.apache.coyote.http11.Http11Processor.service(Http11Processor.java:399)
+	at org.apache.coyote.AbstractProcessorLight.process(AbstractProcessorLight.java:65)
+	at org.apache.coyote.AbstractProtocol$ConnectionHandler.process(AbstractProtocol.java:893)
+	at org.apache.tomcat.util.net.NioEndpoint$SocketProcessor.doRun(NioEndpoint.java:1789)
+	at org.apache.tomcat.util.net.SocketProcessorBase.run(SocketProcessorBase.java:49)
+	at org.apache.tomcat.util.threads.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1191)
+	at org.apache.tomcat.util.threads.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:659)
+	at org.apache.tomcat.util.threads.TaskThread$WrappingRunnable.run(TaskThread.java:61)
+	at java.base/java.lang.Thread.run(Thread.java:832)
+23:10:55.970 [http-nio-8081-exec-4] INFO  c.x.d.resource.DreamApiController - Getting CourseDetails : NA
+23:11:10.272 [http-nio-8081-exec-10] ERROR o.a.c.c.C.[.[.[.[dispatcherServlet] - Servlet.service() for servlet [dispatcherServlet] in context with path [] threw exception [Request processing failed; nested exception is feign.FeignException$FeignClientException: [402 Payment Required] during [GET] to [https://api.emailable.com/v1/verify?email=kumar.xworkz%40gmail.com&api_key=live_1c9a44377323556a9243] [EmailableClient#verifyEmail(String,String)]: [{"message":"Your account is out of credits. Please visit https://app.emailable.com/checkout/credits to purchase more."}]] with root cause
+feign.FeignException$FeignClientException: [402 Payment Required] during [GET] to [https://api.emailable.com/v1/verify?email=kumar.xworkz%40gmail.com&api_key=live_1c9a44377323556a9243] [EmailableClient#verifyEmail(String,String)]: [{"message":"Your account is out of credits. Please visit https://app.emailable.com/checkout/credits to purchase more."}]
+	at feign.FeignException.clientErrorStatus(FeignException.java:235)
+	at feign.FeignException.errorStatus(FeignException.java:194)
+	at feign.FeignException.errorStatus(FeignException.java:185)
+	at feign.codec.ErrorDecoder$Default.decode(ErrorDecoder.java:92)
+	at feign.AsyncResponseHandler.handleResponse(AsyncResponseHandler.java:96)
+	at feign.SynchronousMethodHandler.executeAndDecode(SynchronousMethodHandler.java:138)
+	at feign.SynchronousMethodHandler.invoke(SynchronousMethodHandler.java:89)
+	at feign.ReflectiveFeign$FeignInvocationHandler.invoke(ReflectiveFeign.java:100)
+	at org.springframework.cloud.openfeign.FeignCachingInvocationHandlerFactory$1.proceed(FeignCachingInvocationHandlerFactory.java:66)
+	at org.springframework.cache.interceptor.CacheInterceptor.lambda$invoke$0(CacheInterceptor.java:54)
+	at org.springframework.cache.interceptor.CacheAspectSupport.execute(CacheAspectSupport.java:351)
+	at org.springframework.cache.interceptor.CacheInterceptor.invoke(CacheInterceptor.java:64)
+	at org.springframework.cloud.openfeign.FeignCachingInvocationHandlerFactory.lambda$create$1(FeignCachingInvocationHandlerFactory.java:53)
+	at com.sun.proxy.$Proxy101.verifyEmail(Unknown Source)
+	at com.xworkz.dream.service.DreamServiceImpl.verifyEmails(DreamServiceImpl.java:1056)
+	at com.xworkz.dream.resource.DreamApiController.verifydEmails(DreamApiController.java:215)
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:64)
+	at java.base/jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:564)
+	at org.springframework.web.method.support.InvocableHandlerMethod.doInvoke(InvocableHandlerMethod.java:205)
+	at org.springframework.web.method.support.InvocableHandlerMethod.invokeForRequest(InvocableHandlerMethod.java:150)
+	at org.springframework.web.servlet.mvc.method.annotation.ServletInvocableHandlerMethod.invokeAndHandle(ServletInvocableHandlerMethod.java:117)
+	at org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter.invokeHandlerMethod(RequestMappingHandlerAdapter.java:895)
+	at org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter.handleInternal(RequestMappingHandlerAdapter.java:808)
+	at org.springframework.web.servlet.mvc.method.AbstractHandlerMethodAdapter.handle(AbstractHandlerMethodAdapter.java:87)
+	at org.springframework.web.servlet.DispatcherServlet.doDispatch(DispatcherServlet.java:1071)
+	at org.springframework.web.servlet.DispatcherServlet.doService(DispatcherServlet.java:964)
+	at org.springframework.web.servlet.FrameworkServlet.processRequest(FrameworkServlet.java:1006)
+	at org.springframework.web.servlet.FrameworkServlet.doGet(FrameworkServlet.java:898)
+	at javax.servlet.http.HttpServlet.service(HttpServlet.java:670)
+	at org.springframework.web.servlet.FrameworkServlet.service(FrameworkServlet.java:883)
+	at javax.servlet.http.HttpServlet.service(HttpServlet.java:779)
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:227)
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:162)
+	at org.apache.tomcat.websocket.server.WsFilter.doFilter(WsFilter.java:53)
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:189)
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:162)
+	at org.springframework.web.filter.CharacterEncodingFilter.doFilterInternal(CharacterEncodingFilter.java:201)
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:117)
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:189)
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:162)
+	at org.apache.catalina.core.StandardWrapperValve.invoke(StandardWrapperValve.java:197)
+	at org.apache.catalina.core.StandardContextValve.invoke(StandardContextValve.java:97)
+	at org.apache.catalina.authenticator.AuthenticatorBase.invoke(AuthenticatorBase.java:541)
+	at org.apache.catalina.core.StandardHostValve.invoke(StandardHostValve.java:135)
+	at org.apache.catalina.valves.ErrorReportValve.invoke(ErrorReportValve.java:92)
+	at org.apache.catalina.core.StandardEngineValve.invoke(StandardEngineValve.java:78)
+	at org.apache.catalina.connector.CoyoteAdapter.service(CoyoteAdapter.java:360)
+	at org.apache.coyote.http11.Http11Processor.service(Http11Processor.java:399)
+	at org.apache.coyote.AbstractProcessorLight.process(AbstractProcessorLight.java:65)
+	at org.apache.coyote.AbstractProtocol$ConnectionHandler.process(AbstractProtocol.java:893)
+	at org.apache.tomcat.util.net.NioEndpoint$SocketProcessor.doRun(NioEndpoint.java:1789)
+	at org.apache.tomcat.util.net.SocketProcessorBase.run(SocketProcessorBase.java:49)
+	at org.apache.tomcat.util.threads.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1191)
+	at org.apache.tomcat.util.threads.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:659)
+	at org.apache.tomcat.util.threads.TaskThread$WrappingRunnable.run(TaskThread.java:61)
+	at java.base/java.lang.Thread.run(Thread.java:832)
+23:11:31.860 [http-nio-8081-exec-3] INFO  c.x.d.resource.DreamApiController - updating follow up status : StatusDto(id=10, basicInfo=BasicInfoDto(traineeName=Kumar, email=kumar.xworkz@gmail.com, contactNumber=7826135263, dateOfBirth=NA), courseInfo=CourseDto(course=NA, branch=NA, trainerName=NA, batchType=NA, batchTiming=NA, startTime=NA, offeredAs=NA), attemptedOn=null, attemptedBy=xworkzdev4@gmail.com, attemptStatus=NA, comments=NA, callDuration=NA, callBack=NA, callBackTime=NA, joiningDate=NA)
+23:11:49.177 [http-nio-8081-exec-7] INFO  c.x.dream.resource.OptionController - Getting Dropddown data
+23:11:49.191 [http-nio-8081-exec-10] INFO  c.x.d.resource.DreamApiController - Getting CourseName : Active
+23:11:53.907 [http-nio-8081-exec-9] INFO  c.x.dream.resource.OptionController - Getting Dropddown data
+23:11:53.919 [http-nio-8081-exec-6] INFO  c.x.d.resource.DreamApiController - Getting CourseName : Active
+23:11:53.973 [http-nio-8081-exec-5] INFO  c.x.d.resource.DreamApiController - Getting CourseName : Active
+23:11:56.419 [http-nio-8081-exec-2] INFO  c.x.dream.resource.OptionController - Getting Dropddown data
+23:11:56.427 [http-nio-8081-exec-7] INFO  c.x.d.resource.DreamApiController - Getting CourseName : Active
+23:14:20.780 [File Watcher] INFO  o.s.b.d.a.LocalDevToolsAutoConfiguration$RestartingClassPathChangeChangedEventListener - Restarting due to 1 class path change (0 additions, 0 deletions, 1 modification)
+23:14:20.881 [Thread-5] INFO  o.a.catalina.core.StandardService - Stopping service [Tomcat]
+23:14:20.885 [Thread-5] INFO  o.a.c.c.C.[Tomcat].[localhost].[/] - Destroying Spring FrameworkServlet 'dispatcherServlet'
+23:14:21.760 [restartedMain] INFO  c.xworkz.dream.XworkzApiApplication - Starting XworkzApiApplication using Java 15.0.2 on DESKTOP-FT7DFR5 with PID 6348 (C:\Project\Project\Xworkz-Api\bin\main started by Dell in C:\Project\Project\Xworkz-Api)
+23:14:21.761 [restartedMain] INFO  c.xworkz.dream.XworkzApiApplication - The following 1 profile is active: "local"
+23:14:23.126 [restartedMain] INFO  o.s.cloud.context.scope.GenericScope - BeanFactory id=c992a949-1209-3dc3-b6c9-b9b103e0971f
+23:14:23.432 [restartedMain] INFO  o.s.b.w.e.tomcat.TomcatWebServer - Tomcat initialized with port(s): 8081 (http)
+23:14:23.435 [restartedMain] INFO  o.a.catalina.core.StandardService - Starting service [Tomcat]
+23:14:23.435 [restartedMain] INFO  o.a.catalina.core.StandardEngine - Starting Servlet engine: [Apache Tomcat/9.0.68]
+23:14:23.608 [restartedMain] INFO  o.a.c.c.C.[Tomcat].[localhost].[/] - Initializing Spring embedded WebApplicationContext
+23:14:23.610 [restartedMain] INFO  o.s.b.w.s.c.ServletWebServerApplicationContext - Root WebApplicationContext: initialization completed in 1836 ms
+23:14:23.657 [restartedMain] INFO  c.xworkz.dream.util.EncryptionHelper - {} is Created...........
+23:14:24.076 [restartedMain] INFO  o.s.b.d.a.OptionalLiveReloadServer - LiveReload server is running on port 35729
+23:14:25.912 [restartedMain] INFO  o.s.b.w.e.tomcat.TomcatWebServer - Tomcat started on port(s): 8081 (http) with context path ''
+23:16:04.086 [Test worker] WARN  o.s.b.t.j.DuplicateJsonObjectContextCustomizerFactory$DuplicateJsonObjectContextCustomizer - 
+
+Found multiple occurrences of org.json.JSONObject on the class path:
+
+	jar:file:/C:/Users/Dell/.gradle/caches/modules-2/files-2.1/org.json/json/20230227/7a0d4aca76513d8ce81f9b044ce8126b84809ad8/json-20230227.jar!/org/json/JSONObject.class
+	jar:file:/C:/Users/Dell/.gradle/caches/modules-2/files-2.1/com.vaadin.external.google/android-json/0.0.20131108.vaadin1/fa26d351fe62a6a17f5cda1287c1c6110dec413f/android-json-0.0.20131108.vaadin1.jar!/org/json/JSONObject.class
+
+You may wish to exclude one of them to ensure predictable runtime behavior
+
+23:16:04.328 [Test worker] INFO  c.x.dream.XworkzApiApplicationTests - Starting XworkzApiApplicationTests using Java 1.8.0_351 on DESKTOP-FT7DFR5 with PID 10576 (started by Dell in C:\Project\Project\Xworkz-Api)
+23:16:04.330 [Test worker] INFO  c.x.dream.XworkzApiApplicationTests - The following 1 profile is active: "local"
+23:16:11.521 [Test worker] INFO  o.s.cloud.context.scope.GenericScope - BeanFactory id=aced4df1-617b-3dc9-9cda-66a52e18b5a6
+23:16:13.516 [Test worker] INFO  c.xworkz.dream.util.EncryptionHelper - {} is Created...........
+23:16:32.433 [Test worker] INFO  c.x.dream.XworkzApiApplicationTests - Started XworkzApiApplicationTests in 31.189 seconds (JVM running for 37.77)
+23:38:10.118 [restartedMain] INFO  c.xworkz.dream.XworkzApiApplication - Starting XworkzApiApplication using Java 15.0.2 on DESKTOP-FT7DFR5 with PID 10592 (C:\Project\Project\Xworkz-Api\bin\main started by Dell in C:\Project\Project\Xworkz-Api)
+23:38:10.122 [restartedMain] INFO  c.xworkz.dream.XworkzApiApplication - The following 1 profile is active: "local"
+23:38:10.341 [restartedMain] INFO  o.s.b.d.e.DevToolsPropertyDefaultsPostProcessor - Devtools property defaults active! Set 'spring.devtools.add-properties' to 'false' to disable
+23:38:10.342 [restartedMain] INFO  o.s.b.d.e.DevToolsPropertyDefaultsPostProcessor - For additional web related logging consider setting the 'logging.level.web' property to 'DEBUG'
+23:38:16.403 [restartedMain] INFO  o.s.cloud.context.scope.GenericScope - BeanFactory id=c992a949-1209-3dc3-b6c9-b9b103e0971f
+23:38:21.733 [restartedMain] INFO  o.s.b.w.e.tomcat.TomcatWebServer - Tomcat initialized with port(s): 8081 (http)
+23:38:21.769 [restartedMain] INFO  o.a.catalina.core.StandardService - Starting service [Tomcat]
+23:38:21.774 [restartedMain] INFO  o.a.catalina.core.StandardEngine - Starting Servlet engine: [Apache Tomcat/9.0.68]
+23:38:22.718 [restartedMain] INFO  o.a.c.c.C.[Tomcat].[localhost].[/] - Initializing Spring embedded WebApplicationContext
+23:38:22.721 [restartedMain] INFO  o.s.b.w.s.c.ServletWebServerApplicationContext - Root WebApplicationContext: initialization completed in 12377 ms
+23:38:22.947 [restartedMain] INFO  c.xworkz.dream.util.EncryptionHelper - {} is Created...........
+23:38:26.248 [restartedMain] INFO  o.s.b.d.a.OptionalLiveReloadServer - LiveReload server is running on port 35729
+23:38:31.010 [restartedMain] INFO  o.s.b.w.e.tomcat.TomcatWebServer - Tomcat started on port(s): 8081 (http) with context path ''
+23:38:34.591 [restartedMain] INFO  c.xworkz.dream.XworkzApiApplication - Started XworkzApiApplication in 26.163 seconds (JVM running for 28.13)

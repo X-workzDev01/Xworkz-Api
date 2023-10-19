@@ -732,7 +732,7 @@ public class DreamServiceImpl implements DreamService {
 				});
 
 				FollowUpDataDto followUpDataDto = new FollowUpDataDto(followUpDto, data.size());
-				repo.evictAllCachesOnTraineeDetails();
+				//repo.evictAllCachesOnTraineeDetails();
 				return ResponseEntity.ok(followUpDataDto);
 			} else {
 				return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null); // Return a not found response if data is
