@@ -38,7 +38,7 @@ login:
 
 logging:
   file:
-    name: ./logs/Dream.log
+    name: ../opt/tomcat1/logs/Dream-Prod-Logs/Dream.log
     max-size: 1MB
     total-size-cap: 10MB
     max-history: '10'
