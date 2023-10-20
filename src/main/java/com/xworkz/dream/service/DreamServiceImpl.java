@@ -102,57 +102,59 @@ public class DreamServiceImpl implements DreamService {
 
 	private static final Logger logger = LoggerFactory.getLogger(DreamServiceImpl.class);
 
+	
 	@Override
-	public ResponseEntity<String> writeData(String spreadsheetId, TraineeDto dto, HttpServletRequest request)
+	public synchronized ResponseEntity<String> writeData(String spreadsheetId, TraineeDto dto, HttpServletRequest request)
 
 			throws MessagingException, TemplateException {
 		try {
-			List<List<Object>> data = repo.getIds(spreadsheetId).getValues();
-			int size = data != null ? data.size() : 0;
-			dto.setId(size += 1);
-			dto.getOthersDto().setXworkzEmail(Status.NA.toString());
+		
+				List<List<Object>> data = repo.getIds(spreadsheetId).getValues();
+				int size = data != null ? data.size() : 0;
+				dto.setId(size += 1);
+				dto.getOthersDto().setXworkzEmail(Status.NA.toString());
 
-			dto.getOthersDto().setPreferredLocation(Status.NA.toString());
-			dto.getOthersDto().setPreferredClassType(Status.NA.toString());
-			dto.getOthersDto().setSendWhatsAppLink(Status.NO.toString());
-			dto.getOthersDto().setRegistrationDate(LocalDateTime.now().toString());
-			dto.getAdminDto().setCreatedOn(LocalDateTime.now().toString());
-			if (dto.getOthersDto().getReferalName() == null) {
-				dto.getOthersDto().setReferalName("NA");
+				dto.getOthersDto().setPreferredLocation(Status.NA.toString());
+				dto.getOthersDto().setPreferredClassType(Status.NA.toString());
+				dto.getOthersDto().setSendWhatsAppLink(Status.NO.toString());
+				dto.getOthersDto().setRegistrationDate(LocalDateTime.now().toString());
+				dto.getAdminDto().setCreatedOn(LocalDateTime.now().toString());
+				if (dto.getOthersDto().getReferalName() == null) {
+					dto.getOthersDto().setReferalName("NA");
 
-			}
-			if (dto.getOthersDto().getComments() == null) {
-				dto.getOthersDto().setComments("NA");
-			}
-			if (dto.getOthersDto().getWorking() == null) {
+				}
+				if (dto.getOthersDto().getComments() == null) {
+					dto.getOthersDto().setComments("NA");
+				}
+				if (dto.getOthersDto().getWorking() == null) {
 
-				dto.getOthersDto().setWorking("No");
-			}
-			if (dto.getOthersDto().getReferalContactNumber() == null) {
+					dto.getOthersDto().setWorking("No");
+				}
+				if (dto.getOthersDto().getReferalContactNumber() == null) {
 
-				dto.getOthersDto().setReferalContactNumber(0L);
-			}
-
-			List<Object> list = wrapper.extractDtoDetails(dto);
-
-			repo.writeData(spreadsheetId, list);
-
-			boolean status = addToFollowUp(dto, spreadsheetId);
-
-			if (status) {
-				logger.info("Data written successfully to spreadsheetId and Added to Follow Up: {}", spreadsheetId);
-
-				saveBirthDayInfo(spreadsheetId, dto, request);
-				boolean sent = util.sendCourseContent(dto.getBasicInfo().getEmail(),
-						dto.getBasicInfo().getTraineeName());
-
-				if (sent) {
-					return ResponseEntity.ok("Data written successfully, Added to follow Up, sent course content");
-				} else {
-					return ResponseEntity.ok("Email not sent, Data written successfully, Added to follow Up");
+					dto.getOthersDto().setReferalContactNumber(0L);
 				}
 
-			}
+				List<Object> list = wrapper.extractDtoDetails(dto);
+
+				repo.writeData(spreadsheetId, list);
+
+				boolean status = addToFollowUp(dto, spreadsheetId);
+
+				if (status) {
+					logger.info("Data written successfully to spreadsheetId and Added to Follow Up: {}", spreadsheetId);
+
+					saveBirthDayInfo(spreadsheetId, dto, request);
+					boolean sent = util.sendCourseContent(dto.getBasicInfo().getEmail(),
+							dto.getBasicInfo().getTraineeName());
+
+					if (sent) {
+						return ResponseEntity.ok("Data written successfully, Added to follow Up, sent course content");
+					} else {
+						return ResponseEntity.ok("Email not sent, Data written successfully, Added to follow Up");
+					}
+
+				}
 			return ResponseEntity.ok("Data written successfully, not added to Follow Up");
 		} catch (Exception e) {
 			logger.error("Error processing request: " + e.getMessage(), e);
