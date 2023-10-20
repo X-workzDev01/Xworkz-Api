@@ -24,6 +24,7 @@ public class CacheConfig {
 		List<Cache> caches = new ArrayList<>();
 		caches.add(new ConcurrentMapCache("sheetsData"));
 		caches.add(new ConcurrentMapCache("emailData"));
+		caches.add(new ConcurrentMapCache("register"));
 		caches.add(new ConcurrentMapCache("contactData"));
 		caches.add(new ConcurrentMapCache("getDropdowns"));
 		caches.add(new ConcurrentMapCache("getFollowUpStatusData"));
@@ -36,7 +37,6 @@ public class CacheConfig {
 		caches.add(new ConcurrentMapCache("everyDayEveryDay"));
 		caches.add(new ConcurrentMapCache("getEmail"));
 		caches.add(new ConcurrentMapCache("update"));
-
 
 		cacheManager.setCaches(caches);
 		return cacheManager;
