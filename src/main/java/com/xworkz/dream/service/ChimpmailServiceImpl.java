@@ -3,14 +3,10 @@ package com.xworkz.dream.service;
 import java.io.BufferedReader;
 import java.io.DataOutputStream;
 import java.io.InputStreamReader;
-import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLEncoder;
-import java.util.List;
 import java.util.Objects;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 import org.json.JSONObject;
 import org.slf4j.Logger;
@@ -20,12 +16,8 @@ import org.springframework.mail.MailException;
 import org.springframework.mail.javamail.MimeMessagePreparator;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
-import org.thymeleaf.spring5.SpringTemplateEngine;
 
-import com.google.api.client.util.Value;
 import com.xworkz.dream.configuration.MailConfig;
-import com.xworkz.dream.util.DreamUtil;
-import com.xworkz.dream.util.EncryptionHelper;
 
 @Service
 public class ChimpmailServiceImpl implements ChimpMailService {
@@ -33,11 +25,6 @@ public class ChimpmailServiceImpl implements ChimpMailService {
 
 	@Autowired
 	private MailConfig config;
-	@Autowired
-	private EncryptionHelper encryptionHelper;
-
-	@Autowired
-	private SpringTemplateEngine templateEngine;
 
 	private Logger logger = LoggerFactory.getLogger(ChimpmailServiceImpl.class);
 
