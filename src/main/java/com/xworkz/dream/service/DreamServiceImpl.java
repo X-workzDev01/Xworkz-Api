@@ -23,6 +23,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.cache.annotation.CachePut;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.ResourceLoader;
 import org.springframework.http.HttpStatus;
@@ -34,10 +35,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.dataformat.yaml.snakeyaml.Yaml;
 import com.google.api.services.sheets.v4.model.UpdateValuesResponse;
 import com.google.api.services.sheets.v4.model.ValueRange;
-
 import com.xworkz.dream.constants.Status;
 import com.xworkz.dream.dto.AdminDto;
-
 import com.xworkz.dream.dto.BatchDetails;
 import com.xworkz.dream.dto.BatchDetailsDto;
 import com.xworkz.dream.dto.BirthDayInfoDto;
@@ -54,6 +53,7 @@ import com.xworkz.dream.dto.utils.Team;
 import com.xworkz.dream.interfaces.EmailableClient;
 import com.xworkz.dream.repository.DreamRepository;
 import com.xworkz.dream.util.DreamUtil;
+import com.xworkz.dream.wrapper.CacheUpdate;
 import com.xworkz.dream.wrapper.DreamWrapper;
 
 import freemarker.template.TemplateException;
@@ -100,9 +100,13 @@ public class DreamServiceImpl implements DreamService {
 	@Value("${sheets.liveKey}")
 	private String API_KEY;
 
+	@Autowired
+	private CacheUpdate cacheUpdate;
+	
 	private static final Logger logger = LoggerFactory.getLogger(DreamServiceImpl.class);
 
 	@Override
+	@CachePut(value = "sheetsData", key = "#spreadsheetId")
 	public ResponseEntity<String> writeData(String spreadsheetId, TraineeDto dto, HttpServletRequest request)
 
 			throws MessagingException, TemplateException {
@@ -134,9 +138,8 @@ public class DreamServiceImpl implements DreamService {
 			}
 
 			List<Object> list = wrapper.extractDtoDetails(dto);
-
+			cacheUpdate.updateCache("sheetsData", spreadsheetId, list);
 			repo.writeData(spreadsheetId, list);
-
 			boolean status = addToFollowUp(dto, spreadsheetId);
 
 			if (status) {
@@ -161,11 +164,7 @@ public class DreamServiceImpl implements DreamService {
 
 	}
 
-	// Helper method to check if the request URI is "/register"
-	private boolean isRegisterRequest(HttpServletRequest request) {
-		return request.getRequestURI().equals("/api/register");
-	}
-
+	@CachePut(value = "sheetsData", key = "#spreadsheetId")
 	public ResponseEntity<String> writeDataEnquiry(String spreadsheetId, TraineeDto dto, HttpServletRequest request)
 
 			throws MessagingException, TemplateException {
@@ -196,34 +195,29 @@ public class DreamServiceImpl implements DreamService {
 			}
 
 			List<Object> list = wrapper.extractDtoDetails(dto);
-
+			cacheUpdate.updateCache("sheetsData", spreadsheetId, list);
 			repo.writeData(spreadsheetId, list);
+			
 
-			if (isRegisterRequest(request)) {
-				saveBirthDayInfo(spreadsheetId, dto, request);
-			}
-
+			saveBirthDayInfo(spreadsheetId, dto, request);
 			boolean status = addToFollowUpEnquiry(dto, spreadsheetId);
 
 			if (status) {
 				logger.info("Data written successfully to spreadsheetId and Added to Follow Up: {}", spreadsheetId);
 				util.sms(dto);
-
-				if (isRegisterRequest(request)) {
-					boolean sent = util.sendCourseContent(dto.getBasicInfo().getEmail(),
-							dto.getBasicInfo().getTraineeName());
-					if (sent) {
-						return ResponseEntity.ok("Data written successfully, Added to follow Up, sent course content");
-					} else {
-						return ResponseEntity.ok("Email not sent, Data written successfully, Added to follow Up");
-					}
-				}
+				boolean sent = util.sendCourseContent(dto.getBasicInfo().getEmail(),
+						dto.getBasicInfo().getTraineeName());
 				repo.evictAllCachesOnTraineeDetails();
+				if (sent) {
+					return ResponseEntity.ok("Data written successfully, Added to follow Up, sent course content");
+				} else {
+					return ResponseEntity.ok("Email not sent, Data written successfully, Added to follow Up");
+				}
 			}
 			return ResponseEntity.ok("Data written successfully, not added to Follow Up");
 		} catch (Exception e) {
 			logger.error("Error processing request: " + e.getMessage(), e);
-			return ResponseEntity.badRequest().body("Failed to process the request");
+			return ResponseEntity.ok("Error processing data");
 		}
 
 	}
@@ -266,7 +260,6 @@ public class DreamServiceImpl implements DreamService {
 			followUpDto.setCallback(LocalDate.now().plusDays(1).toString());
 		}
 		List<Object> data = wrapper.extractDtoDetails(followUpDto);
-		System.out.println(data);
 		if (data == null) {
 			return false;
 		}

@@ -14,6 +14,9 @@ import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.Cache;
+import org.springframework.cache.CacheManager;
+import org.springframework.cache.Cache.ValueWrapper;
 import org.springframework.stereotype.Service;
 
 import com.xworkz.dream.dto.FollowUpDto;
@@ -31,6 +34,8 @@ public class BatchServiceImpl implements BatchService {
 	@Autowired
 	private DreamService service;
 	private static final Logger logger = LoggerFactory.getLogger(BatchServiceImpl.class);
+
+	
 
 	public List<TraineeDto> getTraineeDetailsByCourse(String spreadsheetId, String courseName) throws IOException {
 		List<List<Object>> data = repo.readData(spreadsheetId);
@@ -187,5 +192,14 @@ public class BatchServiceImpl implements BatchService {
 		}
 		return null;
 	}
+
+	@Override
+	public List<List<Object>> getList(String spreadsheetId) throws IOException {
+		// TODO Auto-generated method stub
+		return this.repo.getList(spreadsheetId);
+	}
+
+	
+
 
 }

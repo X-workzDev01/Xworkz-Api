@@ -16,7 +16,7 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 @EnableCaching
 @EnableScheduling
 public class CacheConfig {
-
+	
 	@Bean
 	public CacheManager cacheManager() {
 		SimpleCacheManager cacheManager = new SimpleCacheManager();

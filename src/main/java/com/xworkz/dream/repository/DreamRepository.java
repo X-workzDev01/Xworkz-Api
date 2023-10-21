@@ -70,4 +70,6 @@ public interface DreamRepository {
 
 	public List<List<Object>> getFollowupStatusByDate(String spreadsheetId) throws IOException;
 
+	List<List<Object>> getList(String spreadsheetId) throws IOException;
+
 }

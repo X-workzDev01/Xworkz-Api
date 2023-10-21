@@ -13,12 +13,15 @@ import javax.annotation.PostConstruct;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.autoconfigure.cache.CacheManagerCustomizer;
+import org.springframework.cache.Cache;
+import org.springframework.cache.CacheManager;
+import org.springframework.cache.Cache.ValueWrapper;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.ResourceLoader;
-
 import org.springframework.stereotype.Repository;
 
 import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
@@ -77,6 +80,9 @@ public class DreamRepositoryImpl implements DreamRepository {
 
 	@Autowired
 	private ResourceLoader resourceLoader;
+	@Autowired
+	private CacheManager cacheManager;
+	
 
 	@Override
 	@PostConstruct
@@ -93,6 +99,7 @@ public class DreamRepositoryImpl implements DreamRepository {
 	}
 
 	@Override
+	@CachePut(value = "sheetsData", key = "#spreadsheetId")
 	public boolean writeData(String spreadsheetId, List<Object> row) throws IOException {
 		List<List<Object>> values = new ArrayList<>();
 		values.add(row);
@@ -142,7 +149,6 @@ public class DreamRepositoryImpl implements DreamRepository {
 		return true;
 
 	}
-	
 
 	@Override
 	@Cacheable(value = "sheetsData", key = "#spreadsheetId", unless = "#result == null")
@@ -299,11 +305,12 @@ public class DreamRepositoryImpl implements DreamRepository {
 		ValueRange response = sheetsService.spreadsheets().values().get(spreadsheetId, followUpRange).execute();
 		return response.getValues();
 	}
-	
+
 	@Override
 	@Cacheable(value = "birthadayDetails", key = "#spreadsheetId", unless = "#result == null")
 	public List<List<Object>> getBirthadayDetails(String spreadsheetId) throws IOException {
-		ValueRange response = sheetsService.spreadsheets().values().get(spreadsheetId, dateOfBirthDetailsRange).execute();
+		ValueRange response = sheetsService.spreadsheets().values().get(spreadsheetId, dateOfBirthDetailsRange)
+				.execute();
 		return response.getValues();
 	}
 
@@ -313,5 +320,18 @@ public class DreamRepositoryImpl implements DreamRepository {
 		System.out.println(response.getValues());
 		return response.getValues();
 	}
+	@Override
+	public List<List<Object>> getList(String spreadsheetId) throws IOException {
+	    Cache cache = cacheManager.getCache("sheetsData");
 
+	    if (cache != null) {
+	        ValueWrapper valueWrapper = cache.get(spreadsheetId);
+	        if (valueWrapper != null) {
+	            return (List<List<Object>>) valueWrapper.get();
+	        }
+	    }
+	    return null;
+	}
+
+	
 }

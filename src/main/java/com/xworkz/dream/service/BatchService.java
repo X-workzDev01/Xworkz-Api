@@ -17,4 +17,6 @@ public interface BatchService {
 
 	public List<FollowUpDto> getGroupStatus(String spreadsheetId, String status) throws IOException;
 
+	public List<List<Object>> getList(String spreadsheetId) throws IOException;
+	
 }
