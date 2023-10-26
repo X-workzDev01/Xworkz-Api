@@ -25,23 +25,17 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.xworkz.dream.dto.BatchDetails;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.xworkz.dream.dto.BasicInfoDto;
-import com.xworkz.dream.dto.BatchDetailsDto;
-import com.xworkz.dream.dto.BirthDayInfoDto;
+
 import com.xworkz.dream.dto.EnquiryDto;
 import com.xworkz.dream.dto.FollowUpDataDto;
 import com.xworkz.dream.dto.FollowUpDto;
 import com.xworkz.dream.dto.SheetNotificationDto;
-import com.xworkz.dream.dto.SheetStatusDTO;
 import com.xworkz.dream.dto.SheetsDto;
 import com.xworkz.dream.dto.StatusDto;
-import com.xworkz.dream.dto.SuggestionDto;
 import com.xworkz.dream.dto.TraineeDto;
-import com.xworkz.dream.dto.utils.User;
 import com.xworkz.dream.service.DreamService;
 
 import freemarker.template.TemplateException;
-import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 
 @RestController

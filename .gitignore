@@ -5,7 +5,8 @@ build/
 !**/src/main/**/build/
 !**/src/test/**/build/
 !**/src/main/**/META-INF/
-src/main/resources/META-INF/
+.settings/
+!**/src/main/resources/META-INF/
 
 ### STS ###
 .apt_generated

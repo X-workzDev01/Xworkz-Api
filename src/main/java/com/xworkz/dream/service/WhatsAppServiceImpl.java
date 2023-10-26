@@ -1,28 +1,21 @@
 package com.xworkz.dream.service;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
+
 import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import com.google.api.services.sheets.v4.model.UpdateValuesResponse;
 import com.google.api.services.sheets.v4.model.ValueRange;
 import com.xworkz.dream.dto.BatchDetails;
-import com.xworkz.dream.dto.FollowUpDto;
-import com.xworkz.dream.dto.OthersDto;
 import com.xworkz.dream.dto.TraineeDto;
 import com.xworkz.dream.repository.DreamRepository;
 import com.xworkz.dream.repository.WhatsAppRepository;
@@ -160,147 +153,6 @@ public class WhatsAppServiceImpl implements WhatsAppService {
 		return false;
 	}
 
-	@Override
-	public ResponseEntity<List<TraineeDto>> getTraineeDetailsByCourse(String spreadsheetId, String courseName)
-			throws IOException {
-		List<List<Object>> data = repo.readData(spreadsheetId);
-		List<TraineeDto> traineeDetails = new ArrayList<>(); // Initialize as an empty list
-		if (courseName != null) {
-			if (data != null) {
-				List<List<Object>> sortedData = data.stream().sorted(Comparator.comparing(
-						list -> list != null && !list.isEmpty() && list.size() > 24 ? list.get(24).toString() : "",
-						Comparator.reverseOrder())).collect(Collectors.toList());
-
-				traineeDetails = sortedData.stream().filter(row -> row.size() > 9 && row.contains(courseName))
-						.map(wrapper::listToDto).collect(Collectors.toList());
-			}
-
-			if (!traineeDetails.isEmpty()) {
-				return ResponseEntity.ok(traineeDetails);
-			} else {
-				logger.error("No matching trainee details found for the course: " + courseName);
-				// Return a custom response when no data is found
-				return ResponseEntity.status(HttpStatus.NOT_FOUND).body(Collections.emptyList());
-			}
-		} else {
-			logger.error("Bad request");
-			return ResponseEntity.badRequest().build();
-		}
-	}
-
-	@Override
-	public ResponseEntity<List<FollowUpDto>> getTraineeDetailsByCourseInFollowUp(String spreadsheetId, String courseName) throws IOException {
-	    try {
-	        if (spreadsheetId == null || courseName == null || repo == null || wrapper == null || service == null) {
-	            return ResponseEntity.badRequest().build();
-	        }
-
-	        List<List<Object>> followUpData = repo.getFollowUpDetails(spreadsheetId);
-	        List<List<Object>> traineeData = repo.readData(spreadsheetId);
-
-	        if (followUpData == null || traineeData == null) {
-	            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(Collections.emptyList());
-	        }
-
-	        List<FollowUpDto> followUpDto = traineeData.stream()
-	                .filter(row -> row != null && row.size() > 9 && row.contains(courseName))
-	                .map(row -> {
-	                    TraineeDto dto = wrapper.listToDto(row);
-	                    if (dto == null) {
-	                        return null;
-	                    }
-	                    FollowUpDto followUp = null;
-	                    try {
-	                        followUp = service.getFollowUpDetailsByEmail(spreadsheetId, dto.getBasicInfo().getEmail());
-	                    } catch (IOException e) {
-	                        e.printStackTrace();
-	                    }
-
-	                    if (followUp == null) {
-	                        return null; 
-	                    }
-
-	                    FollowUpDto fdto = new FollowUpDto();
-	                    fdto.setId(dto.getId());
-	                    fdto.setBasicInfo(dto.getBasicInfo());
-	                    fdto.setCourseName(dto.getCourseInfo().getCourse());
-	                    fdto.setCallback(followUp.getCallback());
-	                    fdto.setCurrentlyFollowedBy(followUp.getCurrentlyFollowedBy());
-	                    fdto.setCurrentStatus(followUp.getCurrentStatus());
-	                    fdto.setJoiningDate(followUp.getJoiningDate());
-	                    fdto.setRegistrationDate(followUp.getRegistrationDate());
-	                    return fdto;
-	                })
-	                .filter(Objects::nonNull)
-	                .sorted(Comparator.comparing(FollowUpDto::getRegistrationDate)) // Sort by registration date and time
-	                .collect(Collectors.toList());
-
-	        return ResponseEntity.ok(followUpDto);
-	    } catch (IOException e) {
-	        logger.error("An IOException occurred: " + e.getMessage(), e);
-	        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(Collections.emptyList());
-	    }
-	}
-	@Override
-	public ResponseEntity<List<FollowUpDto>> traineeDetailsByCourseAndStatusInFollowUp(String spreadsheetId,
-	        String courseName, String status) throws IOException {
-	    try {
-	        if (spreadsheetId == null || courseName == null || repo == null || wrapper == null || service == null || status == null) {
-	            return ResponseEntity.badRequest().build();
-	        }
-
-	        List<List<Object>> followUpData = repo.getFollowUpDetails(spreadsheetId);
-	        List<List<Object>> traineeData = repo.readData(spreadsheetId);
-
-	        if (followUpData == null || traineeData == null) {
-	            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(Collections.emptyList());
-	        }
-
-	        List<FollowUpDto> followUpDto = traineeData.stream()
-	                .filter(row -> row != null && row.size() > 9 && row.contains(courseName))
-	                .map(row -> {
-	                    TraineeDto dto = wrapper.listToDto(row);
-	                    if (dto == null) {
-	                        return null;
-	                    }
-	                    FollowUpDto followUp = null;
-	                    try {
-	                        followUp = service.getFollowUpDetailsByEmail(spreadsheetId, dto.getBasicInfo().getEmail());
-	                    } catch (IOException e) {
-	                        e.printStackTrace();
-	                    }
-
-	                    if (followUp == null) {
-	                        return null;
-	                    }
-
-	                    // Check if the followUp's current status matches the provided status
-	                    if (followUp.getCurrentStatus().equalsIgnoreCase(status)) {
-	                        FollowUpDto fdto = new FollowUpDto();
-	                        fdto.setId(dto.getId());
-	                        fdto.setBasicInfo(dto.getBasicInfo());
-	                        fdto.setCourseName(dto.getCourseInfo().getCourse());
-	                        fdto.setCallback(followUp.getCallback());
-	                        fdto.setCurrentlyFollowedBy(followUp.getCurrentlyFollowedBy());
-	                        fdto.setCurrentStatus(followUp.getCurrentStatus());
-	                        fdto.setJoiningDate(followUp.getJoiningDate());
-	                        fdto.setRegistrationDate(followUp.getRegistrationDate());
-	                       
-	                        return fdto;
-	                    } else {
-	                        return null; // Skip this entry if status does not match
-	                    }
-	                })
-	                .filter(Objects::nonNull)
-	                .sorted(Comparator.comparing(FollowUpDto::getRegistrationDate).reversed()) // Sort by registration date and time
-	                .collect(Collectors.toList());
-	        return  ResponseEntity.ok(followUpDto);
-	               
-	    } catch (IOException e) {
-	        logger.error("An IOException occurred: " + e.getMessage(), e);
-	        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(Collections.emptyList());
-	    }
-	}
-
-
+	
+	
 }

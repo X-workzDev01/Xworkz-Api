@@ -5,7 +5,6 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
-import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -19,7 +18,7 @@ import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.ResourceLoader;
-import org.springframework.scheduling.annotation.Async;
+
 import org.springframework.stereotype.Repository;
 
 import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
@@ -28,19 +27,10 @@ import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.gson.GsonFactory;
 import com.google.api.services.sheets.v4.Sheets;
 import com.google.api.services.sheets.v4.SheetsScopes;
-import com.google.api.services.sheets.v4.model.BatchUpdateSpreadsheetRequest;
-import com.google.api.services.sheets.v4.model.CellData;
-import com.google.api.services.sheets.v4.model.ExtendedValue;
-import com.google.api.services.sheets.v4.model.GridCoordinate;
-import com.google.api.services.sheets.v4.model.Request;
-import com.google.api.services.sheets.v4.model.RowData;
-import com.google.api.services.sheets.v4.model.UpdateCellsRequest;
 import com.google.api.services.sheets.v4.model.UpdateValuesResponse;
 import com.google.api.services.sheets.v4.model.ValueRange;
 import com.google.auth.http.HttpCredentialsAdapter;
 import com.google.auth.oauth2.GoogleCredentials;
-
-import lombok.Synchronized;
 
 @Repository
 public class DreamRepositoryImpl implements DreamRepository {
@@ -151,7 +141,6 @@ public class DreamRepositoryImpl implements DreamRepository {
 		return true;
 
 	}
-	
 
 	@Override
 	@Cacheable(value = "sheetsData", key = "#spreadsheetId", unless = "#result == null")
@@ -312,11 +301,12 @@ public class DreamRepositoryImpl implements DreamRepository {
 		ValueRange response = sheetsService.spreadsheets().values().get(spreadsheetId, followUpRange).execute();
 		return response.getValues();
 	}
-	
+
 	@Override
 	@CachePut(value = "birthadayDetails", key = "#spreadsheetId", unless = "#result == null")
 	public List<List<Object>> getBirthadayDetails(String spreadsheetId) throws IOException {
-		ValueRange response = sheetsService.spreadsheets().values().get(spreadsheetId, dateOfBirthDetailsRange).execute();
+		ValueRange response = sheetsService.spreadsheets().values().get(spreadsheetId, dateOfBirthDetailsRange)
+				.execute();
 		return response.getValues();
 	}
 
