@@ -13,6 +13,7 @@ import javax.annotation.PostConstruct;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cache.annotation.CachePut;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.ResourceLoader;
 import org.springframework.stereotype.Repository;
@@ -56,7 +57,7 @@ public class WhatsAppRepositoryImpl implements WhatsAppRepository {
 	}
 	
 	@Override
-	@CachePut(value = "batchDetails", key = "#spreadsheetId", unless = "#result == null")
+	@Cacheable(value = "batchDetails", key = "#spreadsheetId", unless = "#result == null")
 	public UpdateValuesResponse updateBatchDetails(String spreadsheetId, String range2, ValueRange valueRange)
 			throws IOException {
 		return sheetsService.spreadsheets().values().update(spreadsheetId, range2, valueRange)

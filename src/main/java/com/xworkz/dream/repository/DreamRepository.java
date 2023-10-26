@@ -60,11 +60,11 @@ public interface DreamRepository {
 
 	public List<List<Object>> notification(String spreadsheetId) throws IOException;
 
-	public void evictSheetsDataCaches();
+	//public void evictSheetsDataCaches();
 
 	public List<List<Object>> getFollowUpDetailsByid(String spreadsheetId) throws IOException;
 
-	public void evictAllCachesOnTraineeDetails();
+	//public void evictAllCachesOnTraineeDetails();
 	
 	public List<List<Object>> getBirthadayDetails(String spreadsheetId) throws IOException;
 

@@ -34,10 +34,9 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.dataformat.yaml.snakeyaml.Yaml;
 import com.google.api.services.sheets.v4.model.UpdateValuesResponse;
 import com.google.api.services.sheets.v4.model.ValueRange;
-
+import com.xworkz.dream.cache.CacheUpdate;
 import com.xworkz.dream.constants.Status;
 import com.xworkz.dream.dto.AdminDto;
-
 import com.xworkz.dream.dto.BatchDetails;
 import com.xworkz.dream.dto.BatchDetailsDto;
 import com.xworkz.dream.dto.BirthDayInfoDto;
@@ -70,7 +69,6 @@ public class DreamServiceImpl implements DreamService {
 	private DreamUtil util;
 	@Value("${login.sheetId}")
 	private String id;
-
 	private HttpServletRequest request;
 	private ResponseEntity<SheetNotificationDto> response;
 	private String loginEmail;
@@ -79,7 +77,6 @@ public class DreamServiceImpl implements DreamService {
 	private ResourceLoader resourceLoader;
 	@Value("${login.teamFile}")
 	private String userFile;
-	@Value("${sheets.range}")
 	@Autowired
 	private EmailableClient emailableClient;
 	@Value("${sheets.rowStartRange}")
@@ -101,6 +98,9 @@ public class DreamServiceImpl implements DreamService {
 	@Value("${sheets.liveKey}")
 	private String API_KEY;
 
+	@Autowired
+	private CacheUpdate cacheUpdate;
+	
 	private static final Logger logger = LoggerFactory.getLogger(DreamServiceImpl.class);
 
 	
@@ -139,6 +139,7 @@ public class DreamServiceImpl implements DreamService {
 				List<Object> list = wrapper.extractDtoDetails(dto);
 
 				repo.writeData(spreadsheetId, list);
+				cacheUpdate.updateCache("sheetsData", spreadsheetId, list);
 
 				boolean status = addToFollowUp(dto, spreadsheetId);
 
@@ -163,7 +164,6 @@ public class DreamServiceImpl implements DreamService {
 			logger.error("Error processing request: " + e.getMessage(), e);
 			return ResponseEntity.ok("Failed to process the request");
 		}
-
 	}
 
 	public ResponseEntity<String> writeDataEnquiry(String spreadsheetId, TraineeDto dto, HttpServletRequest request)
@@ -198,11 +198,10 @@ public class DreamServiceImpl implements DreamService {
 			List<Object> list = wrapper.extractDtoDetails(dto);
 
 			repo.writeData(spreadsheetId, list);
-
+		  //  cacheUpdate.updateCache("sheetsData", spreadsheetId, list);
 			saveBirthDayInfo(spreadsheetId, dto, request);
 
 			boolean status = addToFollowUpEnquiry(dto, spreadsheetId);
-			repo.evictAllCachesOnTraineeDetails();
 
 			if (status) {
 				logger.info("Data written successfully to spreadsheetId and Added to Follow Up: {}", spreadsheetId);
@@ -305,7 +304,6 @@ public class DreamServiceImpl implements DreamService {
 	public ResponseEntity<String> contactNumberCheck(String spreadsheetId, Long contactNumber,
 			HttpServletRequest request) {
 		try {
-			// if (isCookieValid(request)) {
 			ValueRange values = repo.getContactNumbers(spreadsheetId);
 			if (values != null && values.getValues() != null) {
 				for (List<Object> row : values.getValues()) {
@@ -326,12 +324,12 @@ public class DreamServiceImpl implements DreamService {
 	}
 
 	@Override
+	//@Cacheable(value = "sheetsData", key = "#spreadsheetId", unless = "#result == null")
 	public ResponseEntity<SheetsDto> readData(String spreadsheetId, int startingIndex, int maxRows) {
-
 		try {
 			List<List<Object>> dataList = repo.readData(spreadsheetId);
-
 			if (dataList != null) {
+				//sorting based on registration date
 				List<List<Object>> sortedData = dataList.stream().sorted(Comparator.comparing(
 						list -> list != null && !list.isEmpty() && list.size() > 24 ? list.get(24).toString() : "",
 						Comparator.reverseOrder())).collect(Collectors.toList());
@@ -343,12 +341,13 @@ public class DreamServiceImpl implements DreamService {
 				return ResponseEntity.ok(dto);
 			}
 		} catch (IOException e) {
-			e.printStackTrace();
+			logger.error("An error occurred while reading in spreadsheetId: {}", spreadsheetId, e);
 		}
 		return null;
 	}
 
 	@Override
+	//@Cacheable(value = "sheetsData", key = "#spreadsheetId", unless = "#result == null")
 	public List<TraineeDto> getLimitedRows(List<List<Object>> values, int startingIndex, int maxRows) {
 		List<TraineeDto> traineeDtos = new ArrayList<>();
 
@@ -370,6 +369,7 @@ public class DreamServiceImpl implements DreamService {
 	}
 
 	@Override
+	
 	public List<TraineeDto> filterData(String spreadsheetId, String searchValue) throws IOException {
 		if (searchValue != null && !searchValue.isEmpty()) {
 			List<List<Object>> data = repo.readData(spreadsheetId);
@@ -437,7 +437,7 @@ public class DreamServiceImpl implements DreamService {
 					if (updated != null && !updated.isEmpty()) {
 
 						updateFollowUp(spreadsheetId, email, dto);
-						repo.evictAllCachesOnTraineeDetails();
+						//repo.evictAllCachesOnTraineeDetails();
 						return ResponseEntity.ok("Updated Successfully");
 					} else {
 						return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("An error occurred ");
@@ -569,7 +569,7 @@ public class DreamServiceImpl implements DreamService {
 			if (status == true) {
 				updateCurrentFollowUp(statusDto.getCallBack(), spreadsheetId, statusDto.getBasicInfo().getEmail(),
 						statusDto.getAttemptStatus(), statusDto.getAttemptedBy(), statusDto.getJoiningDate());
-				repo.evictAllCachesOnTraineeDetails();
+				//repo.evictAllCachesOnTraineeDetails();
 			}
 			return ResponseEntity.ok("Follow Status Updated for ID :  " + statusDto.getId());
 		} catch (IllegalAccessException e) {
@@ -736,7 +736,7 @@ public class DreamServiceImpl implements DreamService {
 				statusDto.add(dto);
 			}
 		}
-		repo.evictAllCachesOnTraineeDetails();
+		//repo.evictAllCachesOnTraineeDetails();
 		return statusDto;
 	}
 
@@ -862,6 +862,7 @@ public class DreamServiceImpl implements DreamService {
 		return -1;
 	}
 
+	@SuppressWarnings("unchecked")
 	private List<Team> getTeam() throws IOException {
 
 		Yaml yaml = new Yaml();
@@ -1014,11 +1015,6 @@ public class DreamServiceImpl implements DreamService {
 
 	}
 
-	@Scheduled(fixedRate = 43200000) // 12 hours in milliseconds
-	public void evictAllCaches() {
-		// This method will be scheduled to run every 12 hours
-		// and will evict all entries in the specified caches
-	}
 
 	@Override
 	public boolean updateCurrentFollowUp(String spreadsheetId, String email, String currentStatus,
@@ -1088,6 +1084,12 @@ public class DreamServiceImpl implements DreamService {
 			}
 		}
 		return followUpDtos;
+	}
+	
+	@Scheduled(fixedRate = 43200000) // 12 hours in milliseconds
+	public void evictAllCaches() {
+		// This method will be scheduled to run every 12 hours
+		// and will evict all entries in the specified caches
 	}
 
 }
