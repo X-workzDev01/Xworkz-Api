@@ -4,7 +4,9 @@ build/
 !gradle/wrapper/gradle-wrapper.jar
 !**/src/main/**/build/
 !**/src/test/**/build/
-META-INF/credentials.json
+!**/src/main/**/META-INF/
+src/main/resources/META-INF/
+
 ### STS ###
 .apt_generated
 .classpath
