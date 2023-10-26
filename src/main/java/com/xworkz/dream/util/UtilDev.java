@@ -160,6 +160,16 @@ public class UtilDev implements DreamUtil {
 
 	}
 
+	@Override
+	public boolean sendBirthadyEmail(String traineeEmail, String subject, String name) {
+		if(traineeEmail ==null || name ==null) {
+			logger.warn("Email or name is null");
+			return false;
+		}
+		return sendBirthadyEmailChimp(traineeEmail, subject, name);
+	}
+
+	
 	// ================================================================================================
 	// this is mail chimp if use below code send mail through contact@xworkz.in
 	private boolean otpMailService(String email, int otp, String subject) {
@@ -242,5 +252,25 @@ public class UtilDev implements DreamUtil {
 	@Override
 	public boolean sms(TraineeDto dto) {
 		return true;
+	}
+	
+	private boolean sendBirthadyEmailChimp(String traineeEmail, String subject, String name) {
+		Context context = new Context();
+
+		context.setVariable("name", name);
+		String content = templateEngine.process("BirthadyaMail", context);
+
+		MimeMessagePreparator messagePreparator = mimeMessage -> {
+
+			MimeMessageHelper messageHelper = new MimeMessageHelper(mimeMessage);
+			messageHelper.setFrom(helper.decrypt(chimpUserName));
+
+			messageHelper.addBcc(new InternetAddress(traineeEmail));
+
+			messageHelper.setSubject(subject);
+			messageHelper.setText(content, true);
+		};
+
+		return chimpMailService.validateAndSendMailByMailId(messagePreparator);
 	}
 }
