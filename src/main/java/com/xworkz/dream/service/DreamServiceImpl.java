@@ -155,17 +155,14 @@ public class DreamServiceImpl implements DreamService {
 					}
 
 				}
+			}
+
 			return ResponseEntity.ok("Data written successfully, not added to Follow Up");
 		} catch (Exception e) {
 			logger.error("Error processing request: " + e.getMessage(), e);
-			return ResponseEntity.badRequest().body("Failed to process the request");
+			return ResponseEntity.ok("Failed to process the request");
 		}
 
-	}
-
-	// Helper method to check if the request URI is "/register"
-	private boolean isRegisterRequest(HttpServletRequest request) {
-		return request.getRequestURI().equals("/api/register");
 	}
 
 	public ResponseEntity<String> writeDataEnquiry(String spreadsheetId, TraineeDto dto, HttpServletRequest request)
@@ -201,31 +198,30 @@ public class DreamServiceImpl implements DreamService {
 
 			repo.writeData(spreadsheetId, list);
 
-			if (isRegisterRequest(request)) {
-				saveBirthDayInfo(spreadsheetId, dto, request);
-			}
+			saveBirthDayInfo(spreadsheetId, dto, request);
 
 			boolean status = addToFollowUpEnquiry(dto, spreadsheetId);
+			repo.evictAllCachesOnTraineeDetails();
 
 			if (status) {
 				logger.info("Data written successfully to spreadsheetId and Added to Follow Up: {}", spreadsheetId);
 				util.sms(dto);
 
-				if (isRegisterRequest(request)) {
-					boolean sent = util.sendCourseContent(dto.getBasicInfo().getEmail(),
-							dto.getBasicInfo().getTraineeName());
-					if (sent) {
-						return ResponseEntity.ok("Data written successfully, Added to follow Up, sent course content");
-					} else {
-						return ResponseEntity.ok("Email not sent, Data written successfully, Added to follow Up");
-					}
+				boolean sent = util.sendCourseContent(dto.getBasicInfo().getEmail(),
+						dto.getBasicInfo().getTraineeName());
+				if (sent) {
+					return ResponseEntity.ok("Data written successfully, Added to follow Up, sent course content");
+				} else {
+
+					return ResponseEntity.ok("Email not sent, Data written successfully, Added to follow Up");
+
 				}
-				repo.evictAllCachesOnTraineeDetails();
+
 			}
 			return ResponseEntity.ok("Data written successfully, not added to Follow Up");
 		} catch (Exception e) {
 			logger.error("Error processing request: " + e.getMessage(), e);
-			return ResponseEntity.badRequest().body("Failed to process the request");
+			return ResponseEntity.ok("Failed to process the request");
 		}
 
 	}
