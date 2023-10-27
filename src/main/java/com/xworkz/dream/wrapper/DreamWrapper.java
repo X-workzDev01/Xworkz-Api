@@ -315,7 +315,6 @@ public class DreamWrapper {
 
 			// Extract the value of the field from the DTO object
 			Object fieldValue = field.get(dto);
-			System.err.println(fieldValue);
 
 			if (fieldValue != null && !field.getType().isPrimitive() && !field.getType().getName().startsWith("java")) {
 				// Handle association with another DTO
@@ -469,8 +468,6 @@ public class DreamWrapper {
 	}
 
 	public AttendanceDto attendanceListEverydayToDto(List<Object> row) {
-		System.err.println("row==================================================               " + row);
-
 
 		AttendanceDto attendanceDto = new AttendanceDto(0, new BasicInfoDto(), new CourseDto(), null, null, null, null,
 				null, null, null, null, null);
@@ -621,6 +618,29 @@ public class DreamWrapper {
 		sdto.setCallBackTime(statusDto.getCallBackTime());
 		sdto.setJoiningDate(statusDto.getJoiningDate());
 		return sdto;
+	}
+	
+	public void setFieldValueAsNa(TraineeDto dto) {
+		if (dto.getCourseInfo().getCourse() == null) {
+			dto.getCourseInfo().setCourse("NA");
+
+		}
+		if (dto.getCourseInfo().getBranch() == null) {
+			dto.getCourseInfo().setBranch("NA");
+		}
+		if (dto.getCourseInfo().getTrainerName() == null) {
+			dto.getCourseInfo().setTrainerName("NA");
+		}
+		if (dto.getCourseInfo().getBatchType() == null) {
+			dto.getCourseInfo().setBatchType("NA");
+
+		}
+		if (dto.getCourseInfo().getBatchTiming() == null) {
+			dto.getCourseInfo().setBatchTiming("NA");
+		}
+		if (dto.getCourseInfo().getStartTime() == null) {
+			dto.getCourseInfo().setStartTime("NA");
+		}
 	}
 
 }

@@ -152,7 +152,6 @@ public class DreamRepositoryImpl implements DreamRepository {
 	@Override
 	//@CachePut(value = "sheetsData", key = "#spreadsheetId", unless = "#result == null")
 	public UpdateValuesResponse update(String spreadsheetId, String range2, ValueRange valueRange) throws IOException {
-		System.err.println("Running cache put");
 		return sheetsService.spreadsheets().values().update(spreadsheetId, range2, valueRange)
 				.setValueInputOption("RAW").execute();
 	}
@@ -170,7 +169,6 @@ public class DreamRepositoryImpl implements DreamRepository {
 	@Override
 	//@CachePut(value = "followUpDetails", key = "#spreadsheetId", unless = "#result == null")
 	public boolean updateFollowUpStatus(String spreadsheetId, List<Object> statusData) throws IOException {
-		System.out.println("this is cachepu.......");
 		List<List<Object>> list = new ArrayList<List<Object>>();
 		list.add(statusData);
 		ValueRange body = new ValueRange().setValues(list);
@@ -183,7 +181,8 @@ public class DreamRepositoryImpl implements DreamRepository {
 	@Cacheable(value = "followUpDetails", key = "#spreadsheetId", unless = "#result == null")
 	public List<List<Object>> getFollowUpDetails(String spreadsheetId) throws IOException {
 		ValueRange response = sheetsService.spreadsheets().values().get(spreadsheetId, followUpRange).execute();
-		return response.getValues();
+		List<List<Object>> followUp=response.getValues();
+		return followUp;
 	}
 
 	@Override
@@ -192,7 +191,6 @@ public class DreamRepositoryImpl implements DreamRepository {
 			throws IOException {
 		List<List<Object>> list = new ArrayList<List<Object>>();
 		list.add(data);
-		System.out.println(data.toString());
 		ValueRange body = new ValueRange().setValues(list);
 		sheetsService.spreadsheets().values().update(spreadsheetId, currentFollowRange, body)
 				.setValueInputOption("USER_ENTERED").execute();
@@ -299,7 +297,6 @@ public class DreamRepositoryImpl implements DreamRepository {
 	@Override
 	public List<List<Object>> getFollowupStatusByDate(String spreadsheetId) throws IOException {
 		ValueRange response = sheetsService.spreadsheets().values().get(spreadsheetId, followUpRange).execute();
-		System.out.println(response.getValues());
 		return response.getValues();
 	}
 	
