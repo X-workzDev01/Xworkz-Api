@@ -35,7 +35,6 @@ public class AttendanceController {
 	@PostMapping("/registerAttendance")
 	public ResponseEntity<String> registerAttendance(@RequestBody AttendanceDto values, HttpServletRequest request)
 			throws IOException, MessagingException, TemplateException {
-		System.err.println("sssshsssssssssssssss         " + spreadsheetId);
 		logger.debug("Registering trainee details: {}", values);
 
 		logger.debug("Attendance Register sucessfully {} ", values);

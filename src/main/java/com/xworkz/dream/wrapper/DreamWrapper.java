@@ -9,6 +9,7 @@ import java.util.List;
 import org.springframework.stereotype.Component;
 
 import com.xworkz.dream.constants.FollowUp;
+import com.xworkz.dream.constants.Status;
 import com.xworkz.dream.dto.AdminDto;
 import com.xworkz.dream.dto.AttendanceDto;
 import com.xworkz.dream.dto.BasicInfoDto;
@@ -315,7 +316,6 @@ public class DreamWrapper {
 
 			// Extract the value of the field from the DTO object
 			Object fieldValue = field.get(dto);
-			System.err.println(fieldValue);
 
 			if (fieldValue != null && !field.getType().isPrimitive() && !field.getType().getName().startsWith("java")) {
 				// Handle association with another DTO
@@ -469,8 +469,6 @@ public class DreamWrapper {
 	}
 
 	public AttendanceDto attendanceListEverydayToDto(List<Object> row) {
-		System.err.println("row==================================================               " + row);
-
 
 		AttendanceDto attendanceDto = new AttendanceDto(0, new BasicInfoDto(), new CourseDto(), null, null, null, null,
 				null, null, null, null, null);
@@ -621,6 +619,53 @@ public class DreamWrapper {
 		sdto.setCallBackTime(statusDto.getCallBackTime());
 		sdto.setJoiningDate(statusDto.getJoiningDate());
 		return sdto;
+	}
+	
+	public void setFieldValueAsNa(TraineeDto dto) {
+		if (dto.getCourseInfo().getCourse() == null) {
+			dto.getCourseInfo().setCourse("NA");
+
+		}
+		if (dto.getCourseInfo().getBranch() == null) {
+			dto.getCourseInfo().setBranch("NA");
+		}
+		if (dto.getCourseInfo().getTrainerName() == null) {
+			dto.getCourseInfo().setTrainerName("NA");
+		}
+		if (dto.getCourseInfo().getBatchType() == null) {
+			dto.getCourseInfo().setBatchType("NA");
+
+		}
+		if (dto.getCourseInfo().getBatchTiming() == null) {
+			dto.getCourseInfo().setBatchTiming("NA");
+		}
+		if (dto.getCourseInfo().getStartTime() == null) {
+			dto.getCourseInfo().setStartTime("NA");
+		}
+	}
+	public  void setValuesForTraineeDto(TraineeDto dto) {
+		dto.getOthersDto().setXworkzEmail(Status.NA.toString());
+
+		dto.getOthersDto().setPreferredLocation(Status.NA.toString());
+		dto.getOthersDto().setPreferredClassType(Status.NA.toString());
+		dto.getOthersDto().setSendWhatsAppLink(Status.NO.toString());
+		dto.getOthersDto().setRegistrationDate(LocalDateTime.now().toString());
+		dto.getAdminDto().setCreatedOn(LocalDateTime.now().toString());
+		if (dto.getOthersDto().getReferalName() == null) {
+			dto.getOthersDto().setReferalName("NA");
+
+		}
+		if (dto.getOthersDto().getComments() == null) {
+			dto.getOthersDto().setComments("NA");
+		}
+		if (dto.getOthersDto().getWorking() == null) {
+
+			dto.getOthersDto().setWorking("No");
+		}
+		if (dto.getOthersDto().getReferalContactNumber() == null) {
+
+			dto.getOthersDto().setReferalContactNumber(0L);
+		}
 	}
 
 }
