@@ -9,6 +9,7 @@ import java.util.List;
 import org.springframework.stereotype.Component;
 
 import com.xworkz.dream.constants.FollowUp;
+import com.xworkz.dream.constants.Status;
 import com.xworkz.dream.dto.AdminDto;
 import com.xworkz.dream.dto.AttendanceDto;
 import com.xworkz.dream.dto.BasicInfoDto;
@@ -640,6 +641,30 @@ public class DreamWrapper {
 		}
 		if (dto.getCourseInfo().getStartTime() == null) {
 			dto.getCourseInfo().setStartTime("NA");
+		}
+	}
+	public  void setValuesForTraineeDto(TraineeDto dto) {
+		dto.getOthersDto().setXworkzEmail(Status.NA.toString());
+
+		dto.getOthersDto().setPreferredLocation(Status.NA.toString());
+		dto.getOthersDto().setPreferredClassType(Status.NA.toString());
+		dto.getOthersDto().setSendWhatsAppLink(Status.NO.toString());
+		dto.getOthersDto().setRegistrationDate(LocalDateTime.now().toString());
+		dto.getAdminDto().setCreatedOn(LocalDateTime.now().toString());
+		if (dto.getOthersDto().getReferalName() == null) {
+			dto.getOthersDto().setReferalName("NA");
+
+		}
+		if (dto.getOthersDto().getComments() == null) {
+			dto.getOthersDto().setComments("NA");
+		}
+		if (dto.getOthersDto().getWorking() == null) {
+
+			dto.getOthersDto().setWorking("No");
+		}
+		if (dto.getOthersDto().getReferalContactNumber() == null) {
+
+			dto.getOthersDto().setReferalContactNumber(0L);
 		}
 	}
 

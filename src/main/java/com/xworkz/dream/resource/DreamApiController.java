@@ -142,6 +142,7 @@ public class DreamApiController {
 	@GetMapping("/readByEmail")
 	public ResponseEntity<?> getDataByEmail(@RequestHeader String spreadsheetId, @RequestParam String email,
 			HttpServletRequest request) throws IOException {
+		System.out.println("Sheed ID:"+spreadsheetId);
 		return service.getDetailsByEmail(spreadsheetId, email, request);
 	}
 
@@ -207,6 +208,7 @@ public class DreamApiController {
 	public String verifydEmails(@RequestParam String email) throws IOException {
 		String verifyEmails = service.verifyEmails(email);
 		ObjectMapper objectMapper = new ObjectMapper();
+		@SuppressWarnings("unchecked")
 		Map<String, Object> jsonMap = objectMapper.readValue(verifyEmails, Map.class);
 		String reasons = (String) jsonMap.get("reason");
 		if (reasons.equals("accepted_email")) {

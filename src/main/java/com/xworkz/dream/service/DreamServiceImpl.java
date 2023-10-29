@@ -112,32 +112,12 @@ public class DreamServiceImpl implements DreamService {
 			List<List<Object>> data = repo.getIds(spreadsheetId).getValues();
 			int size = data != null ? data.size() : 0;
 			dto.setId(size += 1);
-			dto.getOthersDto().setXworkzEmail(Status.NA.toString());
-
-			dto.getOthersDto().setPreferredLocation(Status.NA.toString());
-			dto.getOthersDto().setPreferredClassType(Status.NA.toString());
-			dto.getOthersDto().setSendWhatsAppLink(Status.NO.toString());
-			dto.getOthersDto().setRegistrationDate(LocalDateTime.now().toString());
-			dto.getAdminDto().setCreatedOn(LocalDateTime.now().toString());
-			if (dto.getOthersDto().getReferalName() == null) {
-				dto.getOthersDto().setReferalName("NA");
-
-			}
-			if (dto.getOthersDto().getComments() == null) {
-				dto.getOthersDto().setComments("NA");
-			}
-			if (dto.getOthersDto().getWorking() == null) {
-
-				dto.getOthersDto().setWorking("No");
-			}
-			if (dto.getOthersDto().getReferalContactNumber() == null) {
-
-				dto.getOthersDto().setReferalContactNumber(0L);
-			}
+			wrapper.setValuesForTraineeDto(dto);
 
 			List<Object> list = wrapper.extractDtoDetails(dto);
 
 			repo.writeData(spreadsheetId, list);
+			//adding to cache 
 			cacheService.updateCache("sheetsData", spreadsheetId, list);
 
 			boolean status = addToFollowUp(dto, spreadsheetId);
@@ -164,6 +144,8 @@ public class DreamServiceImpl implements DreamService {
 		}
 	}
 
+	
+
 	public ResponseEntity<String> writeDataEnquiry(String spreadsheetId, TraineeDto dto, HttpServletRequest request)
 
 			throws MessagingException, TemplateException {
@@ -171,33 +153,13 @@ public class DreamServiceImpl implements DreamService {
 			List<List<Object>> data = repo.getIds(spreadsheetId).getValues();
 			int size = data != null ? data.size() : 0;
 			dto.setId(size += 1);
-			dto.getOthersDto().setXworkzEmail(Status.NA.toString());
-			dto.getOthersDto().setPreferredLocation(Status.NA.toString());
-			dto.getOthersDto().setPreferredClassType(Status.NA.toString());
-			dto.getOthersDto().setSendWhatsAppLink(Status.NO.toString());
-			dto.getOthersDto().setRegistrationDate(LocalDateTime.now().toString());
-			dto.getAdminDto().setCreatedOn(LocalDateTime.now().toString());
-			if (dto.getOthersDto().getReferalName() == null) {
-				dto.getOthersDto().setReferalName("NA");
-
-			}
-			if (dto.getOthersDto().getComments() == null) {
-				dto.getOthersDto().setComments("NA");
-			}
-			if (dto.getOthersDto().getWorking() == null) {
-
-				dto.getOthersDto().setWorking("No");
-			}
-			if (dto.getOthersDto().getReferalContactNumber() == null) {
-
-				dto.getOthersDto().setReferalContactNumber(0L);
-			}
+			wrapper.setValuesForTraineeDto(dto);
 
 			List<Object> list = wrapper.extractDtoDetails(dto);
 
 			repo.writeData(spreadsheetId, list);
 			// adding data to the cache
-			// cacheUpdate.updateCache("sheetsData", spreadsheetId, list);
+			cacheService.updateCache("sheetsData", spreadsheetId, list);
 			saveBirthDayInfo(spreadsheetId, dto, request);
 
 			boolean status = addToFollowUpEnquiry(dto, spreadsheetId);
@@ -325,6 +287,7 @@ public class DreamServiceImpl implements DreamService {
 	public ResponseEntity<SheetsDto> readData(String spreadsheetId, int startingIndex, int maxRows) {
 		try {
 			List<List<Object>> dataList = repo.readData(spreadsheetId);
+			
 			if (dataList != null) {
 				// sorting based on registration date
 				List<List<Object>> sortedData = dataList.stream().sorted(Comparator.comparing(
@@ -400,17 +363,23 @@ public class DreamServiceImpl implements DreamService {
 				String range = traineeSheetName + rowStartRange + rowIndex + ":" + rowEndRange + rowIndex;
 				List<List<Object>> values = Arrays.asList(wrapper.extractDtoDetails(dto));
 
+				//removing id while update
+				if (!values.isEmpty()) {
+					List<Object> modifiedValues = new ArrayList<>(values.get(0).subList(1, values.get(0).size()));
+				    values.set(0, modifiedValues); // Update the values list with the modified sublist
+
+				}
 				ValueRange valueRange = new ValueRange();
 				valueRange.setValues(values);
+				
 				UpdateValuesResponse updated = repo.update(spreadsheetId, range, valueRange);
 				if (updated != null && !updated.isEmpty()) {
-
 					updateFollowUp(spreadsheetId, email, dto);
 					cacheService.getCacheDataByEmail("sheetsData", spreadsheetId, email, dto);
 					// repo.evictAllCachesOnTraineeDetails();
 					return ResponseEntity.ok("Updated Successfully");
 				} else {
-					return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("An error occurred ");
+					return ResponseEntity.ok("error");
 				}
 
 			} else {
@@ -428,7 +397,7 @@ public class DreamServiceImpl implements DreamService {
 
 		FollowUpDto followUpDto = getFollowUpDetailsByEmail(spreadsheetId, email);
 		if (followUpDto == null) {
-			return false;
+			return false;	
 		}
 
 		int rowIndex = findByEmailForUpdate(spreadsheetId, email);
@@ -437,17 +406,25 @@ public class DreamServiceImpl implements DreamService {
 
 			// Initialize followUpDto with the existing data
 			followUpDto = getFollowUpDetailsByEmail(spreadsheetId, email);
-
 			// Update the email from the TraineeDto
 			followUpDto.getBasicInfo().setEmail(dto.getBasicInfo().getEmail());
 			followUpDto.setAdminDto(dto.getAdminDto());
 			List<List<Object>> values = Arrays.asList(wrapper.extractDtoDetails(followUpDto));
 			ValueRange valueRange = new ValueRange();
+			
+			//removing id while update
+			if (!values.isEmpty()) {
+				List<Object> modifiedValues = new ArrayList<>(values.get(0).subList(1, values.get(0).size()));
+			    values.set(0, modifiedValues); // Update the values list with the modified sublist
+
+			}
 			valueRange.setValues(values);
+			
 			UpdateValuesResponse updated = repo.updateFollow(spreadsheetId, range, valueRange);
 
 			if (updated != null && !updated.isEmpty()) {
 				// repo.evictAllCachesOnTraineeDetails();
+				cacheService.updateCacheFollowUp("followUpDetails",spreadsheetId, email, followUpDto);
 				return true;
 			} else {
 				return false;
@@ -455,7 +432,6 @@ public class DreamServiceImpl implements DreamService {
 		} else {
 			return false;
 		}
-
 	}
 
 	private int findRowIndexByEmail(String spreadsheetId, String email) throws IOException {
@@ -465,7 +441,7 @@ public class DreamServiceImpl implements DreamService {
 			for (int i = 0; i < values.size(); i++) {
 				List<Object> row = values.get(i);
 				if (row.size() > 0 && row.get(0).toString().equalsIgnoreCase(email)) {
-					return i + 3;
+					return i+3;
 				}
 			}
 		}
@@ -491,7 +467,7 @@ public class DreamServiceImpl implements DreamService {
 		}
 	}
 
-	private UpdateValuesResponse setFollowUpDto(String calBack, String spreadsheetId, String currentStatus,
+	private UpdateValuesResponse setFollowUpDto(String callBack, String spreadsheetId, String currentStatus,
 			String currentlyFollowedBy, FollowUpDto followUpDto, String joiningDate, String range)
 			throws IllegalAccessException, IOException {
 
@@ -511,10 +487,10 @@ public class DreamServiceImpl implements DreamService {
 
 		adminDto.setUpdatedBy(currentlyFollowedBy);
 		adminDto.setUpdatedOn(LocalDateTime.now().toString());
-		if (calBack != null && !calBack.equals("NA")) {
-			followUpDto.setCallback(LocalDateTime.of(LocalDate.parse(calBack), LocalTime.now()).toString());
+		if (callBack != null && !callBack.equals("NA")) {
+			followUpDto.setCallback(LocalDateTime.of(LocalDate.parse(callBack), LocalTime.now()).toString());
 		}
-		if (calBack != null && calBack.equals("NA")) {
+		if (callBack != null && callBack.equals("NA")) {
 			followUpDto.setCallback(LocalDateTime.of(LocalDate.now(), LocalTime.now()).plusDays(1).toString());
 		}
 		followUpDto.setAdminDto(adminDto);
@@ -532,12 +508,16 @@ public class DreamServiceImpl implements DreamService {
 		try {
 			List<List<Object>> data = repo.getStatusId(spreadsheetId).getValues();
 			StatusDto sdto = wrapper.setFollowUpStatus(statusDto, data);
+			
 			List<Object> statusData = wrapper.extractDtoDetails(sdto);
 			boolean status = repo.updateFollowUpStatus(spreadsheetId, statusData);
+			cacheService.updateFollowUpStatusInCache("followUpStatusDetails", spreadsheetId, statusData);
+			
 			if (status == true) {
 				updateCurrentFollowUp(statusDto.getCallBack(), spreadsheetId, statusDto.getBasicInfo().getEmail(),
 						statusDto.getAttemptStatus(), statusDto.getAttemptedBy(), statusDto.getJoiningDate());
 				// repo.evictAllCachesOnTraineeDetails();
+				cacheService.updateFollowUpStatus("followUpDetails",spreadsheetId,statusDto);
 			}
 			return ResponseEntity.ok("Follow Status Updated for ID :  " + statusDto.getId());
 		} catch (IOException | IllegalAccessException e) {
@@ -566,8 +546,7 @@ public class DreamServiceImpl implements DreamService {
 
 				return ResponseEntity.ok(suggestion);
 			} catch (IOException e) {
-				return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new ArrayList<>()); // Return an
-																										// empty list on
+				return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new ArrayList<>()); // Return an empty list on
 																										// error
 			}
 		}
@@ -581,8 +560,9 @@ public class DreamServiceImpl implements DreamService {
 		List<List<Object>> data = repo.readData(spreadsheetId);
 		TraineeDto trainee = data.stream().filter(list -> list.contains(email)).findFirst().map(wrapper::listToDto)
 				.orElse(null);
-		if (trainee != null) {
-			return ResponseEntity.ok(trainee);
+
+	    if (trainee != null) {
+	        return ResponseEntity.ok(trainee);
 		} else {
 			return new ResponseEntity<>("Email Not Found", HttpStatus.NOT_FOUND);
 		}
@@ -593,8 +573,12 @@ public class DreamServiceImpl implements DreamService {
 			HttpServletRequest request) throws IOException {
 		List<List<Object>> data = repo.getFollowUpDetails(spreadsheetId);
 		FollowUpDto followUp = data.stream()
-				.filter(list -> list.size() > 2 && list.get(2).toString().equalsIgnoreCase(email)).findFirst()
-				.map(wrapper::listToFollowUpDTO).orElse(null);
+		        .filter(list -> list.size() > 2 && list.get(2) instanceof String)
+		        .filter(list -> ((String) list.get(2)).equalsIgnoreCase(email))
+		        .findFirst()
+		        .map(wrapper::listToFollowUpDTO)
+		        .orElse(null);
+
 		if (followUp != null) {
 			return ResponseEntity.ok(followUp);
 		} else {
@@ -628,11 +612,11 @@ public class DreamServiceImpl implements DreamService {
 				});
 
 				FollowUpDataDto followUpDataDto = new FollowUpDataDto(followUpDto, data.size());
-				// repo.evictAllCachesOnTraineeDetails();
+				// repo.evictFollowUpStatusDetails();
 				return ResponseEntity.ok(followUpDataDto);
 			} else {
 				return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null); // Return a not found response if data is
-																				// null
+		          																// null
 			}
 		} else {
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null); // Return a bad request if status is null
@@ -677,7 +661,6 @@ public class DreamServiceImpl implements DreamService {
 				.filter(list -> list.stream().anyMatch(value -> value.toString().equalsIgnoreCase(email)))
 				.collect(Collectors.toList());
 		statusDto = getFollowUpStatusData(data, startingIndex, maxRows);
-
 		return statusDto;
 	}
 
@@ -696,7 +679,7 @@ public class DreamServiceImpl implements DreamService {
 				statusDto.add(dto);
 			}
 		}
-		// repo.evictAllCachesOnTraineeDetails();
+	    //repo.evictFollowUpStatusDetails();
 		return statusDto;
 	}
 
