@@ -415,7 +415,6 @@ public class DreamServiceImpl implements DreamService {
 			if (!values.isEmpty()) {
 				List<Object> modifiedValues = new ArrayList<>(values.get(0).subList(1, values.get(0).size()));
 				values.set(0, modifiedValues); // Update the values list with the modified sublist
-
 			}
 			valueRange.setValues(values);
 
@@ -495,10 +494,16 @@ public class DreamServiceImpl implements DreamService {
 			followUpDto.setCallback(LocalDateTime.of(LocalDate.now(), LocalTime.now()).plusDays(1).toString());
 		}
 		followUpDto.setAdminDto(adminDto);
-
-		System.out.println("followUpDto data:"+followUpDto);
 		List<List<Object>> values = Arrays.asList(wrapper.extractDtoDetails(followUpDto));
+
+	
 		ValueRange valueRange = new ValueRange();
+
+//		//removing id while update
+		if (!values.isEmpty()) {
+			List<Object> modifiedValues = new ArrayList<>(values.get(0).subList(1, values.get(0).size()));
+			values.set(0, modifiedValues); // Update the values list with the modified sublist
+		}
 		valueRange.setValues(values);
 		UpdateValuesResponse updated = repo.updateFollow(spreadsheetId, range, valueRange);
 		return updated;
@@ -510,11 +515,12 @@ public class DreamServiceImpl implements DreamService {
 		try {
 			List<List<Object>> data = repo.getStatusId(spreadsheetId).getValues();
 			StatusDto sdto = wrapper.setFollowUpStatus(statusDto, data);
-			System.out.println("status data:"+sdto);
+	
 
 			List<Object> statusData = wrapper.extractDtoDetails(sdto);
 			boolean status = repo.updateFollowUpStatus(spreadsheetId, statusData);
-//			cacheService.updateFollowUpStatusInCache("followUpStatusDetails", spreadsheetId, statusData);
+			System.out.println("status data:"+statusData);
+			cacheService.updateFollowUpStatusInCache("followUpStatusDetails", spreadsheetId, statusData);
 
 			if (status == true) {
 				updateCurrentFollowUp(statusDto.getCallBack(), spreadsheetId, statusDto.getBasicInfo().getEmail(),
@@ -684,7 +690,7 @@ public class DreamServiceImpl implements DreamService {
 				statusDto.add(dto);
 			}
 		}
-		// repo.evictFollowUpStatusDetails();
+	//	repo.evictFollowUpStatusDetails();
 		return statusDto;
 	}
 

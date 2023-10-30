@@ -13,6 +13,6 @@ public interface CacheService {
 	
 	void updateCacheFollowUp(String cacheName, String key, String email, FollowUpDto followUpDto) throws IllegalAccessException;
 
-	void updateFollowUpStatus(String cacheName, String spreadsheetId, StatusDto statusDto);
+	void updateFollowUpStatus(String cacheName, String spreadsheetId, StatusDto statusDto) throws IllegalAccessException;
 	public void updateFollowUpStatusInCache(String cacheName, String key, List<Object> data);
 }

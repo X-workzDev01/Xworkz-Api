@@ -105,48 +105,36 @@ public class CacheServiceImpl implements CacheService {
 		}
 	}
 
-	private void FindAndSetValue(String key, String email, FollowUpDto dto, Cache cache,
-			List<List<Object>> ListOfItems) {
-		if (email != null) {
-			FollowUpDto followUpDto = ListOfItems.stream()
-					.filter(list -> list.size() > 2 && list.get(2).toString().equalsIgnoreCase(email))
-					.map(list -> wrapper.listToFollowUpDTO(list)).findFirst() // Get the first matching FollowUpDto or
-																				// Optional<FollowUpDto>
-					.orElse(null); // Handle the case when no match is found
-
-			// Update the email from the dto
-			if (followUpDto != null) {
-				followUpDto.getBasicInfo().setEmail(dto.getBasicInfo().getEmail());
-				followUpDto.setAdminDto(dto.getAdminDto());
-				cache.put(key, followUpDto);
-			} else {
-				logger.debug("followUpDto is null");
-			}
-		} else {
-			logger.debug("email is null");
-		}
-	}
+	
 
 	@Override
-	public void updateFollowUpStatus(String cacheName, String key, StatusDto statusDto) {
+	public void updateFollowUpStatus(String cacheName, String key, StatusDto statusDto) throws IllegalAccessException {
 		Cache cache = cacheManager.getCache(cacheName);
 		String email = statusDto.getBasicInfo().getEmail();
 		if (cache != null) {
 			ValueWrapper valueWrapper = cache.get(key);
 			if (valueWrapper != null && valueWrapper.get() instanceof List) {
-//				@SuppressWarnings("unchecked")
-//				List<List<Object>> ListOfItems = (List<List<Object>>) valueWrapper.get();
-//				FollowUpDto followUpDto = ListOfItems.stream()
-//						.filter(list -> list.size() > 2 && list.get(2).toString().equalsIgnoreCase(email))
-//						.map(list -> wrapper.listToFollowUpDTO(list)).findFirst() // Get the first matching FollowUpDto
-//																					// or
-//																					// Optional<FollowUpDto>
-//						.orElse(null); // Handle the case when no match is found
-//				if (followUpDto != null) {
-//					followUpDto.setCurrentStatus(statusDto.getAttemptStatus());
-//					followUpDto.setJoiningDate(statusDto.getJoiningDate());
-//					cache.put(key, followUpDto);
-//				}
+
+				@SuppressWarnings("unchecked")
+				List<List<Object>> ListOfItems = (List<List<Object>>) valueWrapper.get();
+				int matchingIndex = -1; // Initialize to -1, indicating not found initially
+
+				for (int i = 0; i < ListOfItems.size(); i++) {
+					List<Object> items = ListOfItems.get(i);
+					if (items.get(2).equals(email)) {
+						matchingIndex = i; // Set the index when a match is found
+						break; // Exit the loop once a match is found
+					}
+				}
+				List<Object> list = wrapper.extractDtoDetails(statusDto);
+
+				if (matchingIndex >= 0) {
+
+					ListOfItems.set(matchingIndex, list);
+				}
+
+			} else {
+				logger.debug("Data not found in the cache for the specified email: " + email);
 			}
 		}
 	}
@@ -154,6 +142,7 @@ public class CacheServiceImpl implements CacheService {
 	@SuppressWarnings("unchecked")
 	public void updateFollowUpStatusInCache(String cacheName, String key, List<Object> data) {
 		Cache cache = cacheManager.getCache(cacheName);
+		System.out.println("status data:"+data);
 		if (cache != null) {
 			ValueWrapper valueWrapper = cache.get(key);
 			if (valueWrapper != null && valueWrapper.get() instanceof List) {
