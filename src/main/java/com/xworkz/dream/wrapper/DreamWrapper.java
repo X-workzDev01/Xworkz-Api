@@ -571,6 +571,7 @@ public class DreamWrapper {
 		followUpDto.setAdminDto(traineeDto.getAdminDto());
 		return followUpDto;
 	}
+
 	public FollowUpDto setFollowUpEnwuiry(TraineeDto traineeDto) {
 		FollowUpDto followUpDto = new FollowUpDto();
 		BasicInfoDto basicInfo = new BasicInfoDto();
@@ -620,7 +621,7 @@ public class DreamWrapper {
 		sdto.setJoiningDate(statusDto.getJoiningDate());
 		return sdto;
 	}
-	
+
 	public void setFieldValueAsNa(TraineeDto dto) {
 		if (dto.getCourseInfo().getCourse() == null) {
 			dto.getCourseInfo().setCourse("NA");
@@ -643,9 +644,9 @@ public class DreamWrapper {
 			dto.getCourseInfo().setStartTime("NA");
 		}
 	}
-	public  void setValuesForTraineeDto(TraineeDto dto) {
-		dto.getOthersDto().setXworkzEmail(Status.NA.toString());
 
+	public void setValuesForTraineeDto(TraineeDto dto) {
+		dto.getOthersDto().setXworkzEmail(Status.NA.toString());
 		dto.getOthersDto().setPreferredLocation(Status.NA.toString());
 		dto.getOthersDto().setPreferredClassType(Status.NA.toString());
 		dto.getOthersDto().setSendWhatsAppLink(Status.NO.toString());

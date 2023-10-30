@@ -40,8 +40,8 @@ public class LoginServiceImpl implements LoginService {
 	@Value("${login.cookieDomain}")
 	private String cookieDomain;
 
-	private static final int otpLenth = 6;
-	private static final int otpExpiration = 10;
+	//private static final int otpLenth = 6;
+	//private static final int otpExpiration = 10;
 	List<User> users = new ArrayList<User>();
 
 	@Autowired
@@ -58,8 +58,10 @@ public class LoginServiceImpl implements LoginService {
 	    Resource resource = resourceLoader.getResource(userFile);
 	    File file = resource.getFile();
 	    FileInputStream inputStream = new FileInputStream(file);
-	    Map<String, Map<Object, Object>> yamlData = (Map<String, Map<Object, Object>>) yaml.load(inputStream);
-	    List<Object> list = (List<Object>) yamlData.get("user");
+	    @SuppressWarnings("unchecked")
+		Map<String, Map<Object, Object>> yamlData = (Map<String, Map<Object, Object>>) yaml.load(inputStream);
+	    @SuppressWarnings("unchecked")
+		List<Object> list = (List<Object>) yamlData.get("user");
 	    ObjectMapper objectMapper = new ObjectMapper();
 
 	    if (list == null) {

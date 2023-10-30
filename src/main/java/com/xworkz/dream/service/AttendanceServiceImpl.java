@@ -81,7 +81,7 @@ public class AttendanceServiceImpl implements AttendanceService {
 			if (dto.getAttemptStatus().equalsIgnoreCase(Status.Joined.toString())) {
 				dto.getCourseInfo().setStartTime(LocalDateTime.now().toString());
 				List<Object> list = wrapper.listOfAttendance(dto);
-				boolean res = attendanceRepository.writeAttendance(spreadsheetId, list, attendanceInfoRange);
+				attendanceRepository.writeAttendance(spreadsheetId, list, attendanceInfoRange);
 				logger.info("Attendance Detiles Added Sucessfully SpreadsheetId: {} , Detiles: {} ", spreadsheetId,
 						dto.toString());
 
@@ -245,7 +245,7 @@ public class AttendanceServiceImpl implements AttendanceService {
 		List<AttendanceDto> attendanceDtos = new ArrayList<>();
 
 		int endIndex = startingIndex + maxRows;
-		int rowCount = values.size();
+		//int rowCount = values.size();
 
 		ListIterator<List<Object>> iterator = values.listIterator(startingIndex);
 
