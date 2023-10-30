@@ -51,8 +51,7 @@ public interface DreamService {
 	public boolean updateCurrentFollowUp(String spreadsheetId, String email, String currentStatus,
 			String currentlyFollowedBy) throws IOException, IllegalAccessException;
 
-	public ResponseEntity<String> updateFollowUpStatus(String spreadsheetId, StatusDto statusDto,
-			HttpServletRequest request);
+	public ResponseEntity<String> updateFollowUpStatus(String spreadsheetId, StatusDto statusDto);
 
 	public ResponseEntity<List<TraineeDto>> getSearchSuggestion(String spreadsheetId, String value,
 			HttpServletRequest request);

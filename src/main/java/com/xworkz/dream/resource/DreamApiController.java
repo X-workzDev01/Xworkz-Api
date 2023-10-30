@@ -116,7 +116,7 @@ public class DreamApiController {
 	public ResponseEntity<String> updateFollowUpStatus(@RequestHeader String spreadsheetId,
 			@RequestBody StatusDto statusDto, HttpServletRequest request) throws IOException {
 		logger.info("updating follow up status : {}", statusDto);
-		return service.updateFollowUpStatus(spreadsheetId, statusDto, request);
+		return service.updateFollowUpStatus(spreadsheetId, statusDto);
 	}
 
 //	public <ResponseEntity<FollowUpDto>> getFollowUpData(@RequestHeader String spreadsheetId , star)

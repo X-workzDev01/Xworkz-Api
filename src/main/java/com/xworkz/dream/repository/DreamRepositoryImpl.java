@@ -146,7 +146,6 @@ public class DreamRepositoryImpl implements DreamRepository {
 	public List<List<Object>> readData(String spreadsheetId) throws IOException {
 		ValueRange response = sheetsService.spreadsheets().values().get(spreadsheetId, range).execute();
 		List<List<Object>> data = response.getValues();
-
 		return data;
 	}
 
@@ -180,16 +179,11 @@ public class DreamRepositoryImpl implements DreamRepository {
 	}
 
 	@Override
-	@Cacheable(value = "followUpDetails", key = "#spreadsheetId", unless = "#result == null")
 	public List<List<Object>> getFollowUpDetails(String spreadsheetId) throws IOException {
 
 		ValueRange response = sheetsService.spreadsheets().values().get(spreadsheetId, followUpRange).execute();
-		List<List<Object>> data = new ArrayList<>();
 
-		if (response.getValues() != null) {
-			data.addAll(response.getValues());
-		}
-		return data;
+		return response.getValues();
 	}
 
 	@Override
@@ -259,9 +253,13 @@ public class DreamRepositoryImpl implements DreamRepository {
 	}
 
 	@Override
-	@CachePut(value = "followUpDetails", key = "#spreadsheetId", unless = "#result == null")
+	// @CachePut(value = "followUpDetails", key = "#spreadsheetId", unless =
+	// "#result == null")
 	public UpdateValuesResponse updateFollow(String spreadsheetId, String range2, ValueRange valueRange)
 			throws IOException {
+		System.out.println("Values in repo" + valueRange);
+		System.err.println(range2);
+
 		return sheetsService.spreadsheets().values().update(spreadsheetId, range2, valueRange)
 				.setValueInputOption("RAW").execute();
 	}
@@ -307,7 +305,7 @@ public class DreamRepositoryImpl implements DreamRepository {
 	}
 
 	@Override
-	@CacheEvict(value = { "followUpStatusDetails"}, allEntries = true)
+	@CacheEvict(value = { "followUpStatusDetails" }, allEntries = true)
 	public void evictFollowUpStatusDetails() {
 		// This method will be scheduled to run every 12 hours
 		// and will evict all entries in the specified caches
