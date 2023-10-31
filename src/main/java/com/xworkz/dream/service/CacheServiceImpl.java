@@ -1,6 +1,5 @@
 package com.xworkz.dream.service;
 
-import java.util.Iterator;
 import java.util.List;
 
 import org.slf4j.Logger;
@@ -74,7 +73,8 @@ public class CacheServiceImpl implements CacheService {
 	}
 
 	@Override
-	public void updateCacheFollowUp(String cacheName, String key, String email, FollowUpDto dto) throws IllegalAccessException {
+	public void updateCacheFollowUp(String cacheName, String key, String email, FollowUpDto dto)
+			throws IllegalAccessException {
 
 		Cache cache = cacheManager.getCache(cacheName);
 		if (cache != null) {
@@ -104,8 +104,6 @@ public class CacheServiceImpl implements CacheService {
 			}
 		}
 	}
-
-	
 
 	@Override
 	public void updateFollowUpStatus(String cacheName, String key, StatusDto statusDto) throws IllegalAccessException {
@@ -142,14 +140,21 @@ public class CacheServiceImpl implements CacheService {
 	@SuppressWarnings("unchecked")
 	public void updateFollowUpStatusInCache(String cacheName, String key, List<Object> data) {
 		Cache cache = cacheManager.getCache(cacheName);
-		System.err.println("status data:"+data);
+		if (data.size() > 5) {
+			data.remove(5); // Removes the element at index 5
+		}
+		if (data.size() > 4) {
+			data.remove(4); // Removes the element at index 4
+		}
 		if (cache != null) {
 			ValueWrapper valueWrapper = cache.get(key);
 			if (valueWrapper != null && valueWrapper.get() instanceof List) {
 				// cache.put(key, existingData);
 				// adding single list to the cache
 				((List<List<Object>>) valueWrapper.get()).add(data);
+
 			}
+
 		}
 	}
 
