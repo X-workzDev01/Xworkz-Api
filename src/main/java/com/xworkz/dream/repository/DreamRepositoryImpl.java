@@ -262,7 +262,6 @@ public class DreamRepositoryImpl implements DreamRepository {
 	    List<Object> rowData = new ArrayList<>();
 	    rowData.add(""); // Placeholder for A column
 	    rowData.addAll(row.subList(1, row.size())); // Start from the second element (B column)
-	    System.out.println("Repository write data : "+rowData);
 	    values.add(rowData);
 		ValueRange body = new ValueRange().setValues(values);
 		sheetsService.spreadsheets().values().append(spreadsheetId, dateOfBirthDetailsRange, body)
@@ -275,8 +274,6 @@ public class DreamRepositoryImpl implements DreamRepository {
 	// "#result == null")
 	public UpdateValuesResponse updateFollow(String spreadsheetId, String range2, ValueRange valueRange)
 			throws IOException {
-		System.out.println("Values in repo" + valueRange);
-		System.err.println(range2);
 
 		return sheetsService.spreadsheets().values().update(spreadsheetId, range2, valueRange)
 				.setValueInputOption("RAW").execute();

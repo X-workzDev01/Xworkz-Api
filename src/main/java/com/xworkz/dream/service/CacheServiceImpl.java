@@ -1,6 +1,5 @@
 package com.xworkz.dream.service;
 
-import java.util.Iterator;
 import java.util.List;
 
 import org.slf4j.Logger;
@@ -37,8 +36,11 @@ public class CacheServiceImpl implements CacheService {
 			if (valueWrapper != null && valueWrapper.get() instanceof List) {
 				// cache.put(key, existingData);
 				// adding single list to the cache
+				int size=(((List<List<Object>>) valueWrapper.get()).size());
+				System.out.println("size of cache is:");
+				data.set(0, size+1);
+				
 				((List<List<Object>>) valueWrapper.get()).add(data);
-
 			}
 		}
 	}
@@ -142,12 +144,17 @@ public class CacheServiceImpl implements CacheService {
 	@SuppressWarnings("unchecked")
 	public void updateFollowUpStatusInCache(String cacheName, String key, List<Object> data) {
 		Cache cache = cacheManager.getCache(cacheName);
-		System.err.println("status data:"+data);
 		if (cache != null) {
 			ValueWrapper valueWrapper = cache.get(key);
 			if (valueWrapper != null && valueWrapper.get() instanceof List) {
 				// cache.put(key, existingData);
 				// adding single list to the cache
+				if (data.size() > 5) {
+					data.remove(5); // Removes the element at index 5
+				}
+				if (data.size() > 4) {
+					data.remove(4); // Removes the element at index 4
+				}
 				((List<List<Object>>) valueWrapper.get()).add(data);
 			}
 		}
