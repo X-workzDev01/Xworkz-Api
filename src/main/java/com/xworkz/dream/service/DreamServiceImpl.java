@@ -110,9 +110,9 @@ public class DreamServiceImpl implements DreamService {
 			throws MessagingException, TemplateException {
 		try {
 
-			List<List<Object>> data = repo.getIds(spreadsheetId).getValues();
-			int size = data != null ? data.size() : 0;
-			dto.setId(size += 1);
+//			List<List<Object>> data = repo.getIds(spreadsheetId).getValues();
+//			int size = data != null ? data.size() : 0;
+//			dto.setId(size += 1);
 			wrapper.setValuesForTraineeDto(dto);
 
 			List<Object> list = wrapper.extractDtoDetails(dto);
@@ -149,9 +149,9 @@ public class DreamServiceImpl implements DreamService {
 
 			throws MessagingException, TemplateException {
 		try {
-			List<List<Object>> data = repo.getIds(spreadsheetId).getValues();
-			int size = data != null ? data.size() : 0;
-			dto.setId(size += 1);
+//			List<List<Object>> data = repo.getIds(spreadsheetId).getValues();
+//			int size = data != null ? data.size() : 0;
+//			dto.setId(size += 1);
 			wrapper.setValuesForTraineeDto(dto);
 
 			List<Object> list = wrapper.extractDtoDetails(dto);
@@ -513,11 +513,13 @@ public class DreamServiceImpl implements DreamService {
 	public ResponseEntity<String> updateFollowUpStatus(String spreadsheetId, StatusDto statusDto
 			) {
 		try {
+			System.err.println(" statusDto : "+statusDto);
 			List<List<Object>> data = repo.getStatusId(spreadsheetId).getValues();
 			StatusDto sdto = wrapper.setFollowUpStatus(statusDto, data);
-	
+			System.out.println("sdto : "+sdto);
 
 			List<Object> statusData = wrapper.extractDtoDetails(sdto);
+			System.err.println("statusData : "+statusData);
 			boolean status = repo.updateFollowUpStatus(spreadsheetId, statusData);
 			System.out.println("status data:"+statusData);
 			cacheService.updateFollowUpStatusInCache("followUpStatusDetails", spreadsheetId, statusData);

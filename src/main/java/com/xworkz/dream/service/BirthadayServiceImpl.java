@@ -46,7 +46,7 @@ public class BirthadayServiceImpl implements BirthadayService{
         List<List<Object>> birthdayDetails = repository.getBirthadayDetails(spreadsheetId);
         System.out.println("birthdayDetails : "+birthdayDetails);
         LocalDate currentDate = LocalDate.now();
-        DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");
+        DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
         List<String> emailsToSend = birthdayDetails.stream()
                 .filter(row -> {
                     LocalDate dob = LocalDate.parse((String) row.get(4),dateFormatter);
