@@ -450,7 +450,6 @@ public class DreamServiceImpl implements DreamService {
 	public boolean updateCurrentFollowUp(String calBack, String spreadsheetId, String email, String currentStatus,
 			String currentlyFollowedBy, String joiningDate) throws IOException, IllegalAccessException {
 		FollowUpDto followUpDto = getFollowUpDetailsByEmail(spreadsheetId, email);
-		System.out.println("Email : "+email);
 		int rowIndex = findByEmailForUpdate(spreadsheetId, email);
 		if (rowIndex != -1) {
 			String range = followUpSheetName + followUprowStartRange + rowIndex + ":" + followUprowEndRange + rowIndex;
@@ -513,15 +512,11 @@ public class DreamServiceImpl implements DreamService {
 	public ResponseEntity<String> updateFollowUpStatus(String spreadsheetId, StatusDto statusDto
 			) {
 		try {
-			System.err.println(" statusDto : "+statusDto);
 			List<List<Object>> data = repo.getStatusId(spreadsheetId).getValues();
 			StatusDto sdto = wrapper.setFollowUpStatus(statusDto, data);
-			System.out.println("sdto : "+sdto);
 
 			List<Object> statusData = wrapper.extractDtoDetails(sdto);
-			System.err.println("statusData : "+statusData);
 			boolean status = repo.updateFollowUpStatus(spreadsheetId, statusData);
-			System.out.println("status data:"+statusData);
 			cacheService.updateFollowUpStatusInCache("followUpStatusDetails", spreadsheetId, statusData);
 
 			if (status == true) {
@@ -573,8 +568,6 @@ public class DreamServiceImpl implements DreamService {
 
 		TraineeDto trainee = data.stream().filter(list -> list.contains(email)).findFirst().map(wrapper::listToDto)
 				.orElse(null);
-
-		System.out.println("trainee data:" + trainee);
 
 		if (trainee != null) {
 			return ResponseEntity.ok(trainee);
