@@ -13,7 +13,6 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.ListIterator;
 import java.util.Map;
-import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -450,7 +449,6 @@ public class DreamServiceImpl implements DreamService {
 	public boolean updateCurrentFollowUp(String calBack, String spreadsheetId, String email, String currentStatus,
 			String currentlyFollowedBy, String joiningDate) throws IOException, IllegalAccessException {
 		FollowUpDto followUpDto = getFollowUpDetailsByEmail(spreadsheetId, email);
-		System.out.println("Email : "+email);
 		int rowIndex = findByEmailForUpdate(spreadsheetId, email);
 		if (rowIndex != -1) {
 			String range = followUpSheetName + followUprowStartRange + rowIndex + ":" + followUprowEndRange + rowIndex;
@@ -513,15 +511,12 @@ public class DreamServiceImpl implements DreamService {
 	public ResponseEntity<String> updateFollowUpStatus(String spreadsheetId, StatusDto statusDto
 			) {
 		try {
-			System.err.println(" statusDto : "+statusDto);
 			List<List<Object>> data = repo.getStatusId(spreadsheetId).getValues();
 			StatusDto sdto = wrapper.setFollowUpStatus(statusDto, data);
-			System.out.println("sdto : "+sdto);
 
 			List<Object> statusData = wrapper.extractDtoDetails(sdto);
-			System.err.println("statusData : "+statusData);
 			boolean status = repo.updateFollowUpStatus(spreadsheetId, statusData);
-			System.out.println("status data:"+statusData);
+
 			cacheService.updateFollowUpStatusInCache("followUpStatusDetails", spreadsheetId, statusData);
 
 			if (status == true) {
@@ -574,7 +569,6 @@ public class DreamServiceImpl implements DreamService {
 		TraineeDto trainee = data.stream().filter(list -> list.contains(email)).findFirst().map(wrapper::listToDto)
 				.orElse(null);
 
-		System.out.println("trainee data:" + trainee);
 
 		if (trainee != null) {
 			return ResponseEntity.ok(trainee);
@@ -681,7 +675,6 @@ public class DreamServiceImpl implements DreamService {
 			throws IOException {
 		List<StatusDto> statusDto = new ArrayList<>();
 		List<List<Object>> dataList = repo.getFollowUpStatusDetails(spreadsheetId);
-		System.out.println(dataList);
 		if (email != null && dataList != null && !dataList.isEmpty()) {
 			List<List<Object>> data = dataList.stream()
 					.filter(list -> list.stream().anyMatch(value -> value.toString().equalsIgnoreCase(email)))
@@ -841,7 +834,7 @@ public class DreamServiceImpl implements DreamService {
 	public void notification() {
 		try {
 			List<Team> teamList = getTeam();
-			ResponseEntity<SheetNotificationDto> notificationDto = notification(id, loginEmail, teamList, request);
+		 notification(id, loginEmail, teamList, request);
 
 		} catch (IOException e) {
 			throw new RuntimeException("Exception occurred: " + e.getMessage(), e);
@@ -866,9 +859,7 @@ public class DreamServiceImpl implements DreamService {
 		if (spreadsheetId != null) {
 			List<List<Object>> listOfData = repo.notification(spreadsheetId);
 			if (listOfData != null) {
-				List<List<Object>> list = listOfData.stream().filter(items -> !items.contains("NA"))
-						.collect(Collectors.toList());
-
+			
 				if (!listOfData.isEmpty()) {
 					if (email != null) {
 						listOfData.stream().forEach(e -> {
@@ -952,7 +943,6 @@ public class DreamServiceImpl implements DreamService {
 	@Override
 	public boolean addEnquiry(EnquiryDto enquiryDto, String spreadsheetId, HttpServletRequest request) {
 		TraineeDto traineeDto = new TraineeDto();
-		EnquiryDto validatedEnquiryDto = wrapper.validateEnquiry(enquiryDto);
 
 		traineeDto.setCourseInfo(new CourseDto("NA"));
 		traineeDto.setOthersDto(new OthersDto("NA"));
@@ -1031,7 +1021,6 @@ public class DreamServiceImpl implements DreamService {
 
 			if (row != null && !row.isEmpty()) {
 				FollowUpDto followUpDto = wrapper.listToFollowUpDTO(row);
-				System.out.println(followUpDto);
 				if (followUpDto.getCallback().equalsIgnoreCase(date)) {
 					followUpDtos.add(followUpDto);
 				}
