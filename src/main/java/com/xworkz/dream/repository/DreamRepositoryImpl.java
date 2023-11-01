@@ -94,12 +94,12 @@ public class DreamRepositoryImpl implements DreamRepository {
 	@Override
 	public boolean writeData(String spreadsheetId, List<Object> row) throws IOException {
 		List<List<Object>> values = new ArrayList<>();
-		  // Add an empty string as a placeholder for the A column
-	    List<Object> rowData = new ArrayList<>();
-	    rowData.add(""); // Placeholder for A column
-	    rowData.addAll(row.subList(1, row.size())); // Start from the second element (B column)
-	    System.out.println("Repository write data : "+rowData);
-	    values.add(rowData);
+		// Add an empty string as a placeholder for the A column
+		List<Object> rowData = new ArrayList<>();
+		rowData.add(""); // Placeholder for A column
+		rowData.addAll(row.subList(1, row.size())); // Start from the second element (B column)
+		System.out.println("Repository write data : " + rowData);
+		values.add(rowData);
 		ValueRange body = new ValueRange().setValues(values);
 		sheetsService.spreadsheets().values().append(spreadsheetId, range, body).setValueInputOption("USER_ENTERED")
 				.execute();
@@ -107,11 +107,11 @@ public class DreamRepositoryImpl implements DreamRepository {
 	}
 
 	@Override
-	@Cacheable(value = "emailData", key = "#spreadsheetId", unless = "#result == null")
-	public ValueRange getEmails(String spreadsheetId) throws IOException {
-		ValueRange response = sheetsService.spreadsheets().values().get(spreadsheetId, emailRange).execute();
-		return response;
-	}
+	@Cacheable(value = "emailData", key = "#email", unless = "#result == null")
+	public ValueRange getEmails(String spreadsheetId, String email) throws IOException {
+		ValueRange emailValue = sheetsService.spreadsheets().values().get(spreadsheetId, emailRange).execute();
+		return emailValue;
+	} 
 
 	@Override
 	@Cacheable(value = "contactData", key = "#spreadsheetId", unless = "#result == null")
@@ -164,12 +164,12 @@ public class DreamRepositoryImpl implements DreamRepository {
 	@Override
 	public boolean saveToFollowUp(String spreadsheetId, List<Object> row) throws IOException {
 		List<List<Object>> list = new ArrayList<List<Object>>();
-		  // Add an empty string as a placeholder for the A column
-	    List<Object> rowData = new ArrayList<>();
-	    rowData.add(""); // Placeholder for A column
-	    rowData.addAll(row.subList(1, row.size())); // Start from the second element (B column)
-	    System.out.println("Repository write data : "+rowData);
-	    list.add(rowData);
+		// Add an empty string as a placeholder for the A column
+		List<Object> rowData = new ArrayList<>();
+		rowData.add(""); // Placeholder for A column
+		rowData.addAll(row.subList(1, row.size())); // Start from the second element (B column)
+		System.out.println("Repository write data : " + rowData);
+		list.add(rowData);
 		ValueRange body = new ValueRange().setValues(list);
 		sheetsService.spreadsheets().values().append(spreadsheetId, followUpRange, body)
 				.setValueInputOption("USER_ENTERED").execute();
@@ -182,9 +182,9 @@ public class DreamRepositoryImpl implements DreamRepository {
 	public boolean updateFollowUpStatus(String spreadsheetId, List<Object> statusData) throws IOException {
 		List<List<Object>> list = new ArrayList<List<Object>>();
 		List<Object> rowData = new ArrayList<>();
-	    rowData.add(""); // Placeholder for A column
-	    rowData.addAll(statusData.subList(1, statusData.size())); // Start from the second element (B column)
-	    list.add(rowData);
+		rowData.add(""); // Placeholder for A column
+		rowData.addAll(statusData.subList(1, statusData.size())); // Start from the second element (B column)
+		list.add(rowData);
 		ValueRange body = new ValueRange().setValues(list);
 		sheetsService.spreadsheets().values().append(spreadsheetId, followUpStatus, body)
 				.setValueInputOption("USER_ENTERED").execute();
@@ -258,11 +258,11 @@ public class DreamRepositoryImpl implements DreamRepository {
 	@Override
 	public boolean saveBirthDayDetails(String spreadsheetId, List<Object> row) throws IOException {
 		List<List<Object>> values = new ArrayList<>();
-		  // Add an empty string as a placeholder for the A column
-	    List<Object> rowData = new ArrayList<>();
-	    rowData.add(""); // Placeholder for A column
-	    rowData.addAll(row.subList(1, row.size())); // Start from the second element (B column)
-	    values.add(rowData);
+		// Add an empty string as a placeholder for the A column
+		List<Object> rowData = new ArrayList<>();
+		rowData.add(""); // Placeholder for A column
+		rowData.addAll(row.subList(1, row.size())); // Start from the second element (B column)
+		values.add(rowData);
 		ValueRange body = new ValueRange().setValues(values);
 		sheetsService.spreadsheets().values().append(spreadsheetId, dateOfBirthDetailsRange, body)
 				.setValueInputOption("USER_ENTERED").execute();

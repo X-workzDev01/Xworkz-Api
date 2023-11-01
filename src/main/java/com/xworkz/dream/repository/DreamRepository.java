@@ -14,7 +14,7 @@ public interface DreamRepository {
 
 	public boolean writeData(String spreadsheetId, List<Object> row) throws IOException;
 
-	public ValueRange getEmails(String spreadsheetId) throws IOException;
+	public ValueRange getEmails(String spreadsheetId ,String email) throws IOException;
 
 	public ValueRange getContactNumbers(String spreadsheetId) throws IOException;
 

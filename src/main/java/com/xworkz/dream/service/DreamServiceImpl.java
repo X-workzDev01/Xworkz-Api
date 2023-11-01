@@ -24,6 +24,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.cache.annotation.CachePut;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.ResourceLoader;
 import org.springframework.http.HttpStatus;
@@ -235,7 +237,7 @@ public class DreamServiceImpl implements DreamService {
 
 		try {
 			// if (isCookieValid(request)) {
-			ValueRange values = repo.getEmails(spreadsheetId);
+			ValueRange values = repo.getEmails(spreadsheetId,email);
 			if (values != null && values.getValues() != null) {
 				for (List<Object> row : values.getValues()) {
 					if (row != null && !row.isEmpty() && row.get(0) != null
@@ -390,6 +392,7 @@ public class DreamServiceImpl implements DreamService {
 	}
 
 	@Override
+	
 	public boolean updateFollowUp(String spreadsheetId, String email, TraineeDto dto)
 			throws IOException, IllegalAccessException {
 
@@ -433,7 +436,7 @@ public class DreamServiceImpl implements DreamService {
 	}
 
 	private int findRowIndexByEmail(String spreadsheetId, String email) throws IOException {
-		ValueRange data = repo.getEmails(spreadsheetId);
+		ValueRange data = repo.getEmails(spreadsheetId,email);
 		List<List<Object>> values = data.getValues();
 		if (values != null) {
 			for (int i = 0; i < values.size(); i++) {
@@ -468,7 +471,6 @@ public class DreamServiceImpl implements DreamService {
 	private UpdateValuesResponse setFollowUpDto(String callBack, String spreadsheetId, String currentStatus,
 			String currentlyFollowedBy, FollowUpDto followUpDto, String joiningDate, String range)
 			throws IllegalAccessException, IOException {
-		
 
 		AdminDto existingAdminDto = followUpDto.getAdminDto();
 		AdminDto adminDto = new AdminDto();
@@ -495,7 +497,6 @@ public class DreamServiceImpl implements DreamService {
 		followUpDto.setAdminDto(adminDto);
 		List<List<Object>> values = Arrays.asList(wrapper.extractDtoDetails(followUpDto));
 
-	
 		ValueRange valueRange = new ValueRange();
 
 //		//removing id while update
@@ -509,8 +510,7 @@ public class DreamServiceImpl implements DreamService {
 	}
 
 	@Override
-	public ResponseEntity<String> updateFollowUpStatus(String spreadsheetId, StatusDto statusDto
-			) {
+	public ResponseEntity<String> updateFollowUpStatus(String spreadsheetId, StatusDto statusDto) {
 		try {
 			List<List<Object>> data = repo.getStatusId(spreadsheetId).getValues();
 			StatusDto sdto = wrapper.setFollowUpStatus(statusDto, data);
@@ -674,7 +674,6 @@ public class DreamServiceImpl implements DreamService {
 			throws IOException {
 		List<StatusDto> statusDto = new ArrayList<>();
 		List<List<Object>> dataList = repo.getFollowUpStatusDetails(spreadsheetId);
-		System.out.println(dataList);
 		if (email != null && dataList != null && !dataList.isEmpty()) {
 			List<List<Object>> data = dataList.stream()
 					.filter(list -> list.stream().anyMatch(value -> value.toString().equalsIgnoreCase(email)))
@@ -685,7 +684,7 @@ public class DreamServiceImpl implements DreamService {
 				statusDto.add(dto);
 			}
 		}
-	//	repo.evictFollowUpStatusDetails();
+		// repo.evictFollowUpStatusDetails();
 		return statusDto;
 	}
 
@@ -1024,7 +1023,6 @@ public class DreamServiceImpl implements DreamService {
 
 			if (row != null && !row.isEmpty()) {
 				FollowUpDto followUpDto = wrapper.listToFollowUpDTO(row);
-				System.out.println(followUpDto);
 				if (followUpDto.getCallback().equalsIgnoreCase(date)) {
 					followUpDtos.add(followUpDto);
 				}

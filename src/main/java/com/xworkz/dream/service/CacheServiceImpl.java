@@ -36,10 +36,9 @@ public class CacheServiceImpl implements CacheService {
 			if (valueWrapper != null && valueWrapper.get() instanceof List) {
 				// cache.put(key, existingData);
 				// adding single list to the cache
-				int size=(((List<List<Object>>) valueWrapper.get()).size());
-				System.out.println("size of cache is:");
-				data.set(0, size+1);
-				
+				int size = (((List<List<Object>>) valueWrapper.get()).size());
+				data.set(0, size + 1);
+
 				((List<List<Object>>) valueWrapper.get()).add(data);
 			}
 		}
@@ -50,6 +49,7 @@ public class CacheServiceImpl implements CacheService {
 	public void getCacheDataByEmail(String cacheName, String key, String email, TraineeDto dto)
 			throws IllegalAccessException {
 		Cache cache = cacheManager.getCache(cacheName);
+		System.err.println("88888888888888888888888888888888888888888888888");
 		if (cache != null) {
 			ValueWrapper valueWrapper = cache.get(key);
 			if (valueWrapper != null && valueWrapper.get() instanceof List) {
@@ -66,9 +66,11 @@ public class CacheServiceImpl implements CacheService {
 				}
 				List<Object> list = wrapper.extractDtoDetails(dto);
 
-				if (matchingIndex >= 0) {
+				if (matchingIndex >= 0) { 
 
 					listOfItems.set(matchingIndex, list);
+					updateEmailCache(email);
+
 				}
 
 			}
@@ -76,7 +78,8 @@ public class CacheServiceImpl implements CacheService {
 	}
 
 	@Override
-	public void updateCacheFollowUp(String cacheName, String key, String email, FollowUpDto dto) throws IllegalAccessException {
+	public void updateCacheFollowUp(String cacheName, String key, String email, FollowUpDto dto)
+			throws IllegalAccessException {
 
 		Cache cache = cacheManager.getCache(cacheName);
 		if (cache != null) {
@@ -106,8 +109,6 @@ public class CacheServiceImpl implements CacheService {
 			}
 		}
 	}
-
-	
 
 	@Override
 	public void updateFollowUpStatus(String cacheName, String key, StatusDto statusDto) throws IllegalAccessException {
@@ -158,6 +159,11 @@ public class CacheServiceImpl implements CacheService {
 				((List<List<Object>>) valueWrapper.get()).add(data);
 			}
 		}
+	}
+
+	public void updateEmailCache(String email) {
+		Cache cacheEmail = cacheManager.getCache("emailData");
+		
 	}
 
 }

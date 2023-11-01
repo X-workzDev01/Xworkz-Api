@@ -11,6 +11,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.cache.Cache;
+import org.springframework.cache.Cache.ValueWrapper;
+import org.springframework.cache.CacheManager;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -46,6 +49,9 @@ public class DreamApiController {
 	Logger logger = LoggerFactory.getLogger(DreamApiController.class);
 
 	private DreamService service;
+
+	@Autowired
+	private CacheManager manager;
 
 	@Autowired
 	public DreamApiController(DreamService service) {
@@ -142,7 +148,7 @@ public class DreamApiController {
 	@GetMapping("/readByEmail")
 	public ResponseEntity<?> getDataByEmail(@RequestHeader String spreadsheetId, @RequestParam String email,
 			HttpServletRequest request) throws IOException {
-		System.out.println("Sheed ID:"+spreadsheetId);
+		System.out.println("Sheed ID:" + spreadsheetId);
 		return service.getDetailsByEmail(spreadsheetId, email, request);
 	}
 
@@ -243,5 +249,7 @@ public class DreamApiController {
 			@RequestParam int startIndex, @RequestParam int endIndex, HttpServletRequest request) throws IOException {
 		return service.getFollowStatusByDate(date, startIndex, endIndex, id, request);
 	}
+
+	
 
 }
