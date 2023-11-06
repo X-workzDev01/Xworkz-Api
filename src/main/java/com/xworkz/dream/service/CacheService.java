@@ -10,9 +10,16 @@ public interface CacheService {
 	void updateCache(String cacheName, String key, List<Object> data);
 
 	void getCacheDataByEmail(String cacheName, String key, String email, TraineeDto dto) throws IllegalAccessException;
-	
-	void updateCacheFollowUp(String cacheName, String key, String email, FollowUpDto followUpDto) throws IllegalAccessException;
 
-	void updateFollowUpStatus(String cacheName, String spreadsheetId, StatusDto statusDto) throws IllegalAccessException;
-	public void updateFollowUpStatusInCache(String cacheName, String key, List<Object> data);
+	void updateCacheFollowUp(String cacheName, String key, String email, FollowUpDto followUpDto)
+			throws IllegalAccessException;
+
+	void updateFollowUpStatus(String cacheName, String spreadsheetId, StatusDto statusDto)
+			throws IllegalAccessException;
+
+	void updateFollowUpStatusInCache(String cacheName, String key, List<Object> data);
+
+	void updateCourseCache(String cacheName, String key, List<Object> data);
+
+	void addFollowUpToCache(String string, String spreadSheetId, List<Object> data);
 }

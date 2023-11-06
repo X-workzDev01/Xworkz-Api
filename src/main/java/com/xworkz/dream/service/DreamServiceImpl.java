@@ -207,6 +207,7 @@ public class DreamServiceImpl implements DreamService {
 			return false;
 		}
 		repo.saveToFollowUp(spreadSheetId, data);
+		cacheService.addFollowUpToCache("followUpDetails",spreadSheetId,data);
 		return true;
 	}
 
@@ -228,6 +229,7 @@ public class DreamServiceImpl implements DreamService {
 			return false;
 		}
 		boolean save = repo.saveToFollowUp(spreadSheetId, data);
+		cacheService.addFollowUpToCache("followUpDetails",spreadSheetId,data);
 		return save;
 
 	}
@@ -715,6 +717,8 @@ public class DreamServiceImpl implements DreamService {
 		dto.setId(size += 1);
 		List<Object> list = wrapper.extractDtoDetails(dto);
 		boolean save = repo.saveBatchDetails(spreadsheetId, list);
+		//adding to cache
+		cacheService.updateCourseCache("batchDetails",spreadsheetId,list);
 		if (save == true) {
 			return ResponseEntity.ok("Batch details added successfully");
 		} else {

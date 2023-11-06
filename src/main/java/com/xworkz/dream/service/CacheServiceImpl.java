@@ -165,5 +165,40 @@ public class CacheServiceImpl implements CacheService {
 		Cache cacheEmail = cacheManager.getCache("emailData");
 		
 	}
+	@SuppressWarnings("unchecked")
+	public void updateCourseCache(String cacheName, String key, List<Object> data) {
+		Cache cache = cacheManager.getCache(cacheName);
+		System.out.println("updating data:"+data+" "+cacheName);
+		if (cache != null) {
+			ValueWrapper valueWrapper = cache.get(key);
+			if (valueWrapper != null && valueWrapper.get() instanceof List) {
+				// cache.put(key, existingData);
+				// adding single list to the cache
+				int size = (((List<List<Object>>) valueWrapper.get()).size());
+				data.set(0, size + 1);
+
+				((List<List<Object>>) valueWrapper.get()).add(data);
+			}
+		}
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public void addFollowUpToCache(String cacheName, String key, List<Object> data) {
+		// TODO Auto-generated method stub
+		Cache cache = cacheManager.getCache(cacheName);
+		if (cache != null) {
+			ValueWrapper valueWrapper = cache.get(key);
+			if (valueWrapper != null && valueWrapper.get() instanceof List) {
+				// cache.put(key, existingData);
+				// adding single list to the cache
+				int size = (((List<List<Object>>) valueWrapper.get()).size());
+				data.set(0, size + 1);
+
+				((List<List<Object>>) valueWrapper.get()).add(data);
+			}
+		}
+		
+	}
 
 }
