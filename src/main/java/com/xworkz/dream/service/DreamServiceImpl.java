@@ -13,7 +13,6 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.ListIterator;
 import java.util.Map;
-import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -24,8 +23,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.cache.annotation.CachePut;
-import org.springframework.cache.annotation.Cacheable;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.ResourceLoader;
 import org.springframework.http.HttpStatus;
@@ -168,18 +165,20 @@ public class DreamServiceImpl implements DreamService {
 			if (status) {
 				logger.info("Data written successfully to spreadsheetId and Added to Follow Up: {}", spreadsheetId);
 				util.sms(dto);
-
-				boolean sent = util.sendCourseContent(dto.getBasicInfo().getEmail(),
-						dto.getBasicInfo().getTraineeName());
-				if (sent) {
-					return ResponseEntity.ok("Data written successfully, Added to follow Up, sent course content");
-				} else {
-
-					return ResponseEntity.ok("Email not sent, Data written successfully, Added to follow Up");
-
+				//sending course content disabled 
+				boolean sent=false;
+				if(!dto.getBasicInfo().getEmail().contains("@dummy.com")) {
+					
+					sent= util.sendCourseContent(dto.getBasicInfo().getEmail(),dto.getBasicInfo().getTraineeName());
 				}
 
-			}
+				 
+				if (sent) {
+					return ResponseEntity.ok("Data written successfully, Added to follow Up, sent course content");
+				} 
+			}else {
+					return ResponseEntity.ok("Email not sent, Data written successfully, Added to follow Up");
+				}
 			return ResponseEntity.ok("Data written successfully, not added to Follow Up");
 		} catch (Exception e) {
 			logger.error("Error processing request: " + e.getMessage(), e);
@@ -229,6 +228,7 @@ public class DreamServiceImpl implements DreamService {
 			return false;
 		}
 		boolean save = repo.saveToFollowUp(spreadSheetId, data);
+		System.out.println("data in service:"+data);
 		cacheService.addFollowUpToCache("followUpDetails",spreadSheetId,data);
 		return save;
 
@@ -525,7 +525,7 @@ public class DreamServiceImpl implements DreamService {
 				updateCurrentFollowUp(statusDto.getCallBack(), spreadsheetId, statusDto.getBasicInfo().getEmail(),
 						statusDto.getAttemptStatus(), statusDto.getAttemptedBy(), statusDto.getJoiningDate());
 				// repo.evictAllCachesOnTraineeDetails();
-//				cacheService.updateFollowUpStatus("followUpDetails", spreadsheetId, statusDto);
+			//cacheService.updateFollowUpStatus("followUpDetails", spreadsheetId, statusDto);
 			}
 			return ResponseEntity.ok("Follow Status Updated for ID :  " + statusDto.getId());
 		} catch (IOException | IllegalAccessException e) {
@@ -788,6 +788,7 @@ public class DreamServiceImpl implements DreamService {
 		FollowUpDto followUpDto = new FollowUpDto();
 		if (email != null && !email.isEmpty()) {
 			List<List<Object>> lists = repo.getFollowUpDetails(spreadsheetId);
+			System.err.println(lists.toString());
 			List<List<Object>> data = lists.stream()
 					.filter(list -> list.stream().anyMatch(value -> value.toString().equalsIgnoreCase(email)))
 					.collect(Collectors.toList());

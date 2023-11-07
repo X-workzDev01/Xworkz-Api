@@ -187,6 +187,7 @@ public class CacheServiceImpl implements CacheService {
 	public void addFollowUpToCache(String cacheName, String key, List<Object> data) {
 		// TODO Auto-generated method stub
 		Cache cache = cacheManager.getCache(cacheName);
+		System.out.println("adding cache:"+data);
 		if (cache != null) {
 			ValueWrapper valueWrapper = cache.get(key);
 			if (valueWrapper != null && valueWrapper.get() instanceof List) {

@@ -194,7 +194,6 @@ public class DreamApiController {
 	@PutMapping("/updateFollowUp")
 	public ResponseEntity<String> updateFollowUp(@RequestHeader String spreadsheetId, @RequestParam String email,
 			@RequestBody FollowUpDto dto, HttpServletRequest request) throws IOException, IllegalAccessException {
-		System.err.println("sssssssssssssssssssssssssssssssssssssssss       " + email);
 		return service.updateFollowUp(spreadsheetId, email, dto);
 	}
 
@@ -234,7 +233,6 @@ public class DreamApiController {
 		boolean saved = service.addEnquiry(enquiryDto, spreadSheetId, request);
 		String uri = request.getRequestURI();
 		System.out.println(uri.contains("enquiry"));
-		System.out.println(enquiryDto);
 
 		if (saved) {
 			return ResponseEntity.ok().body("Enquiry Added Successfully");
