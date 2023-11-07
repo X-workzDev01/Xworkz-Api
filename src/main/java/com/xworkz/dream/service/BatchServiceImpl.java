@@ -2,13 +2,10 @@ package com.xworkz.dream.service;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
@@ -16,6 +13,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.xworkz.dream.dto.FollowUpDataDto;
 import com.xworkz.dream.dto.FollowUpDto;
 import com.xworkz.dream.dto.TraineeDto;
 import com.xworkz.dream.repository.DreamRepository;
@@ -60,14 +58,15 @@ public class BatchServiceImpl implements BatchService {
 		}
 	}
 
-	public List<FollowUpDto> getTraineeDetailsByCourseInFollowUp(String spreadsheetId, String courseName)
+	public FollowUpDataDto getTraineeDetailsByCourseInFollowUp(String spreadsheetId, String courseName)
 			throws IOException {
+		 FollowUpDataDto followUpDataDto=new FollowUpDataDto(Collections.emptyList(),0);		
 		try {
 			List<List<Object>> followUpData = repo.getFollowUpDetails(spreadsheetId);
 			List<List<Object>> traineeData = repo.readData(spreadsheetId);
 			if (followUpData == null || traineeData == null || spreadsheetId == null || courseName == null
 					|| repo == null || wrapper == null || service == null) {
-				return Collections.emptyList();
+				return followUpDataDto;
 			}
 			List<FollowUpDto> followUpDto = traineeData.stream()
 					.filter(row -> row != null && row.size() > 9 && row.contains(courseName)).map(row -> {
@@ -100,22 +99,23 @@ public class BatchServiceImpl implements BatchService {
 						return fdto;
 					}).filter(Objects::nonNull).sorted(Comparator.comparing(FollowUpDto::getRegistrationDate))
 					.collect(Collectors.toList());
-
-			return followUpDto;
+			FollowUpDataDto dto = new FollowUpDataDto(followUpDto,followUpDto.size());
+            return dto;
 		} catch (IOException e) {
 			logger.error("An IOException occurred: " + e.getMessage(), e);
-			return Collections.emptyList();
+			return followUpDataDto;
 		}
 	}
 
-	public List<FollowUpDto> traineeDetailsByCourseAndStatusInFollowUp(String spreadsheetId, String courseName,
+	public FollowUpDataDto traineeDetailsByCourseAndStatusInFollowUp(String spreadsheetId, String courseName,
 			String status) throws IOException {
+		FollowUpDataDto followUpDataDto=new FollowUpDataDto(Collections.emptyList(),0);	
 		try {
 			List<List<Object>> followUpData = repo.getFollowUpDetails(spreadsheetId);
 			List<List<Object>> traineeData = repo.readData(spreadsheetId);
 			if (followUpData == null || traineeData == null || spreadsheetId == null || courseName == null
 					|| repo == null || wrapper == null || service == null || status == null) {
-				return Collections.emptyList();
+				return followUpDataDto;
 			}
 			List<FollowUpDto> followUpDto = traineeData.stream()
 					.filter(row -> row != null && row.size() > 9 && row.contains(courseName)).map(row -> {
@@ -155,37 +155,12 @@ public class BatchServiceImpl implements BatchService {
 					}).filter(Objects::nonNull)
 					.sorted(Comparator.comparing(FollowUpDto::getRegistrationDate).reversed())
 					.collect(Collectors.toList());
-			return followUpDto;
-
+			FollowUpDataDto dto = new FollowUpDataDto(followUpDto,followUpDto.size());
+			return dto;
 		} catch (IOException e) {
 			logger.error("An IOException occurred: " + e.getMessage(), e);
-			return Collections.emptyList();
+			return followUpDataDto;
 		}
-	}
-
-	@Override
-	public List<FollowUpDto> getGroupStatus(String spreadsheetId, String status) throws IOException {
-		System.out.println("this is getGroupStatus");
-		List<List<Object>> followUpData = repo.getFollowUpDetails(spreadsheetId);
-		List<List<Object>> traineeData = repo.readData(spreadsheetId);
-		Set<String> interestStatus = new HashSet<>(Arrays.asList("Interested", "RNR", "Not reachable", "Not available",
-				"CallDrop", "Incoming", "Not available"));
-		Set<String> rnrStatus = new HashSet<>(Arrays.asList("Busy", "RNR", "Not reachable", "Not available", "CallDrop",
-				"Incoming", "Not available"));
-		Set<String> notInterested = new HashSet<>(Arrays.asList("Drop after course", "drop after placement",
-				"higher studies", "joined other institute", "not joining", " wrong number"));
-
-		if (spreadsheetId == null || repo == null || wrapper == null || service == null || status == null) {
-			return null;
-		}
-		if (followUpData == null || traineeData == null || interestStatus == null || rnrStatus == null
-				|| notInterested == null) {
-			return Collections.emptyList();
-		}
-		if (status.equalsIgnoreCase("Interested")) {
-			System.out.println("status is I");
-		}
-		return null;
 	}
 
 }

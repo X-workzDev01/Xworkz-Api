@@ -194,7 +194,7 @@ public class DreamApiController {
 	@PutMapping("/updateFollowUp")
 	public ResponseEntity<String> updateFollowUp(@RequestHeader String spreadsheetId, @RequestParam String email,
 			@RequestBody FollowUpDto dto, HttpServletRequest request) throws IOException, IllegalAccessException {
-
+		System.err.println("sssssssssssssssssssssssssssssssssssssssss       " + email);
 		return service.updateFollowUp(spreadsheetId, email, dto);
 	}
 
@@ -249,7 +249,5 @@ public class DreamApiController {
 			@RequestParam int startIndex, @RequestParam int endIndex, HttpServletRequest request) throws IOException {
 		return service.getFollowStatusByDate(date, startIndex, endIndex, id, request);
 	}
-
-	
 
 }

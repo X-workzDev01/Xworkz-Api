@@ -162,9 +162,9 @@ public class CacheServiceImpl implements CacheService {
 	}
 
 	public void updateEmailCache(String email) {
-		Cache cacheEmail = cacheManager.getCache("emailData");
-		
+		//Cache cacheEmail = cacheManager.getCache("emailData");
 	}
+	
 	@SuppressWarnings("unchecked")
 	public void updateCourseCache(String cacheName, String key, List<Object> data) {
 		Cache cache = cacheManager.getCache(cacheName);

@@ -192,8 +192,8 @@ public class DreamRepositoryImpl implements DreamRepository {
 	}
 
 	@Override
+	@Cacheable(value = "followUpDetails", key = "#spreadsheetId", unless = "#result == null")
 	public List<List<Object>> getFollowUpDetails(String spreadsheetId) throws IOException {
-
 		ValueRange response = sheetsService.spreadsheets().values().get(spreadsheetId, followUpRange).execute();
 
 		return response.getValues();
