@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
+import java.util.ListIterator;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
@@ -58,9 +59,8 @@ public class BatchServiceImpl implements BatchService {
 		}
 	}
 
-	public FollowUpDataDto getTraineeDetailsByCourseInFollowUp(String spreadsheetId, String courseName)
-			throws IOException {
-		 FollowUpDataDto followUpDataDto=new FollowUpDataDto(Collections.emptyList(),0);		
+	public FollowUpDataDto getTraineeDetailsByCourseInFollowUp(String spreadsheetId, String courseName,int startingIndex, int maxIndex) throws IOException {
+		FollowUpDataDto followUpDataDto = new FollowUpDataDto(Collections.emptyList(), 0);
 		try {
 			List<List<Object>> followUpData = repo.getFollowUpDetails(spreadsheetId);
 			List<List<Object>> traineeData = repo.readData(spreadsheetId);
@@ -99,8 +99,8 @@ public class BatchServiceImpl implements BatchService {
 						return fdto;
 					}).filter(Objects::nonNull).sorted(Comparator.comparing(FollowUpDto::getRegistrationDate))
 					.collect(Collectors.toList());
-			FollowUpDataDto dto = new FollowUpDataDto(followUpDto,followUpDto.size());
-            return dto;
+			FollowUpDataDto dto = new FollowUpDataDto(followUpDto, followUpDto.size());
+			return dto;
 		} catch (IOException e) {
 			logger.error("An IOException occurred: " + e.getMessage(), e);
 			return followUpDataDto;
@@ -108,13 +108,13 @@ public class BatchServiceImpl implements BatchService {
 	}
 
 	public FollowUpDataDto traineeDetailsByCourseAndStatusInFollowUp(String spreadsheetId, String courseName,
-			String status) throws IOException {
-		FollowUpDataDto followUpDataDto=new FollowUpDataDto(Collections.emptyList(),0);	
+			String status, String date, int startingIndex, int maxRows) throws IOException {
+		FollowUpDataDto followUpDataDto = new FollowUpDataDto(Collections.emptyList(), 0);
 		try {
 			List<List<Object>> followUpData = repo.getFollowUpDetails(spreadsheetId);
 			List<List<Object>> traineeData = repo.readData(spreadsheetId);
 			if (followUpData == null || traineeData == null || spreadsheetId == null || courseName == null
-					|| repo == null || wrapper == null || service == null || status == null) {
+					|| repo == null || wrapper == null || service == null || status == null || date != null) {
 				return followUpDataDto;
 			}
 			List<FollowUpDto> followUpDto = traineeData.stream()
@@ -134,8 +134,12 @@ public class BatchServiceImpl implements BatchService {
 							return null;
 						}
 
-						if (followUp.getCurrentStatus() != null
-								&& followUp.getCurrentStatus().equalsIgnoreCase(status)) {
+						if (followUp.getCurrentStatus() != null && followUp.getCurrentStatus().equalsIgnoreCase(status)
+								|| followUp.getCurrentStatus().equalsIgnoreCase(status)
+										&& followUp.getCallback().equalsIgnoreCase(date)
+								|| followUp.getCurrentStatus().equalsIgnoreCase(status)
+										&& followUp.getCallback().equalsIgnoreCase(date)
+										&& followUp.getCourseName().equalsIgnoreCase(courseName)) {
 							FollowUpDto fdto = new FollowUpDto();
 							fdto.setId(dto.getId());
 							fdto.setBasicInfo(dto.getBasicInfo());
@@ -155,12 +159,41 @@ public class BatchServiceImpl implements BatchService {
 					}).filter(Objects::nonNull)
 					.sorted(Comparator.comparing(FollowUpDto::getRegistrationDate).reversed())
 					.collect(Collectors.toList());
-			FollowUpDataDto dto = new FollowUpDataDto(followUpDto,followUpDto.size());
+
+//			 List<FollowUpDto> getLimitedRows();
+			FollowUpDataDto dto = new FollowUpDataDto(followUpDto, followUpDto.size());
 			return dto;
 		} catch (IOException e) {
 			logger.error("An IOException occurred: " + e.getMessage(), e);
 			return followUpDataDto;
 		}
+	}
+
+	public List<FollowUpDto> getLimitedRows(List<List<Object>> values, int startingIndex, int maxRows) {
+		List<FollowUpDto> dto = new ArrayList<>();
+
+		if (values != null) {
+			int endIndex = startingIndex + maxRows;
+
+			ListIterator<List<Object>> iterator = values.listIterator(startingIndex);
+
+			while (iterator.hasNext() && iterator.nextIndex() < endIndex) {
+				List<Object> row = iterator.next();
+
+				if (row != null && !row.isEmpty()) {
+					FollowUpDto followUpDto = wrapper.listToFollowUpDTO(row);
+					dto.add(followUpDto);
+				}
+			}
+		}
+		return dto;
+	}
+
+	@Override
+	public FollowUpDataDto getTraineeDetailsByCourseInFollowUp(String spreadsheetId, String courseName)
+			throws IOException {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }

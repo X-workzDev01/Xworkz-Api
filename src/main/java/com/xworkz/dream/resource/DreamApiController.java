@@ -155,9 +155,9 @@ public class DreamApiController {
 	@ApiOperation(value = "To get follow up details by pagination")
 	@GetMapping("/followUp")
 	public ResponseEntity<FollowUpDataDto> getFollowUpData(@RequestHeader String spreadsheetId,
-			@RequestParam int startingIndex, @RequestParam int maxRows, @RequestParam String status)
+			@RequestParam int startingIndex, @RequestParam int maxRows, @RequestParam String status,@RequestParam String courseName,@RequestParam String date)
 			throws IOException {
-		return service.getFollowUpDetails(spreadsheetId, startingIndex, maxRows, status);
+		return service.getFollowUpDetails(spreadsheetId, startingIndex, maxRows, status,courseName,date);
 	}
 
 	@ApiOperation(value = "To get status details by email ")
