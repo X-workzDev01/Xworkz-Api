@@ -44,9 +44,9 @@ public class BatchController {
 	@GetMapping("/getByCourseAndStatus")
 	@ApiOperation("To get the details of trainee based on the course and status in follow up")
 	public FollowUpDataDto traineeDetailsByCourseAndStatusInFollowUp(@RequestHeader String spreadsheetId,
-			@RequestParam String courseName,String status) throws IOException {
+			@RequestParam String courseName,String status,@RequestParam String date,   int startingIndex,int maxRows) throws IOException {
 		System.out.println("this is getByCourseAndStatus:"+courseName+" "+status);
-		return service.traineeDetailsByCourseAndStatusInFollowUp(spreadsheetId, courseName,status);
+		return service.traineeDetailsByCourseAndStatusInFollowUp(spreadsheetId, courseName,status,date,startingIndex,maxRows);
 	}
 
 }
