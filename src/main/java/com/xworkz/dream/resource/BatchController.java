@@ -12,9 +12,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.xworkz.dream.dto.FollowUpDto;
+import com.xworkz.dream.dto.FollowUpDataDto;
 import com.xworkz.dream.dto.TraineeDto;
 import com.xworkz.dream.service.BatchService;
+
 import io.swagger.annotations.ApiOperation;
 
 @RestController
@@ -35,25 +36,17 @@ public class BatchController {
 	
 	@GetMapping("/getTraineeDetails")
 	@ApiOperation("To get the details of trainee based on the course in follow up")
-	public List<FollowUpDto> traineeDetailsByCourseInFollowUp(@RequestHeader String spreadsheetId,
+	public FollowUpDataDto traineeDetailsByCourseInFollowUp(@RequestHeader String spreadsheetId,
 			@RequestParam String courseName) throws IOException {
 		return service.getTraineeDetailsByCourseInFollowUp(spreadsheetId, courseName);
 	}
 	
 	@GetMapping("/getByCourseAndStatus")
 	@ApiOperation("To get the details of trainee based on the course and status in follow up")
-	public List<FollowUpDto> traineeDetailsByCourseAndStatusInFollowUp(@RequestHeader String spreadsheetId,
-			@RequestParam String courseName,String status) throws IOException {
+	public FollowUpDataDto traineeDetailsByCourseAndStatusInFollowUp(@RequestHeader String spreadsheetId,
+			@RequestParam String courseName,String status,@RequestParam String date,   int startingIndex,int maxRows) throws IOException {
 		System.out.println("this is getByCourseAndStatus:"+courseName+" "+status);
-		return service.traineeDetailsByCourseAndStatusInFollowUp(spreadsheetId, courseName,status);
-	}
-	
-	@GetMapping("/getGroupStatus")
-	@ApiOperation("To get the details by groupped status")
-	public List<FollowUpDto> getGroupStatus(@RequestHeader String spreadsheetId,
-			String status) throws IOException {
-		System.out.println("this is getByCourseAndStatus:"+status);
-		return service.getGroupStatus(spreadsheetId,status);
+		return service.traineeDetailsByCourseAndStatusInFollowUp(spreadsheetId, courseName,status,date,startingIndex,maxRows);
 	}
 
 }

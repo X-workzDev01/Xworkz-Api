@@ -148,16 +148,15 @@ public class DreamApiController {
 	@GetMapping("/readByEmail")
 	public ResponseEntity<?> getDataByEmail(@RequestHeader String spreadsheetId, @RequestParam String email,
 			HttpServletRequest request) throws IOException {
-		System.out.println("Sheed ID:" + spreadsheetId);
 		return service.getDetailsByEmail(spreadsheetId, email, request);
 	}
 
 	@ApiOperation(value = "To get follow up details by pagination")
 	@GetMapping("/followUp")
 	public ResponseEntity<FollowUpDataDto> getFollowUpData(@RequestHeader String spreadsheetId,
-			@RequestParam int startingIndex, @RequestParam int maxRows, @RequestParam String status)
+			@RequestParam int startingIndex, @RequestParam int maxRows, @RequestParam String status,@RequestParam String courseName,@RequestParam String date)
 			throws IOException {
-		return service.getFollowUpDetails(spreadsheetId, startingIndex, maxRows, status);
+		return service.getFollowUpDetails(spreadsheetId, startingIndex, maxRows, status,courseName,date);
 	}
 
 	@ApiOperation(value = "To get status details by email ")
@@ -194,7 +193,6 @@ public class DreamApiController {
 	@PutMapping("/updateFollowUp")
 	public ResponseEntity<String> updateFollowUp(@RequestHeader String spreadsheetId, @RequestParam String email,
 			@RequestBody FollowUpDto dto, HttpServletRequest request) throws IOException, IllegalAccessException {
-
 		return service.updateFollowUp(spreadsheetId, email, dto);
 	}
 
@@ -233,8 +231,6 @@ public class DreamApiController {
 
 		boolean saved = service.addEnquiry(enquiryDto, spreadSheetId, request);
 		String uri = request.getRequestURI();
-		System.out.println(uri.contains("enquiry"));
-		System.out.println(enquiryDto);
 
 		if (saved) {
 			return ResponseEntity.ok().body("Enquiry Added Successfully");
@@ -249,7 +245,23 @@ public class DreamApiController {
 			@RequestParam int startIndex, @RequestParam int endIndex, HttpServletRequest request) throws IOException {
 		return service.getFollowStatusByDate(date, startIndex, endIndex, id, request);
 	}
-
 	
+	@GetMapping("/cache")
+	public  String getList(@RequestParam String cacheName) throws IOException {
+
+		Cache cache = manager.getCache(cacheName);
+
+
+
+		if (cache != null) {
+			ValueWrapper valueWrapper = cache.get(id);
+
+			if (valueWrapper != null) {
+				Object cachedData =  valueWrapper.get();
+				return null;
+			}
+		}
+		return null;
+	}
 
 }

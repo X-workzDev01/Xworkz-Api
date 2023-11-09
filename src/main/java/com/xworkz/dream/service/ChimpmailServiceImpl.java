@@ -14,6 +14,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.MailException;
 import org.springframework.mail.javamail.MimeMessagePreparator;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 import com.xworkz.dream.configuration.MailConfig;
@@ -26,19 +27,35 @@ public class ChimpmailServiceImpl implements ChimpMailService {
 	private MailConfig config;
 
 	private Logger logger = LoggerFactory.getLogger(ChimpmailServiceImpl.class);
-
-//	@Async
 	@Override
-	public boolean validateAndSendMailByMailId(MimeMessagePreparator messagePreparator) {
+	@Async 
+	public boolean validateAndSendMailByMailIdDev(MimeMessagePreparator messagePreparator) {
 		logger.info("invoked validateAndSendMailByMailId of SpringMailServiceImpl...");
 
 		try {
-			config.getMailSender().send(messagePreparator);
+			config.getMailSenderDev().send(messagePreparator); 
 			logger.info("Mail sent successfully");
 			return true;
 		} catch (MailException e) {
 			logger.info("Mail sent Faild!");
-			logger.error(e.getMessage(), e);
+			logger.error(e.getMessage(), e); 
+			return false;
+		}
+
+	}
+
+	@Override
+	@Async 
+	public boolean validateAndSendMailByMailId(MimeMessagePreparator messagePreparator) {
+		logger.info("invoked validateAndSendMailByMailId of SpringMailServiceImpl...");
+
+		try {
+			config.getMailSender().send(messagePreparator); 
+			logger.info("Mail sent successfully");
+			return true;
+		} catch (MailException e) {
+			logger.info("Mail sent Faild!");
+			logger.error(e.getMessage(), e); 
 			return false;
 		}
 
