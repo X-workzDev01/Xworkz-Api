@@ -1,5 +1,7 @@
 package com.xworkz.dream.service;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import org.slf4j.Logger;
@@ -49,7 +51,6 @@ public class CacheServiceImpl implements CacheService {
 	public void getCacheDataByEmail(String cacheName, String key, String email, TraineeDto dto)
 			throws IllegalAccessException {
 		Cache cache = cacheManager.getCache(cacheName);
-		System.err.println("88888888888888888888888888888888888888888888888");
 		if (cache != null) {
 			ValueWrapper valueWrapper = cache.get(key);
 			if (valueWrapper != null && valueWrapper.get() instanceof List) {
@@ -66,7 +67,7 @@ public class CacheServiceImpl implements CacheService {
 				}
 				List<Object> list = wrapper.extractDtoDetails(dto);
 
-				if (matchingIndex >= 0) { 
+				if (matchingIndex >= 0) {
 
 					listOfItems.set(matchingIndex, list);
 					updateEmailCache(email);
@@ -80,7 +81,7 @@ public class CacheServiceImpl implements CacheService {
 	@Override
 	public void updateCacheFollowUp(String cacheName, String key, String email, FollowUpDto dto)
 			throws IllegalAccessException {
-
+		
 		Cache cache = cacheManager.getCache(cacheName);
 		if (cache != null) {
 			ValueWrapper valueWrapper = cache.get(key);
@@ -98,8 +99,9 @@ public class CacheServiceImpl implements CacheService {
 					}
 				}
 				List<Object> list = wrapper.extractDtoDetails(dto);
+				 list.remove(4);
 
-				if (matchingIndex >= 0) {
+				if (matchingIndex >= 0) { 
 
 					ListOfItems.set(matchingIndex, list);
 				}
@@ -162,13 +164,12 @@ public class CacheServiceImpl implements CacheService {
 	}
 
 	public void updateEmailCache(String email) {
-		//Cache cacheEmail = cacheManager.getCache("emailData");
+		// Cache cacheEmail = cacheManager.getCache("emailData");
 	}
-	
+
 	@SuppressWarnings("unchecked")
 	public void updateCourseCache(String cacheName, String key, List<Object> data) {
 		Cache cache = cacheManager.getCache(cacheName);
-		System.out.println("updating data:"+data+" "+cacheName);
 		if (cache != null) {
 			ValueWrapper valueWrapper = cache.get(key);
 			if (valueWrapper != null && valueWrapper.get() instanceof List) {
@@ -187,7 +188,6 @@ public class CacheServiceImpl implements CacheService {
 	public void addFollowUpToCache(String cacheName, String key, List<Object> data) {
 		// TODO Auto-generated method stub
 		Cache cache = cacheManager.getCache(cacheName);
-		System.out.println("adding cache:"+data);
 		if (cache != null) {
 			ValueWrapper valueWrapper = cache.get(key);
 			if (valueWrapper != null && valueWrapper.get() instanceof List) {
@@ -195,11 +195,39 @@ public class CacheServiceImpl implements CacheService {
 				// adding single list to the cache
 				int size = (((List<List<Object>>) valueWrapper.get()).size());
 				data.set(0, size + 1);
+				data.remove(4);
 
 				((List<List<Object>>) valueWrapper.get()).add(data);
 			}
 		}
-		
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public void addEmailToCache(String cacheName, String spreadSheetId, String email) {
+		Cache cache = cacheManager.getCache(cacheName);
+		if (cache != null) {
+			ValueWrapper valueWrapper = cache.get(spreadSheetId);
+			if (valueWrapper != null && valueWrapper.get() instanceof List) {
+				List<Object> emails = new ArrayList<Object>(Arrays.asList(email));
+				((List<List<Object>>) valueWrapper.get()).add(emails);
+			}
+		}
+
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public void addContactNumberToCache(String cacheName, String spreadSheetId, Long contactNumber) {
+		Cache cache = cacheManager.getCache(cacheName);
+		if (cache != null) {
+			@SuppressWarnings("unchecked")
+			ValueWrapper valueWrapper = cache.get(spreadSheetId);
+			if (valueWrapper != null && valueWrapper.get() instanceof List) {
+				List<Object> contactNumbers = new ArrayList<Object>(Arrays.asList(contactNumber));
+				((List<List<Object>>) valueWrapper.get()).add(contactNumbers);
+			}
+		}
 	}
 
 }

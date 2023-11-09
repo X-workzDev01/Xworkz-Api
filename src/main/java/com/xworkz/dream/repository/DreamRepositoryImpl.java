@@ -98,7 +98,6 @@ public class DreamRepositoryImpl implements DreamRepository {
 		List<Object> rowData = new ArrayList<>();
 		rowData.add(""); // Placeholder for A column
 		rowData.addAll(row.subList(1, row.size())); // Start from the second element (B column)
-		System.out.println("Repository write data : " + rowData);
 		values.add(rowData);
 		ValueRange body = new ValueRange().setValues(values);
 		sheetsService.spreadsheets().values().append(spreadsheetId, range, body).setValueInputOption("USER_ENTERED")
@@ -107,17 +106,17 @@ public class DreamRepositoryImpl implements DreamRepository {
 	}
 
 	@Override
-	@Cacheable(value = "emailData", key = "#email", unless = "#result == null")
-	public ValueRange getEmails(String spreadsheetId, String email) throws IOException {
+	@Cacheable(value = "emailData", key = "#spreadsheetId", unless = "#result == null")
+	public List<List<Object>>  getEmails(String spreadsheetId, String email) throws IOException {
 		ValueRange emailValue = sheetsService.spreadsheets().values().get(spreadsheetId, emailRange).execute();
-		return emailValue;
-	} 
+		return emailValue.getValues();
+	}  
 
 	@Override
 	@Cacheable(value = "contactData", key = "#spreadsheetId", unless = "#result == null")
-	public ValueRange getContactNumbers(String spreadsheetId) throws IOException {
+	public List<List<Object>>  getContactNumbers(String spreadsheetId) throws IOException {
 		ValueRange response = sheetsService.spreadsheets().values().get(spreadsheetId, contactNumberRange).execute();
-		return response;
+		return response.getValues();
 	}
 
 	@Override
@@ -168,7 +167,6 @@ public class DreamRepositoryImpl implements DreamRepository {
 		List<Object> rowData = new ArrayList<>();
 		rowData.add(""); // Placeholder for A column
 		rowData.addAll(row.subList(1, row.size())); // Start from the second element (B column)
-		System.out.println("Repository write data : " + rowData);
 		list.add(rowData);
 		ValueRange body = new ValueRange().setValues(list);
 		sheetsService.spreadsheets().values().append(spreadsheetId, followUpRange, body)
@@ -296,7 +294,7 @@ public class DreamRepositoryImpl implements DreamRepository {
 	public List<List<Object>> notification(String spreadsheetId) throws IOException {
 		ValueRange response = sheetsService.spreadsheets().values().get(spreadsheetId, followUpStatus).execute();
 		return response.getValues();
-	}
+	} 
 
 	@Override
 	@Cacheable(value = "followUpDetails", key = "#spreadsheetId", unless = "#result == null")
