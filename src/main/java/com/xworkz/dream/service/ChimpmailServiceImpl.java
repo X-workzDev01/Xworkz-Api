@@ -34,12 +34,12 @@ public class ChimpmailServiceImpl implements ChimpMailService {
 		logger.info("invoked validateAndSendMailByMailId of SpringMailServiceImpl...");
 
 		try {
-			config.getMailSender().send(messagePreparator);
+			config.getMailSender().send(messagePreparator); 
 			logger.info("Mail sent successfully");
 			return true;
 		} catch (MailException e) {
 			logger.info("Mail sent Faild!");
-			logger.error(e.getMessage(), e);
+			logger.error(e.getMessage(), e); 
 			return false;
 		}
 

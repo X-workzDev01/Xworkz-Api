@@ -58,7 +58,7 @@ public class MailConfig {
 		mailSender.setPassword(helper.decrypt(chimpPassword));
 		Properties javaMailProperties = new Properties();
 		javaMailProperties.put("mail.smtp.starttls.enable", "true");
-		javaMailProperties.put("mail.smtp.auth", "true");
+		javaMailProperties.put("mail.smtp.auth", "true"); 
 		javaMailProperties.put("mail.transport.protocol", "smtp");
 		javaMailProperties.put("mail.debug", "true");
 		javaMailProperties.put("mail.smtp.ssl.trust", "*"); // Trust Gmail SSL certificate

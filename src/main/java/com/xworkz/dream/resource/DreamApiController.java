@@ -148,7 +148,6 @@ public class DreamApiController {
 	@GetMapping("/readByEmail")
 	public ResponseEntity<?> getDataByEmail(@RequestHeader String spreadsheetId, @RequestParam String email,
 			HttpServletRequest request) throws IOException {
-		System.out.println("Sheed ID:" + spreadsheetId);
 		return service.getDetailsByEmail(spreadsheetId, email, request);
 	}
 
@@ -232,7 +231,6 @@ public class DreamApiController {
 
 		boolean saved = service.addEnquiry(enquiryDto, spreadSheetId, request);
 		String uri = request.getRequestURI();
-		System.out.println(uri.contains("enquiry"));
 
 		if (saved) {
 			return ResponseEntity.ok().body("Enquiry Added Successfully");
@@ -246,6 +244,24 @@ public class DreamApiController {
 	public ResponseEntity<FollowUpDataDto> getFollowStatusByDate(@RequestParam String date,
 			@RequestParam int startIndex, @RequestParam int endIndex, HttpServletRequest request) throws IOException {
 		return service.getFollowStatusByDate(date, startIndex, endIndex, id, request);
+	}
+	
+	@GetMapping("/cache")
+	public  String getList(@RequestParam String cacheName) throws IOException {
+
+		Cache cache = manager.getCache(cacheName);
+
+
+
+		if (cache != null) {
+			ValueWrapper valueWrapper = cache.get(id);
+
+			if (valueWrapper != null) {
+				Object cachedData =  valueWrapper.get();
+				return null;
+			}
+		}
+		return null;
 	}
 
 }

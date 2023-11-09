@@ -21,5 +21,8 @@ public interface CacheService {
 
 	void updateCourseCache(String cacheName, String key, List<Object> data);
 
-	void addFollowUpToCache(String string, String spreadSheetId, List<Object> data);
+	void addFollowUpToCache(String cacheName, String spreadSheetId, List<Object> data);
+	void addEmailToCache(String cacheName,String  spreadSheetId,String email);
+
+	void addContactNumberToCache(String cacheName, String spreadSheetId, Long contactNumber);
 }
