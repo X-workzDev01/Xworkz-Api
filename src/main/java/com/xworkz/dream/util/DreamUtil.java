@@ -5,6 +5,8 @@ import java.util.List;
 
 import javax.mail.MessagingException;
 
+import org.springframework.mail.javamail.MimeMessagePreparator;
+
 import com.xworkz.dream.dto.StatusDto;
 import com.xworkz.dream.dto.TraineeDto;
 import com.xworkz.dream.dto.utils.Team;

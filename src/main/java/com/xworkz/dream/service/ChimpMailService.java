@@ -12,4 +12,6 @@ public interface ChimpMailService {
 
 	public String sendSMS(String apiKey, String username, String sender, String phone, String message, String smsType,
 			String route, String templateId);
+	public boolean validateAndSendMailByMailIdDev(MimeMessagePreparator messagePreparator) ;
+
 }

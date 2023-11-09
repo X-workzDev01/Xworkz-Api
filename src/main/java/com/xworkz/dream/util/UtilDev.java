@@ -200,7 +200,7 @@ public class UtilDev implements DreamUtil {
 		MimeMessagePreparator messagePreparator = mimeMessage -> {
 
 			MimeMessageHelper messageHelper = new MimeMessageHelper(mimeMessage);
-			messageHelper.setFrom(helper.decrypt(chimpUserName));
+			messageHelper.setFrom("hareeshahr.xworkz@gmail.com");
 			for (String recepent : recipients) {
 				messageHelper.addTo(new InternetAddress(recepent));
 			}
@@ -208,7 +208,7 @@ public class UtilDev implements DreamUtil {
 			messageHelper.setText(content, true);
 		};
 
-		return chimpMailService.validateAndSendMailByMailId(messagePreparator);
+		return chimpMailService.validateAndSendMailByMailIdDev(messagePreparator);
 	}
 
 	private boolean sendWhatsAppLinkToChimp(List<String> traineeEmail, String subject, String whatsAppLink) {
@@ -220,15 +220,15 @@ public class UtilDev implements DreamUtil {
 		MimeMessagePreparator messagePreparator = mimeMessage -> {
 
 			MimeMessageHelper messageHelper = new MimeMessageHelper(mimeMessage);
-			messageHelper.setFrom(helper.decrypt(chimpUserName));
+			messageHelper.setFrom("hareeshahr.xworkz@gmail.com");
 			for (String recepent : traineeEmail) {
 				messageHelper.addTo(new InternetAddress(recepent));
 			}
-			messageHelper.setSubject(subject);
+			messageHelper.setSubject(subject); 
 			messageHelper.setText(content, true);
 		};
 
-		return chimpMailService.validateAndSendMailByMailId(messagePreparator);
+		return chimpMailService.validateAndSendMailByMailIdDev(messagePreparator);
 	}
 
 	private boolean sendCourseContentMailChimp(String email, String recipientName)
@@ -240,13 +240,13 @@ public class UtilDev implements DreamUtil {
 		String content = templateEngine.process("CourseContentTemplate", context);
 		MimeMessagePreparator messagePreparator = mimeMessage -> {
 			MimeMessageHelper messageHelper = new MimeMessageHelper(mimeMessage);
-			messageHelper.setFrom(helper.decrypt(chimpUserName));
+			messageHelper.setFrom("hareeshahr.xworkz@gmail.com");
 			messageHelper.setTo(email);
 			messageHelper.setSubject("Course Content");
 			messageHelper.setText(content, true);
 		};
 
-		return chimpMailService.validateAndSendMailByMailId(messagePreparator);
+		return chimpMailService.validateAndSendMailByMailIdDev(messagePreparator);
 	}
 
 	@Override
@@ -263,7 +263,7 @@ public class UtilDev implements DreamUtil {
 		MimeMessagePreparator messagePreparator = mimeMessage -> {
 
 			MimeMessageHelper messageHelper = new MimeMessageHelper(mimeMessage);
-			messageHelper.setFrom(helper.decrypt(chimpUserName));
+			messageHelper.setFrom("hareeshahr.xworkz@gmail.com");
 
 			messageHelper.addBcc(new InternetAddress(traineeEmail));
 
@@ -271,6 +271,6 @@ public class UtilDev implements DreamUtil {
 			messageHelper.setText(content, true);
 		};
 
-		return chimpMailService.validateAndSendMailByMailId(messagePreparator);
+		return chimpMailService.validateAndSendMailByMailIdDev(messagePreparator);
 	}
 }
