@@ -103,7 +103,7 @@ public class DreamServiceImpl implements DreamService {
 	private static final Logger logger = LoggerFactory.getLogger(DreamServiceImpl.class);
 
 	@Override
-	public synchronized ResponseEntity<String> writeData(String spreadsheetId, TraineeDto dto,
+	public  ResponseEntity<String> writeData(String spreadsheetId, TraineeDto dto,
 			HttpServletRequest request)
 
 			throws MessagingException, TemplateException {
@@ -655,11 +655,11 @@ public class DreamServiceImpl implements DreamService {
 					List<FollowUpDto> filterData = followUpDto.stream()
 							.filter(item -> item.getCourseName().equalsIgnoreCase(courseName))
 							.collect(Collectors.toList());
-					FollowUpDataDto followUpDataDto = new FollowUpDataDto(filterData, data.size());
+					FollowUpDataDto followUpDataDto = new FollowUpDataDto(filterData, filterData.size());
 					return ResponseEntity.ok(followUpDataDto);
 
 				} else {
-					FollowUpDataDto followUpDataDto = new FollowUpDataDto(followUpDto, data.size());
+					FollowUpDataDto followUpDataDto = new FollowUpDataDto(followUpDto, followUpDto.size());
 					return ResponseEntity.ok(followUpDataDto);
 				}
 				// repo.evictFollowUpStatusDetails();

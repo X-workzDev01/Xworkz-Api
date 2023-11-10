@@ -31,7 +31,6 @@ mail:
     
 login: 
   teamFile: classpath:team.yml
-  userFile: classpath:users.yml
   sheetId: 1HI3nKYRbXNl2cu9rKwqKp3tznOZ7ziOupokU_daFZ8E
   cookieDomain: ombn.in
 
