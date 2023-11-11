@@ -14,9 +14,9 @@ public interface DreamRepository {
 
 	public boolean writeData(String spreadsheetId, List<Object> row) throws IOException;
 
-	public List<List<Object>>  getEmails(String spreadsheetId ,String email) throws IOException;
+	public ValueRange getEmails(String spreadsheetId) throws IOException;
 
-	public List<List<Object>>  getContactNumbers(String spreadsheetId) throws IOException;
+	public ValueRange getContactNumbers(String spreadsheetId) throws IOException;
 
 	public ValueRange getIds(String spreadsheetId) throws IOException;
 
@@ -28,22 +28,7 @@ public interface DreamRepository {
 
 	public UpdateValuesResponse update(String spreadsheetId, String range2, ValueRange valueRange) throws IOException;
 
-	public boolean saveToFollowUp(String spreadsheetId, List<Object> row) throws IOException;
-
-	public boolean updateFollowUpStatus(String spreadsheetId, List<Object> statusData) throws IOException;
-
-	public List<List<Object>> getFollowUpDetails(String spreadsheetId) throws IOException;
-
-	public boolean updateCurrentFollowUpStatus(String spreadsheetId, String currentFollowRange, List<Object> data)
-			throws IOException;
-
-	public List<List<Object>> getEmailsAndNames(String spreadsheetId, String value) throws IOException;
-
-	public ValueRange getStatusId(String spreadsheetId) throws IOException;
-
-	public List<List<Object>> getFollowUpStatusDetails(String spreadsheetId) throws IOException;
-
-	public ValueRange getBatchId(String spreadsheetId) throws IOException;
+    public ValueRange getBatchId(String spreadsheetId) throws IOException;
 
 	public boolean saveBatchDetails(String spreadsheetId, List<Object> row) throws IOException;
 
@@ -51,21 +36,11 @@ public interface DreamRepository {
 
 	public boolean saveBirthDayDetails(String spreadsheetId, List<Object> row) throws IOException;
 
-	public UpdateValuesResponse updateFollow(String spreadsheetId, String range2, ValueRange valueRange)
-			throws IOException;
-
 	public ValueRange getEmailList(String spreadsheetId) throws IOException;
 
 	public List<List<Object>> getCourseDetails(String spreadsheetId) throws IOException;
 
 	public List<List<Object>> notification(String spreadsheetId) throws IOException;
 
-	public List<List<Object>> getFollowUpDetailsByid(String spreadsheetId) throws IOException;
-	
-	public List<List<Object>> getBirthadayDetails(String spreadsheetId) throws IOException;
-
-	public List<List<Object>> getFollowupStatusByDate(String spreadsheetId) throws IOException;
-
-	void evictFollowUpStatusDetails();
 
 }

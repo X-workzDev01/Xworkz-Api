@@ -13,6 +13,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
+import com.xworkz.dream.repository.BirthadayRepository;
 import com.xworkz.dream.repository.DreamRepository;
 import com.xworkz.dream.util.DreamUtil;
 
@@ -20,7 +21,7 @@ import com.xworkz.dream.util.DreamUtil;
 public class BirthadayServiceImpl implements BirthadayService{
 	
 	@Autowired
-	private DreamRepository repository;
+	private BirthadayRepository repository;
 	@Autowired
 	private DreamUtil util;
 	@Value("${login.sheetId}")

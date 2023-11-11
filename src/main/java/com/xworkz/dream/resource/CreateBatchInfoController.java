@@ -31,8 +31,7 @@ public class CreateBatchInfoController {
 
 	@Autowired
 	private DreamService service;
-	@Autowired
-	private WhatsAppService whatsAppService;
+	
 
 	@ApiOperation(value = "To register the upcoming batch details")
 	@PostMapping("/batchInfo")
@@ -42,26 +41,5 @@ public class CreateBatchInfoController {
 		return service.saveDetails(spreadsheetId, dto, request);
 	}
 
-	@PutMapping("/updateWhatsAppLink")
-	public boolean updateWhatsAppLinkByCourseName(@RequestHeader String spreadsheetId, @RequestParam String cousreName,
-			@RequestParam String whatsAppLink) throws IllegalAccessException, IOException {
-		logger.info("cousreName : whatsAppLink" + cousreName + " : " + whatsAppLink);
-		return whatsAppService.updateWhatsAppLinkByCourseName(spreadsheetId, cousreName, whatsAppLink);
-	}
-	
-	@GetMapping("/getWhatsAppLink")
-	public String getWhatsAppLinkByCourseName(@RequestHeader String spreadsheetId, @RequestParam String courseName)
-			throws IOException {
-		ResponseEntity<BatchDetails> batchDetailsByCourseName = service.getBatchDetailsByCourseName(spreadsheetId,
-				courseName);
-		return batchDetailsByCourseName.getBody().getWhatsAppLink();
-	}
-
-	@GetMapping("/sendWhatsAppLink")
-	public boolean mailWhatsAppLink(@RequestHeader String spreadsheetId, @RequestParam String courseName)
-			throws IOException {
-		boolean sendWhatsAppLink = whatsAppService.sendWhatsAppLink(spreadsheetId, courseName);
-		return sendWhatsAppLink;
-	}	
 	
 }

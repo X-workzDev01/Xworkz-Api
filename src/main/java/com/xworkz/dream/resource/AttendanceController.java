@@ -35,9 +35,10 @@ public class AttendanceController {
 	@PostMapping("/registerAttendance")
 	public ResponseEntity<String> registerAttendance(@RequestBody AttendanceDto values, HttpServletRequest request)
 			throws IOException, MessagingException, TemplateException {
-		logger.debug("Registering trainee details: {}", values);
+		System.err.println("values : "+values);
+		//logger.debug("Registering trainee details: {}", values);
 
-		logger.debug("Attendance Register sucessfully {} ", values);
+		//logger.debug("Attendance Register sucessfully {} ", values);
 		return attendanceService.writeAttendance(spreadsheetId, values, request);
 	}
 
@@ -58,13 +59,13 @@ public class AttendanceController {
 
 	@ApiOperation(value = "Get detiles in using selected  batch ")
 	@GetMapping("/byBatch")
-	public ResponseEntity<AttadanceSheetDto> getAttendanceListByBatch(@RequestParam String batch,
-			@RequestParam int startIndex, @RequestParam int maxRows) throws Exception {
+	public ResponseEntity<AttadanceSheetDto> getAttendanceListByBatch(@RequestParam String batch
+			) throws Exception {
 
-		return attendanceService.getAttendanceDetilesBatch(batch, startIndex, maxRows);
+		return attendanceService.getTraineeAndAttendanceDetails(batch);
 
 	}
-
+//@RequestParam int startIndex, @RequestParam int maxRows
 	@ApiOperation(value = "Get detiles in using selected  batch  and date")
 	@GetMapping("/byBatchAndDate")
 	public ResponseEntity<AttadanceSheetDto> getAttendanceListByBatchAndDate(@RequestParam String batch,

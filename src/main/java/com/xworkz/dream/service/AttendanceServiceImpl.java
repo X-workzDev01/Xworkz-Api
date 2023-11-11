@@ -6,7 +6,9 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.ListIterator;
+import java.util.Map;
 import java.util.Set;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import javax.mail.MessagingException;
@@ -27,6 +29,7 @@ import com.google.api.services.sheets.v4.model.ValueRange;
 import com.xworkz.dream.constants.Status;
 import com.xworkz.dream.dto.AttadanceSheetDto;
 import com.xworkz.dream.dto.AttendanceDto;
+import com.xworkz.dream.dto.TraineeDto;
 import com.xworkz.dream.repository.AttendanceRepository;
 import com.xworkz.dream.wrapper.DreamWrapper;
 
@@ -36,6 +39,8 @@ import freemarker.template.TemplateException;
 public class AttendanceServiceImpl implements AttendanceService {
 	@Autowired
 	private AttendanceRepository attendanceRepository;
+	@Autowired
+	private BatchService batchService;
 	@Value("${login.sheetId}")
 	private String sheetId;
 	@Value("${sheets.attendanceInfoRange}")
@@ -76,11 +81,11 @@ public class AttendanceServiceImpl implements AttendanceService {
 		ValidatorFactory factory = Validation.buildDefaultValidatorFactory();
 
 		Set<ConstraintViolation<AttendanceDto>> violation = factory.getValidator().validate(dto);
-
 		if (violation.isEmpty() && dto != null) {
 			if (dto.getAttemptStatus().equalsIgnoreCase(Status.Joined.toString())) {
 				dto.getCourseInfo().setStartTime(LocalDateTime.now().toString());
 				List<Object> list = wrapper.listOfAttendance(dto);
+				System.err.println("list of service : "+list);
 				attendanceRepository.writeAttendance(spreadsheetId, list, attendanceInfoRange);
 				logger.info("Attendance Detiles Added Sucessfully SpreadsheetId: {} , Detiles: {} ", spreadsheetId,
 						dto.toString());
@@ -197,28 +202,67 @@ public class AttendanceServiceImpl implements AttendanceService {
 	}
 
 	@Override
-	public ResponseEntity<AttadanceSheetDto> getAttendanceDetilesBatch(String batch, int startIndex, int maxRows)
-			throws IOException, MessagingException, TemplateException {
+	public ResponseEntity<Map<TraineeDto, List<List<Object>>>> getTraineeAndAttendanceDetails(String batch)
+	        throws IOException, MessagingException, TemplateException {
 
-		List<List<Object>> attendanceList = attendanceRepository.attendanceDetilesByEmail(sheetId, batch,
-				attendanceInfoRange);
+	    // Retrieve Trainee Details
+	    List<TraineeDto> traineeDetailsByCourse = batchService.getTraineeDetailsByCourse(sheetId, batch);
+	    System.err.println("traineeDetailsByCourse : "+traineeDetailsByCourse);
 
-		if (attendanceList != null) {
-			List<List<Object>> filter = attendanceList.stream().filter(e -> e.contains(batch))
-					.collect(Collectors.toList());
-			System.err.println("ffffffffffffffffffffffffffffffff" + filter);
-			
+	    // Map Trainee and Attendance Details
+	    Map<TraineeDto, List<List<Object>>> resultMap = traineeDetailsByCourse.stream()
+	            .collect(Collectors.toMap(
+	                    Function.identity(),
+	                    traineeDto -> {
+							try {
+								return attendanceRepository.attendanceDetilesByEmail(sheetId,
+								        traineeDto.getBasicInfo().getEmail(), attendanceInfoRange);
+							} catch (IOException e) {
+								// TODO Auto-generated catch block
+								e.printStackTrace();
+							}
+							return null;
+						}
+	            ));
+	    System.err.println("reultMap : "+resultMap);
 
-			List<AttendanceDto> dtos = this.getLimitedRows(filter, startIndex, maxRows);
-
-			AttadanceSheetDto sheetDto = new AttadanceSheetDto(dtos, filter.size());
-			logger.debug("Dto is  attandance :{} ", sheetDto);
-			System.err.println("ffffffffffffffffffffffffffffffff" + sheetDto);
-
-			return ResponseEntity.ok(sheetDto);
-		}
-		return null;
+	    // Return the Result
+	    return ResponseEntity.ok(resultMap);
 	}
+
+//	public ResponseEntity<AttadanceSheetDto> getAttendanceDetilesBatch(String batch, int startIndex, int maxRows)
+//			throws IOException, MessagingException, TemplateException {
+//
+//		List<TraineeDto> traineeDetailsByCourse = batchService.getTraineeDetailsByCourse(sheetId, batch);
+//
+//       List<CombinedDto> combinedList = traineeDetailsByCourse.stream()
+//        .map(traineeDto -> {
+//            List<List<Object>> attendanceList = attendanceRepository.attendanceDetilesByEmail(sheetId,
+//                    traineeDto.getBasicInfo().getEmail(), attendanceInfoRange);
+//
+//            return new CombinedDto(traineeDto, attendanceList);
+//        })
+//        .collect(Collectors.toList());
+//		
+//		
+//		
+//
+////		if (attendanceList != null) {
+////			List<List<Object>> filter = attendanceList.stream().filter(e -> e.contains(batch))
+////					.collect(Collectors.toList());
+////			System.err.println("ffffffffffffffffffffffffffffffff" + filter);
+////			
+////
+////			List<AttendanceDto> dtos = this.getLimitedRows(filter, startIndex, maxRows);
+////
+////			AttadanceSheetDto sheetDto = new AttadanceSheetDto(dtos, filter.size());
+////			logger.debug("Dto is  attandance :{} ", sheetDto);
+////			System.err.println("ffffffffffffffffffffffffffffffff" + sheetDto);
+////
+////			return ResponseEntity.ok(sheetDto);
+////		}
+//		return null;
+//	}
 
 	private List<AttendanceDto> getLimitedRowsByEmail(List<List<Object>> values, String email, int startingIndex,
 			int maxRows) {
