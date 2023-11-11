@@ -3,6 +3,8 @@ package com.xworkz.dream.service;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -40,6 +42,7 @@ public class CacheServiceImpl implements CacheService {
 				// adding single list to the cache
 				int size = (((List<List<Object>>) valueWrapper.get()).size());
 				data.set(0, size + 1);
+				System.err.println(data + " --------------------:" + data.size());
 
 				((List<List<Object>>) valueWrapper.get()).add(data);
 			}
@@ -81,7 +84,7 @@ public class CacheServiceImpl implements CacheService {
 	@Override
 	public void updateCacheFollowUp(String cacheName, String key, String email, FollowUpDto dto)
 			throws IllegalAccessException {
-		
+
 		Cache cache = cacheManager.getCache(cacheName);
 		if (cache != null) {
 			ValueWrapper valueWrapper = cache.get(key);
@@ -99,9 +102,9 @@ public class CacheServiceImpl implements CacheService {
 					}
 				}
 				List<Object> list = wrapper.extractDtoDetails(dto);
-				 list.remove(4);
+				list.remove(4);
 
-				if (matchingIndex >= 0) { 
+				if (matchingIndex >= 0) {
 
 					ListOfItems.set(matchingIndex, list);
 				}
@@ -186,7 +189,6 @@ public class CacheServiceImpl implements CacheService {
 	@SuppressWarnings("unchecked")
 	@Override
 	public void addFollowUpToCache(String cacheName, String key, List<Object> data) {
-		// TODO Auto-generated method stub
 		Cache cache = cacheManager.getCache(cacheName);
 		if (cache != null) {
 			ValueWrapper valueWrapper = cache.get(key);
@@ -207,11 +209,10 @@ public class CacheServiceImpl implements CacheService {
 	public void addEmailToCache(String cacheName, String spreadSheetId, String email) {
 		Cache cache = cacheManager.getCache(cacheName);
 		if (cache != null) {
-			ValueWrapper valueWrapper = cache.get(spreadSheetId);
-			if (valueWrapper != null && valueWrapper.get() instanceof List) {
-				List<Object> emails = new ArrayList<Object>(Arrays.asList(email));
-				((List<List<Object>>) valueWrapper.get()).add(emails);
-			}
+			logger.info("Email added into cache {} ",email);
+
+			cache.put(spreadSheetId, Stream.of(email).collect(Collectors.toList()));	
+		
 		}
 
 	}

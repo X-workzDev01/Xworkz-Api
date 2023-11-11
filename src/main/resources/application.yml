@@ -66,6 +66,8 @@ mail:
     
 login:
   userFile: classpath:users.yml
+  teamFile: classpath:team.yml
+
   
 
 server:

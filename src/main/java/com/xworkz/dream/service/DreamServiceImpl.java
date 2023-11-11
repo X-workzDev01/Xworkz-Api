@@ -93,18 +93,17 @@ public class DreamServiceImpl implements DreamService {
 	@Value("${sheets.followUprowStartRange}")
 	private String followUprowStartRange;
 	@Value("${sheets.followUprowEndRange}")
-	private String followUprowEndRange; 
+	private String followUprowEndRange;
 	@Value("${sheets.liveKey}")
 	private String API_KEY;
 
 	@Autowired
-	private CacheService cacheService;
+//	private CacheService cacheService;
 
 	private static final Logger logger = LoggerFactory.getLogger(DreamServiceImpl.class);
 
 	@Override
-	public  ResponseEntity<String> writeData(String spreadsheetId, TraineeDto dto,
-			HttpServletRequest request)
+	public ResponseEntity<String> writeData(String spreadsheetId, TraineeDto dto, HttpServletRequest request)
 
 			throws MessagingException, TemplateException {
 		try {
@@ -118,24 +117,28 @@ public class DreamServiceImpl implements DreamService {
 
 			repo.writeData(spreadsheetId, list);
 			if (dto.getBasicInfo().getEmail() != null) {
-				cacheService.addEmailToCache("emailData", spreadsheetId, dto.getBasicInfo().getEmail());
+				logger.info("adding email to the cache", dto.getBasicInfo().getEmail());
+//				cacheService.addEmailToCache("emailData", spreadsheetId, dto.getBasicInfo().getEmail());
 
 //				//adding email to cache
 			}
 			if (dto.getBasicInfo().getContactNumber() != null) {
 				// adding contactNumber to cache
-				cacheService.addContactNumberToCache("contactData", spreadsheetId,
-						dto.getBasicInfo().getContactNumber());
+				logger.info("adding contact number to the cache", dto.getBasicInfo().getContactNumber());
+//				cacheService.addContactNumberToCache("contactData", spreadsheetId,
+//						dto.getBasicInfo().getContactNumber());
 
 			}
 			// adding to cache
-			cacheService.updateCache("sheetsData", spreadsheetId, list);
+			logger.info("adding register data to the cache:", list);
+//			cacheService.updateCache("sheetsData", spreadsheetId, list);
 
+			logger.info("adding to follow up:", dto);
 			boolean status = addToFollowUp(dto, spreadsheetId);
 
 			if (status) {
-				logger.info("Data written successfully to spreadsheetId and Added to Follow Up: {}", spreadsheetId);
-
+				logger.info("Data written successfully to spreadsheetId and Added to Follow Up: {}");
+				logger.info("saving birthday information", dto);
 				saveBirthDayInfo(spreadsheetId, dto, request);
 				boolean sent = util.sendCourseContent(dto.getBasicInfo().getEmail(),
 						dto.getBasicInfo().getTraineeName());
@@ -167,20 +170,20 @@ public class DreamServiceImpl implements DreamService {
 			List<Object> list = wrapper.extractDtoDetails(dto);
 
 			repo.writeData(spreadsheetId, list);
+//			cacheService.updateCache("sheetsData", spreadsheetId, list);
 			// adding data to the cache
 			if (dto.getBasicInfo().getEmail() != null) {
-				cacheService.addEmailToCache("emailData", spreadsheetId, dto.getBasicInfo().getEmail());
+//				cacheService.addEmailToCache("emailData", spreadsheetId, dto.getBasicInfo().getEmail());
 
 //					//adding email to cache
 			}
 			if (dto.getBasicInfo().getContactNumber() != null) {
 				// adding contactNumber to cache
-				cacheService.addContactNumberToCache("contactData", spreadsheetId,
-						dto.getBasicInfo().getContactNumber());
+//				cacheService.addContactNumberToCache("contactData", spreadsheetId,
+//						dto.getBasicInfo().getContactNumber());
 
 			}
-			System.out.println(dto);
-			cacheService.updateCache("sheetsData", spreadsheetId, list);
+			logger.info("saving birth details:", dto);
 			saveBirthDayInfo(spreadsheetId, dto, request);
 
 			boolean status = addToFollowUpEnquiry(dto, spreadsheetId);
@@ -227,8 +230,10 @@ public class DreamServiceImpl implements DreamService {
 		if (data == null) {
 			return false;
 		}
+		logger.info("saving data to the follow up sheet{}", data);
 		repo.saveToFollowUp(spreadSheetId, data);
-		cacheService.addFollowUpToCache("followUpDetails", spreadSheetId, data);
+		logger.info("add FollowUp details To Cache{}", data);
+//		cacheService.addFollowUpToCache("followUpDetails", spreadSheetId, data);
 		return true;
 	}
 
@@ -250,7 +255,7 @@ public class DreamServiceImpl implements DreamService {
 			return false;
 		}
 		boolean save = repo.saveToFollowUp(spreadSheetId, data);
-		cacheService.addFollowUpToCache("followUpDetails", spreadSheetId, data);
+//		cacheService.addFollowUpToCache("followUpDetails", spreadSheetId, data);
 		return save;
 
 	}
@@ -401,7 +406,7 @@ public class DreamServiceImpl implements DreamService {
 				UpdateValuesResponse updated = repo.update(spreadsheetId, range, valueRange);
 				if (updated != null && !updated.isEmpty()) {
 					updateFollowUp(spreadsheetId, email, dto);
-					cacheService.getCacheDataByEmail("sheetsData", spreadsheetId, email, dto);
+//					cacheService.getCacheDataByEmail("sheetsData", spreadsheetId, email, dto);
 					// repo.evictAllCachesOnTraineeDetails();
 					return ResponseEntity.ok("Updated Successfully");
 				} else {
@@ -450,7 +455,7 @@ public class DreamServiceImpl implements DreamService {
 
 			if (updated != null && !updated.isEmpty()) {
 				// repo.evictAllCachesOnTraineeDetails();
-				cacheService.updateCacheFollowUp("followUpDetails", spreadsheetId, email, followUpDto);
+//				cacheService.updateCacheFollowUp("followUpDetails", spreadsheetId, email, followUpDto);
 				return true;
 			} else {
 				return false;
@@ -538,8 +543,8 @@ public class DreamServiceImpl implements DreamService {
 		ValueRange valueRange = new ValueRange();
 		valueRange.setValues(values);
 		UpdateValuesResponse updated = repo.updateFollow(spreadsheetId, range, valueRange);
-		cacheService.updateCacheFollowUp("followUpDetails", spreadsheetId, followUpDto.getBasicInfo().getEmail(),
-				followUpDto);
+//		cacheService.updateCacheFollowUp("followUpDetails", spreadsheetId, followUpDto.getBasicInfo().getEmail(),
+//				followUpDto);
 		return updated;
 	}
 
@@ -551,7 +556,7 @@ public class DreamServiceImpl implements DreamService {
 
 			List<Object> statusData = wrapper.extractDtoDetails(sdto);
 			boolean status = repo.updateFollowUpStatus(spreadsheetId, statusData);
-			cacheService.updateFollowUpStatusInCache("followUpStatusDetails", spreadsheetId, statusData);
+//			cacheService.updateFollowUpStatusInCache("followUpStatusDetails", spreadsheetId, statusData);
 
 			if (status == true) {
 				updateCurrentFollowUp(statusDto.getCallBack(), spreadsheetId, statusDto.getBasicInfo().getEmail(),
@@ -641,7 +646,7 @@ public class DreamServiceImpl implements DreamService {
 				List<List<Object>> sortedData = data.stream().sorted(Comparator.comparing(
 						list -> list != null && !list.isEmpty() && list.size() > 4 ? list.get(4).toString() : "",
 						Comparator.reverseOrder())).collect(Collectors.toList());
-				followUpDto = getFollowUpRows(sortedData, startingIndex, maxRows);
+
 				// mapping course name from trainee table to follow up
 				followUpDto.stream().forEach(dto -> {
 					TraineeDto traineedto = getTraineeDtoByEmail(traineeData, dto.getBasicInfo().getEmail());
@@ -659,7 +664,7 @@ public class DreamServiceImpl implements DreamService {
 					return ResponseEntity.ok(followUpDataDto);
 
 				} else {
-					FollowUpDataDto followUpDataDto = new FollowUpDataDto(followUpDto, followUpDto.size());
+					FollowUpDataDto followUpDataDto = new FollowUpDataDto(followUpDto, data.size());
 					return ResponseEntity.ok(followUpDataDto);
 				}
 				// repo.evictFollowUpStatusDetails();
@@ -760,7 +765,7 @@ public class DreamServiceImpl implements DreamService {
 		List<Object> list = wrapper.extractDtoDetails(dto);
 		boolean save = repo.saveBatchDetails(spreadsheetId, list);
 		// adding to cache
-		cacheService.updateCourseCache("batchDetails", spreadsheetId, list);
+//		cacheService.updateCourseCache("batchDetails", spreadsheetId, list);
 		if (save == true) {
 			return ResponseEntity.ok("Batch details added successfully");
 		} else {
@@ -1009,13 +1014,6 @@ public class DreamServiceImpl implements DreamService {
 		}
 		return true;
 
-	}
-
-	@Override
-	public boolean updateCurrentFollowUp(String spreadsheetId, String email, String currentStatus,
-			String currentlyFollowedBy) throws IOException, IllegalAccessException {
-		// TODO Auto-generated method stub
-		return false;
 	}
 
 	@Override

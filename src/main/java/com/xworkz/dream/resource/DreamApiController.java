@@ -62,7 +62,7 @@ public class DreamApiController {
 	@PostMapping("/register")
 	public ResponseEntity<String> register(@RequestHeader String spreadsheetId, @RequestBody TraineeDto values,
 			HttpServletRequest request) throws IOException, MessagingException, TemplateException {
-		logger.info("Registering trainee details: {}", values);
+		logger.debug("Registering trainee details: {}", values);
 
 		return service.writeData(spreadsheetId, values, request);
 	}

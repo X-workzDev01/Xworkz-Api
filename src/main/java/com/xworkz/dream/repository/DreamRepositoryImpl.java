@@ -6,6 +6,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
@@ -106,16 +107,16 @@ public class DreamRepositoryImpl implements DreamRepository {
 	}
 
 	@Override
-	@Cacheable(value = "emailData", key = "#spreadsheetId", unless = "#result == null")
-	public List<List<Object>>  getEmails(String spreadsheetId, String email) throws IOException {
+//	@Cacheable(value = "emailData", key = "#spreadsheetId", unless = "#result == null")
+	public List<List<Object>> getEmails(String spreadsheetId, String email) throws IOException {
 		ValueRange emailValue = sheetsService.spreadsheets().values().get(spreadsheetId, emailRange).execute();
 		return emailValue.getValues();
-	}  
+	}
 
 	@Override
-	@Cacheable(value = "contactData", key = "#spreadsheetId", unless = "#result == null")
-	public List<List<Object>>  getContactNumbers(String spreadsheetId) throws IOException {
-		ValueRange response = sheetsService.spreadsheets().values().get(spreadsheetId, contactNumberRange).execute();
+//	@Cacheable(value = "contactData", key = "#spreadsheetId", unless = "#result == null")
+	public List<List<Object>> getContactNumbers(String spreadsheetId) throws IOException {
+		 ValueRange response = sheetsService.spreadsheets().values().get(spreadsheetId, contactNumberRange).execute();
 		return response.getValues();
 	}
 
@@ -144,9 +145,9 @@ public class DreamRepositoryImpl implements DreamRepository {
 		return true;
 
 	}
-
+ 
 	@Override
-	@Cacheable(value = "sheetsData", key = "#spreadsheetId", unless = "#result == null")
+//	@Cacheable(value = "sheetsData", key = "#spreadsheetId", unless = "#result == null")
 	public List<List<Object>> readData(String spreadsheetId) throws IOException {
 		ValueRange response = sheetsService.spreadsheets().values().get(spreadsheetId, range).execute();
 		List<List<Object>> data = response.getValues();
@@ -190,7 +191,7 @@ public class DreamRepositoryImpl implements DreamRepository {
 	}
 
 	@Override
-	@Cacheable(value = "followUpDetails", key = "#spreadsheetId", unless = "#result == null")
+//	@Cacheable(value = "followUpDetails", key = "#spreadsheetId", unless = "#result == null")
 	public List<List<Object>> getFollowUpDetails(String spreadsheetId) throws IOException {
 		ValueRange response = sheetsService.spreadsheets().values().get(spreadsheetId, followUpRange).execute();
 
@@ -224,7 +225,7 @@ public class DreamRepositoryImpl implements DreamRepository {
 	}
 
 	@Override
-	@Cacheable(value = "followUpStatusDetails", key = "#spreadsheetId", unless = "#result == null")
+//	@Cacheable(value = "followUpStatusDetails", key = "#spreadsheetId", unless = "#result == null")
 	public List<List<Object>> getFollowUpStatusDetails(String spreadsheetId) throws IOException {
 
 		ValueRange response = sheetsService.spreadsheets().values().get(spreadsheetId, followUpStatus).execute();
@@ -245,7 +246,7 @@ public class DreamRepositoryImpl implements DreamRepository {
 		sheetsService.spreadsheets().values().append(spreadsheetId, batchDetailsRange, body)
 				.setValueInputOption("USER_ENTERED").execute();
 		return true;
-	}
+	} 
 
 	@Override
 	public ValueRange getBirthDayId(String spreadsheetId) throws IOException {
@@ -294,17 +295,16 @@ public class DreamRepositoryImpl implements DreamRepository {
 	public List<List<Object>> notification(String spreadsheetId) throws IOException {
 		ValueRange response = sheetsService.spreadsheets().values().get(spreadsheetId, followUpStatus).execute();
 		return response.getValues();
-	} 
+	}
 
 	@Override
-	@Cacheable(value = "followUpDetails", key = "#spreadsheetId", unless = "#result == null")
+//	@Cacheable(value = "followUpDetails", key = "#spreadsheetId", unless = "#result == null")
 	public List<List<Object>> getFollowUpDetailsByid(String spreadsheetId) throws IOException {
 		ValueRange response = sheetsService.spreadsheets().values().get(spreadsheetId, followUpRange).execute();
 		return response.getValues();
 	}
 
 	@Override
-	@CachePut(value = "birthadayDetails", key = "#spreadsheetId", unless = "#result == null")
 	public List<List<Object>> getBirthadayDetails(String spreadsheetId) throws IOException {
 		ValueRange response = sheetsService.spreadsheets().values().get(spreadsheetId, dateOfBirthDetailsRange)
 				.execute();
@@ -318,7 +318,7 @@ public class DreamRepositoryImpl implements DreamRepository {
 	}
 
 	@Override
-	@CacheEvict(value = { "followUpStatusDetails" }, allEntries = true)
+//	@CacheEvict(value = { "followUpStatusDetails" }, allEntries = true)
 	public void evictFollowUpStatusDetails() {
 		// This method will be scheduled to run every 12 hours
 		// and will evict all entries in the specified caches
