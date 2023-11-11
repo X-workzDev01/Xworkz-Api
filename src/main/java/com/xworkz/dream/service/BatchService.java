@@ -11,9 +11,5 @@ public interface BatchService {
 			throws IOException;
 
 	public FollowUpDataDto getTraineeDetailsByCourseInFollowUp(String spreadsheetId,
-			String courseName) throws IOException;
-
-	public FollowUpDataDto traineeDetailsByCourseAndStatusInFollowUp(String spreadsheetId,
-			String courseName, String status,String date,int startingIndex,int maxRows) throws IOException;
-
+			String courseName,int startingIndex,int maxRows) throws IOException;
 }
