@@ -5,12 +5,10 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
-import java.util.ListIterator;
 import java.util.Objects;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -20,7 +18,10 @@ import com.xworkz.dream.dto.TraineeDto;
 import com.xworkz.dream.repository.DreamRepository;
 import com.xworkz.dream.wrapper.DreamWrapper;
 
+import lombok.extern.slf4j.Slf4j;
+
 @Service
+@Slf4j
 public class BatchServiceImpl implements BatchService {
 
 	@Autowired
@@ -29,171 +30,132 @@ public class BatchServiceImpl implements BatchService {
 	private DreamWrapper wrapper;
 	@Autowired
 	private DreamService service;
-	private static final Logger logger = LoggerFactory.getLogger(BatchServiceImpl.class);
 
 	public List<TraineeDto> getTraineeDetailsByCourse(String spreadsheetId, String courseName) throws IOException {
-		List<List<Object>> data = repo.readData(spreadsheetId);
 		List<TraineeDto> traineeDetails = new ArrayList<>();
+		log.debug("reading trainee data by course {} ", courseName);
+		return readTraineeDataByCourseName(courseName, spreadsheetId, traineeDetails);
 
-		if (courseName != null) {
-			if (data != null) {
-				List<List<Object>> sortedData = data.stream().sorted(Comparator.comparing(
-						list -> list != null && !list.isEmpty() && list.size() > 24 ? list.get(24).toString() : "",
-						Comparator.reverseOrder())).collect(Collectors.toList());
+	}
 
-				traineeDetails = sortedData.stream()
-						.filter(row -> row != null && row.size() > 9 && row.contains(courseName))
-						.map(wrapper::listToDto).filter(Objects::nonNull) // Filter out any null TraineeDto
-						.collect(Collectors.toList());
-			}
-
-			if (!traineeDetails.isEmpty()) {
-				return traineeDetails;
-			} else {
-				logger.error("No matching trainee details found for the course: " + courseName);
-				return Collections.emptyList();
-			}
+	private List<TraineeDto> readTraineeDataByCourseName(String courseName, String spreadsheetId,
+			List<TraineeDto> traineeDetails) throws IOException {
+		List<List<Object>> data = repo.readData(spreadsheetId);
+		if (courseName != null && data != null) {
+			log.debug("course name : {}", courseName);
+			traineeDetails = data.stream().filter(row -> row != null && row.size() > 9 && row.contains(courseName))
+					.sorted(Comparator.comparing(
+							list -> list != null && !list.isEmpty() && list.size() > 24 ? list.get(24).toString() : "",
+							Comparator.reverseOrder()))
+					.map(wrapper::listToDto).filter(Objects::nonNull).collect(Collectors.toList());
+		}
+		if (!traineeDetails.isEmpty()) {
+			log.debug("");
+			return traineeDetails;
 		} else {
-			logger.error("Bad request");
+			log.info("No trainee details found for course: {}", courseName);
 			return Collections.emptyList();
 		}
 	}
 
-	public FollowUpDataDto getTraineeDetailsByCourseInFollowUp(String spreadsheetId, String courseName,int startingIndex, int maxIndex) throws IOException {
+	public FollowUpDataDto getTraineeDetailsByCourseInFollowUp(String spreadsheetId, String courseName,
+			int startingIndex, int maxIndex) throws IOException {
 		FollowUpDataDto followUpDataDto = new FollowUpDataDto(Collections.emptyList(), 0);
 		try {
 			List<List<Object>> followUpData = repo.getFollowUpDetails(spreadsheetId);
 			List<List<Object>> traineeData = repo.readData(spreadsheetId);
-			if (followUpData == null || traineeData == null || spreadsheetId == null || courseName == null
-					|| repo == null || wrapper == null || service == null) {
+			log.debug("null check for all the data {}", followUpDataDto);
+			if (Stream.of(followUpData, traineeData, spreadsheetId, courseName, repo, wrapper, service)
+					.anyMatch(Objects::isNull)) {
 				return followUpDataDto;
 			}
-			List<FollowUpDto> followUpDto = traineeData.stream()
-					.filter(row -> row != null && row.size() > 9 && row.contains(courseName)).map(row -> {
-						TraineeDto dto = wrapper.listToDto(row);
-						if (dto == null) {
-							return null;
-						}
-						FollowUpDto followUp = null;
-						try {
-							followUp = service.getFollowUpDetailsByEmail(spreadsheetId, dto.getBasicInfo().getEmail());
-						} catch (IOException e) {
-							e.printStackTrace();
-						}
-
-						if (followUp == null) {
-							return null;
-						}
-
-						FollowUpDto fdto = new FollowUpDto();
-						fdto.setId(dto.getId());
-						fdto.setBasicInfo(dto.getBasicInfo());
-						if (dto.getCourseInfo() != null) {
-							fdto.setCourseName(dto.getCourseInfo().getCourse());
-						}
-						fdto.setCallback(followUp.getCallback());
-						fdto.setCurrentlyFollowedBy(followUp.getCurrentlyFollowedBy());
-						fdto.setCurrentStatus(followUp.getCurrentStatus());
-						fdto.setJoiningDate(followUp.getJoiningDate());
-						fdto.setRegistrationDate(followUp.getRegistrationDate());
-						return fdto;
-					}).filter(Objects::nonNull).sorted(Comparator.comparing(FollowUpDto::getRegistrationDate))
-					.collect(Collectors.toList());
-			FollowUpDataDto dto = new FollowUpDataDto(followUpDto, followUpDto.size());
-			return dto;
+			return getDataByCourseName(spreadsheetId, courseName, traineeData, startingIndex, maxIndex);
 		} catch (IOException e) {
-			logger.error("An IOException occurred: " + e.getMessage(), e);
+			log.error("An IOException occurred: " + e.getMessage(), e);
 			return followUpDataDto;
 		}
 	}
 
-	public FollowUpDataDto traineeDetailsByCourseAndStatusInFollowUp(String spreadsheetId, String courseName,
-			String status, String date, int startingIndex, int maxRows) throws IOException {
-		FollowUpDataDto followUpDataDto = new FollowUpDataDto(Collections.emptyList(), 0);
-		try {
-			List<List<Object>> followUpData = repo.getFollowUpDetails(spreadsheetId);
-			List<List<Object>> traineeData = repo.readData(spreadsheetId);
-			if (followUpData == null || traineeData == null || spreadsheetId == null || courseName == null
-					|| repo == null || wrapper == null || service == null || status == null || date != null) {
-				return followUpDataDto;
-			}
-			List<FollowUpDto> followUpDto = traineeData.stream()
-					.filter(row -> row != null && row.size() > 9 && row.contains(courseName)).map(row -> {
-						TraineeDto dto = wrapper.listToDto(row);
-						if (dto == null) {
-							return null;
-						}
-						FollowUpDto followUp = null;
-						try {
-							followUp = service.getFollowUpDetailsByEmail(spreadsheetId, dto.getBasicInfo().getEmail());
-						} catch (IOException e) {
-							e.printStackTrace();
-						}
-
-						if (followUp == null) {
-							return null;
-						}
-
-						if (followUp.getCurrentStatus() != null && followUp.getCurrentStatus().equalsIgnoreCase(status)
-								|| followUp.getCurrentStatus().equalsIgnoreCase(status)
-										&& followUp.getCallback().equalsIgnoreCase(date)
-								|| followUp.getCurrentStatus().equalsIgnoreCase(status)
-										&& followUp.getCallback().equalsIgnoreCase(date)
-										&& followUp.getCourseName().equalsIgnoreCase(courseName)) {
-							FollowUpDto fdto = new FollowUpDto();
-							fdto.setId(dto.getId());
-							fdto.setBasicInfo(dto.getBasicInfo());
-							if (dto.getCourseInfo() != null) {
-								fdto.setCourseName(dto.getCourseInfo().getCourse());
-							}
-							fdto.setCallback(followUp.getCallback());
-							fdto.setCurrentlyFollowedBy(followUp.getCurrentlyFollowedBy());
-							fdto.setCurrentStatus(followUp.getCurrentStatus());
-							fdto.setJoiningDate(followUp.getJoiningDate());
-							fdto.setRegistrationDate(followUp.getRegistrationDate());
-
-							return fdto;
-						} else {
-							return null;
-						}
-					}).filter(Objects::nonNull)
-					.sorted(Comparator.comparing(FollowUpDto::getRegistrationDate).reversed())
-					.collect(Collectors.toList());
-
-//			 List<FollowUpDto> getLimitedRows();
-			FollowUpDataDto dto = new FollowUpDataDto(followUpDto, followUpDto.size());
-			return dto;
-		} catch (IOException e) {
-			logger.error("An IOException occurred: " + e.getMessage(), e);
-			return followUpDataDto;
-		}
-	}
-
+	// for pagination
 	public List<FollowUpDto> getLimitedRows(List<List<Object>> values, int startingIndex, int maxRows) {
 		List<FollowUpDto> dto = new ArrayList<>();
 
 		if (values != null) {
-			int endIndex = startingIndex + maxRows;
+			int endIndex = Math.min(startingIndex + maxRows, values.size());
 
-			ListIterator<List<Object>> iterator = values.listIterator(startingIndex);
-
-			while (iterator.hasNext() && iterator.nextIndex() < endIndex) {
-				List<Object> row = iterator.next();
-
-				if (row != null && !row.isEmpty()) {
-					FollowUpDto followUpDto = wrapper.listToFollowUpDTO(row);
-					dto.add(followUpDto);
-				}
-			}
+			dto = values.subList(startingIndex, endIndex).stream().filter(row -> row != null && !row.isEmpty())
+					.map(wrapper::listToFollowUpDTO).collect(Collectors.toList());
 		}
+		log.debug("Returning values with pagination {}", dto);
 		return dto;
 	}
 
-	@Override
-	public FollowUpDataDto getTraineeDetailsByCourseInFollowUp(String spreadsheetId, String courseName)
-			throws IOException {
-		// TODO Auto-generated method stub
-		return null;
+	private FollowUpDto assignValuesToFollowUp(TraineeDto dto, FollowUpDto followUp) {
+		FollowUpDto fdto = new FollowUpDto();
+		fdto.setId(dto.getId());
+		fdto.setBasicInfo(dto.getBasicInfo());
+		if (dto.getCourseInfo() != null) {
+			fdto.setCourseName(dto.getCourseInfo().getCourse());
+		}
+		fdto.setCallback(followUp.getCallback());
+		fdto.setCurrentlyFollowedBy(followUp.getCurrentlyFollowedBy());
+		fdto.setCurrentStatus(followUp.getCurrentStatus());
+		fdto.setJoiningDate(followUp.getJoiningDate());
+		fdto.setRegistrationDate(followUp.getRegistrationDate());
+		log.debug("assigned values {}", fdto);
+		return fdto;
+	}
+
+	private FollowUpDataDto getDataByCourseName(String spreadsheetId, String courseName, List<List<Object>> traineeData,
+	        int startingIndex, int maxRows) {
+	    List<FollowUpDto> followUpDto = traineeData.stream()
+	            .filter(row -> row != null && row.size() > 9 && row.contains(courseName))
+	            .map(row -> {
+	                TraineeDto dto = wrapper.listToDto(row);
+	                if (dto == null) {
+	                    return null;
+	                }
+	                FollowUpDto followUp = null;
+	                try {
+	                	String email = dto.getBasicInfo().getEmail();
+	                    log.debug("Attempting to get FollowUp details for email: {}", email);
+	                    followUp = service.getFollowUpDetailsByEmail(spreadsheetId, email);
+	                    System.out.println(followUp);
+	                } catch (IOException e) {
+	                    e.printStackTrace();
+	                }
+	                if (followUp == null) {
+	                    return null;
+	                }
+
+	                FollowUpDto fdto = assignValuesToFollowUp(dto, followUp);
+	                return fdto;
+	            })
+	            .filter(Objects::nonNull)
+	            .sorted(Comparator.comparing(FollowUpDto::getRegistrationDate))
+	            .collect(Collectors.toList());
+
+	    List<FollowUpDto> limitedRows = getPaginationData(followUpDto, startingIndex, maxRows);
+
+	    // Add logging statements for debugging
+	    log.debug("Original followUpDto: {}", followUpDto);
+
+	    FollowUpDataDto dto = new FollowUpDataDto(limitedRows, limitedRows.size());
+	    return dto;
+	}
+
+
+	public List<FollowUpDto> getPaginationData(List<FollowUpDto> values, int startingIndex, int maxRows) {
+		List<FollowUpDto> dto = new ArrayList<>();
+
+		if (values != null) {
+			int endIndex = Math.min(startingIndex + maxRows, values.size());
+
+			dto = values.subList(startingIndex, endIndex).stream()
+					.sorted(Comparator.comparing(FollowUpDto::getRegistrationDate)).collect(Collectors.toList());
+		}
+		log.debug("Returning values with pagination {}", dto);
+		return dto;
 	}
 
 }
