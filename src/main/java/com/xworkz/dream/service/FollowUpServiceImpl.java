@@ -10,38 +10,40 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import java.util.ListIterator;
+import java.util.Objects;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.core.io.ResourceLoader;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Service;
 
 import com.google.api.services.sheets.v4.model.UpdateValuesResponse;
 import com.google.api.services.sheets.v4.model.ValueRange;
 import com.xworkz.dream.dto.AdminDto;
-import com.xworkz.dream.dto.BatchDetails;
 import com.xworkz.dream.dto.FollowUpDataDto;
 import com.xworkz.dream.dto.FollowUpDto;
-import com.xworkz.dream.dto.SheetNotificationDto;
 import com.xworkz.dream.dto.StatusDto;
 import com.xworkz.dream.dto.TraineeDto;
-import com.xworkz.dream.dto.utils.Team;
-import com.xworkz.dream.interfaces.EmailableClient;
-import com.xworkz.dream.repository.DreamRepository;
 import com.xworkz.dream.repository.FollowUpRepository;
-import com.xworkz.dream.util.DreamUtil;
+import com.xworkz.dream.repository.RegisterRepository;
 import com.xworkz.dream.wrapper.DreamWrapper;
 
+import lombok.extern.slf4j.Slf4j;
+@Service
+@Slf4j
 public class FollowUpServiceImpl implements FollowUpService {
 
 	@Autowired
 	private FollowUpRepository repo;
 	@Autowired
 	private DreamWrapper wrapper;
+	@Autowired
+	private RegisterRepository repository;
 	@Value("${login.sheetId}")
 	private String id;
 	@Value("${login.teamFile}")
@@ -85,12 +87,13 @@ public class FollowUpServiceImpl implements FollowUpService {
 		if (data == null) {
 			return false;
 		}
-		logger.info("saving data to the follow up sheet{}", data);
+		log.info("saving data to the follow up sheet{}", data);
 		repo.saveToFollowUp(spreadSheetId, data);
-		logger.info("add FollowUp details To Cache{}", data);
+		log.info("add FollowUp details To Cache{}", data);
 //		cacheService.addFollowUpToCache("followUpDetails", spreadSheetId, data);
 		return true;
 	}
+	
 	
 	@Override
 	public boolean addToFollowUpEnquiry(TraineeDto traineeDto, String spreadSheetId)
@@ -284,7 +287,7 @@ public class FollowUpServiceImpl implements FollowUpService {
 			String status, String courseName, String date) throws IOException {
 		List<FollowUpDto> followUpDto = new ArrayList<FollowUpDto>();
 		List<List<Object>> lists = repo.getFollowUpDetails(spreadsheetId);
-		List<List<Object>> traineeData = repo.readData(spreadsheetId);
+		List<List<Object>> traineeData = repository.readData(spreadsheetId);
 
 		if (status != null && !status.isEmpty() && lists != null) {
 			List<List<Object>> data = lists.stream().filter(
@@ -480,14 +483,115 @@ public class FollowUpServiceImpl implements FollowUpService {
 			List<FollowUpDto> dto = getLimitedRowsBatchAndDate(list, date, startIndex, endIndex);
 			Collections.reverse(dto);
 			FollowUpDataDto followUpDataDto = new FollowUpDataDto(dto, list.size());
-			logger.info("Getting detiles is {} ", followUpDataDto);
+			log.info("Getting detiles is {} ", followUpDataDto);
 			return ResponseEntity.ok(followUpDataDto);
 
 		}
-		logger.info("Detiles not found ");
+		log.info("Detiles not found ");
 
 		return null;
 
+	}
+	
+	@Override
+	public FollowUpDataDto getTraineeDetailsByCourseInFollowUp(String spreadsheetId, String courseName,
+			int startingIndex, int maxIndex) throws IOException {
+		FollowUpDataDto followUpDataDto = new FollowUpDataDto(Collections.emptyList(), 0);
+		try {
+			List<List<Object>> followUpData = repo.getFollowUpDetails(spreadsheetId);
+			List<List<Object>> traineeData = repository.readData(spreadsheetId);
+			log.debug("null check for all the data {}", followUpDataDto);
+			if (Stream.of(followUpData, traineeData, spreadsheetId, courseName, repo, wrapper)
+					.anyMatch(Objects::isNull)) {
+				return followUpDataDto;
+			}
+			return getDataByCourseName(spreadsheetId, courseName, traineeData, startingIndex, maxIndex);
+		} catch (IOException e) {
+			log.error("An IOException occurred: " + e.getMessage(), e);
+			return followUpDataDto;
+		}
+	}
+
+	// for pagination
+	public List<FollowUpDto> getLimitedRows(List<List<Object>> values, int startingIndex, int maxRows) {
+		List<FollowUpDto> dto = new ArrayList<>();
+
+		if (values != null) {
+			int endIndex = Math.min(startingIndex + maxRows, values.size());
+
+			dto = values.subList(startingIndex, endIndex).stream().filter(row -> row != null && !row.isEmpty())
+					.map(wrapper::listToFollowUpDTO).collect(Collectors.toList());
+		}
+		log.debug("Returning values with pagination {}", dto);
+		return dto;
+	}
+
+	private FollowUpDto assignValuesToFollowUp(TraineeDto dto, FollowUpDto followUp) {
+		FollowUpDto fdto = new FollowUpDto();
+		fdto.setId(dto.getId());
+		fdto.setBasicInfo(dto.getBasicInfo());
+		if (dto.getCourseInfo() != null) {
+			fdto.setCourseName(dto.getCourseInfo().getCourse());
+		}
+		fdto.setCallback(followUp.getCallback());
+		fdto.setCurrentlyFollowedBy(followUp.getCurrentlyFollowedBy());
+		fdto.setCurrentStatus(followUp.getCurrentStatus());
+		fdto.setJoiningDate(followUp.getJoiningDate());
+		fdto.setRegistrationDate(followUp.getRegistrationDate());
+		log.debug("assigned values {}", fdto);
+		return fdto;
+	}
+
+	private FollowUpDataDto getDataByCourseName(String spreadsheetId, String courseName, List<List<Object>> traineeData,
+	        int startingIndex, int maxRows) {
+	    List<FollowUpDto> followUpDto = traineeData.stream()
+	            .filter(row -> row != null && row.size() > 9 && row.contains(courseName))
+	            .map(row -> {
+	                TraineeDto dto = wrapper.listToDto(row);
+	                if (dto == null) {
+	                    return null;
+	                }
+	                FollowUpDto followUp = null;
+	                try {
+	                	String email = dto.getBasicInfo().getEmail();
+	                    log.debug("Attempting to get FollowUp details for email: {}", email);
+	                    followUp = getFollowUpDetailsByEmail(spreadsheetId, email);
+	                    System.out.println(followUp);
+	                } catch (IOException e) {
+	                    e.printStackTrace();
+	                }
+	                if (followUp == null) {
+	                    return null;
+	                }
+
+	                FollowUpDto fdto = assignValuesToFollowUp(dto, followUp);
+	                return fdto;
+	            })
+	            .filter(Objects::nonNull)
+	            .sorted(Comparator.comparing(FollowUpDto::getRegistrationDate))
+	            .collect(Collectors.toList());
+
+	    List<FollowUpDto> limitedRows = getPaginationData(followUpDto, startingIndex, maxRows);
+
+	    // Add logging statements for debugging
+	    log.debug("Original followUpDto: {}", followUpDto);
+
+	    FollowUpDataDto dto = new FollowUpDataDto(limitedRows, limitedRows.size());
+	    return dto;
+	}
+
+
+	public List<FollowUpDto> getPaginationData(List<FollowUpDto> values, int startingIndex, int maxRows) {
+		List<FollowUpDto> dto = new ArrayList<>();
+
+		if (values != null) {
+			int endIndex = Math.min(startingIndex + maxRows, values.size());
+
+			dto = values.subList(startingIndex, endIndex).stream()
+					.sorted(Comparator.comparing(FollowUpDto::getRegistrationDate)).collect(Collectors.toList());
+		}
+		log.debug("Returning values with pagination {}", dto);
+		return dto;
 	}
 
 	

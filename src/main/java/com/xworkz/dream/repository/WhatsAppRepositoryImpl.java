@@ -55,19 +55,6 @@ public class WhatsAppRepositoryImpl implements WhatsAppRepository {
 				requestInitializer).setApplicationName(applicationName).build();
 	}
 	
-	@Override
-	@Cacheable(value = "batchDetails", key = "#spreadsheetId", unless = "#result == null")
-	public UpdateValuesResponse updateBatchDetails(String spreadsheetId, String range2, ValueRange valueRange)
-			throws IOException {
-		return sheetsService.spreadsheets().values().update(spreadsheetId, range2, valueRange)
-				.setValueInputOption("RAW").execute();
-	}
-
-	@Override
-	public ValueRange getCourseNameList(String spreadsheetId) throws IOException {
-		ValueRange response = sheetsService.spreadsheets().values().get(spreadsheetId, batchDetailsCourseNameRange).execute();
-		return response;
-	}
 	
 	@Override
 	public UpdateValuesResponse updateWhatsAppLink(String spreadsheetId, String range2, ValueRange valueRange) throws IOException {

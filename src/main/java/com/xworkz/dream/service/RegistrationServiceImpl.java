@@ -44,6 +44,10 @@ public class RegistrationServiceImpl implements RegistrationService{
 	private DreamWrapper wrapper;
 	@Autowired
 	private DreamUtil util;
+	@Autowired
+	private BirthadayService service;
+	@Autowired
+	private FollowUpService followUpService;
 	@Value("${sheets.rowStartRange}")
 	private String rowStartRange;
 	@Value("${sheets.rowEndRange}")
@@ -88,12 +92,12 @@ public class RegistrationServiceImpl implements RegistrationService{
 //			cacheService.updateCache("sheetsData", spreadsheetId, list);
 
 			logger.info("adding to follow up:", dto);
-			boolean status = addToFollowUp(dto, spreadsheetId);
+			boolean status = followUpService.addToFollowUp(dto, spreadsheetId);
 
 			if (status) {
 				logger.info("Data written successfully to spreadsheetId and Added to Follow Up: {}");
 				logger.info("saving birthday information", dto);
-				saveBirthDayInfo(spreadsheetId, dto, request);
+				service.saveBirthDayInfo(spreadsheetId, dto, request);
 				boolean sent = util.sendCourseContent(dto.getBasicInfo().getEmail(),
 						dto.getBasicInfo().getTraineeName());
 
@@ -226,6 +230,23 @@ public class RegistrationServiceImpl implements RegistrationService{
 			return new ArrayList<>(); // Return an empty list if searchValue is null or empty
 		}
 	}
+	
+
+	private int findRowIndexByEmail(String spreadsheetId, String email) throws IOException {
+		List<List<Object>> data = repo.getEmails(spreadsheetId, email);
+
+		List<List<Object>> values = data;
+
+		if (values != null) {
+			for (int i = 0; i < values.size(); i++) {
+				List<Object> row = values.get(i);
+				if (row.size() > 0 && row.get(0).toString().equalsIgnoreCase(email)) {
+					return i + 3;
+				}
+			}
+		}
+		return -1;
+	}
 
 	@Override
 	public ResponseEntity<String> update(String spreadsheetId, String email, TraineeDto dto) {
@@ -258,7 +279,7 @@ public class RegistrationServiceImpl implements RegistrationService{
 
 				UpdateValuesResponse updated = repo.update(spreadsheetId, range, valueRange);
 				if (updated != null && !updated.isEmpty()) {
-					updateFollowUp(spreadsheetId, email, dto);
+					followUpService.updateFollowUp(spreadsheetId, email, dto);
 //					cacheService.getCacheDataByEmail("sheetsData", spreadsheetId, email, dto);
 					// repo.evictAllCachesOnTraineeDetails();
 					return ResponseEntity.ok("Updated Successfully");

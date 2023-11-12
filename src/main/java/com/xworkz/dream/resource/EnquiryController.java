@@ -31,7 +31,6 @@ public class EnquiryController {
 
 	@ApiOperation(value = "To Add Enquiry Details")
 	@PostMapping("/enquiry")
-
 	public ResponseEntity<String> addEnquiry(@RequestBody EnquiryDto enquiryDto, @RequestHeader String spreadSheetId,
 			HttpServletRequest request) {
 

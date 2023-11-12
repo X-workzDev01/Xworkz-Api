@@ -11,7 +11,6 @@ import com.xworkz.dream.repository.DreamRepository;
 
 import lombok.extern.slf4j.Slf4j;
 
-
 @Service
 @Slf4j
 public class UtilServiceImpl implements UtilService {

@@ -25,6 +25,9 @@ public interface FollowUpService {
 	public ResponseEntity<FollowUpDto> getFollowUpByEmail(String spreadsheetId, String email,
 			HttpServletRequest request) throws IOException;
 	
+	public FollowUpDataDto getTraineeDetailsByCourseInFollowUp(String spreadsheetId,
+			String courseName,int startingIndex,int maxRows) throws IOException;
+	
 	public boolean addToFollowUpEnquiry(TraineeDto traineeDto, String spreadSheetId)
 			throws IOException, IllegalAccessException;
 

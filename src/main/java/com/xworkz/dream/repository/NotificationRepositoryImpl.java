@@ -25,14 +25,12 @@ import com.google.api.services.sheets.v4.SheetsScopes;
 import com.google.api.services.sheets.v4.model.ValueRange;
 import com.google.auth.http.HttpCredentialsAdapter;
 import com.google.auth.oauth2.GoogleCredentials;
-import com.xworkz.dream.dto.utils.SpreadSheetService;
 
 @Repository
 public class NotificationRepositoryImpl implements NotificationRepository {
 	@Value("${sheets.followUpStatus}")
 	private String followUpStatus;
 	private Sheets sheetsService;
-	private SpreadSheetService sheetService;
 	private static final JsonFactory JSON_FACTORY = GsonFactory.getDefaultInstance();
 	private static final List<String> SCOPES = Collections.singletonList(SheetsScopes.SPREADSHEETS);
 	@Value("${sheets.appName}")
@@ -43,7 +41,7 @@ public class NotificationRepositoryImpl implements NotificationRepository {
 	private ResourceLoader resourceLoader;
 
 	@PostConstruct
-	public void setSheetsService() throws IOException, FileNotFoundException, GeneralSecurityException {
+	private void setSheetsService() throws IOException, FileNotFoundException, GeneralSecurityException {
 
 		Resource resource = resourceLoader.getResource(credentialsPath);
 		File file = resource.getFile();

@@ -106,12 +106,13 @@ public class RegistrationController {
 	}
 
 	
-	
-	
-	
-	
-	
-	
+
+	@ApiOperation(value = "To get Registration details by email")
+	@GetMapping("/readByEmail")
+	public ResponseEntity<?> getDataByEmail(@RequestHeader String spreadsheetId, @RequestParam String email,
+			HttpServletRequest request) throws IOException {
+		return service.getDetailsByEmail(spreadsheetId, email, request);
+	}
 	
 
 }

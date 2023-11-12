@@ -9,13 +9,21 @@ import java.util.Objects;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import javax.servlet.http.HttpServletRequest;
+
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import com.google.api.services.sheets.v4.model.ValueRange;
+import com.xworkz.dream.dto.BatchDetails;
+import com.xworkz.dream.dto.BatchDetailsDto;
 import com.xworkz.dream.dto.FollowUpDataDto;
 import com.xworkz.dream.dto.FollowUpDto;
 import com.xworkz.dream.dto.TraineeDto;
+import com.xworkz.dream.repository.BatchRepository;
 import com.xworkz.dream.repository.DreamRepository;
+import com.xworkz.dream.repository.RegisterRepository;
 import com.xworkz.dream.wrapper.DreamWrapper;
 
 import lombok.extern.slf4j.Slf4j;
@@ -25,11 +33,31 @@ import lombok.extern.slf4j.Slf4j;
 public class BatchServiceImpl implements BatchService {
 
 	@Autowired
-	private DreamRepository repo;
+	private RegisterRepository repo;
+	@Autowired
+	private BatchRepository repository;
 	@Autowired
 	private DreamWrapper wrapper;
-	@Autowired
-	private DreamService service;
+	private BatchDetails batch;
+	
+	
+
+	@Override
+	public ResponseEntity<String> saveDetails(String spreadsheetId, BatchDetailsDto dto, HttpServletRequest request)
+			throws IOException, IllegalAccessException {
+		List<List<Object>> data = repository.getBatchId(spreadsheetId).getValues();
+		int size = data != null ? data.size() : 0;
+		dto.setId(size += 1);
+		List<Object> list = wrapper.extractDtoDetails(dto);
+		boolean save = repository.saveBatchDetails(spreadsheetId, list);
+		// adding to cache
+//		cacheService.updateCourseCache("batchDetails", spreadsheetId, list);
+		if (save == true) {
+			return ResponseEntity.ok("Batch details added successfully");
+		} else {
+			return ResponseEntity.ok("Batch details Not added");
+		}
+	}
 
 	public List<TraineeDto> getTraineeDetailsByCourse(String spreadsheetId, String courseName) throws IOException {
 		List<TraineeDto> traineeDetails = new ArrayList<>();
@@ -58,104 +86,64 @@ public class BatchServiceImpl implements BatchService {
 		}
 	}
 
-	public FollowUpDataDto getTraineeDetailsByCourseInFollowUp(String spreadsheetId, String courseName,
-			int startingIndex, int maxIndex) throws IOException {
-		FollowUpDataDto followUpDataDto = new FollowUpDataDto(Collections.emptyList(), 0);
-		try {
-			List<List<Object>> followUpData = repo.getFollowUpDetails(spreadsheetId);
-			List<List<Object>> traineeData = repo.readData(spreadsheetId);
-			log.debug("null check for all the data {}", followUpDataDto);
-			if (Stream.of(followUpData, traineeData, spreadsheetId, courseName, repo, wrapper, service)
-					.anyMatch(Objects::isNull)) {
-				return followUpDataDto;
+	
+	
+	@Override
+	public ResponseEntity<BatchDetails> getBatchDetailsByCourseName(String spreadsheetId, String courseName)
+			throws IOException {
+		List<List<Object>> detailsByCourseName = repository.getCourseDetails(spreadsheetId);
+		batch = null;
+
+		List<List<Object>> filter = detailsByCourseName.stream()
+				.filter(e -> e.contains(courseName) && e.contains("Active")).collect(Collectors.toList());
+		filter.stream().forEach(item -> {
+			this.batch = wrapper.batchDetailsToDto(item);
+		});
+		if (batch != null) {
+			return ResponseEntity.ok(this.batch);
+		}
+		return null;
+	}
+
+
+	
+	@Override
+	public BatchDetails getBatchDetailsListByCourseName(String spreadsheetId, String courseName) throws IOException {
+		BatchDetails batch = new BatchDetails();
+		if (courseName != null && !courseName.isEmpty()) {
+			List<List<Object>> detailsByCourseName = repository.getCourseDetails(spreadsheetId);
+			List<List<Object>> data = detailsByCourseName.stream()
+					.filter(list -> list.stream().anyMatch(value -> value.toString().equalsIgnoreCase(courseName)))
+					.collect(Collectors.toList());
+			for (List<Object> row : data) {
+				batch = wrapper.batchDetailsToDto(row);
 			}
-			return getDataByCourseName(spreadsheetId, courseName, traineeData, startingIndex, maxIndex);
+			return batch;
+		}
+		return null;
+	}
+	
+	@Override
+	public ResponseEntity<List<Object>> getCourseNameByStatus(String spreadsheetId, String status) {
+		List<List<Object>> courseNameByStatus;
+		try {
+			courseNameByStatus = repository.getCourseDetails(spreadsheetId);
+			List<Object> coursename = new ArrayList<Object>();
+			if (courseNameByStatus != null) {
+				for (List<Object> row : courseNameByStatus) {
+					if (((String) row.get(7)).equalsIgnoreCase(status)) {
+						coursename.add(row.get(1));
+
+					}
+				}
+			}
+			return ResponseEntity.ok(coursename);
 		} catch (IOException e) {
-			log.error("An IOException occurred: " + e.getMessage(), e);
-			return followUpDataDto;
+			e.printStackTrace();
 		}
+		return null;
+
 	}
 
-	// for pagination
-	public List<FollowUpDto> getLimitedRows(List<List<Object>> values, int startingIndex, int maxRows) {
-		List<FollowUpDto> dto = new ArrayList<>();
-
-		if (values != null) {
-			int endIndex = Math.min(startingIndex + maxRows, values.size());
-
-			dto = values.subList(startingIndex, endIndex).stream().filter(row -> row != null && !row.isEmpty())
-					.map(wrapper::listToFollowUpDTO).collect(Collectors.toList());
-		}
-		log.debug("Returning values with pagination {}", dto);
-		return dto;
-	}
-
-	private FollowUpDto assignValuesToFollowUp(TraineeDto dto, FollowUpDto followUp) {
-		FollowUpDto fdto = new FollowUpDto();
-		fdto.setId(dto.getId());
-		fdto.setBasicInfo(dto.getBasicInfo());
-		if (dto.getCourseInfo() != null) {
-			fdto.setCourseName(dto.getCourseInfo().getCourse());
-		}
-		fdto.setCallback(followUp.getCallback());
-		fdto.setCurrentlyFollowedBy(followUp.getCurrentlyFollowedBy());
-		fdto.setCurrentStatus(followUp.getCurrentStatus());
-		fdto.setJoiningDate(followUp.getJoiningDate());
-		fdto.setRegistrationDate(followUp.getRegistrationDate());
-		log.debug("assigned values {}", fdto);
-		return fdto;
-	}
-
-	private FollowUpDataDto getDataByCourseName(String spreadsheetId, String courseName, List<List<Object>> traineeData,
-	        int startingIndex, int maxRows) {
-	    List<FollowUpDto> followUpDto = traineeData.stream()
-	            .filter(row -> row != null && row.size() > 9 && row.contains(courseName))
-	            .map(row -> {
-	                TraineeDto dto = wrapper.listToDto(row);
-	                if (dto == null) {
-	                    return null;
-	                }
-	                FollowUpDto followUp = null;
-	                try {
-	                	String email = dto.getBasicInfo().getEmail();
-	                    log.debug("Attempting to get FollowUp details for email: {}", email);
-	                    followUp = service.getFollowUpDetailsByEmail(spreadsheetId, email);
-	                    System.out.println(followUp);
-	                } catch (IOException e) {
-	                    e.printStackTrace();
-	                }
-	                if (followUp == null) {
-	                    return null;
-	                }
-
-	                FollowUpDto fdto = assignValuesToFollowUp(dto, followUp);
-	                return fdto;
-	            })
-	            .filter(Objects::nonNull)
-	            .sorted(Comparator.comparing(FollowUpDto::getRegistrationDate))
-	            .collect(Collectors.toList());
-
-	    List<FollowUpDto> limitedRows = getPaginationData(followUpDto, startingIndex, maxRows);
-
-	    // Add logging statements for debugging
-	    log.debug("Original followUpDto: {}", followUpDto);
-
-	    FollowUpDataDto dto = new FollowUpDataDto(limitedRows, limitedRows.size());
-	    return dto;
-	}
-
-
-	public List<FollowUpDto> getPaginationData(List<FollowUpDto> values, int startingIndex, int maxRows) {
-		List<FollowUpDto> dto = new ArrayList<>();
-
-		if (values != null) {
-			int endIndex = Math.min(startingIndex + maxRows, values.size());
-
-			dto = values.subList(startingIndex, endIndex).stream()
-					.sorted(Comparator.comparing(FollowUpDto::getRegistrationDate)).collect(Collectors.toList());
-		}
-		log.debug("Returning values with pagination {}", dto);
-		return dto;
-	}
 
 }

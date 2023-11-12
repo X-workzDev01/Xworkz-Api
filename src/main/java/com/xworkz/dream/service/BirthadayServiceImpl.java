@@ -6,27 +6,54 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import javax.servlet.http.HttpServletRequest;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.ResponseEntity;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
+import com.xworkz.dream.dto.BirthDayInfoDto;
+import com.xworkz.dream.dto.TraineeDto;
+import com.xworkz.dream.repository.BirthadayRepository;
 import com.xworkz.dream.repository.DreamRepository;
 import com.xworkz.dream.util.DreamUtil;
+import com.xworkz.dream.wrapper.DreamWrapper;
 
 @Service
 public class BirthadayServiceImpl implements BirthadayService{
 	
 	@Autowired
-	private DreamRepository repository;
+	private BirthadayRepository repository;
 	@Autowired
 	private DreamUtil util;
+	@Autowired
+	private DreamWrapper wrapper;
 	@Value("${login.sheetId}")
 	private String spreadsheetId;
 	
 	private static final Logger logger = LoggerFactory.getLogger(BirthadayServiceImpl.class);
+	
+	
+	@Override
+	public ResponseEntity<String> saveBirthDayInfo(String spreadsheetId, TraineeDto dto, HttpServletRequest request)
+			throws IllegalAccessException, IOException {
+		BirthDayInfoDto birthday = new BirthDayInfoDto();
+		List<List<Object>> data = repository.getBirthDayId(spreadsheetId).getValues();
+		int size = data != null ? data.size() : 0;
+		birthday.setDto(dto.getBasicInfo());
+		birthday.setId(size += 1);
+		List<Object> list = wrapper.extractDtoDetails(birthday);
+
+		boolean save = repository.saveBirthDayDetails(spreadsheetId, list);
+		if (save != false) {
+			return ResponseEntity.ok("Birth day information added successfully");
+		}
+		return ResponseEntity.ok("Birth day information Not added");
+	}
 	
 	
 	private String findNameByEmail(String email) throws IOException {
@@ -59,14 +86,5 @@ public class BirthadayServiceImpl implements BirthadayService{
         	util.sendBirthadyEmail(email, subject, nameByEmail);
         }
     }
-	
-	 @Scheduled(cron = "0 0 0 * * *")
-	 public void sendBirthdayEmailsScheduled() {
-	        try {
-	            sendBirthdayEmails();
-	        } catch (IOException e) {
-	        logger.info("Birthday Mail is not working : {} ",e.getMessage());
-	        }
-	    }
 
 }

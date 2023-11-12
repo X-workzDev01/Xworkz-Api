@@ -3,7 +3,6 @@ package com.xworkz.dream.service;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
-
 import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
@@ -17,8 +16,8 @@ import com.google.api.services.sheets.v4.model.UpdateValuesResponse;
 import com.google.api.services.sheets.v4.model.ValueRange;
 import com.xworkz.dream.dto.BatchDetails;
 import com.xworkz.dream.dto.TraineeDto;
-import com.xworkz.dream.repository.DreamRepository;
-import com.xworkz.dream.repository.WhatsAppRepository;
+import com.xworkz.dream.repository.BatchRepository;
+import com.xworkz.dream.repository.RegisterRepository;
 import com.xworkz.dream.util.DreamUtil;
 import com.xworkz.dream.wrapper.DreamWrapper;
 
@@ -26,15 +25,17 @@ import com.xworkz.dream.wrapper.DreamWrapper;
 public class WhatsAppServiceImpl implements WhatsAppService {
 
 	@Autowired
-	private WhatsAppRepository repository;
+	private BatchRepository repository;
 	@Autowired
-	private DreamRepository repo;
+	private RegisterRepository repo;
+	@Autowired
+	private RegistrationService registrationService;
 	@Autowired
 	private DreamWrapper wrapper;
 	@Autowired
 	private DreamUtil util;
 	@Autowired
-	private DreamService service;
+	private BatchService service;
 	@Value("${sheets.batchDetailsSheetName}")
 	private String batchDetailsSheetName;
 	@Value("${sheets.batchDetailsStartRange}")
@@ -43,7 +44,7 @@ public class WhatsAppServiceImpl implements WhatsAppService {
 	private String batchDetailsEndRange;
 
 	private static final Logger logger = LoggerFactory.getLogger(WhatsAppServiceImpl.class);
-
+	
 	private int findByCourseNameForUpdate(String spreadsheetId, String courseName) throws IOException {
 		ValueRange data = repository.getCourseNameList(spreadsheetId);
 		List<List<Object>> values = data.getValues();
@@ -59,25 +60,9 @@ public class WhatsAppServiceImpl implements WhatsAppService {
 	}
 
 	@Override
-	public BatchDetails getBatchDetailsListByCourseName(String spreadsheetId, String courseName) throws IOException {
-		BatchDetails batch = new BatchDetails();
-		if (courseName != null && !courseName.isEmpty()) {
-			List<List<Object>> detailsByCourseName = repo.getCourseDetails(spreadsheetId);
-			List<List<Object>> data = detailsByCourseName.stream()
-					.filter(list -> list.stream().anyMatch(value -> value.toString().equalsIgnoreCase(courseName)))
-					.collect(Collectors.toList());
-			for (List<Object> row : data) {
-				batch = wrapper.batchDetailsToDto(row);
-			}
-			return batch;
-		}
-		return null;
-	}
-
-	@Override
 	public boolean updateWhatsAppLinkByCourseName(String spreadsheetId, String cousreName, String whatsAppLink)
 			throws IOException, IllegalAccessException {
-		BatchDetails batchDetails = getBatchDetailsListByCourseName(spreadsheetId, cousreName);
+		BatchDetails batchDetails =service.getBatchDetailsListByCourseName(spreadsheetId, cousreName);
 		logger.info("loading batch details using sheetId : {}, course name :{} : batchdetails : {}", spreadsheetId,
 				cousreName, batchDetails);
 		int rowIndex = findByCourseNameForUpdate(spreadsheetId, cousreName);
@@ -127,7 +112,7 @@ public class WhatsAppServiceImpl implements WhatsAppService {
 					.map(wrapper::listToDto).orElse(null);
 
 			trainee.getOthersDto().setSendWhatsAppLink("Yes");
-			ResponseEntity<String> update = service.update(spreadsheetId, email, trainee);
+			ResponseEntity<String> update = registrationService.update(spreadsheetId, email, trainee);
 			logger.info("Bulk update WhatsAppLinkSend: {}", update);
 		}
 	}

@@ -98,5 +98,12 @@ public class FollowUpController {
 		return service.getFollowStatusByDate(date, startIndex, endIndex, id, request);
 	}
 	
+	@GetMapping("/getTraineeDetails")
+	@ApiOperation("To get the details of trainee based on the course in follow up")
+	public FollowUpDataDto traineeDetailsByCourseInFollowUp(@RequestHeader String spreadsheetId,
+			@RequestParam String courseName,@RequestParam int startingIndex,@RequestParam int maxRows) throws IOException {
+		//log.debug("this is getByCourseAndStatus: {}", courseName);
+		return service.getTraineeDetailsByCourseInFollowUp(spreadsheetId, courseName, startingIndex, maxRows);
+	}
 	
 }

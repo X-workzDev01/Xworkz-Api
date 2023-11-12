@@ -9,18 +9,18 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Service;
 
 import com.xworkz.dream.dto.CourseDto;
 import com.xworkz.dream.dto.EnquiryDto;
 import com.xworkz.dream.dto.OthersDto;
 import com.xworkz.dream.dto.TraineeDto;
-import com.xworkz.dream.repository.DreamRepository;
 import com.xworkz.dream.repository.RegisterRepository;
 import com.xworkz.dream.util.DreamUtil;
 import com.xworkz.dream.wrapper.DreamWrapper;
 
 import freemarker.template.TemplateException;
-
+@Service
 public class EnquiryServiceImpl implements EnquiryService{
 	
 	@Autowired
@@ -29,6 +29,10 @@ public class EnquiryServiceImpl implements EnquiryService{
 	private DreamWrapper wrapper;
 	@Autowired
 	private DreamUtil util;
+	@Autowired
+	private BirthadayService service;
+	@Autowired
+	private FollowUpService followUpService;
 	
 	
 	private static final Logger logger = LoggerFactory.getLogger(DreamServiceImpl.class);
@@ -58,9 +62,9 @@ public class EnquiryServiceImpl implements EnquiryService{
 
 			}
 			logger.info("saving birth details:", dto);
-			saveBirthDayInfo(spreadsheetId, dto, request);
+			service.saveBirthDayInfo(spreadsheetId, dto, request);
 
-			boolean status = addToFollowUpEnquiry(dto, spreadsheetId);
+			boolean status = followUpService.addToFollowUpEnquiry(dto, spreadsheetId);
 
 			if (status) {
 				logger.info("Data written successfully to spreadsheetId and Added to Follow Up: {}", spreadsheetId);

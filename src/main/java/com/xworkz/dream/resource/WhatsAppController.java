@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.xworkz.dream.dto.BatchDetails;
+import com.xworkz.dream.service.BatchService;
 import com.xworkz.dream.service.DreamService;
 import com.xworkz.dream.service.WhatsAppService;
 
@@ -25,7 +26,7 @@ public class WhatsAppController {
 	@Autowired
 	private WhatsAppService whatsAppService;
 	@Autowired
-	private DreamService service;
+	private BatchService service;
 	
 	
 	@PutMapping("/updateWhatsAppLink")
