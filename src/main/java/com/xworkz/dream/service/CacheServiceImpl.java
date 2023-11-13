@@ -73,7 +73,6 @@ public class CacheServiceImpl implements CacheService {
 				if (matchingIndex >= 0) {
 
 					listOfItems.set(matchingIndex, list);
-					updateEmailCache(email);
 
 				}
 
@@ -166,10 +165,6 @@ public class CacheServiceImpl implements CacheService {
 		}
 	}
 
-	public void updateEmailCache(String email) {
-		// Cache cacheEmail = cacheManager.getCache("emailData");
-	}
-
 	@SuppressWarnings("unchecked")
 	public void updateCourseCache(String cacheName, String key, List<Object> data) {
 		Cache cache = cacheManager.getCache(cacheName);
@@ -209,10 +204,13 @@ public class CacheServiceImpl implements CacheService {
 	public void addEmailToCache(String cacheName, String spreadSheetId, String email) {
 		Cache cache = cacheManager.getCache(cacheName);
 		if (cache != null) {
-			logger.info("Email added into cache {} ",email);
+			logger.info("Email added into cache {} ", email);
 
-			cache.put(spreadSheetId, Stream.of(email).collect(Collectors.toList()));	
-		
+			ValueWrapper valueWrapper = cache.get(spreadSheetId);
+			if (valueWrapper != null && valueWrapper.get() instanceof List) {
+				List<Object> contactNumbers = new ArrayList<Object>(Arrays.asList(email));
+				((List<List<Object>>) valueWrapper.get()).add(contactNumbers);
+			}
 		}
 
 	}
@@ -227,6 +225,35 @@ public class CacheServiceImpl implements CacheService {
 			if (valueWrapper != null && valueWrapper.get() instanceof List) {
 				List<Object> contactNumbers = new ArrayList<Object>(Arrays.asList(contactNumber));
 				((List<List<Object>>) valueWrapper.get()).add(contactNumbers);
+			}
+		}
+	}
+
+	@SuppressWarnings("unchecked")
+	public void getCacheDataByEmail(String cacheName, String key, String oldEmail, String newEmail)
+			throws IllegalAccessException {
+		Cache cache = cacheManager.getCache(cacheName);
+		if (cache != null) {
+			ValueWrapper valueWrapper = cache.get(key);
+			if (valueWrapper != null && valueWrapper.get() instanceof List) {
+
+				List<List<Object>> listOfItems = (List<List<Object>>) valueWrapper.get();
+				int matchingIndex = -1; // Initialize to -1, indicating not found initially
+
+				for (int i = 0; i < listOfItems.size(); i++) {
+					List<Object> items = listOfItems.get(i);
+					if (items.get(0).equals(oldEmail)) {
+						matchingIndex = i; // Set the index when a match is found
+						break; // Exit the loop once a match is found
+					}
+				}
+
+				if (matchingIndex >= 0) {
+
+					listOfItems.set(matchingIndex, Stream.of(newEmail).collect(Collectors.toList()));
+
+				}
+
 			}
 		}
 	}

@@ -10,3 +10,5 @@ attendanceInfoRange: attendanceInfo!A2:C
   AttandanceInfoSheetName: attendanceInfo!
   attendanceListDefaultRange: attendanceInfo!J2:j
   attendanceInfoMarkAs:  E
+/.gradle/
+/build/

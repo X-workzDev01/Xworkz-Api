@@ -20,9 +20,10 @@ import com.xworkz.dream.util.DreamUtil;
 import com.xworkz.dream.wrapper.DreamWrapper;
 
 import freemarker.template.TemplateException;
+
 @Service
-public class EnquiryServiceImpl implements EnquiryService{
-	
+public class EnquiryServiceImpl implements EnquiryService {
+
 	@Autowired
 	private RegisterRepository repo;
 	@Autowired
@@ -33,32 +34,28 @@ public class EnquiryServiceImpl implements EnquiryService{
 	private BirthadayService service;
 	@Autowired
 	private FollowUpService followUpService;
-	
-	
+	@Autowired
+	private CacheService cacheService;
+
 	private static final Logger logger = LoggerFactory.getLogger(DreamServiceImpl.class);
 
 	public ResponseEntity<String> writeDataEnquiry(String spreadsheetId, TraineeDto dto, HttpServletRequest request)
 			throws MessagingException, TemplateException {
 		try {
-//			List<List<Object>> data = repo.getIds(spreadsheetId).getValues();
-//			int size = data != null ? data.size() : 0;
-//			dto.setId(size += 1);
+
 			wrapper.setValuesForTraineeDto(dto);
 
 			List<Object> list = wrapper.extractDtoDetails(dto);
 
 			repo.writeData(spreadsheetId, list);
-//			cacheService.updateCache("sheetsData", spreadsheetId, list);
-			// adding data to the cache
+			cacheService.updateCache("sheetsData", spreadsheetId, list);
 			if (dto.getBasicInfo().getEmail() != null) {
-//				cacheService.addEmailToCache("emailData", spreadsheetId, dto.getBasicInfo().getEmail());
+				cacheService.addEmailToCache("emailData", spreadsheetId, dto.getBasicInfo().getEmail());
 
-//					//adding email to cache
 			}
 			if (dto.getBasicInfo().getContactNumber() != null) {
-				// adding contactNumber to cache
-//				cacheService.addContactNumberToCache("contactData", spreadsheetId,
-//						dto.getBasicInfo().getContactNumber());
+				cacheService.addContactNumberToCache("contactData", spreadsheetId,
+						dto.getBasicInfo().getContactNumber());
 
 			}
 			logger.info("saving birth details:", dto);
@@ -69,7 +66,6 @@ public class EnquiryServiceImpl implements EnquiryService{
 			if (status) {
 				logger.info("Data written successfully to spreadsheetId and Added to Follow Up: {}", spreadsheetId);
 				util.sms(dto);
-				// sending course content disabled
 				boolean sent = false;
 				if (!dto.getBasicInfo().getEmail().contains("@dummy.com")) {
 
@@ -89,7 +85,7 @@ public class EnquiryServiceImpl implements EnquiryService{
 		}
 
 	}
-	
+
 	@Override
 	public boolean addEnquiry(EnquiryDto enquiryDto, String spreadsheetId, HttpServletRequest request) {
 		TraineeDto traineeDto = new TraineeDto();
@@ -110,7 +106,5 @@ public class EnquiryServiceImpl implements EnquiryService{
 		return true;
 
 	}
-	
-	
 
 }

@@ -22,8 +22,12 @@ public interface CacheService {
 	void updateCourseCache(String cacheName, String key, List<Object> data);
 
 	void addFollowUpToCache(String cacheName, String spreadSheetId, List<Object> data);
-	void addEmailToCache(String cacheName,String  spreadSheetId,String email);
+
+	void addEmailToCache(String cacheName, String spreadSheetId, String email);
 
 	void addContactNumberToCache(String cacheName, String spreadSheetId, Long contactNumber);
-	
+
+	public void getCacheDataByEmail(String cacheName, String key, String oldEmail, String newEmail)
+			throws IllegalAccessException;
+
 }

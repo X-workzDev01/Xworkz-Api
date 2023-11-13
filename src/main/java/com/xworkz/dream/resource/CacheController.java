@@ -49,31 +49,33 @@ public class CacheController {
 	}
 
 	@GetMapping("/getByCacheName")
-	public ResponseEntity<List<List<Object>>> getByCacheName(String cacheName, @RequestHeader String spreadsheetId) {		
+	public ResponseEntity<List<List<Object>>> getByCacheName(String cacheName, @RequestHeader String spreadsheetId) {
 		Cache cache = cacheManager.getCache(cacheName);
-       
+
 		if (cache != null) {
 			ValueWrapper valueWrapper = cache.get(spreadsheetId);
 
 			if (valueWrapper != null) {
 				@SuppressWarnings("unchecked")
 				List<List<Object>> cachedData = (List<List<Object>>) valueWrapper.get();
-			logger.info("Cache email is  ",cachedData);
-				return null;
+				logger.info("Cache email is  ", cachedData);
+				return ResponseEntity.ok(cachedData);
+
 			}
 		}
 		return null;
 	}
-	@PostMapping("/clear/{cacheName}")
-    public String clearCache(@PathVariable String cacheName) {
-        Cache cache = cacheManager.getCache(cacheName);
 
-        if (cache != null) {
-            cache.clear();
-            return "Cache '" + cacheName + "' has been cleared.";
-        } else {
-            return "Cache '" + cacheName + "' not found.";
-        }
-    }
+	@PostMapping("/clear/{cacheName}")
+	public String clearCache(@PathVariable String cacheName) {
+		Cache cache = cacheManager.getCache(cacheName);
+
+		if (cache != null) {
+			cache.clear();
+			return "Cache '" + cacheName + "' has been cleared.";
+		} else {
+			return "Cache '" + cacheName + "' not found.";
+		}
+	}
 
 }

@@ -11,6 +11,8 @@ import java.util.List;
 
 import javax.annotation.PostConstruct;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.Resource;
@@ -30,7 +32,7 @@ import com.google.auth.oauth2.GoogleCredentials;
 
 @Repository
 public class FollowUpRepositoryImpl implements FollowUpRepository {
-	
+
 	@Value("${sheets.appName}")
 	private String applicationName;
 	@Value("${sheets.credentialsPath}")
@@ -48,10 +50,11 @@ public class FollowUpRepositoryImpl implements FollowUpRepository {
 	private String followUpEmailRange;
 	@Value("${sheets.followUpStatusIdRange}")
 	private String followUpStatusIdRange;
-	
+
 	@Autowired
 	private ResourceLoader resourceLoader;
-	
+	private Logger log = LoggerFactory.getLogger(FollowUpRepositoryImpl.class);
+
 	@PostConstruct
 	private void setSheetsService() throws IOException, FileNotFoundException, GeneralSecurityException {
 
@@ -64,10 +67,10 @@ public class FollowUpRepositoryImpl implements FollowUpRepository {
 		sheetsService = new Sheets.Builder(GoogleNetHttpTransport.newTrustedTransport(), JSON_FACTORY,
 				requestInitializer).setApplicationName(applicationName).build();
 	}
-	
-	
+
 	@Override
 	public boolean saveToFollowUp(String spreadsheetId, List<Object> row) throws IOException {
+		log.info("FollowUp Registration Running Repository {} ",row);
 		List<List<Object>> list = new ArrayList<List<Object>>();
 		// Add an empty string as a placeholder for the A column
 		List<Object> rowData = new ArrayList<>();
@@ -102,7 +105,6 @@ public class FollowUpRepositoryImpl implements FollowUpRepository {
 
 		return response.getValues();
 	}
-	
 
 	@Override
 	// @CachePut(value = "followUpDetails", key = "#spreadsheetId", unless =
@@ -116,7 +118,7 @@ public class FollowUpRepositoryImpl implements FollowUpRepository {
 				.setValueInputOption("USER_ENTERED").execute();
 		return true;
 	}
-	
+
 	@Override
 	public ValueRange getEmailList(String spreadsheetId) throws IOException {
 		ValueRange response = sheetsService.spreadsheets().values().get(spreadsheetId, followUpEmailRange).execute();
@@ -143,7 +145,7 @@ public class FollowUpRepositoryImpl implements FollowUpRepository {
 		ValueRange response = sheetsService.spreadsheets().values().get(spreadsheetId, followUpStatus).execute();
 		return response.getValues();
 	}
-	
+
 	@Override
 //	@Cacheable(value = "followUpDetails", key = "#spreadsheetId", unless = "#result == null")
 	public List<List<Object>> getFollowUpDetailsByid(String spreadsheetId) throws IOException {
@@ -151,13 +153,12 @@ public class FollowUpRepositoryImpl implements FollowUpRepository {
 		return response.getValues();
 	}
 
-
 	@Override
 	public List<List<Object>> getFollowupStatusByDate(String spreadsheetId) throws IOException {
 		ValueRange response = sheetsService.spreadsheets().values().get(spreadsheetId, followUpRange).execute();
 		return response.getValues();
 	}
-	
+
 	@Override
 	// @CachePut(value = "followUpDetails", key = "#spreadsheetId", unless =
 	// "#result == null")
@@ -174,6 +175,5 @@ public class FollowUpRepositoryImpl implements FollowUpRepository {
 		// This method will be scheduled to run every 12 hours
 		// and will evict all entries in the specified caches
 	}
-	
 
 }

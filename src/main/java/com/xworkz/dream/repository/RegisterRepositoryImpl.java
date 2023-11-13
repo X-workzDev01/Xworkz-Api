@@ -11,8 +11,11 @@ import java.util.List;
 
 import javax.annotation.PostConstruct;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.ResourceLoader;
 import org.springframework.stereotype.Repository;
@@ -30,8 +33,8 @@ import com.google.auth.oauth2.GoogleCredentials;
 
 
 @Repository
-public class RegisterRepositoryImpl implements RegisterRepository{
-	
+public class RegisterRepositoryImpl implements RegisterRepository {
+
 	@Value("${sheets.appName}")
 	private String applicationName;
 	@Value("${sheets.credentialsPath}")
@@ -49,8 +52,8 @@ public class RegisterRepositoryImpl implements RegisterRepository{
 	private String emailAndNameRange;
 	@Autowired
 	private ResourceLoader resourceLoader;
-	
-	
+	private Logger log = LoggerFactory.getLogger(RegisterRepositoryImpl.class);
+
 	@Override
 	@PostConstruct
 	public void setSheetsService() throws IOException, FileNotFoundException, GeneralSecurityException {
@@ -80,23 +83,27 @@ public class RegisterRepositoryImpl implements RegisterRepository{
 	}
 
 	@Override
-//	@Cacheable(value = "emailData", key = "#spreadsheetId", unless = "#result == null")
+	@Cacheable(value = "emailData", key = "#spreadsheetId", unless = "#result == null")
 	public List<List<Object>> getEmails(String spreadsheetId, String email) throws IOException {
+		log.info("read email into sheet");
+
 		ValueRange emailValue = sheetsService.spreadsheets().values().get(spreadsheetId, emailRange).execute();
 		return emailValue.getValues();
 	}
 
 	@Override
-//	@Cacheable(value = "contactData", key = "#spreadsheetId", unless = "#result == null")
+	@Cacheable(value = "contactData", key = "#spreadsheetId", unless = "#result == null")
 	public List<List<Object>> getContactNumbers(String spreadsheetId) throws IOException {
-		 ValueRange response = sheetsService.spreadsheets().values().get(spreadsheetId, contactNumberRange).execute();
+		log.info("read contact Numbres into sheet");
+		ValueRange response = sheetsService.spreadsheets().values().get(spreadsheetId, contactNumberRange).execute();
 		return response.getValues();
 	}
-	
-	
+
 	@Override
-//	@Cacheable(value = "sheetsData", key = "#spreadsheetId", unless = "#result == null")
+	@Cacheable(value = "sheetsData", key = "#spreadsheetId", unless = "#result == null")
 	public List<List<Object>> readData(String spreadsheetId) throws IOException {
+		log.info("read Trainee data into sheet");
+
 		ValueRange response = sheetsService.spreadsheets().values().get(spreadsheetId, range).execute();
 		List<List<Object>> data = response.getValues();
 		return data;
@@ -108,17 +115,12 @@ public class RegisterRepositoryImpl implements RegisterRepository{
 				.setValueInputOption("RAW").execute();
 		return response;
 	}
-	
+
 	@Override
 	public List<List<Object>> getEmailsAndNames(String spreadsheetId, String value) throws IOException {
 		ValueRange response = sheetsService.spreadsheets().values().get(spreadsheetId, emailAndNameRange).execute();
 
 		return response.getValues();
 	}
-
-
-	
-	
-	
 
 }

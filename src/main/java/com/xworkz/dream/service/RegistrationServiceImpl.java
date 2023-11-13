@@ -36,8 +36,8 @@ import com.xworkz.dream.wrapper.DreamWrapper;
 import freemarker.template.TemplateException;
 
 @Service
-public class RegistrationServiceImpl implements RegistrationService{
-	
+public class RegistrationServiceImpl implements RegistrationService {
+
 	@Autowired
 	private RegisterRepository repo;
 	@Autowired
@@ -54,42 +54,40 @@ public class RegistrationServiceImpl implements RegistrationService{
 	private String rowEndRange;
 	@Value("${sheets.traineeSheetName}")
 	private String traineeSheetName;
-	
-	
+	@Autowired
+	private CacheService cacheService;
 
 	private static final Logger logger = LoggerFactory.getLogger(DreamServiceImpl.class);
-	
+
 	@Override
 	public ResponseEntity<String> writeData(String spreadsheetId, TraineeDto dto, HttpServletRequest request)
 
 			throws MessagingException, TemplateException {
 		try {
 
-//			List<List<Object>> data = repo.getIds(spreadsheetId).getValues();
-//			int size = data != null ? data.size() : 0;
-//			dto.setId(size += 1);
 			wrapper.setValuesForTraineeDto(dto);
 
 			List<Object> list = wrapper.extractDtoDetails(dto);
 
 			repo.writeData(spreadsheetId, list);
-			
+
 			if (dto.getBasicInfo().getEmail() != null) {
 				logger.info("adding email to the cache", dto.getBasicInfo().getEmail());
-//				cacheService.addEmailToCache("emailData", spreadsheetId, dto.getBasicInfo().getEmail());
+
+				cacheService.addEmailToCache("emailData", spreadsheetId, dto.getBasicInfo().getEmail());
 
 //				//adding email to cache
 			}
 			if (dto.getBasicInfo().getContactNumber() != null) {
 				// adding contactNumber to cache
 				logger.info("adding contact number to the cache", dto.getBasicInfo().getContactNumber());
-//				cacheService.addContactNumberToCache("contactData", spreadsheetId,
-//						dto.getBasicInfo().getContactNumber());
+				cacheService.addContactNumberToCache("contactData", spreadsheetId,
+						dto.getBasicInfo().getContactNumber());
 
 			}
 			// adding to cache
 			logger.info("adding register data to the cache:", list);
-//			cacheService.updateCache("sheetsData", spreadsheetId, list);
+			cacheService.updateCache("sheetsData", spreadsheetId, list);
 
 			logger.info("adding to follow up:", dto);
 			boolean status = followUpService.addToFollowUp(dto, spreadsheetId);
@@ -115,8 +113,7 @@ public class RegistrationServiceImpl implements RegistrationService{
 			return ResponseEntity.ok("Failed to process the request");
 		}
 	}
-	
-	
+
 	@Override
 	public ResponseEntity<String> emailCheck(String spreadsheetId, String email, HttpServletRequest request) {
 
@@ -133,11 +130,7 @@ public class RegistrationServiceImpl implements RegistrationService{
 			}
 			logger.info("Email does not exist in spreadsheetId: {}", spreadsheetId);
 			return ResponseEntity.ok("Email does not exist");
-//			} else {
-//				// Invalid cookie
-//				logger.info("Invalid cookie in the request");
-//				return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid cookie");
-//			}
+
 		} catch (Exception e) {
 			logger.error("An error occurred while checking email in spreadsheetId: {}", spreadsheetId, e);
 			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("An error occurred");
@@ -166,8 +159,7 @@ public class RegistrationServiceImpl implements RegistrationService{
 	}
 
 	@Override
-	// @Cacheable(value = "sheetsData", key = "#spreadsheetId", unless = "#result ==
-	// null")
+
 	public ResponseEntity<SheetsDto> readData(String spreadsheetId, int startingIndex, int maxRows) {
 		try {
 			List<List<Object>> dataList = repo.readData(spreadsheetId);
@@ -180,7 +172,7 @@ public class RegistrationServiceImpl implements RegistrationService{
 
 				List<TraineeDto> dtos = getLimitedRows(sortedData, startingIndex, maxRows);
 
-				SheetsDto dto = new SheetsDto(dtos, dataList.size());
+				SheetsDto dto = new SheetsDto(dtos, dtos.size());
 
 				return ResponseEntity.ok(dto);
 			}
@@ -191,8 +183,7 @@ public class RegistrationServiceImpl implements RegistrationService{
 	}
 
 	@Override
-	// @Cacheable(value = "sheetsData", key = "#spreadsheetId", unless = "#result ==
-	// null")
+
 	public List<TraineeDto> getLimitedRows(List<List<Object>> values, int startingIndex, int maxRows) {
 		List<TraineeDto> traineeDtos = new ArrayList<>();
 
@@ -230,7 +221,6 @@ public class RegistrationServiceImpl implements RegistrationService{
 			return new ArrayList<>(); // Return an empty list if searchValue is null or empty
 		}
 	}
-	
 
 	private int findRowIndexByEmail(String spreadsheetId, String email) throws IOException {
 		List<List<Object>> data = repo.getEmails(spreadsheetId, email);
@@ -267,8 +257,6 @@ public class RegistrationServiceImpl implements RegistrationService{
 			if (rowIndex != -1) {
 				String range = traineeSheetName + rowStartRange + rowIndex + ":" + rowEndRange + rowIndex;
 				List<List<Object>> values = Arrays.asList(wrapper.extractDtoDetails(dto));
-
-				// removing id while update
 				if (!values.isEmpty()) {
 					List<Object> modifiedValues = new ArrayList<>(values.get(0).subList(1, values.get(0).size()));
 					values.set(0, modifiedValues); // Update the values list with the modified sublist
@@ -280,8 +268,11 @@ public class RegistrationServiceImpl implements RegistrationService{
 				UpdateValuesResponse updated = repo.update(spreadsheetId, range, valueRange);
 				if (updated != null && !updated.isEmpty()) {
 					followUpService.updateFollowUp(spreadsheetId, email, dto);
-//					cacheService.getCacheDataByEmail("sheetsData", spreadsheetId, email, dto);
-					// repo.evictAllCachesOnTraineeDetails();
+					cacheService.getCacheDataByEmail("sheetsData", spreadsheetId, email, dto);
+					System.err.println(
+							"old email {} new email {}  " + email + "              " + dto.getBasicInfo().getEmail());
+
+					cacheService.getCacheDataByEmail("emailData", spreadsheetId, email, dto.getBasicInfo().getEmail());
 					return ResponseEntity.ok("Updated Successfully");
 				} else {
 					return ResponseEntity.ok("error");
@@ -294,7 +285,7 @@ public class RegistrationServiceImpl implements RegistrationService{
 			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("An error occurred ");
 		}
 	}
-	
+
 	@Override
 	public ResponseEntity<?> getDetailsByEmail(String spreadsheetId, String email, HttpServletRequest request)
 			throws IOException {
@@ -309,7 +300,7 @@ public class RegistrationServiceImpl implements RegistrationService{
 			return new ResponseEntity<>("Email Not Found", HttpStatus.NOT_FOUND);
 		}
 	}
-	
+
 	@Override
 	public ResponseEntity<List<TraineeDto>> getSearchSuggestion(String spreadsheetId, String value,
 			HttpServletRequest request) {
@@ -339,17 +330,4 @@ public class RegistrationServiceImpl implements RegistrationService{
 																						// value
 	}
 
-	
-	
-
-
-
-
-	
-	
-
-	
-	
-
-	
 }

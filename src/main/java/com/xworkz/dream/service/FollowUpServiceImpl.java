@@ -16,6 +16,8 @@ import java.util.stream.Stream;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
@@ -33,9 +35,11 @@ import com.xworkz.dream.repository.FollowUpRepository;
 import com.xworkz.dream.repository.RegisterRepository;
 import com.xworkz.dream.wrapper.DreamWrapper;
 
+import lombok.val;
 import lombok.extern.slf4j.Slf4j;
+
 @Service
-@Slf4j
+
 public class FollowUpServiceImpl implements FollowUpService {
 
 	@Autowired
@@ -62,16 +66,14 @@ public class FollowUpServiceImpl implements FollowUpService {
 	private String followUprowStartRange;
 	@Value("${sheets.followUprowEndRange}")
 	private String followUprowEndRange;
-	@Value("${sheets.liveKey}")
-	private String API_KEY;
+	@Autowired
+	private CacheService cacheService;
+	private Logger log = LoggerFactory.getLogger(FollowUpServiceImpl.class);
 
-	
-	
-	
-	
 	@Override
 	public boolean addToFollowUp(TraineeDto traineeDto, String spreadSheetId)
 			throws IOException, IllegalAccessException {
+		log.info("followup service running {}", traineeDto);
 		if (traineeDto == null) {
 			return false;
 		}
@@ -90,11 +92,10 @@ public class FollowUpServiceImpl implements FollowUpService {
 		log.info("saving data to the follow up sheet{}", data);
 		repo.saveToFollowUp(spreadSheetId, data);
 		log.info("add FollowUp details To Cache{}", data);
-//		cacheService.addFollowUpToCache("followUpDetails", spreadSheetId, data);
+		cacheService.addFollowUpToCache("followUpDetails", spreadSheetId, data);
 		return true;
 	}
-	
-	
+
 	@Override
 	public boolean addToFollowUpEnquiry(TraineeDto traineeDto, String spreadSheetId)
 			throws IOException, IllegalAccessException {
@@ -114,11 +115,11 @@ public class FollowUpServiceImpl implements FollowUpService {
 			return false;
 		}
 		boolean save = repo.saveToFollowUp(spreadSheetId, data);
-//		cacheService.addFollowUpToCache("followUpDetails", spreadSheetId, data);
+		cacheService.addFollowUpToCache("followUpDetails", spreadSheetId, data);
 		return save;
 
 	}
-	
+
 	private int findByEmailForUpdate(String spreadsheetId, String email) throws IOException {
 
 		ValueRange data = repo.getEmailList(spreadsheetId);
@@ -133,42 +134,42 @@ public class FollowUpServiceImpl implements FollowUpService {
 		}
 		return -1;
 	}
-	
-	
+
 	@Override
 	public boolean updateFollowUp(String spreadsheetId, String email, TraineeDto dto)
 			throws IOException, IllegalAccessException {
+		System.err.println("follow up data   ===================================               " + dto);
 
 		FollowUpDto followUpDto = getFollowUpDetailsByEmail(spreadsheetId, email);
+		System.out.println("777777777777777777777777777777777777777777777777         " + followUpDto);
+
 		if (followUpDto == null) {
 			return false;
 		}
 
 		int rowIndex = findByEmailForUpdate(spreadsheetId, email);
+		System.err.println("333333333333333333333333333333333333333333333333333           " + rowIndex);
 		if (rowIndex != -1) {
 			String range = followUpSheetName + followUprowStartRange + rowIndex + ":" + followUprowEndRange + rowIndex;
 
-			// Initialize followUpDto with the existing data
-			followUpDto = getFollowUpDetailsByEmail(spreadsheetId, email);
-			// Update the email from the TraineeDto
+//			followUpDto = getFollowUpDetailsByEmail(spreadsheetId, email);
 			followUpDto.getBasicInfo().setEmail(dto.getBasicInfo().getEmail());
 			followUpDto.getBasicInfo().setContactNumber(dto.getBasicInfo().getContactNumber());
 			followUpDto.setAdminDto(dto.getAdminDto());
 			List<List<Object>> values = Arrays.asList(wrapper.extractDtoDetails(followUpDto));
 			ValueRange valueRange = new ValueRange();
 
-//			//removing id while update
 			if (!values.isEmpty()) {
 				List<Object> modifiedValues = new ArrayList<>(values.get(0).subList(1, values.get(0).size()));
 				values.set(0, modifiedValues); // Update the values list with the modified sublist
 			}
 			valueRange.setValues(values);
-
+			System.err.println("tttttttttttttttttttttttttttttttttttttttttt                   " + values);
 			UpdateValuesResponse updated = repo.updateFollow(spreadsheetId, range, valueRange);
+			cacheService.updateCacheFollowUp("followUpDetails", spreadsheetId, email, followUpDto);
 
 			if (updated != null && !updated.isEmpty()) {
 				// repo.evictAllCachesOnTraineeDetails();
-//				cacheService.updateCacheFollowUp("followUpDetails", spreadsheetId, email, followUpDto);
 				return true;
 			} else {
 				return false;
@@ -177,7 +178,7 @@ public class FollowUpServiceImpl implements FollowUpService {
 			return false;
 		}
 	}
-	
+
 	@Override
 	public boolean updateCurrentFollowUp(String calBack, String spreadsheetId, String email, String currentStatus,
 			String currentlyFollowedBy, String joiningDate) throws IOException, IllegalAccessException {
@@ -187,8 +188,7 @@ public class FollowUpServiceImpl implements FollowUpService {
 			String range = followUpSheetName + followUprowStartRange + rowIndex + ":" + followUprowEndRange + rowIndex;
 			UpdateValuesResponse updated = setFollowUpDto(calBack, spreadsheetId, currentStatus, currentlyFollowedBy,
 					followUpDto, joiningDate, range);
-			// cacheService.updateCacheFollowUp("followUpDetails", spreadsheetId, email,
-			// followUpDto);
+			cacheService.updateCacheFollowUp("followUpDetails", spreadsheetId, email, followUpDto);
 			if (updated != null && !updated.isEmpty()) {
 				return true;
 			} else {
@@ -198,7 +198,7 @@ public class FollowUpServiceImpl implements FollowUpService {
 			return false;
 		}
 	}
-	
+
 	private UpdateValuesResponse setFollowUpDto(String callBack, String spreadsheetId, String currentStatus,
 			String currentlyFollowedBy, FollowUpDto followUpDto, String joiningDate, String range)
 			throws IllegalAccessException, IOException {
@@ -210,6 +210,7 @@ public class FollowUpServiceImpl implements FollowUpService {
 			adminDto.setCreatedBy(existingAdminDto.getCreatedBy());
 			adminDto.setCreatedOn(existingAdminDto.getCreatedOn());
 		}
+		followUpDto.setCurrentlyFollowedBy(currentlyFollowedBy);
 		if (currentStatus != null && !currentStatus.equals("NA")) {
 			followUpDto.setCurrentStatus(currentStatus);
 		}
@@ -238,11 +239,11 @@ public class FollowUpServiceImpl implements FollowUpService {
 		ValueRange valueRange = new ValueRange();
 		valueRange.setValues(values);
 		UpdateValuesResponse updated = repo.updateFollow(spreadsheetId, range, valueRange);
-//		cacheService.updateCacheFollowUp("followUpDetails", spreadsheetId, followUpDto.getBasicInfo().getEmail(),
-//				followUpDto);
+		cacheService.updateCacheFollowUp("followUpDetails", spreadsheetId, followUpDto.getBasicInfo().getEmail(),
+				followUpDto);
 		return updated;
 	}
-	
+
 	@Override
 	public ResponseEntity<String> updateFollowUpStatus(String spreadsheetId, StatusDto statusDto) {
 		try {
@@ -251,14 +252,13 @@ public class FollowUpServiceImpl implements FollowUpService {
 
 			List<Object> statusData = wrapper.extractDtoDetails(sdto);
 			boolean status = repo.updateFollowUpStatus(spreadsheetId, statusData);
-//			cacheService.updateFollowUpStatusInCache("followUpStatusDetails", spreadsheetId, statusData);
+			cacheService.updateFollowUpStatusInCache("followUpStatusDetails", spreadsheetId, statusData);
 
 			if (status == true) {
 				updateCurrentFollowUp(statusDto.getCallBack(), spreadsheetId, statusDto.getBasicInfo().getEmail(),
 						statusDto.getAttemptStatus(), statusDto.getAttemptedBy(), statusDto.getJoiningDate());
 				// repo.evictAllCachesOnTraineeDetails();
-				// cacheService.updateFollowUpStatus("followUpDetails", spreadsheetId,
-				// statusDto);
+				cacheService.updateFollowUpStatus("followUpDetails", spreadsheetId, statusDto);
 			}
 			return ResponseEntity.ok("Follow Status Updated for ID :  " + statusDto.getId());
 		} catch (IOException | IllegalAccessException e) {
@@ -266,7 +266,7 @@ public class FollowUpServiceImpl implements FollowUpService {
 					.body("An error occurred with credentials file ");
 		}
 	}
-	
+
 	@Override
 	public ResponseEntity<FollowUpDto> getFollowUpByEmail(String spreadsheetId, String email,
 			HttpServletRequest request) throws IOException {
@@ -281,7 +281,7 @@ public class FollowUpServiceImpl implements FollowUpService {
 			return ResponseEntity.ok(followUp);
 		}
 	}
-	
+
 	@Override
 	public ResponseEntity<FollowUpDataDto> getFollowUpDetails(String spreadsheetId, int startingIndex, int maxRows,
 			String status, String courseName, String date) throws IOException {
@@ -297,7 +297,8 @@ public class FollowUpServiceImpl implements FollowUpService {
 				List<List<Object>> sortedData = data.stream().sorted(Comparator.comparing(
 						list -> list != null && !list.isEmpty() && list.size() > 4 ? list.get(4).toString() : "",
 						Comparator.reverseOrder())).collect(Collectors.toList());
-
+				log.info("Runnung sorted data by followup {} ", sortedData);
+				followUpDto = getFollowUpRows(sortedData, startingIndex, maxRows);
 				// mapping course name from trainee table to follow up
 				followUpDto.stream().forEach(dto -> {
 					TraineeDto traineedto = getTraineeDtoByEmail(traineeData, dto.getBasicInfo().getEmail());
@@ -306,7 +307,7 @@ public class FollowUpServiceImpl implements FollowUpService {
 					}
 
 				});
-
+				log.debug("Running service Pagination data {}" + followUpDto);
 				if (!courseName.equalsIgnoreCase("null")) {
 					List<FollowUpDto> filterData = followUpDto.stream()
 							.filter(item -> item.getCourseName().equalsIgnoreCase(courseName))
@@ -328,7 +329,7 @@ public class FollowUpServiceImpl implements FollowUpService {
 																				// or empty
 		}
 	}
-	
+
 	private TraineeDto getTraineeDtoByEmail(List<List<Object>> traineeData, String email) {
 		if (traineeData == null || email == null) {
 			return null;
@@ -338,7 +339,6 @@ public class FollowUpServiceImpl implements FollowUpService {
 				.map(wrapper::listToDto).findFirst().orElse(null);
 	}
 
-	
 	@Override
 	public List<FollowUpDto> getFollowUpRows(List<List<Object>> values, int startingIndex, int maxRows) {
 		List<FollowUpDto> followUpDtos = new ArrayList<>();
@@ -357,7 +357,7 @@ public class FollowUpServiceImpl implements FollowUpService {
 		}
 		return followUpDtos;
 	}
-	
+
 	@Override
 	public List<StatusDto> getStatusDetails(String spreadsheetId, int startingIndex, int maxRows, String email,
 			HttpServletRequest request) throws IOException {
@@ -369,7 +369,7 @@ public class FollowUpServiceImpl implements FollowUpService {
 		statusDto = getFollowUpStatusData(data, startingIndex, maxRows);
 		return statusDto;
 	}
-	
+
 	@Override
 	public List<StatusDto> getStatusDetailsByEmail(String spreadsheetId, String email, HttpServletRequest request)
 			throws IOException {
@@ -408,7 +408,6 @@ public class FollowUpServiceImpl implements FollowUpService {
 		return statusDtos;
 	}
 
-	
 	@Override
 	public FollowUpDto getFollowUpDetailsByEmail(String spreadsheetId, String email) throws IOException {
 
@@ -416,10 +415,10 @@ public class FollowUpServiceImpl implements FollowUpService {
 		if (email != null && !email.isEmpty()) {
 			List<List<Object>> lists = repo.getFollowUpDetails(spreadsheetId);
 			if (!lists.isEmpty()) {
-//				List<List<Object>> data = lists.stream()
-//						.filter(list -> list.stream().anyMatch(value -> value.toString().equalsIgnoreCase(email)))
-//						.collect(Collectors.toList());
-				for (List<Object> list : lists) {
+				List<List<Object>> data = lists.stream()
+						.filter(list -> list.stream().anyMatch(value -> value.toString().equalsIgnoreCase(email)))
+						.collect(Collectors.toList());
+				for (List<Object> list : data) {
 					followUpDto = wrapper.listToFollowUpDTO(list);
 				}
 
@@ -428,8 +427,7 @@ public class FollowUpServiceImpl implements FollowUpService {
 		}
 		return null;
 	}
-	
-	
+
 	@Override
 	public ResponseEntity<String> updateFollowUp(String spreadsheetId, String email, FollowUpDto followDto)
 			throws IOException, IllegalAccessException {
@@ -437,7 +435,9 @@ public class FollowUpServiceImpl implements FollowUpService {
 		int rowIndex = findByEmailForUpdate(spreadsheetId, email);
 
 		String range = followUpSheetName + followUprowStartRange + rowIndex + ":" + followUprowEndRange + rowIndex;
+		System.out.println("00000000000000000000000000000000000000000             " + range);
 		List<List<Object>> values = Arrays.asList(wrapper.extractDtoDetails(followDto));
+		System.out.println("=======================================           " + values);
 		ValueRange valueRange = new ValueRange();
 		valueRange.setValues(values);
 		UpdateValuesResponse updated = repo.updateFollow(spreadsheetId, range, valueRange);
@@ -448,7 +448,7 @@ public class FollowUpServiceImpl implements FollowUpService {
 			return ResponseEntity.ok("Updated Successfully");
 		}
 	}
-	
+
 	private List<FollowUpDto> getLimitedRowsBatchAndDate(List<List<Object>> values, String date, int startingIndex,
 			int maxRows) {
 		List<FollowUpDto> followUpDtos = new ArrayList<>();
@@ -469,7 +469,6 @@ public class FollowUpServiceImpl implements FollowUpService {
 		}
 		return followUpDtos;
 	}
-
 
 	@Override
 	public ResponseEntity<FollowUpDataDto> getFollowStatusByDate(String date, int startIndex, int endIndex,
@@ -492,7 +491,7 @@ public class FollowUpServiceImpl implements FollowUpService {
 		return null;
 
 	}
-	
+
 	@Override
 	public FollowUpDataDto getTraineeDetailsByCourseInFollowUp(String spreadsheetId, String courseName,
 			int startingIndex, int maxIndex) throws IOException {
@@ -543,43 +542,39 @@ public class FollowUpServiceImpl implements FollowUpService {
 	}
 
 	private FollowUpDataDto getDataByCourseName(String spreadsheetId, String courseName, List<List<Object>> traineeData,
-	        int startingIndex, int maxRows) {
-	    List<FollowUpDto> followUpDto = traineeData.stream()
-	            .filter(row -> row != null && row.size() > 9 && row.contains(courseName))
-	            .map(row -> {
-	                TraineeDto dto = wrapper.listToDto(row);
-	                if (dto == null) {
-	                    return null;
-	                }
-	                FollowUpDto followUp = null;
-	                try {
-	                	String email = dto.getBasicInfo().getEmail();
-	                    log.debug("Attempting to get FollowUp details for email: {}", email);
-	                    followUp = getFollowUpDetailsByEmail(spreadsheetId, email);
-	                    System.out.println(followUp);
-	                } catch (IOException e) {
-	                    e.printStackTrace();
-	                }
-	                if (followUp == null) {
-	                    return null;
-	                }
+			int startingIndex, int maxRows) {
+		List<FollowUpDto> followUpDto = traineeData.stream()
+				.filter(row -> row != null && row.size() > 9 && row.contains(courseName)).map(row -> {
+					TraineeDto dto = wrapper.listToDto(row);
+					if (dto == null) {
+						return null;
+					}
+					FollowUpDto followUp = null;
+					try {
+						String email = dto.getBasicInfo().getEmail();
+						log.debug("Attempting to get FollowUp details for email: {}", email);
+						followUp = getFollowUpDetailsByEmail(spreadsheetId, email);
+						System.out.println(followUp);
+					} catch (IOException e) {
+						e.printStackTrace();
+					}
+					if (followUp == null) {
+						return null;
+					}
 
-	                FollowUpDto fdto = assignValuesToFollowUp(dto, followUp);
-	                return fdto;
-	            })
-	            .filter(Objects::nonNull)
-	            .sorted(Comparator.comparing(FollowUpDto::getRegistrationDate))
-	            .collect(Collectors.toList());
+					FollowUpDto fdto = assignValuesToFollowUp(dto, followUp);
+					return fdto;
+				}).filter(Objects::nonNull).sorted(Comparator.comparing(FollowUpDto::getRegistrationDate))
+				.collect(Collectors.toList());
 
-	    List<FollowUpDto> limitedRows = getPaginationData(followUpDto, startingIndex, maxRows);
+		List<FollowUpDto> limitedRows = getPaginationData(followUpDto, startingIndex, maxRows);
 
-	    // Add logging statements for debugging
-	    log.debug("Original followUpDto: {}", followUpDto);
+		// Add logging statements for debugging
+		log.debug("Original followUpDto: {}", followUpDto);
 
-	    FollowUpDataDto dto = new FollowUpDataDto(limitedRows, limitedRows.size());
-	    return dto;
+		FollowUpDataDto dto = new FollowUpDataDto(limitedRows, limitedRows.size());
+		return dto;
 	}
-
 
 	public List<FollowUpDto> getPaginationData(List<FollowUpDto> values, int startingIndex, int maxRows) {
 		List<FollowUpDto> dto = new ArrayList<>();
@@ -594,5 +589,4 @@ public class FollowUpServiceImpl implements FollowUpService {
 		return dto;
 	}
 
-	
 }
