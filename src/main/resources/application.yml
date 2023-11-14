@@ -50,6 +50,8 @@ sheets:
   attendanceListDefaultRange: attendanceInfo!J2:j
   attendanceInfoMarkAs:  J
 
+  clientInformationRange: clientDetails!A2:M
+
 mailChimp:
   userName: 7FzbzzHIVQSVJVz5r4n/bGa/lhNWJCXUq6oqBxBCTYQ=
   password: +mgZp4MIPWMTkaJ/pwphDw==
