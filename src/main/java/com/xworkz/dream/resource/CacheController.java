@@ -27,7 +27,7 @@ public class CacheController {
 	@Autowired
 	private CacheManager cacheManager;
 
-	private static final Logger logger = LoggerFactory.getLogger(CacheServiceImpl.class);
+	private static final Logger log = LoggerFactory.getLogger(CacheServiceImpl.class);
 
 	@Autowired
 	public CacheController(CacheManager cacheManager) {
@@ -41,9 +41,10 @@ public class CacheController {
 
 		if (cache != null) {
 			cache.evict(cacheKey);
-			logger.debug("cache is cleared");
+			log.info("Cache value with key '{}' in cache '{}' has been evicted.", cacheKey, cacheName);
 			return "Cache value with key '" + cacheKey + "' in cache '" + cacheName + "' has been evicted.";
 		} else {
+			log.warn("Cache '{}' not found.", cacheName);
 			return "Cache '" + cacheName + "' not found.";
 		}
 	}
@@ -58,7 +59,7 @@ public class CacheController {
 			if (valueWrapper != null) {
 				@SuppressWarnings("unchecked")
 				List<List<Object>> cachedData = (List<List<Object>>) valueWrapper.get();
-				logger.info("Cache email is  ", cachedData);
+				log.info("Retrieved data from cache '{}': {}", cacheName, cachedData);
 				return ResponseEntity.ok(cachedData);
 
 			}
@@ -72,8 +73,10 @@ public class CacheController {
 
 		if (cache != null) {
 			cache.clear();
+			log.info("Cache '{}' has been cleared.", cacheName);
 			return "Cache '" + cacheName + "' has been cleared.";
 		} else {
+			log.warn("Cache '{}' not found.", cacheName);
 			return "Cache '" + cacheName + "' not found.";
 		}
 	}

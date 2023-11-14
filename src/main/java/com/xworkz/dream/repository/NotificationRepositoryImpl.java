@@ -10,6 +10,8 @@ import java.util.List;
 
 import javax.annotation.PostConstruct;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.Resource;
@@ -40,6 +42,8 @@ public class NotificationRepositoryImpl implements NotificationRepository {
 	@Autowired
 	private ResourceLoader resourceLoader;
 
+	private static final Logger log = LoggerFactory.getLogger(NotificationRepositoryImpl.class);
+
 	@PostConstruct
 	private void setSheetsService() throws IOException, FileNotFoundException, GeneralSecurityException {
 
@@ -56,6 +60,7 @@ public class NotificationRepositoryImpl implements NotificationRepository {
 	@Override
 	public List<List<Object>> notification(String spreadsheetId) throws IOException {
 		ValueRange response = sheetsService.spreadsheets().values().get(spreadsheetId, followUpStatus).execute();
+		log.info("Notification details retrieved successfully for spreadsheetId: {}", spreadsheetId);
 		return response.getValues();
 	}
 

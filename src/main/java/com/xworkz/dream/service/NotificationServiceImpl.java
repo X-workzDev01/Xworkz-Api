@@ -33,10 +33,10 @@ public class NotificationServiceImpl implements NotificationService {
 	@Autowired
 	private DreamUtil util;
 
-	private Logger log = LoggerFactory.getLogger(NotificationServiceImpl.class);
+	private static final Logger log = LoggerFactory.getLogger(NotificationServiceImpl.class);
 
 	public SheetNotificationDto notification(List<Team> teamList, String email) throws IOException {
-		log.info("Notificaton service start {} ", email);
+		  log.info("Notification service start for email: {}", email);
 		StatusList list = new StatusList();
 		List<String> statusCheck = list.getStatusCheck();
 
@@ -73,9 +73,8 @@ public class NotificationServiceImpl implements NotificationService {
 							}
 
 						});
-						log.debug(
-								"After Checking All notification condition result {}---------------------------------- {} ================{}",
-								yesterday, today, afterFoureDay);
+						 log.debug("After checking all notification conditions. Result: Today={}, Yesterday={}, AfterFourDays={}",
+				                    today, yesterday, afterFoureDay);
 						SheetNotificationDto dto = new SheetNotificationDto(yesterday, yesterday, afterFoureDay);
 
 						return dto;
