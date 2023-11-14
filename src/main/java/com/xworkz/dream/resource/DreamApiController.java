@@ -25,7 +25,7 @@ import io.swagger.annotations.ApiOperation;
 public class DreamApiController {
 	@Value("${login.sheetId}")
 	private String id;
-	Logger logger = LoggerFactory.getLogger(DreamApiController.class);
+	private static final Logger log = LoggerFactory.getLogger(DreamApiController.class);
 
 	private DreamService service;
 
@@ -37,16 +37,17 @@ public class DreamApiController {
 		this.service = service;
 	}
 
-
 	@ApiOperation(value = "To verifay the email")
 	@GetMapping("/verify-email")
 	public String verifydEmails(@RequestParam String email) throws IOException {
+		log.info("Verifying email: {}", email);
 		String verifyEmails = service.verifyEmails(email);
 		ObjectMapper objectMapper = new ObjectMapper();
 		@SuppressWarnings("unchecked")
 		Map<String, Object> jsonMap = objectMapper.readValue(verifyEmails, Map.class);
 		String reasons = (String) jsonMap.get("reason");
 		if (reasons.equals("accepted_email")) {
+			log.info("Verification result: {}", reasons);
 			return reasons;
 		} else {
 			return reasons;
@@ -54,19 +55,15 @@ public class DreamApiController {
 
 	}
 
-	
 	@GetMapping("/cache")
-	public  String getList(@RequestParam String cacheName) throws IOException {
-
+	public String getList(@RequestParam String cacheName) throws IOException {
+		log.info("Getting data from cache: {}", cacheName);
 		Cache cache = manager.getCache(cacheName);
-
-
-
 		if (cache != null) {
 			ValueWrapper valueWrapper = cache.get(id);
-
 			if (valueWrapper != null) {
-				Object cachedData =  valueWrapper.get();
+				Object cachedData = valueWrapper.get();
+				log.info("Cached data: {}", cachedData);
 				return null;
 			}
 		}

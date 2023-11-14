@@ -21,33 +21,27 @@ import io.swagger.annotations.ApiOperation;
 @RestController
 @RequestMapping("/api")
 public class EnquiryController {
-	
+
 	@Autowired
 	private EnquiryService service;
-	
-	Logger logger = LoggerFactory.getLogger(EnquiryController.class);
 
-	
+	private static final Logger log = LoggerFactory.getLogger(EnquiryController.class);
 
 	@ApiOperation(value = "To Add Enquiry Details")
 	@PostMapping("/enquiry")
 	public ResponseEntity<String> addEnquiry(@RequestBody EnquiryDto enquiryDto, @RequestHeader String spreadSheetId,
 			HttpServletRequest request) {
-
+		log.info("Adding Enquiry Details: {}", enquiryDto);
 		boolean saved = service.addEnquiry(enquiryDto, spreadSheetId, request);
 		String uri = request.getRequestURI();
 
 		if (saved) {
+			log.info("Enquiry Added Successfully");
 			return ResponseEntity.ok().body("Enquiry Added Successfully");
 		} else {
+			log.error("Failed to save the enquiry");
 			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to save the enquiry");
 		}
 	}
-	
-	
-	
-	
-	
-	
 
 }

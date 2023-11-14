@@ -34,7 +34,7 @@ public class RegistrationController {
 
 	@Value("${login.sheetId}")
 	private String id;
-	Logger logger = LoggerFactory.getLogger(DreamApiController.class);
+	private static final Logger log = LoggerFactory.getLogger(RegistrationController.class);
 
 	private RegistrationService service;
 
@@ -50,7 +50,7 @@ public class RegistrationController {
 	@PostMapping("/register")
 	public ResponseEntity<String> register(@RequestHeader String spreadsheetId, @RequestBody TraineeDto values,
 			HttpServletRequest request) throws IOException, MessagingException, TemplateException {
-		logger.debug("Registering trainee details: {}", values);
+		log.info("Received request to register trainee details: {}", values);
 
 		return service.writeData(spreadsheetId, values, request);
 	}
@@ -59,7 +59,7 @@ public class RegistrationController {
 	@GetMapping("/emailCheck")
 	public ResponseEntity<String> emailCheck(@RequestHeader String spreadsheetId, @RequestParam String email,
 			HttpServletRequest request) {
-		logger.info("Checking email: {}", email);
+		log.info("Checking email existence: {}", email);
 		return service.emailCheck(spreadsheetId, email, request);
 	}
 
@@ -67,7 +67,7 @@ public class RegistrationController {
 	@GetMapping("register/suggestion")
 	public ResponseEntity<List<TraineeDto>> getSearchSuggestion(@RequestHeader String spreadsheetId,
 			@RequestParam String value, HttpServletRequest request) {
-		logger.info("Getting suggesstions: {}", value);
+		log.info("Getting suggestions for search: {}", value);
 		return service.getSearchSuggestion(spreadsheetId, value, request);
 
 	}
@@ -76,24 +76,26 @@ public class RegistrationController {
 	@GetMapping("/contactNumberCheck")
 	public ResponseEntity<String> contactNumberCheck(@RequestHeader String spreadsheetId,
 			@RequestParam Long contactNumber, HttpServletRequest request) {
-		logger.info("Checking contact number: {}", contactNumber);
+		log.info("Checking contact number existence: {}", contactNumber);
 		return service.contactNumberCheck(spreadsheetId, contactNumber, request);
 	}
 
 	@GetMapping("/readData")
 	public ResponseEntity<SheetsDto> readData(@RequestHeader String spreadsheetId, @RequestParam int startingIndex,
 			@RequestParam int maxRows, @RequestParam String courseName) {
-		System.out.println(courseName);
+		log.info("Reading data with parameters - SpreadsheetId: {}, Starting Index: {}, Max Rows: {}, Course Name: {}",
+				spreadsheetId, startingIndex, maxRows, courseName);
 		return service.readData(spreadsheetId, startingIndex, maxRows, courseName);
 	}
 
 	@GetMapping("/filterData")
 	public List<TraineeDto> filterData(@RequestHeader String spreadsheetId, @RequestParam String searchValue) {
 		try {
+			log.info("Filtering data with parameters - SpreadsheetId: {}, Search Value: {}", spreadsheetId,
+					searchValue);
 			return service.filterData(spreadsheetId, searchValue);
 		} catch (IOException e) {
-
-			e.printStackTrace();
+			log.error("An error occurred during data filtering", e.getMessage());
 		}
 		return null;
 
@@ -103,6 +105,8 @@ public class RegistrationController {
 	@PutMapping("/update")
 	public ResponseEntity<String> update(@RequestHeader String spreadsheetId, @RequestParam String email,
 			@RequestBody TraineeDto dto) {
+		log.info("Updating trainee details with parameters - SpreadsheetId: {}, Email: {}, TraineeDto: {}",
+				spreadsheetId, email, dto);
 		return service.update(spreadsheetId, email, dto);
 	}
 
@@ -110,6 +114,7 @@ public class RegistrationController {
 	@GetMapping("/readByEmail")
 	public ResponseEntity<?> getDataByEmail(@RequestHeader String spreadsheetId, @RequestParam String email,
 			HttpServletRequest request) throws IOException {
+		log.info("Getting details by email - SpreadsheetId: {}, Email: {}", spreadsheetId, email);
 		return service.getDetailsByEmail(spreadsheetId, email, request);
 	}
 
