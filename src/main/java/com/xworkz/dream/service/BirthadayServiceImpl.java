@@ -23,6 +23,7 @@ import com.xworkz.dream.util.DreamUtil;
 import com.xworkz.dream.wrapper.DreamWrapper;
 
 @Service
+
 public class BirthadayServiceImpl implements BirthadayService {
 
 	@Autowired
