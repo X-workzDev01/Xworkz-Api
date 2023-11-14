@@ -160,7 +160,7 @@ public class RegistrationServiceImpl implements RegistrationService {
 
 	@Override
 
-	public ResponseEntity<SheetsDto> readData(String spreadsheetId, int startingIndex, int maxRows) {
+	public ResponseEntity<SheetsDto> readData(String spreadsheetId, int startingIndex, int maxRows, String courseName) {
 		try {
 			List<List<Object>> dataList = repo.readData(spreadsheetId);
 
@@ -169,13 +169,22 @@ public class RegistrationServiceImpl implements RegistrationService {
 				List<List<Object>> sortedData = dataList.stream().sorted(Comparator.comparing(
 						list -> list != null && !list.isEmpty() && list.size() > 24 ? list.get(24).toString() : "",
 						Comparator.reverseOrder())).collect(Collectors.toList());
+				if (!courseName.equals("null")) {
+					List<List<Object>> sortedCourse = sortedData.stream()
+							.filter(items -> items != null && items.size() > 9 && items.contains(courseName))
+							.collect(Collectors.toList());
+					List<TraineeDto> dtos = getLimitedRows(sortedCourse, startingIndex, maxRows);
+					SheetsDto dto = new SheetsDto(dtos, sortedCourse.size());
+					return ResponseEntity.ok(dto);
+				}
 
 				List<TraineeDto> dtos = getLimitedRows(sortedData, startingIndex, maxRows);
 
-				SheetsDto dto = new SheetsDto(dtos, dtos.size());
+				SheetsDto dto = new SheetsDto(dtos, sortedData.size());
 
 				return ResponseEntity.ok(dto);
 			}
+
 		} catch (IOException e) {
 			logger.error("An error occurred while reading in spreadsheetId: {}", spreadsheetId, e);
 		}

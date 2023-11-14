@@ -31,7 +31,7 @@ import io.swagger.annotations.ApiOperation;
 @RestController
 @RequestMapping("/api")
 public class RegistrationController {
-	
+
 	@Value("${login.sheetId}")
 	private String id;
 	Logger logger = LoggerFactory.getLogger(DreamApiController.class);
@@ -45,7 +45,7 @@ public class RegistrationController {
 	public RegistrationController(RegistrationService service) {
 		this.service = service;
 	}
-	                                                                      
+
 	@ApiOperation(value = "To register the trainee details in the google sheets")
 	@PostMapping("/register")
 	public ResponseEntity<String> register(@RequestHeader String spreadsheetId, @RequestBody TraineeDto values,
@@ -82,8 +82,9 @@ public class RegistrationController {
 
 	@GetMapping("/readData")
 	public ResponseEntity<SheetsDto> readData(@RequestHeader String spreadsheetId, @RequestParam int startingIndex,
-			@RequestParam int maxRows) {
-		return service.readData(spreadsheetId, startingIndex, maxRows);
+			@RequestParam int maxRows, @RequestParam String courseName) {
+		System.out.println(courseName);
+		return service.readData(spreadsheetId, startingIndex, maxRows, courseName);
 	}
 
 	@GetMapping("/filterData")
@@ -105,14 +106,11 @@ public class RegistrationController {
 		return service.update(spreadsheetId, email, dto);
 	}
 
-	
-
 	@ApiOperation(value = "To get Registration details by email")
 	@GetMapping("/readByEmail")
 	public ResponseEntity<?> getDataByEmail(@RequestHeader String spreadsheetId, @RequestParam String email,
 			HttpServletRequest request) throws IOException {
 		return service.getDetailsByEmail(spreadsheetId, email, request);
 	}
-	
 
 }

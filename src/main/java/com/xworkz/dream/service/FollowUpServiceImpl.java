@@ -138,17 +138,14 @@ public class FollowUpServiceImpl implements FollowUpService {
 	@Override
 	public boolean updateFollowUp(String spreadsheetId, String email, TraineeDto dto)
 			throws IOException, IllegalAccessException {
-		System.err.println("follow up data   ===================================               " + dto);
 
 		FollowUpDto followUpDto = getFollowUpDetailsByEmail(spreadsheetId, email);
-		System.out.println("777777777777777777777777777777777777777777777777         " + followUpDto);
 
 		if (followUpDto == null) {
 			return false;
 		}
 
 		int rowIndex = findByEmailForUpdate(spreadsheetId, email);
-		System.err.println("333333333333333333333333333333333333333333333333333           " + rowIndex);
 		if (rowIndex != -1) {
 			String range = followUpSheetName + followUprowStartRange + rowIndex + ":" + followUprowEndRange + rowIndex;
 
@@ -164,7 +161,6 @@ public class FollowUpServiceImpl implements FollowUpService {
 				values.set(0, modifiedValues); // Update the values list with the modified sublist
 			}
 			valueRange.setValues(values);
-			System.err.println("tttttttttttttttttttttttttttttttttttttttttt                   " + values);
 			UpdateValuesResponse updated = repo.updateFollow(spreadsheetId, range, valueRange);
 			cacheService.updateCacheFollowUp("followUpDetails", spreadsheetId, email, followUpDto);
 
@@ -435,9 +431,7 @@ public class FollowUpServiceImpl implements FollowUpService {
 		int rowIndex = findByEmailForUpdate(spreadsheetId, email);
 
 		String range = followUpSheetName + followUprowStartRange + rowIndex + ":" + followUprowEndRange + rowIndex;
-		System.out.println("00000000000000000000000000000000000000000             " + range);
 		List<List<Object>> values = Arrays.asList(wrapper.extractDtoDetails(followDto));
-		System.out.println("=======================================           " + values);
 		ValueRange valueRange = new ValueRange();
 		valueRange.setValues(values);
 		UpdateValuesResponse updated = repo.updateFollow(spreadsheetId, range, valueRange);
