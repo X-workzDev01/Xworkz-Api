@@ -59,15 +59,13 @@ public class ClientInformationServiceImpl implements ClientInformationService {
 		log.debug("start index {} and end index {}", startingIndex, maxRows);
 		List<List<Object>> clientData = clientRepository.readData();
 		List<ClientDto> sortedDtoList = new ArrayList<ClientDto>();
-		List<ClientDto> limitedData = new ArrayList<ClientDto>();
 		if (clientData != null) {
-			// sorting data by id
+			// sorting data by id and getting pagination data
 			sortedDtoList = clientData.stream().map(clientWrapper::listToClientDto)
-					.sorted(Comparator.comparing(ClientDto::getId).reversed()).collect(Collectors.toList());
+					.sorted(Comparator.comparing(ClientDto::getId).reversed()).skip(startingIndex).limit(maxRows).collect(Collectors.toList());
 		}
-		limitedData = sortedDtoList.stream().skip(startingIndex).limit(maxRows).collect(Collectors.toList());
-		log.debug("sorted data:{}", limitedData);
-		return new ClientDataDto(limitedData, sortedDtoList.size());
+		log.debug("sorted data:{}", sortedDtoList);
+		return new ClientDataDto(sortedDtoList, clientData.size());
 	}
 
 }
