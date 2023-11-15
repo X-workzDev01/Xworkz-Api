@@ -30,8 +30,8 @@ public class ClientDto {
 	private String status;
 	@JsonProperty("registrationDate")
 	private String registrationDate;
+	@JsonProperty("comments")
+	private String comments;
 	@JsonProperty("adminDto")
 	private AdminDto adminDto;
-
-
 }

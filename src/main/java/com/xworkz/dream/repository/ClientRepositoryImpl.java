@@ -43,7 +43,8 @@ public class ClientRepositoryImpl implements ClientRepository {
 
 	@Value("${sheets.clientInformationRange}")
 	private String clientInformationRange;
-
+	@Value("${sheets.clientInformationReadRange}")
+	private String clientInformationReadRange;
 	@Value("${login.sheetId}")
 	public String sheetId;
 	@Autowired
@@ -66,17 +67,25 @@ public class ClientRepositoryImpl implements ClientRepository {
 
 	@Override
 	public boolean writeClientInformation(List<Object> row) throws IOException {
-
-		log.info("client repository running data is :{}", row);
 		List<List<Object>> values = new ArrayList<>();
-		// Add an empty string as a placeholder for the A column
 		List<Object> rowData = new ArrayList<>();
-		rowData.add(""); // Placeholder for A column
-		rowData.addAll(row.subList(1, row.size())); // Start from the second element (B column)
-		values.add(rowData);
-		ValueRange body = new ValueRange().setValues(values);
-		sheetsService.spreadsheets().values().append(sheetId, clientInformationRange, body)
-				.setValueInputOption("USER_ENTERED").execute();
+		ValueRange valueRange = sheetsService.spreadsheets().values().get(sheetId, clientInformationRange).execute();
+		if (valueRange.getValues() != null && valueRange.getValues().size() >= 1) {
+			log.debug("if sheet doesn't contain any data:{}", valueRange);
+			rowData.add("");
+			rowData.addAll(row.subList(1, row.size()));
+			values.add(rowData);
+			ValueRange body = new ValueRange().setValues(values);
+			sheetsService.spreadsheets().values().append(sheetId, clientInformationRange, body)
+					.setValueInputOption("USER_ENTERED").execute();
+		} else {
+			log.debug("if sheet doesn't contain any data:{}", valueRange);
+			rowData.addAll(row.subList(1, row.size()));
+			values.add(rowData);
+			ValueRange body = new ValueRange().setValues(values);
+			sheetsService.spreadsheets().values().append(sheetId, clientInformationRange, body)
+					.setValueInputOption("USER_ENTERED").execute();
+		}
 		return true;
 	}
 
@@ -84,7 +93,7 @@ public class ClientRepositoryImpl implements ClientRepository {
 	@Cacheable(value = "clientInformation", key = "#root.target.sheetId", unless = "#result == null")
 	public List<List<Object>> readData() throws IOException {
 		log.info(" client repository, reading client information ");
-		ValueRange response = sheetsService.spreadsheets().values().get(sheetId, clientInformationRange).execute();
+		ValueRange response = sheetsService.spreadsheets().values().get(sheetId, clientInformationReadRange).execute();
 		return response.getValues();
 	}
 }

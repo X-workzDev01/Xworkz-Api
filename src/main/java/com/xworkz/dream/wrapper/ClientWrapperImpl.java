@@ -39,6 +39,9 @@ public class ClientWrapperImpl implements ClientWrapper {
 		if (dto.getStatus() == null) {
 			dto.setStatus("NA");
 		}
+		if(dto.getComments()==null) {
+			dto.setComments("NA");
+		}
 		dto.setRegistrationDate(LocalDate.now().toString());
 		if (dto.getAdminDto() == null) {
 			dto.setAdminDto(new AdminDto()); // Assuming AdminDto has a no-argument constructor
@@ -87,22 +90,25 @@ public class ClientWrapperImpl implements ClientWrapper {
 			clientDto.setRegistrationDate((String) row.get(8));
 		}
 		if (rowSize > 9 && row.get(9) != null && !row.get(9).toString().isEmpty()) {
-			if (clientDto.getAdminDto() == null) {
-				clientDto.setAdminDto(new AdminDto());
-			}
-			clientDto.getAdminDto().setCreatedBy((String) row.get(9));
+			clientDto.setComments((String) row.get(9));
 		}
 		if (rowSize > 10 && row.get(10) != null && !row.get(10).toString().isEmpty()) {
 			if (clientDto.getAdminDto() == null) {
 				clientDto.setAdminDto(new AdminDto());
 			}
-			clientDto.getAdminDto().setCreatedOn((String) row.get(10));
+			clientDto.getAdminDto().setCreatedBy((String) row.get(10));
 		}
 		if (rowSize > 11 && row.get(11) != null && !row.get(11).toString().isEmpty()) {
 			if (clientDto.getAdminDto() == null) {
 				clientDto.setAdminDto(new AdminDto());
 			}
-			clientDto.getAdminDto().setUpdatedBy((String) row.get(11));
+			clientDto.getAdminDto().setCreatedOn((String) row.get(11));
+		}
+		if (rowSize > 12 && row.get(12) != null && !row.get(12).toString().isEmpty()) {
+			if (clientDto.getAdminDto() == null) {
+				clientDto.setAdminDto(new AdminDto());
+			}
+			clientDto.getAdminDto().setUpdatedBy((String) row.get(12));
 		}
 		if (rowSize > 12 && row.get(12) != null && !row.get(12).toString().isEmpty()) {
 			if (clientDto.getAdminDto() == null) {

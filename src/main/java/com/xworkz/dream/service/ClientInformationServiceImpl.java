@@ -38,8 +38,8 @@ public class ClientInformationServiceImpl implements ClientInformationService {
 	public String writeClientInformation(ClientDto dto) throws IOException, IllegalAccessException {
 		if (dto != null) {
 			clientWrapper.setValuesToClientDto(dto);
-			log.debug("client service, writeClientInformation after Setting NA values for  null fields {}", dto);
 			List<Object> list = dreamWrapper.extractDtoDetails(dto);
+			
 			log.info("in client service, Extracted values: {}", list);
 			if (clientRepository.writeClientInformation(list)) {
 				log.debug("adding newly added data to the cache value is:clientInformation ");

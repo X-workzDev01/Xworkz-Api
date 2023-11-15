@@ -19,7 +19,7 @@ import com.xworkz.dream.service.ClientInformationService;
 import io.swagger.annotations.ApiOperation;
 
 @RestController
-@RequestMapping("/clientapi")
+@RequestMapping("/api")
 public class ClientInformationController {
 
 	private static final Logger log = LoggerFactory.getLogger(ClientInformationController.class);
@@ -40,5 +40,4 @@ public class ClientInformationController {
 		log.info("read client data controller, start index {} and ending  index  {}", startingIndex, maxRows);
 		return clientInformationService.readClientData(startingIndex, maxRows);
 	}
-
 }

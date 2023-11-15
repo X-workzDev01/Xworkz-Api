@@ -50,7 +50,8 @@ sheets:
   attendanceListDefaultRange: attendanceInfo!J2:j
   attendanceInfoMarkAs:  J
 
-  clientInformationRange: clientDetails!A2:M
+  clientInformationRange: clientDetails!B2:N
+  clientInformationReadRange: clientDetails!A2:N
 
 mailChimp:
   userName: 7FzbzzHIVQSVJVz5r4n/bGa/lhNWJCXUq6oqBxBCTYQ=
