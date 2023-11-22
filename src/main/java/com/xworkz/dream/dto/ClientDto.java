@@ -1,37 +1,37 @@
 package com.xworkz.dream.dto;
 
+import java.io.Serializable;
+
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import lombok.AllArgsConstructor;
+import lombok.Data;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+
 @NoArgsConstructor
 @Setter
 @Getter
 @AllArgsConstructor
-public class ClientDto {
+@Data
+public class ClientDto implements Serializable {
 
 	@JsonProperty("id")
 	private int id;
 	@JsonProperty("companyName")
 	private String companyName;
-	@JsonProperty("hrScop")
-	private String hrScop;
-	@JsonProperty("hrContactNumber")
-	private Long hrContactNumber;
-	@JsonProperty("hrMailId")
-	private String hrMailId;
-	@JsonProperty("companyLandLine")
-	private Long companyLandLine;
-	@JsonProperty("location")
-	private String location;
+	@JsonProperty("companyEmail")
+	private String companyEmail;
+	@JsonProperty("companyLandLineNumber")
+	private Long companyLandLineNumber;
+	@JsonProperty("companyWebsite")
+	private String companyWebsite;
+	@JsonProperty("companyLocation")
+	private String companyLocation;
 	@JsonProperty("status")
 	private String status;
-	@JsonProperty("registrationDate")
-	private String registrationDate;
-	@JsonProperty("comments")
-	private String comments;
 	@JsonProperty("adminDto")
-	private AdminDto adminDto;
+	private AuditDto adminDto;
+	
 }

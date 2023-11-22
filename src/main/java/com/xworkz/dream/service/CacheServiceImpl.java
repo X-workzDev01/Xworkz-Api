@@ -23,14 +23,10 @@ import com.xworkz.dream.wrapper.DreamWrapper;
 public class CacheServiceImpl implements CacheService {
 	@Autowired
 	private DreamWrapper wrapper;
+	@Autowired
 	private CacheManager cacheManager;
 
 	private static final Logger logger = LoggerFactory.getLogger(CacheServiceImpl.class);
-
-	@Autowired
-	public CacheServiceImpl(CacheManager cacheManager) {
-		this.cacheManager = cacheManager;
-	}
 
 	@SuppressWarnings("unchecked")
 	public void updateCache(String cacheName, String key, List<Object> data) {

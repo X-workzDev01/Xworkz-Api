@@ -9,4 +9,6 @@ public interface ClientInformationService {
 
 	abstract String writeClientInformation(ClientDto dto) throws IOException, IllegalAccessException;
 	abstract ClientDataDto readClientData(int startingIndex,int maxRows) throws IOException;
+	abstract boolean checkComanyName(String companyName) throws IOException;
+	abstract ClientDto getClientDtoById(int companyId) throws IOException;
 }

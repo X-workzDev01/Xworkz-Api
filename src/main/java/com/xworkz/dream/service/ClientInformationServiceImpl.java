@@ -1,17 +1,15 @@
 package com.xworkz.dream.service;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
+import com.xworkz.dream.cache.ClientCacheService;
 import com.xworkz.dream.dto.ClientDataDto;
 import com.xworkz.dream.dto.ClientDto;
 import com.xworkz.dream.repository.ClientRepository;
@@ -28,10 +26,8 @@ public class ClientInformationServiceImpl implements ClientInformationService {
 	@Autowired
 	private ClientWrapper clientWrapper;
 	@Autowired
-	private CacheService cacheService;
+	private ClientCacheService clientCacheService;
 
-	@Value("${login.sheetId}")
-	public String sheetId;
 	private static final Logger log = LoggerFactory.getLogger(ClientInformationServiceImpl.class);
 
 	@Override
@@ -39,11 +35,10 @@ public class ClientInformationServiceImpl implements ClientInformationService {
 		if (dto != null) {
 			clientWrapper.setValuesToClientDto(dto);
 			List<Object> list = dreamWrapper.extractDtoDetails(dto);
-			
 			log.info("in client service, Extracted values: {}", list);
 			if (clientRepository.writeClientInformation(list)) {
-				log.debug("adding newly added data to the cache value is:clientInformation ");
-				cacheService.updateCache("clientInformation", sheetId, list);
+				log.debug("adding newly added data to the cache, clientInformation :{}", list);
+				clientCacheService.addNewDtoToCache("clientInformation", "ListOfClientDto", dto);
 				return "Client Information saved successfully";
 			} else {
 				return "Client Information not saved";
@@ -57,15 +52,31 @@ public class ClientInformationServiceImpl implements ClientInformationService {
 	@Override
 	public ClientDataDto readClientData(int startingIndex, int maxRows) throws IOException {
 		log.debug("start index {} and end index {}", startingIndex, maxRows);
-		List<List<Object>> clientData = clientRepository.readData();
-		List<ClientDto> sortedDtoList = new ArrayList<ClientDto>();
-		if (clientData != null) {
-			// sorting data by id and getting pagination data
-			sortedDtoList = clientData.stream().map(clientWrapper::listToClientDto)
-					.sorted(Comparator.comparing(ClientDto::getId).reversed()).skip(startingIndex).limit(maxRows).collect(Collectors.toList());
-		}
-		log.debug("sorted data:{}", sortedDtoList);
-		return new ClientDataDto(sortedDtoList, clientData.size());
+		int size = clientRepository.readData().size();
+		List<ClientDto> clientData = clientRepository.readData().stream().skip(startingIndex).limit(maxRows)
+				.collect(Collectors.toList());
+		return new ClientDataDto(clientData, size);
 	}
 
+	@Override
+	public boolean checkComanyName(String companyName) throws IOException {
+		log.info("checkComanyName service class " + companyName);
+		if (companyName != null) {
+			return clientRepository.checkCompanyName(companyName);
+		} else {
+			return false;
+		}
+	}
+
+	@Override
+	public ClientDto getClientDtoById(int companyId) throws IOException {
+		ClientDto clientDto = null;
+		if (companyId != 0) {
+			clientDto = clientRepository.getClientDtoById(companyId);
+		}
+		if (clientDto != null) {
+			return clientDto;
+		}
+		return null;
+	}
 }

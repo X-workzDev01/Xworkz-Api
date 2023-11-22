@@ -1,15 +1,18 @@
 package com.xworkz.dream.dto;
 
-import java.util.HashMap;
 import java.util.List;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
-@Data
 @AllArgsConstructor
-public class ClientDataDto {
-
-	private List<ClientDto> clientData;
+@Data
+@NoArgsConstructor
+public class ClientHrData {
+	
+	
+	private List<ClientHrDto> clientHrDetails;
 	private int size;
+
 }

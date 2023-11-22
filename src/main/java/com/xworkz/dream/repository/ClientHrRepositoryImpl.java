@@ -1,3 +1,4 @@
+
 package com.xworkz.dream.repository;
 
 import java.io.File;
@@ -30,12 +31,15 @@ import com.google.api.services.sheets.v4.SheetsScopes;
 import com.google.api.services.sheets.v4.model.ValueRange;
 import com.google.auth.http.HttpCredentialsAdapter;
 import com.google.auth.oauth2.GoogleCredentials;
-import com.xworkz.dream.dto.ClientDto;
-import com.xworkz.dream.wrapper.ClientWrapper;
+import com.xworkz.dream.dto.ClientHrDto;
+import com.xworkz.dream.wrapper.ClientHrWrapper;
 
+/**
+ * @author vinoda
+ *
+ */
 @Repository
-public class ClientRepositoryImpl implements ClientRepository {
-
+public class ClientHrRepositoryImpl implements ClientHrRepository {
 	@Value("${sheets.appName}")
 	private String applicationName;
 	@Value("${sheets.credentialsPath}")
@@ -44,19 +48,18 @@ public class ClientRepositoryImpl implements ClientRepository {
 	private static final List<String> SCOPES = Collections.singletonList(SheetsScopes.SPREADSHEETS);
 	private Sheets sheetsService;
 
-	@Value("${sheets.clientInformationRange}")
-	private String clientInformationRange;
-	@Value("${sheets.clientInformationReadRange}")
-	private String clientInformationReadRange;
+	@Value("${sheets.clientHrInformationRange}")
+	private String clientHrInformationRange;
+	@Value("${sheets.clientHrInformationReadRange}")
+	private String clientHrInformationReadRange;
 	@Value("${login.sheetId}")
 	public String sheetId;
-
 	@Autowired
-	private ClientWrapper clientWrapper;
+	private ClientHrWrapper clientHrWrapper;
 
 	@Autowired
 	private ResourceLoader resourceLoader;
-	private static final Logger log = LoggerFactory.getLogger(ClientRepositoryImpl.class);
+	private static final Logger log = LoggerFactory.getLogger(ClientHrRepositoryImpl.class);
 
 	@Override
 	@PostConstruct
@@ -73,66 +76,50 @@ public class ClientRepositoryImpl implements ClientRepository {
 	}
 
 	@Override
-	public boolean writeClientInformation(List<Object> row) throws IOException {
+	public boolean saveClientHrInformation(List<Object> row) throws IOException {
 		List<List<Object>> values = new ArrayList<>();
 		List<Object> rowData = new ArrayList<>();
-		ValueRange valueRange = sheetsService.spreadsheets().values().get(sheetId, clientInformationRange).execute();
+		ValueRange valueRange = sheetsService.spreadsheets().values().get(sheetId, clientHrInformationRange).execute();
 		if (valueRange.getValues() != null && valueRange.getValues().size() >= 1) {
 			log.debug("if sheet doesn't contain any data:{}", valueRange);
 			rowData.add("");
 			rowData.addAll(row.subList(1, row.size()));
 			values.add(rowData);
 			ValueRange body = new ValueRange().setValues(values);
-			sheetsService.spreadsheets().values().append(sheetId, clientInformationRange, body)
+			sheetsService.spreadsheets().values().append(sheetId, clientHrInformationRange, body)
 					.setValueInputOption("USER_ENTERED").execute();
 		} else {
 			log.debug("if sheet doesn't contain any data:{}", valueRange);
 			rowData.addAll(row.subList(1, row.size()));
 			values.add(rowData);
 			ValueRange body = new ValueRange().setValues(values);
-			sheetsService.spreadsheets().values().append(sheetId, clientInformationRange, body)
+			sheetsService.spreadsheets().values().append(sheetId, clientHrInformationRange, body)
 					.setValueInputOption("USER_ENTERED").execute();
 		}
 		return true;
 	}
 
 	@Override
-	//@Cacheable(value = "clientInformation", key = "'ListOfClientDto'", unless = "#result == null")
-	public List<ClientDto> readData() throws IOException {
-		log.info(" client repository, reading client information ");
+	public List<ClientHrDto> readData() throws IOException{
+		//System.out.println(sheetsService.spreadsheets().values().get(sheetId, clientHrInformationReadRange).execute().getValues());
 		
-		List<List<Object>> values = sheetsService.spreadsheets().values().get(sheetId, clientInformationReadRange)
-				.execute().getValues();
+		List<List<Object>> values=sheetsService.spreadsheets().values().get(sheetId, clientHrInformationReadRange).execute().getValues();
+		
 		if (values != null) {
-			List<ClientDto> ListOfClientDto = values.stream()
-					.map(clientWrapper::listToClientDto)
-					.sorted(Comparator.comparing(ClientDto::getId, Comparator.reverseOrder()))
-					.collect(Collectors.toList());
-			return ListOfClientDto;
+			List<ClientHrDto> listOfClientHrDto = values.stream().map(clientHrWrapper::listToClientHrDto).sorted(Comparator.comparing(ClientHrDto::getId, Comparator.reverseOrder())).collect(Collectors.toList());
+			return listOfClientHrDto;
 		} else {
+			log.debug("sheet returns null valus:{}",values);
 			return null;
 		}
-
 	}
+
 	@Override
-	public boolean checkCompanyName(String companyName) throws IOException {
-		boolean find = sheetsService.spreadsheets().values().get(sheetId, clientInformationReadRange).execute()
-				.getValues().stream().map(clientWrapper::listToClientDto)
-				.anyMatch(clientDto -> companyName.equals(clientDto.getCompanyName()));
+	public boolean emailCheck(String email) throws IOException {
+		boolean find = sheetsService.spreadsheets().values().get(sheetId, clientHrInformationReadRange).execute()
+				.getValues().stream().map(clientHrWrapper::listToClientHrDto)
+				.anyMatch(clientHrDto -> email.equals(clientHrDto.getHrEmail()));
 		return find;
 	}
-	
-	@Override
-	public ClientDto getClientDtoByCompnayName(String companyName) throws IOException {
-		ClientDto  dto= sheetsService.spreadsheets().values().get(sheetId, clientInformationReadRange).execute()
-				.getValues().stream().map(clientWrapper::listToClientDto).filter(ClientDto->companyName.equalsIgnoreCase(ClientDto.getCompanyName())).findFirst().orElse(null);
-		return dto;
-	}
 
-	@Override
-	public ClientDto getClientDtoById(int companyId) throws IOException {
-		ClientDto  dto= sheetsService.spreadsheets().values().get(sheetId, clientInformationReadRange).execute()
-				.getValues().stream().map(clientWrapper::listToClientDto).filter(ClientDto->companyId==ClientDto.getId()).findFirst().orElse(null);
-		return dto;
-	}
 }
