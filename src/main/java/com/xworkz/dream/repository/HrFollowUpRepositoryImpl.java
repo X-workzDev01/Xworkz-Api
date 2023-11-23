@@ -30,7 +30,7 @@ import com.google.auth.http.HttpCredentialsAdapter;
 import com.google.auth.oauth2.GoogleCredentials;
 
 @Repository
-public abstract class HrFollowUpRepositoryImpl implements HrFollowUpRepository {
+public class HrFollowUpRepositoryImpl implements HrFollowUpRepository {
 
 	@Value("${sheets.appName}")
 	private String applicationName;
