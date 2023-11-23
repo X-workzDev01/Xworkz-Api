@@ -10,6 +10,8 @@ import java.util.stream.Collectors;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -21,10 +23,7 @@ import com.xworkz.dream.repository.BatchRepository;
 import com.xworkz.dream.repository.RegisterRepository;
 import com.xworkz.dream.wrapper.DreamWrapper;
 
-import lombok.extern.slf4j.Slf4j;
-
 @Service
-@Slf4j
 public class BatchServiceImpl implements BatchService {
 
 	@Autowired
@@ -34,7 +33,9 @@ public class BatchServiceImpl implements BatchService {
 	@Autowired
 	private DreamWrapper wrapper;
 	private BatchDetails batch;
-	
+
+	private static final Logger log = LoggerFactory.getLogger(BatchServiceImpl.class);
+
 	@Override
 	public ResponseEntity<String> saveDetails(String spreadsheetId, BatchDetailsDto dto, HttpServletRequest request)
 			throws IOException, IllegalAccessException {
@@ -46,15 +47,17 @@ public class BatchServiceImpl implements BatchService {
 		// adding to cache
 //		cacheService.updateCourseCache("batchDetails", spreadsheetId, list);
 		if (save == true) {
+			log.info("Batch details added successfully");
 			return ResponseEntity.ok("Batch details added successfully");
 		} else {
+			log.info("Batch details not added");
 			return ResponseEntity.ok("Batch details Not added");
 		}
 	}
 
 	public List<TraineeDto> getTraineeDetailsByCourse(String spreadsheetId, String courseName) throws IOException {
 		List<TraineeDto> traineeDetails = new ArrayList<>();
-		log.debug("reading trainee data by course {} ", courseName);
+		log.debug("Reading trainee data by course: {} ", courseName);
 		return readTraineeDataByCourseName(courseName, spreadsheetId, traineeDetails);
 
 	}
@@ -63,7 +66,7 @@ public class BatchServiceImpl implements BatchService {
 			List<TraineeDto> traineeDetails) throws IOException {
 		List<List<Object>> data = repo.readData(spreadsheetId);
 		if (courseName != null && data != null) {
-			log.debug("course name : {}", courseName);
+			log.debug("Course name: {}", courseName);
 			traineeDetails = data.stream().filter(row -> row != null && row.size() > 9 && row.contains(courseName))
 					.sorted(Comparator.comparing(
 							list -> list != null && !list.isEmpty() && list.size() > 24 ? list.get(24).toString() : "",
@@ -71,7 +74,7 @@ public class BatchServiceImpl implements BatchService {
 					.map(wrapper::listToDto).filter(Objects::nonNull).collect(Collectors.toList());
 		}
 		if (!traineeDetails.isEmpty()) {
-			log.debug("");
+			log.debug("Trainee details found");
 			return traineeDetails;
 		} else {
 			log.info("No trainee details found for course: {}", courseName);
@@ -79,8 +82,6 @@ public class BatchServiceImpl implements BatchService {
 		}
 	}
 
-	
-	
 	@Override
 	public ResponseEntity<BatchDetails> getBatchDetailsByCourseName(String spreadsheetId, String courseName)
 			throws IOException {
@@ -93,13 +94,13 @@ public class BatchServiceImpl implements BatchService {
 			this.batch = wrapper.batchDetailsToDto(item);
 		});
 		if (batch != null) {
+			log.info("Batch details retrieved successfully for course: {}", courseName);
 			return ResponseEntity.ok(this.batch);
 		}
+		log.info("No batch details found for course: {}", courseName);
 		return null;
 	}
 
-
-	
 	@Override
 	public BatchDetails getBatchDetailsListByCourseName(String spreadsheetId, String courseName) throws IOException {
 		BatchDetails batch = new BatchDetails();
@@ -111,11 +112,16 @@ public class BatchServiceImpl implements BatchService {
 			for (List<Object> row : data) {
 				batch = wrapper.batchDetailsToDto(row);
 			}
+			if (batch != null) {
+				log.info("Batch details retrieved successfully for course: {}", courseName);
+			} else {
+				log.info("No batch details found for course: {}", courseName);
+			}
 			return batch;
 		}
 		return null;
 	}
-	
+
 	@Override
 	public ResponseEntity<List<Object>> getCourseNameByStatus(String spreadsheetId, String status) {
 		List<List<Object>> courseNameByStatus;
@@ -130,13 +136,17 @@ public class BatchServiceImpl implements BatchService {
 					}
 				}
 			}
-			return ResponseEntity.ok(coursename);
+			if (!coursename.isEmpty()) {
+				log.info("Course names retrieved successfully for status: {}", status);
+				return ResponseEntity.ok(coursename);
+			} else {
+				log.info("No course names found for status: {}", status);
+				return null;
+			}
 		} catch (IOException e) {
-			e.printStackTrace();
+			log.error("An IOException occurred: {}", e.getMessage(), e);
+			return null;
 		}
-		return null;
-
 	}
-
 
 }

@@ -19,14 +19,14 @@ import io.swagger.annotations.ApiOperation;
 @RequestMapping("/api")
 @RestController
 public class NotificationController {
-	private Logger log = LoggerFactory.getLogger(NotificationController.class);
+	private static final Logger log = LoggerFactory.getLogger(NotificationController.class);
 	@Autowired
 	private NotificationScheduler notificationService;
 
 	@ApiOperation(" Notification API for pending Follow Up")
 	@GetMapping("/notification")
 	public ResponseEntity<SheetNotificationDto> getFollowupNotification(@RequestParam String email) throws IOException {
-		log.info("Notification email is {} ", email);
+		log.info("Request received for notification with email: {}", email);
 		SheetNotificationDto entity = notificationService.setNotification(email);
 
 		return ResponseEntity.ok(entity);

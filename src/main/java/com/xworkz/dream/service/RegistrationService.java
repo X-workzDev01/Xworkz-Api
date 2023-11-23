@@ -24,7 +24,7 @@ public interface RegistrationService {
 			HttpServletRequest request);	
 
 
-	public ResponseEntity<SheetsDto> readData(String spreadsheetId, int startingIndex, int maxRows);
+	public ResponseEntity<SheetsDto> readData(String spreadsheetId, int startingIndex, int maxRows,String courseName);
 
 	public List<TraineeDto> getLimitedRows(List<List<Object>> values, int startingIndex, int maxRows);
 
