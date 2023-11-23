@@ -1,6 +1,7 @@
 package com.xworkz.dream.service;
 
 import java.io.IOException;
+import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -52,17 +53,25 @@ public class ClientInformationServiceImpl implements ClientInformationService {
 	@Override
 	public ClientDataDto readClientData(int startingIndex, int maxRows) throws IOException {
 		log.debug("start index {} and end index {}", startingIndex, maxRows);
-		int size = clientRepository.readData().size();
-		List<ClientDto> clientData = clientRepository.readData().stream().skip(startingIndex).limit(maxRows)
-				.collect(Collectors.toList());
-		return new ClientDataDto(clientData, size);
+		List<List<Object>> listOfData = clientRepository.readData();
+		if (listOfData != null) {
+			List<ClientDto> ListOfClientDto = listOfData.stream().map(clientWrapper::listToClientDto)
+					.sorted(Comparator.comparing(ClientDto::getId, Comparator.reverseOrder()))
+					.collect(Collectors.toList());
+			List<ClientDto> clientData = ListOfClientDto.stream().skip(startingIndex).limit(maxRows)
+					.collect(Collectors.toList());
+			return new ClientDataDto(clientData, ListOfClientDto.size());
+		} else {
+			return null;
+		}
 	}
 
 	@Override
 	public boolean checkComanyName(String companyName) throws IOException {
 		log.info("checkComanyName service class " + companyName);
 		if (companyName != null) {
-			return clientRepository.checkCompanyName(companyName);
+			return clientRepository.readData().stream().map(clientWrapper::listToClientDto)
+					.anyMatch(clientDto -> companyName.equals(clientDto.getCompanyName()));
 		} else {
 			return false;
 		}
@@ -72,7 +81,8 @@ public class ClientInformationServiceImpl implements ClientInformationService {
 	public ClientDto getClientDtoById(int companyId) throws IOException {
 		ClientDto clientDto = null;
 		if (companyId != 0) {
-			clientDto = clientRepository.getClientDtoById(companyId);
+			clientDto = clientRepository.readData().stream().map(clientWrapper::listToClientDto)
+					.filter(ClientDto -> companyId == ClientDto.getId()).findFirst().orElse(null);
 		}
 		if (clientDto != null) {
 			return clientDto;

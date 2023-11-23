@@ -14,9 +14,9 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 public class ClientHrDto {
 
 	@JsonProperty("id")
-	private int id;
+	private Integer id;
 	@JsonProperty("companyId")
-	private int companyId;
+	private Integer companyId;
 	@JsonProperty("hrScopName")
 	private String hrScopName;
 	@JsonProperty("hrEmail")

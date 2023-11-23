@@ -29,27 +29,28 @@ public class ClientHrInformationController {
 
 	@ApiOperation("To save Client information")
 	@PostMapping("/registerclienthrinfo")
-	public String saveClientHrInformation(@RequestBody ClientHrDto clientHrDto) throws IllegalAccessException, IOException {
-		log.info("saveClientHrInformation controller running");
+	public String saveClientHrInformation(@RequestBody ClientHrDto clientHrDto)
+			throws IllegalAccessException, IOException {
 		log.info("client Hr controller {}", clientHrDto);
 		return clientHrService.saveClientHrInformation(clientHrDto);
 	}
-	
+
 	@ApiOperation("To save client HR information")
 	@GetMapping("/hrdetails")
-	public ClientHrData readData(@RequestParam int startingIndex,@RequestParam int maxRows) throws IOException{
+	public ClientHrData readData(@RequestParam int startingIndex, @RequestParam int maxRows) throws IOException {
 		log.debug("Reading client HR information");
-		return clientHrService.readData(startingIndex,maxRows);
+		return clientHrService.readData(startingIndex, maxRows);
 	}
+
 	@ApiOperation("To check Whether CompanyName is exists or not")
 	@GetMapping("/hremailcheck")
 	public String checkComanyName(@RequestParam String hrEmail) throws IOException {
-		log.info("checking company is already exist or not  {}",hrEmail);
+		log.info("checking company is already exist or not  {}", hrEmail);
 		if (clientHrService.hrEmailcheck(hrEmail)) {
 			return "Email already exists.";
 		} else {
 			return "Email does not exist.";
 		}
 	}
-	
+
 }

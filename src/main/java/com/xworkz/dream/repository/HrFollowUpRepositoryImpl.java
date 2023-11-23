@@ -28,11 +28,9 @@ import com.google.api.services.sheets.v4.SheetsScopes;
 import com.google.api.services.sheets.v4.model.ValueRange;
 import com.google.auth.http.HttpCredentialsAdapter;
 import com.google.auth.oauth2.GoogleCredentials;
-import com.xworkz.dream.dto.ClientDto;
-import com.xworkz.dream.wrapper.ClientWrapper;
 
 @Repository
-public class ClientRepositoryImpl implements ClientRepository {
+public abstract class HrFollowUpRepositoryImpl implements HrFollowUpRepository {
 
 	@Value("${sheets.appName}")
 	private String applicationName;
@@ -42,19 +40,16 @@ public class ClientRepositoryImpl implements ClientRepository {
 	private static final List<String> SCOPES = Collections.singletonList(SheetsScopes.SPREADSHEETS);
 	private Sheets sheetsService;
 
-	@Value("${sheets.clientInformationRange}")
-	private String clientInformationRange;
-	@Value("${sheets.clientInformationReadRange}")
-	private String clientInformationReadRange;
+	@Value("${sheets.hrFollowUpInformationRange}")
+	private String hrFollowUpInformationRange;
+	@Value("${sheets.hrFollowUpInformationReadRange}")
+	private String hrFollowUpInformationReadRange;
 	@Value("${login.sheetId}")
 	public String sheetId;
-
-	@Autowired
-	private ClientWrapper clientWrapper;
-
 	@Autowired
 	private ResourceLoader resourceLoader;
-	private static final Logger log = LoggerFactory.getLogger(ClientRepositoryImpl.class);
+
+	private static final Logger log = LoggerFactory.getLogger(HrFollowUpRepositoryImpl.class);
 
 	@Override
 	@PostConstruct
@@ -71,38 +66,39 @@ public class ClientRepositoryImpl implements ClientRepository {
 	}
 
 	@Override
-	public boolean writeClientInformation(List<Object> row) throws IOException {
+	public boolean saveHrFollowUpDetails(List<Object> row) throws IOException {
+		log.info("Hr follow up repository ");
 		List<List<Object>> values = new ArrayList<>();
 		List<Object> rowData = new ArrayList<>();
-		ValueRange valueRange = sheetsService.spreadsheets().values().get(sheetId, clientInformationRange).execute();
+		ValueRange valueRange = sheetsService.spreadsheets().values().get(sheetId, hrFollowUpInformationRange)
+				.execute();
 		if (valueRange.getValues() != null && valueRange.getValues().size() >= 1) {
 			log.debug("if sheet doesn't contain any data:{}", valueRange);
 			rowData.add("");
 			rowData.addAll(row.subList(1, row.size()));
 			values.add(rowData);
 			ValueRange body = new ValueRange().setValues(values);
-			sheetsService.spreadsheets().values().append(sheetId, clientInformationRange, body)
+			sheetsService.spreadsheets().values().append(sheetId, hrFollowUpInformationRange, body)
 					.setValueInputOption("USER_ENTERED").execute();
 		} else {
 			log.debug("if sheet doesn't contain any data:{}", valueRange);
 			rowData.addAll(row.subList(1, row.size()));
 			values.add(rowData);
 			ValueRange body = new ValueRange().setValues(values);
-			sheetsService.spreadsheets().values().append(sheetId, clientInformationRange, body)
+			sheetsService.spreadsheets().values().append(sheetId, hrFollowUpInformationRange, body)
 					.setValueInputOption("USER_ENTERED").execute();
 		}
 		return true;
 	}
 
 	@Override
-	// @Cacheable(value = "clientInformation", key = "'ListOfClientDto'", unless =
-	// "#result == null")
-	public List<List<Object>> readData() throws IOException {
-		log.info(" client repository, reading client information ");
-
-		List<List<Object>> values = sheetsService.spreadsheets().values().get(sheetId, clientInformationReadRange)
+	public List<List<Object>> readFollowUpDetailsById() throws IOException {
+		List<List<Object>> values = sheetsService.spreadsheets().values().get(sheetId, hrFollowUpInformationReadRange)
 				.execute().getValues();
-
-		return values;
+		if (values != null) {
+			return values;
+		}
+		return null;
 	}
+
 }

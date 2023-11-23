@@ -1,6 +1,7 @@
 package com.xworkz.dream.service;
 
 import java.io.IOException;
+import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -53,14 +54,21 @@ public class ClientHrServiceImpl implements ClientHrService {
 	public ClientHrData readData(int startingIndex, int maxRows) throws IOException {
 
 		int size = clientHrRepository.readData().size();
-		clientHrRepository.readData().stream().skip(startingIndex).limit(size).collect(Collectors.toList());
-		return null;
+		List<ClientHrDto> sortedData = clientHrRepository.readData().stream().map(clientHrWrapper::listToClientHrDto)
+				.sorted(Comparator.comparing(ClientHrDto::getId, Comparator.reverseOrder()))
+				.collect(Collectors.toList());
+
+		List<ClientHrDto> listOfClientHrDto = sortedData.stream().skip(startingIndex).limit(size)
+				.collect(Collectors.toList());
+
+		return new ClientHrData(listOfClientHrDto, sortedData.size());
 	}
 
 	@Override
 	public boolean hrEmailcheck(String hrEmail) throws IOException {
 		if (hrEmail != null) {
-			return clientHrRepository.emailCheck(hrEmail);
+			return clientHrRepository.readData().stream().map(clientHrWrapper::listToClientHrDto)
+					.anyMatch(clientHrDto -> hrEmail.equals(clientHrDto.getHrEmail()));
 		} else {
 			return false;
 		}

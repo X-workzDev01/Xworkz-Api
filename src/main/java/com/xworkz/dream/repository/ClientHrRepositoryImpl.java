@@ -100,26 +100,10 @@ public class ClientHrRepositoryImpl implements ClientHrRepository {
 	}
 
 	@Override
-	public List<ClientHrDto> readData() throws IOException{
-		//System.out.println(sheetsService.spreadsheets().values().get(sheetId, clientHrInformationReadRange).execute().getValues());
-		
-		List<List<Object>> values=sheetsService.spreadsheets().values().get(sheetId, clientHrInformationReadRange).execute().getValues();
-		
-		if (values != null) {
-			List<ClientHrDto> listOfClientHrDto = values.stream().map(clientHrWrapper::listToClientHrDto).sorted(Comparator.comparing(ClientHrDto::getId, Comparator.reverseOrder())).collect(Collectors.toList());
-			return listOfClientHrDto;
-		} else {
-			log.debug("sheet returns null valus:{}",values);
-			return null;
-		}
-	}
-
-	@Override
-	public boolean emailCheck(String email) throws IOException {
-		boolean find = sheetsService.spreadsheets().values().get(sheetId, clientHrInformationReadRange).execute()
-				.getValues().stream().map(clientHrWrapper::listToClientHrDto)
-				.anyMatch(clientHrDto -> email.equals(clientHrDto.getHrEmail()));
-		return find;
+	public List<List<Object>> readData() throws IOException {
+		List<List<Object>> values = sheetsService.spreadsheets().values().get(sheetId, clientHrInformationReadRange)
+				.execute().getValues();
+		return values;
 	}
 
 }

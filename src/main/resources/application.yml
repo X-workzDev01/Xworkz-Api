@@ -56,6 +56,9 @@ sheets:
   clientHrInformationRange: clientHRdetails!B2:K
   clientHrInformationReadRange: clientHRdetails!A2:K
 
+  hrFollowUpInformationRange: ClientHRFollowUpStatus!B2:I
+  hrFollowUpInformationReadRange: ClientHRFollowUpStatus!A2:I
+
 mailChimp:
   userName: 7FzbzzHIVQSVJVz5r4n/bGa/lhNWJCXUq6oqBxBCTYQ=
   password: +mgZp4MIPWMTkaJ/pwphDw==
