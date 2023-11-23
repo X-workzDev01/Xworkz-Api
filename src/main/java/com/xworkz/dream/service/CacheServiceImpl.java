@@ -23,14 +23,10 @@ import com.xworkz.dream.wrapper.DreamWrapper;
 public class CacheServiceImpl implements CacheService {
 	@Autowired
 	private DreamWrapper wrapper;
+	@Autowired
 	private CacheManager cacheManager;
 
 	private static final Logger log = LoggerFactory.getLogger(CacheServiceImpl.class);
-
-	@Autowired
-	public CacheServiceImpl(CacheManager cacheManager) {
-		this.cacheManager = cacheManager;
-	}
 
 	@SuppressWarnings("unchecked")
 	public void updateCache(String cacheName, String key, List<Object> data) {
@@ -42,8 +38,6 @@ public class CacheServiceImpl implements CacheService {
 				// adding single list to the cache
 				int size = (((List<List<Object>>) valueWrapper.get()).size());
 				data.set(0, size + 1);
-				System.err.println(data + " --------------------:" + data.size());
-
 				((List<List<Object>>) valueWrapper.get()).add(data);
 			}
 		}
@@ -226,6 +220,7 @@ public class CacheServiceImpl implements CacheService {
 	public void addContactNumberToCache(String cacheName, String spreadSheetId, Long contactNumber) {
 		Cache cache = cacheManager.getCache(cacheName);
 		if (cache != null) {
+
 			log.info("Contact number added into cache: {}", contactNumber);
 			@SuppressWarnings("unchecked")
 			ValueWrapper valueWrapper = cache.get(spreadSheetId);
