@@ -10,9 +10,9 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 import com.xworkz.dream.repository.AttendanceRepository;
-
 @Service
 public class AttendanceSchedulerImpl {
+
 	@Autowired
 	private AttendanceRepository repository;
 	@Value("${login.sheetId}")

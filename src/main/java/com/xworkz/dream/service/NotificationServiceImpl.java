@@ -36,7 +36,7 @@ public class NotificationServiceImpl implements NotificationService {
 	private static final Logger log = LoggerFactory.getLogger(NotificationServiceImpl.class);
 
 	public SheetNotificationDto notification(List<Team> teamList, String email) throws IOException {
-		  log.info("Notification service start for email: {}", email);
+		log.info("Notification service start for email: {}", email);
 		StatusList list = new StatusList();
 		List<String> statusCheck = list.getStatusCheck();
 
@@ -73,9 +73,10 @@ public class NotificationServiceImpl implements NotificationService {
 							}
 
 						});
-						 log.debug("After checking all notification conditions. Result: Today={}, Yesterday={}, AfterFourDays={}",
-				                    today, yesterday, afterFoureDay);
-						SheetNotificationDto dto = new SheetNotificationDto(yesterday, yesterday, afterFoureDay);
+						log.debug(
+								"After checking all notification conditions. Result: Today={}, Yesterday={}, AfterFourDays={}",
+								today, yesterday, afterFoureDay);
+						SheetNotificationDto dto = new SheetNotificationDto(yesterday, today, afterFoureDay);
 
 						return dto;
 
@@ -84,6 +85,7 @@ public class NotificationServiceImpl implements NotificationService {
 					listOfData.stream().forEach(e -> {
 						StatusDto dto = wrapper.listToStatusDto(e);
 						if (dto.getCallBack() != null && dto.getCallBack().toString() != "NA") {
+
 							if (LocalDateTime.now()
 									.isAfter(LocalDateTime.of((LocalDate.parse(dto.getCallBack())), time))
 									&& LocalDateTime.now().isBefore(LocalDateTime
@@ -111,7 +113,7 @@ public class NotificationServiceImpl implements NotificationService {
 				}
 
 			}
-
+ 
 		}
 		return notificationDtos;
 

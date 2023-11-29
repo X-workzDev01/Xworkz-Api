@@ -26,6 +26,7 @@ import org.springframework.stereotype.Service;
 
 import com.google.api.services.sheets.v4.model.UpdateValuesResponse;
 import com.google.api.services.sheets.v4.model.ValueRange;
+import com.xworkz.dream.constants.Status;
 import com.xworkz.dream.dto.AdminDto;
 import com.xworkz.dream.dto.FollowUpDataDto;
 import com.xworkz.dream.dto.FollowUpDto;
@@ -230,7 +231,7 @@ public class FollowUpServiceImpl implements FollowUpService {
 		adminDto.setUpdatedBy(currentlyFollowedBy);
 		adminDto.setUpdatedOn(LocalDateTime.now().toString());
 		if (callBack != null && !callBack.equals("NA")) {
-			followUpDto.setCallback(LocalDateTime.of(LocalDate.parse(callBack), LocalTime.now()).toString());
+			followUpDto.setCallback(callBack);
 		}
 		if (callBack != null && callBack.equals("NA")) {
 			followUpDto.setCallback(LocalDateTime.of(LocalDate.now(), LocalTime.now()).plusDays(1).toString());
@@ -307,35 +308,215 @@ public class FollowUpServiceImpl implements FollowUpService {
 		List<List<Object>> traineeData = repository.readData(spreadsheetId);
 
 		if (status != null && !status.isEmpty() && lists != null) {
-			List<List<Object>> data = lists.stream().filter(
-					list -> list.stream().anyMatch(value -> value != null && value.toString().equalsIgnoreCase(status)))
-					.collect(Collectors.toList());
-			if (data != null) {
-				List<List<Object>> sortedData = data.stream().sorted(Comparator.comparing(
-						list -> list != null && !list.isEmpty() && list.size() > 4 ? list.get(4).toString() : "",
-						Comparator.reverseOrder())).collect(Collectors.toList());
-				log.info("Sorted data by follow-up: {}", sortedData);
-				followUpDto = getFollowUpRows(sortedData, startingIndex, maxRows);
-				followUpDto.stream().forEach(dto -> {
-					TraineeDto traineedto = getTraineeDtoByEmail(traineeData, dto.getBasicInfo().getEmail());
-					if (traineedto != null) {
-						dto.setCourseName(traineedto.getCourseInfo().getCourse());
+			if (status.toString().equalsIgnoreCase(Status.Enquiry.toString())) {
+				List<List<Object>> data = lists.stream()
+						.filter(list -> list.stream()
+								.anyMatch(value -> value != null && value.toString().equalsIgnoreCase(status)))
+						.collect(Collectors.toList());
+
+				if (data != null) {
+					List<List<Object>> sortedData = data.stream().sorted(Comparator.comparing(
+							list -> list != null && !list.isEmpty() && list.size() > 4 ? list.get(4).toString() : "",
+							Comparator.reverseOrder())).collect(Collectors.toList());
+					log.info("Sorted data by follow-up: {}", sortedData);
+					followUpDto = getFollowUpRows(sortedData, startingIndex, maxRows);
+					followUpDto.stream().forEach(dto -> {
+						TraineeDto traineedto = getTraineeDtoByEmail(traineeData, dto.getBasicInfo().getEmail());
+						if (traineedto != null) {
+							dto.setCourseName(traineedto.getCourseInfo().getCourse());
+						}
+
+					});
+					log.debug("Pagination data: {}", followUpDto);
+					if (!courseName.equalsIgnoreCase("null")) {
+						List<FollowUpDto> filterData = followUpDto.stream()
+								.filter(item -> item.getCourseName().equalsIgnoreCase(courseName))
+								.collect(Collectors.toList());
+						FollowUpDataDto followUpDataDto = new FollowUpDataDto(filterData, filterData.size());
+						return ResponseEntity.ok(followUpDataDto);
+
+					} else {
+						FollowUpDataDto followUpDataDto = new FollowUpDataDto(followUpDto, data.size());
+						return ResponseEntity.ok(followUpDataDto);
 					}
 
-				});
-				log.debug("Pagination data: {}", followUpDto);
-				if (!courseName.equalsIgnoreCase("null")) {
-					List<FollowUpDto> filterData = followUpDto.stream()
-							.filter(item -> item.getCourseName().equalsIgnoreCase(courseName))
-							.collect(Collectors.toList());
-					FollowUpDataDto followUpDataDto = new FollowUpDataDto(filterData, filterData.size());
-					return ResponseEntity.ok(followUpDataDto);
-
-				} else {
-					FollowUpDataDto followUpDataDto = new FollowUpDataDto(followUpDto, data.size());
-					return ResponseEntity.ok(followUpDataDto);
 				}
+			} else if (status.toString().equalsIgnoreCase(Status.New.toString())) {
+				List<List<Object>> data = lists.stream()
+						.filter(list -> list.stream()
+								.anyMatch(value -> value != null && value.toString().equalsIgnoreCase(status)))
+						.collect(Collectors.toList());
 
+				if (data != null) {
+					List<List<Object>> sortedData = data.stream().sorted(Comparator.comparing(
+							list -> list != null && !list.isEmpty() && list.size() > 4 ? list.get(4).toString() : "",
+							Comparator.reverseOrder())).collect(Collectors.toList());
+					log.info("Sorted data by follow-up: {}", sortedData);
+					followUpDto = getFollowUpRows(sortedData, startingIndex, maxRows);
+					followUpDto.stream().forEach(dto -> {
+						TraineeDto traineedto = getTraineeDtoByEmail(traineeData, dto.getBasicInfo().getEmail());
+						if (traineedto != null) {
+							dto.setCourseName(traineedto.getCourseInfo().getCourse());
+						}
+
+					});
+					log.debug("Pagination data: {}", followUpDto);
+					if (!courseName.equalsIgnoreCase("null")) {
+						List<FollowUpDto> filterData = followUpDto.stream()
+								.filter(item -> item.getCourseName().equalsIgnoreCase(courseName))
+								.collect(Collectors.toList());
+						FollowUpDataDto followUpDataDto = new FollowUpDataDto(filterData, filterData.size());
+						return ResponseEntity.ok(followUpDataDto);
+
+					} else {
+						FollowUpDataDto followUpDataDto = new FollowUpDataDto(followUpDto, data.size());
+						return ResponseEntity.ok(followUpDataDto);
+					}
+
+				}
+			} else if (status.toString().equalsIgnoreCase(Status.Joined.toString())) {
+				List<List<Object>> data = lists.stream()
+						.filter(list -> list.stream()
+								.anyMatch(value -> value != null && value.toString().equalsIgnoreCase(status)))
+						.collect(Collectors.toList());
+
+				if (data != null) {
+					List<List<Object>> sortedData = data.stream().sorted(Comparator.comparing(
+							list -> list != null && !list.isEmpty() && list.size() > 4 ? list.get(4).toString() : "",
+							Comparator.reverseOrder())).collect(Collectors.toList());
+					log.info("Sorted data by follow-up: {}", sortedData);
+					followUpDto = getFollowUpRows(sortedData, startingIndex, maxRows);
+					followUpDto.stream().forEach(dto -> {
+						TraineeDto traineedto = getTraineeDtoByEmail(traineeData, dto.getBasicInfo().getEmail());
+						if (traineedto != null) {
+							dto.setCourseName(traineedto.getCourseInfo().getCourse());
+						}
+
+					});
+					log.debug("Pagination data: {}", followUpDto);
+					if (!courseName.equalsIgnoreCase("null")) {
+						List<FollowUpDto> filterData = followUpDto.stream()
+								.filter(item -> item.getCourseName().equalsIgnoreCase(courseName))
+								.collect(Collectors.toList());
+						FollowUpDataDto followUpDataDto = new FollowUpDataDto(filterData, filterData.size());
+						return ResponseEntity.ok(followUpDataDto);
+
+					} else {
+						FollowUpDataDto followUpDataDto = new FollowUpDataDto(followUpDto, data.size());
+						return ResponseEntity.ok(followUpDataDto);
+					}
+
+				}
+			} else if (status.toString().equalsIgnoreCase(Status.RNR.toString())) {
+				List<List<Object>> data = lists.stream().filter(list -> list.stream()
+						.anyMatch(value -> value != null && value.toString().equalsIgnoreCase(Status.Busy.toString())
+								|| value.toString().equalsIgnoreCase(
+										Status.Incomingcall_not_available.toString().replace('_', ' '))
+								|| value.toString().equalsIgnoreCase(Status.Not_reachable.toString().replace('_', ' '))
+								|| value.toString().equalsIgnoreCase(Status.RNR.toString())
+								|| value.toString().equalsIgnoreCase(Status.Call_Drop.toString().replace('_', ' '))))
+						.collect(Collectors.toList());
+
+				if (data != null) {
+					List<List<Object>> sortedData = data.stream().sorted(Comparator.comparing(
+							list -> list != null && !list.isEmpty() && list.size() > 4 ? list.get(4).toString() : "",
+							Comparator.reverseOrder())).collect(Collectors.toList());
+					log.info("Sorted data by follow-up: {}", sortedData);
+					followUpDto = getFollowUpRows(sortedData, startingIndex, maxRows);
+					followUpDto.stream().forEach(dto -> {
+						TraineeDto traineedto = getTraineeDtoByEmail(traineeData, dto.getBasicInfo().getEmail());
+						if (traineedto != null) {
+							dto.setCourseName(traineedto.getCourseInfo().getCourse());
+						}
+
+					});
+					log.debug("Pagination data: {}", followUpDto);
+					if (!courseName.equalsIgnoreCase("null")) {
+						List<FollowUpDto> filterData = followUpDto.stream()
+								.filter(item -> item.getCourseName().equalsIgnoreCase(courseName))
+								.collect(Collectors.toList());
+						FollowUpDataDto followUpDataDto = new FollowUpDataDto(filterData, filterData.size());
+						return ResponseEntity.ok(followUpDataDto);
+
+					} else {
+						FollowUpDataDto followUpDataDto = new FollowUpDataDto(followUpDto, data.size());
+						return ResponseEntity.ok(followUpDataDto);
+					}
+
+				}
+			} else if (status.toString().equalsIgnoreCase(Status.Not_interested.toString().replace('_', ' '))) {
+				List<List<Object>> data = lists.stream().filter(list -> list.stream().anyMatch(value -> value != null
+						&& value.toString().equalsIgnoreCase(Status.Not_interested.toString().replace('_', ' '))
+						|| value.toString().equalsIgnoreCase(Status.Drop_After_Course.toString().replace('_', ' '))
+						|| value.toString().equalsIgnoreCase(Status.Drop_After_Placement.toString().replace('_', ' '))
+						|| value.toString().equalsIgnoreCase(Status.Higher_studies.toString().replace('_', ' '))
+						|| value.toString().equalsIgnoreCase(Status.Joined_other_institute.toString().replace('_', ' '))
+						|| value.toString().equalsIgnoreCase(Status.Not_joining.toString().replace('_', ' '))
+						|| value.toString().equalsIgnoreCase(Status.Wrong_number.toString().replace('_', ' '))))
+						.collect(Collectors.toList());
+
+				if (data != null) {
+					List<List<Object>> sortedData = data.stream().sorted(Comparator.comparing(
+							list -> list != null && !list.isEmpty() && list.size() > 4 ? list.get(4).toString() : "",
+							Comparator.reverseOrder())).collect(Collectors.toList());
+					log.info("Sorted data by follow-up: {}", sortedData);
+					followUpDto = getFollowUpRows(sortedData, startingIndex, maxRows);
+					followUpDto.stream().forEach(dto -> {
+						TraineeDto traineedto = getTraineeDtoByEmail(traineeData, dto.getBasicInfo().getEmail());
+						if (traineedto != null) {
+							dto.setCourseName(traineedto.getCourseInfo().getCourse());
+						}
+
+					});
+					log.debug("Pagination data: {}", followUpDto);
+					if (!courseName.equalsIgnoreCase("null")) {
+						List<FollowUpDto> filterData = followUpDto.stream()
+								.filter(item -> item.getCourseName().equalsIgnoreCase(courseName))
+								.collect(Collectors.toList());
+						FollowUpDataDto followUpDataDto = new FollowUpDataDto(filterData, filterData.size());
+						return ResponseEntity.ok(followUpDataDto);
+
+					} else {
+						FollowUpDataDto followUpDataDto = new FollowUpDataDto(followUpDto, data.size());
+						return ResponseEntity.ok(followUpDataDto);
+					}
+
+				}
+			} else if (status.toString().equalsIgnoreCase(Status.Interested.toString())) {
+				List<List<Object>> data = lists.stream().filter(list -> list.stream().anyMatch(
+						value -> value != null && value.toString().equalsIgnoreCase(Status.Let_us_know.toString())
+								|| value.toString().equalsIgnoreCase(Status.Need_online.toString().replace('_', ' '))
+								|| value.toString().equalsIgnoreCase(Status.Joining.toString())
+								|| value.toString().equalsIgnoreCase(Status.Interested.toString())))
+						.collect(Collectors.toList());
+
+				if (data != null) {
+					List<List<Object>> sortedData = data.stream().sorted(Comparator.comparing(
+							list -> list != null && !list.isEmpty() && list.size() > 4 ? list.get(4).toString() : "",
+							Comparator.reverseOrder())).collect(Collectors.toList());
+					log.info("Sorted data by follow-up: {}", sortedData);
+					followUpDto = getFollowUpRows(sortedData, startingIndex, maxRows);
+					followUpDto.stream().forEach(dto -> {
+						TraineeDto traineedto = getTraineeDtoByEmail(traineeData, dto.getBasicInfo().getEmail());
+						if (traineedto != null) {
+							dto.setCourseName(traineedto.getCourseInfo().getCourse());
+						}
+
+					});
+					log.debug("Pagination data: {}", followUpDto);
+					if (!courseName.equalsIgnoreCase("null")) {
+						List<FollowUpDto> filterData = followUpDto.stream()
+								.filter(item -> item.getCourseName().equalsIgnoreCase(courseName))
+								.collect(Collectors.toList());
+						FollowUpDataDto followUpDataDto = new FollowUpDataDto(filterData, filterData.size());
+						return ResponseEntity.ok(followUpDataDto);
+
+					} else {
+						FollowUpDataDto followUpDataDto = new FollowUpDataDto(followUpDto, data.size());
+						return ResponseEntity.ok(followUpDataDto);
+					}
+
+				}
 			} else {
 				log.warn("Follow-up data not found.");
 				return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
@@ -344,6 +525,7 @@ public class FollowUpServiceImpl implements FollowUpService {
 			log.warn("Bad request. Status is null or empty.");
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
 		}
+		return null;
 	}
 
 	private TraineeDto getTraineeDtoByEmail(List<List<Object>> traineeData, String email) {
