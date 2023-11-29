@@ -1,14 +1,42 @@
-attendanceInfoRange: attendanceInfo!A2:C
-  attendanceInfoIDRange: attendanceInfo!A2:E
-  attendanceInfoByName: attendanceInfo!A2:E
-  attendanceList: attendanceList!A2:E
-  attendanceListByEmail: attendanceList!A2:J
-  attendanceListRange: attendanceList!A2:C
-  idAttandanceInfoRange: A3:A
-  presentRange: C
-  absentRange: D
-  AttandanceInfoSheetName: attendanceInfo!
-  attendanceListDefaultRange: attendanceInfo!J2:j
-  attendanceInfoMarkAs:  E
-/.gradle/
-/build/
+HELP.md
+.gradle
+build/
+gradle/wrapper/gradle-wrapper.jar
+!**/src/main/**/build/
+!**/src/test/**/build/
+!**/src/main/**/META-INF/
+.settings/
+!**/src/main/resources/META-INF/
+
+### STS ###
+.apt_generated
+.classpath
+.factorypath
+.project
+.settings	
+.springBeans
+.sts4-cache
+bin/
+build/
+!**/src/main/**/bin/
+!**/src/test/**/bin/
+
+### IntelliJ IDEA ###
+.idea
+*.iws
+*.iml
+*.ipr
+out/
+!**/src/main/**/out/
+!**/src/test/**/out/
+build/
+
+### NetBeans ###
+/nbproject/private/
+/nbbuild/
+/dist/
+/nbdist/
+/.nb-gradle/
+
+### VS Code ###
+.vscode/
