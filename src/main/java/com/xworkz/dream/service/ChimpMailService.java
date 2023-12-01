@@ -6,6 +6,8 @@ import org.springframework.mail.javamail.MimeMessagePreparator;
 public interface ChimpMailService {
 	public boolean validateAndSendMailByMailId(MimeMessagePreparator messagePreparator);
 	
+	public void validateAndSendBirthdayMail(MimeMessagePreparator messagePreparator);
+	
 	public void validateAndSendMail(MimeMessagePreparator messagePreparator);
 
 	public boolean validateAndSendMailByMailOtp(MimeMessagePreparator messagePreparator);

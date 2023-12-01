@@ -7,7 +7,7 @@ sheets:
   attendanceInfoRange: attendanceInfo!A2:M
   attendanceList: attendanceList!A2:J
   attendanceListRange: attendanceList!A2:M
-  credentialsPath: classpath:META-INF/credentials-prod.json
+  credentialsPath: classpath:META-INF/credentials-dev.json
   liveKey: live_d485f9b87a825393bc2f
 
 
@@ -31,7 +31,7 @@ mail:
     
 login: 
   teamFile: classpath:team.yml
-  sheetId: 1HI3nKYRbXNl2cu9rKwqKp3tznOZ7ziOupokU_daFZ8E
+  sheetId: 1p3G4et36vkzSDs3W63cj6qnUFEWljLos2HHXIZd78Gg
   cookieDomain: ombn.in
 
 

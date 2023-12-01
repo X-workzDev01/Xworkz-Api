@@ -311,7 +311,7 @@ public class UtilProd implements DreamUtil {
 		}
 	}
 	
-	private boolean sendBirthadyEmailChimp(String traineeEmail, String subject, String name) {
+	private void sendBirthadyEmailChimp(String traineeEmail, String subject, String name) {
 		Context context = new Context();
 
 		context.setVariable("name", name);
@@ -322,13 +322,13 @@ public class UtilProd implements DreamUtil {
 			MimeMessageHelper messageHelper = new MimeMessageHelper(mimeMessage);
 			messageHelper.setFrom(helper.decrypt(chimpUserName));
 
-			messageHelper.addBcc(new InternetAddress(traineeEmail));
+			messageHelper.setTo(traineeEmail);
 
 			messageHelper.setSubject(subject);
 			messageHelper.setText(content, true);
 		};
 
-		return chimpMailService.validateAndSendMailByMailId(messagePreparator);
+	     chimpMailService.validateAndSendBirthdayMail(messagePreparator);
 	}
 
 }
