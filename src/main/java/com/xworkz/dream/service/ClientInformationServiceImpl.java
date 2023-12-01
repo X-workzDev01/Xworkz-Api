@@ -39,7 +39,7 @@ public class ClientInformationServiceImpl implements ClientInformationService {
 			log.info("in client service, Extracted values: {}", list);
 			if (clientRepository.writeClientInformation(list)) {
 				log.debug("adding newly added data to the cache, clientInformation :{}", list);
-				clientCacheService.addNewDtoToCache("clientInformation", "ListOfClientDto", dto);
+				clientCacheService.addNewDtoToCache("clientInformation", "ListOfClientDto", list);
 				return "Client Information saved successfully";
 			} else {
 				return "Client Information not saved";
@@ -62,19 +62,21 @@ public class ClientInformationServiceImpl implements ClientInformationService {
 					.collect(Collectors.toList());
 			return new ClientDataDto(clientData, ListOfClientDto.size());
 		} else {
-			return null;
+			return new ClientDataDto(null, 0);
 		}
 	}
 
 	@Override
 	public boolean checkComanyName(String companyName) throws IOException {
 		log.info("checkComanyName service class " + companyName);
+		List<List<Object>> listOfData = clientRepository.readData();
 		if (companyName != null) {
-			return clientRepository.readData().stream().map(clientWrapper::listToClientDto)
-					.anyMatch(clientDto -> companyName.equals(clientDto.getCompanyName()));
-		} else {
-			return false;
+			if (listOfData != null) {
+				return listOfData.stream().map(clientWrapper::listToClientDto)
+						.anyMatch(clientDto -> companyName.equalsIgnoreCase(clientDto.getCompanyName()));
+			}
 		}
+		return false;
 	}
 
 	@Override
@@ -89,4 +91,5 @@ public class ClientInformationServiceImpl implements ClientInformationService {
 		}
 		return null;
 	}
+
 }

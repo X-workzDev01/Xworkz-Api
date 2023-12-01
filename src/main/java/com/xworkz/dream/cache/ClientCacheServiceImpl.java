@@ -10,8 +10,6 @@ import org.springframework.cache.Cache.ValueWrapper;
 import org.springframework.cache.CacheManager;
 import org.springframework.stereotype.Service;
 
-import com.xworkz.dream.dto.ClientDto;
-
 @Service
 public class ClientCacheServiceImpl implements ClientCacheService {
 
@@ -21,22 +19,40 @@ public class ClientCacheServiceImpl implements ClientCacheService {
 	private static final Logger log = LoggerFactory.getLogger(ClientCacheServiceImpl.class);
 
 	@Override
-	@SuppressWarnings("unchecked")
-	public void addNewDtoToCache(String cacheName, String key, ClientDto dto) {
-		// TODO Auto-generated method stub
+	public void addNewDtoToCache(String cacheName, String key, List<Object> data) {
+		
 		Cache cache = cacheManager.getCache(cacheName);
+		log.info("cache name: {}, cache key: {},",cacheName,key);
 		if (cache != null) {
 			ValueWrapper valueWrapper = cache.get(key);
 			if (valueWrapper != null && valueWrapper.get() instanceof List) {
-				List<ClientDto> existingList = (List<ClientDto>) valueWrapper.get();
-				dto.setId(existingList.size() + 1);
-				existingList.add(dto);
-				System.out.println("client data added to cache:" + dto);
-				((List<ClientDto>) valueWrapper.get()).add(dto);
-
+				// cache.put(key, existingData);
+				// adding single list to the cache
+				log.info("adding list to the cache {}:",data);
+				int size = (((List<List<Object>>) valueWrapper.get()).size());
+				data.set(0, size + 1);
+				data.remove(1);
+				((List<List<Object>>) valueWrapper.get()).add(data);
 			}
 		}
+	}
 
+	@Override
+	public void addHRDetailsToCache(String cacheName, String key, List<Object> data) {
+
+		Cache cache = cacheManager.getCache(cacheName);
+		log.info("cache name: {}, cache key: {},",cacheName,key);
+		if (cache != null) {
+			ValueWrapper valueWrapper = cache.get(key);
+			if (valueWrapper != null && valueWrapper.get() instanceof List) {
+				// cache.put(key, existingData);
+				// adding single list to the cache
+				log.info("adding list to the cache {}:",data);
+				int size = (((List<List<Object>>) valueWrapper.get()).size());
+				data.set(0, size + 1);
+				((List<List<Object>>) valueWrapper.get()).add(data);
+			}
+		}
 	}
 
 }

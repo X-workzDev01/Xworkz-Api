@@ -29,7 +29,7 @@ public class ClientInformationController {
 	private ClientInformationService clientInformationService;
 
 	@ApiOperation("To save client data")
-	@PostMapping("/saveclientinfo")
+	@PostMapping("/registerclient")
 	public ResponseEntity<String> writeClientInformation(@RequestBody ClientDto clientDto)
 			throws IOException, IllegalAccessException {
 		log.debug("client information: {}", clientDto);

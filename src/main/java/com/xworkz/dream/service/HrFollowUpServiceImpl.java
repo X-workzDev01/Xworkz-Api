@@ -17,12 +17,13 @@ import com.xworkz.dream.wrapper.HrFollowUpWrapper;
 
 @Service
 public class HrFollowUpServiceImpl implements HrFollowUpService {
-
+	
 	@Autowired
 	private HrFollowUpRepository hrFollowUpRepository;
 
 	@Autowired
 	private HrFollowUpWrapper hrFollowUpWrapper;
+	
 	@Autowired
 	private DreamWrapper dreamWrapper;
 

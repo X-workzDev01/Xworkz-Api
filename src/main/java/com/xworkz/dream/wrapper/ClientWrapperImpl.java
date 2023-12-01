@@ -32,6 +32,19 @@ public class ClientWrapperImpl implements ClientWrapper {
 		if (dto.getCompanyLocation() == null) {
 			dto.setCompanyLocation("NA");
 		}
+		
+		if(dto.getCompanyAddress()==null) {
+			dto.setCompanyAddress("NA");
+		}
+		if(dto.getCompanyFounder()==null) {
+			dto.setCompanyFounder("NA");
+		}
+		if(dto.getCompanyType()==null) {
+			dto.setCompanyType("NA");
+		}
+		if(dto.getSourceOfConnetion()==null) {
+			dto.setSourceOfConnetion("NA");
+		}
 		if(dto.getStatus()==null) {
 			dto.setStatus("NA");
 		}
@@ -71,35 +84,47 @@ public class ClientWrapperImpl implements ClientWrapper {
 		if (rowSize > 5 && row.get(5) != null && !row.get(5).toString().isEmpty()) {
 			clientDto.setCompanyLocation((String)row.get(5).toString());
 		}
-
 		if (rowSize > 6 && row.get(6) != null && !row.get(6).toString().isEmpty()) {
-			clientDto.setStatus((String) row.get(6));
+			clientDto.setCompanyFounder((String)row.get(6).toString());
 		}
 		if (rowSize > 7 && row.get(7) != null && !row.get(7).toString().isEmpty()) {
-			if (clientDto.getAdminDto() == null) {
-				clientDto.setAdminDto(new AuditDto());
-			}
-			clientDto.getAdminDto().setCreatedBy((String) row.get(7));
+			clientDto.setSourceOfConnetion((String)row.get(7).toString());
 		}
 		if (rowSize > 8 && row.get(8) != null && !row.get(8).toString().isEmpty()) {
-			if (clientDto.getAdminDto() == null) {
-				clientDto.setAdminDto(new AuditDto());
-			}
-			clientDto.getAdminDto().setCreatedOn((String) row.get(8));
+			clientDto.setCompanyType((String)row.get(8).toString());
 		}
 		if (rowSize > 9 && row.get(9) != null && !row.get(9).toString().isEmpty()) {
-			if (clientDto.getAdminDto() == null) {
-				clientDto.setAdminDto(new AuditDto());
-			}
-			clientDto.getAdminDto().setUpdatedBy((String) row.get(9));
+			clientDto.setCompanyAddress((String)row.get(9).toString());
 		}
+
 		if (rowSize > 10 && row.get(10) != null && !row.get(10).toString().isEmpty()) {
+			clientDto.setStatus((String) row.get(10));
+		}
+		if (rowSize > 11 && row.get(11) != null && !row.get(11).toString().isEmpty()) {
 			if (clientDto.getAdminDto() == null) {
 				clientDto.setAdminDto(new AuditDto());
 			}
-			clientDto.getAdminDto().setUpdatedOn((String) row.get(10));
+			clientDto.getAdminDto().setCreatedBy((String) row.get(11));
 		}
-		log.info("clinet wrapper assigning list value to the dto {}", clientDto);
+		if (rowSize > 12 && row.get(12) != null && !row.get(12).toString().isEmpty()) {
+			if (clientDto.getAdminDto() == null) {
+				clientDto.setAdminDto(new AuditDto());
+			}
+			clientDto.getAdminDto().setCreatedOn((String) row.get(12));
+		}
+		if (rowSize > 13 && row.get(13) != null && !row.get(13).toString().isEmpty()) {
+			if (clientDto.getAdminDto() == null) {
+				clientDto.setAdminDto(new AuditDto());
+			}
+			clientDto.getAdminDto().setUpdatedBy((String) row.get(13));
+		}
+		if (rowSize > 14 && row.get(14) != null && !row.get(14).toString().isEmpty()) {
+			if (clientDto.getAdminDto() == null) {
+				clientDto.setAdminDto(new AuditDto());
+			}
+			clientDto.getAdminDto().setUpdatedOn((String) row.get(14));
+		}
+		log.debug("clinet wrapper assigning list value to the dto {}", clientDto);
 		return clientDto;
 	}
 

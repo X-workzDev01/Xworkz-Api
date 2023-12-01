@@ -11,6 +11,7 @@ public class HrFollowUpWrapperImpl implements HrFollowUpWrapper {
 
 	@Override
 	public void settingNaValues(HrFollowUpDto dto) {
+		
 		if (dto.getAttemptBy() == null) {
 			dto.setAttemptBy("NA");
 		}
@@ -21,7 +22,7 @@ public class HrFollowUpWrapperImpl implements HrFollowUpWrapper {
 		if (dto.getCallBackDate() == null) {
 			dto.setCallBackDate("NA");
 		}
-		if (dto.getCallDuration() == 0) {
+		if (dto.getCallDuration() == null) {
 			dto.setCallDuration(0);
 		}
 		if (dto.getComments() == null) {
