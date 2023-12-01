@@ -180,12 +180,12 @@ public class UtilProd implements DreamUtil {
 	}
 	
 	@Override
-	public boolean sendBirthadyEmail(String traineeEmail, String subject, String name) {
+	public void sendBirthadyEmail(String traineeEmail, String subject, String name) {
 		if(traineeEmail ==null || name ==null) {
 			logger.warn("Email or name is null");
-			return false;
+			
 		}
-		return sendBirthadyEmailChimp(traineeEmail, subject, name);
+		 sendBirthadyEmailChimp(traineeEmail, subject, name);
 	}
 	
 	// ================================================================================================
