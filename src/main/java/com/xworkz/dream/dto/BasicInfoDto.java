@@ -14,7 +14,6 @@ import lombok.Setter;
 @Getter
 @Setter
 public class BasicInfoDto {
-
 	@JsonProperty("traineeName")
 	private String traineeName;
 	@JsonProperty("email")
@@ -23,6 +22,4 @@ public class BasicInfoDto {
 	private Long contactNumber;
 	@JsonProperty("dateOfBirth")
 	private String dateOfBirth;
-
-
 }

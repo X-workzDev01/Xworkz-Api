@@ -49,13 +49,14 @@ sheets:
   attendanceListDefaultRange: attendanceInfo!J2:j
   attendanceInfoMarkAs:  J
 
+  clientInformationRange: clientDetails!B2:N
+  clientInformationReadRange: clientDetails!A2:N
 
-  spring:
-     cache:
-      redis:
-        time-to-live: '600000'
+  clientHrInformationRange: clientHRdetails!B2:K
+  clientHrInformationReadRange: clientHRdetails!A2:K
 
-
+  hrFollowUpInformationRange: ClientHRFollowUpStatus!B2:I
+  hrFollowUpInformationReadRange: ClientHRFollowUpStatus!A2:I
 
 mailChimp:
   userName: 7FzbzzHIVQSVJVz5r4n/bGa/lhNWJCXUq6oqBxBCTYQ=
