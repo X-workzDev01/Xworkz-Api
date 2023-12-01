@@ -14,17 +14,16 @@ import com.xworkz.dream.dto.TraineeDto;
 import freemarker.template.TemplateException;
 
 public interface RegistrationService {
-	
+
 	public ResponseEntity<String> writeData(String spreadsheetId, TraineeDto dto, HttpServletRequest request)
 			throws MessagingException, TemplateException;
 
 	public ResponseEntity<String> emailCheck(String spreadsheetId, String email, HttpServletRequest request);
 
 	public ResponseEntity<String> contactNumberCheck(String spreadsheetId, Long contactNumber,
-			HttpServletRequest request);	
+			HttpServletRequest request);
 
-
-	public ResponseEntity<SheetsDto> readData(String spreadsheetId, int startingIndex, int maxRows,String courseName);
+	public ResponseEntity<SheetsDto> readData(String spreadsheetId, int startingIndex, int maxRows, String courseName);
 
 	public List<TraineeDto> getLimitedRows(List<List<Object>> values, int startingIndex, int maxRows);
 
@@ -32,9 +31,8 @@ public interface RegistrationService {
 
 	public ResponseEntity<String> update(String spreadsheetId, String email, TraineeDto dto);
 
-	public ResponseEntity<?> getDetailsByEmail(String spreadsheetId, String email, HttpServletRequest request)
-			throws IOException;
-	
+	public TraineeDto getDetailsByEmail(String spreadsheetId, String email) throws IOException;
+
 	public ResponseEntity<List<TraineeDto>> getSearchSuggestion(String spreadsheetId, String value,
 			HttpServletRequest request);
 

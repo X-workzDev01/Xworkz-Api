@@ -13,14 +13,14 @@ sheets:
   contactNumberRange: D3:D
   dropdownRange: dropDowns!A2:I
   loginInfoRange: loginInfo!A2:B
-  followUpRange: followUp!A2:N
+  followUpRange: followUp!A2:O
   followUpStatus: followUpStatus!A2:L
   rowStartRange: B
   rowEndRange: AC    
   traineeSheetName: xworkzApi!
   followUpSheetName: followUp!
   followUprowStartRange: B2
-  followUprowEndRange: N
+  followUprowEndRange: O
   followUpEmailRange: followUp!C2:C
   idRange: xworkzApi!A3:A  
   followUpRowCurrentStartRange: G
@@ -30,7 +30,7 @@ sheets:
   batchDetailsStartRange: A2
   batchDetailsEndRange: I
   batchDetails: batchDetails!A2:I
-  batchDetailsRange: batchDetails!A2:I 
+  batchDetailsRange: batchDetails!A2:J
   batchIdRange: batchDetails!A2:A
   dateOfBirthDetailsSheetName: dateOfBirthDetails!
   dateOfBirthDetailsRange: dateOfBirthDetails!A2:E
@@ -49,6 +49,11 @@ sheets:
   AttandanceInfoSheetName: attendanceInfo!
   attendanceListDefaultRange: attendanceInfo!J2:j
   attendanceInfoMarkAs:  J
+  feesRegister: FeesDetiles!B2:U
+  getFeesDetiles: FeesDetiles!A2:U
+  getFeesDetilesfollowupRange : FeesFollowup!A2:J
+  feesEmailRange: FeesDetiles!C2:C
+
 
 mailChimp:
   userName: 7FzbzzHIVQSVJVz5r4n/bGa/lhNWJCXUq6oqBxBCTYQ=

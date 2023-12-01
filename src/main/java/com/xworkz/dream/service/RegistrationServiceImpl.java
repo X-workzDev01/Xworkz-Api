@@ -15,20 +15,14 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.core.io.ResourceLoader;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import com.google.api.services.sheets.v4.model.UpdateValuesResponse;
 import com.google.api.services.sheets.v4.model.ValueRange;
-import com.xworkz.dream.dto.BatchDetails;
-import com.xworkz.dream.dto.SheetNotificationDto;
 import com.xworkz.dream.dto.SheetsDto;
 import com.xworkz.dream.dto.TraineeDto;
-import com.xworkz.dream.dto.utils.Team;
-import com.xworkz.dream.interfaces.EmailableClient;
-import com.xworkz.dream.repository.DreamRepository;
 import com.xworkz.dream.repository.RegisterRepository;
 import com.xworkz.dream.util.DreamUtil;
 import com.xworkz.dream.wrapper.DreamWrapper;
@@ -296,7 +290,7 @@ public class RegistrationServiceImpl implements RegistrationService {
 	}
 
 	@Override
-	public ResponseEntity<?> getDetailsByEmail(String spreadsheetId, String email, HttpServletRequest request)
+	public TraineeDto getDetailsByEmail(String spreadsheetId, String email)
 			throws IOException {
 		List<List<Object>> data = repo.readData(spreadsheetId);
 
@@ -304,9 +298,9 @@ public class RegistrationServiceImpl implements RegistrationService {
 				.orElse(null);
 
 		if (trainee != null) {
-			return ResponseEntity.ok(trainee);
+			return trainee;
 		} else {
-			return new ResponseEntity<>("Email Not Found", HttpStatus.NOT_FOUND);
+			return null;
 		}
 	}
 

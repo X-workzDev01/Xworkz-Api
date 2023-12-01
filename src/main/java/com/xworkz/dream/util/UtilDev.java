@@ -5,9 +5,10 @@ import java.security.SecureRandom;
 import java.util.ArrayList;
 import java.util.Base64;
 import java.util.List;
+import java.util.Objects;
 import java.util.Properties;
 import java.util.Random;
-import java.util.Objects;
+
 import javax.mail.Authenticator;
 import javax.mail.Message;
 import javax.mail.MessagingException;
@@ -16,22 +17,23 @@ import javax.mail.Session;
 import javax.mail.Transport;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Profile;
-
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.mail.javamail.MimeMessagePreparator;
 import org.springframework.stereotype.Component;
-
 import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.context.Context;
-import com.xworkz.dream.dto.StatusDto;
+
+import com.xworkz.dream.dto.FollowUpDto;
 import com.xworkz.dream.dto.TraineeDto;
 import com.xworkz.dream.dto.utils.Team;
 import com.xworkz.dream.service.ChimpMailService;
+
 import freemarker.template.TemplateException;
 
 @Component
@@ -51,7 +53,7 @@ public class UtilDev implements DreamUtil {
 	@Value("${mailChimp.userName}")
 	private String chimpUserName;
 	@Autowired
-	private ChimpMailService chimpMailService;
+	private ChimpMailService chimpMailService;  
 
 	@Autowired
 	private EncryptionHelper helper;
@@ -78,7 +80,7 @@ public class UtilDev implements DreamUtil {
 	}
 
 	@Override
-	public boolean sendNotificationToEmail(List<Team> teamList, List<StatusDto> notificationStatus) {
+	public boolean sendNotificationToEmail(List<Team> teamList, List<FollowUpDto> notificationStatus) {
 		if (teamList == null || notificationStatus == null) {
 			logger.warn("teamList or notificationStatus is null");
 			return false;
@@ -162,14 +164,13 @@ public class UtilDev implements DreamUtil {
 
 	@Override
 	public boolean sendBirthadyEmail(String traineeEmail, String subject, String name) {
-		if(traineeEmail ==null || name ==null) {
+		if (traineeEmail == null || name == null) {
 			logger.warn("Email or name is null");
 			return false;
 		}
 		return sendBirthadyEmailChimp(traineeEmail, subject, name);
 	}
 
-	
 	// ================================================================================================
 	// this is mail chimp if use below code send mail through contact@xworkz.in
 	private boolean otpMailService(String email, int otp, String subject) {
@@ -190,8 +191,7 @@ public class UtilDev implements DreamUtil {
 		return chimpMailService.validateAndSendMailByMailOtp(messagePreparator);
 	}
 
-
-	private boolean sendBulkMailToNotification(List<String> recipients, String subject, List<StatusDto> body) {
+	private boolean sendBulkMailToNotification(List<String> recipients, String subject, List<FollowUpDto> body) {
 		Context context = new Context();
 
 		context.setVariable("listDto", body);
@@ -224,7 +224,7 @@ public class UtilDev implements DreamUtil {
 			for (String recepent : traineeEmail) {
 				messageHelper.addTo(new InternetAddress(recepent));
 			}
-			messageHelper.setSubject(subject); 
+			messageHelper.setSubject(subject);
 			messageHelper.setText(content, true);
 		};
 
@@ -253,7 +253,7 @@ public class UtilDev implements DreamUtil {
 	public boolean sms(TraineeDto dto) {
 		return true;
 	}
-	
+
 	private boolean sendBirthadyEmailChimp(String traineeEmail, String subject, String name) {
 		Context context = new Context();
 
@@ -273,4 +273,5 @@ public class UtilDev implements DreamUtil {
 
 		return chimpMailService.validateAndSendMailByMailIdDev(messagePreparator);
 	}
+
 }

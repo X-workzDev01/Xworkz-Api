@@ -14,8 +14,8 @@ import lombok.ToString;
 @NoArgsConstructor
 @AllArgsConstructor
 public class SheetNotificationDto {
-	private List<StatusDto> yesterdayCandidates;
-	private List<StatusDto> todayCandidates;
-	private List<StatusDto> afterFourDayCandidates;
+	private List<FollowUpDto> yesterdayCandidates;
+	private List<FollowUpDto> todayCandidates;
+	private List<FollowUpDto> afterFourDayCandidates;
 
 }

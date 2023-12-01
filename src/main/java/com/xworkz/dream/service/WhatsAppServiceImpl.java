@@ -122,12 +122,12 @@ public class WhatsAppServiceImpl implements WhatsAppService {
 
 		List<String> emailByCourseName = this.getEmailByCourseName(spreadsheetId, courseName);
 		String subject = "WhatsApp Link";
-		ResponseEntity<BatchDetails> batchDetailsByCourseName = service.getBatchDetailsByCourseName(spreadsheetId,
+		BatchDetails batchDetailsByCourseName = service.getBatchDetailsByCourseName(spreadsheetId,
 				courseName);
 		if (!emailByCourseName.isEmpty()) {
 
 			boolean sendWhatsAppLink = util.sendWhatsAppLink(emailByCourseName, subject,
-					batchDetailsByCourseName.getBody().getWhatsAppLink());
+					batchDetailsByCourseName.getWhatsAppLink());
 			if (sendWhatsAppLink == true) {
 				this.processAndBulkUpdate(spreadsheetId, courseName);
 				return true;

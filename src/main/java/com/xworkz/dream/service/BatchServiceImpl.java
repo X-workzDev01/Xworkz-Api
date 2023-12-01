@@ -39,8 +39,6 @@ public class BatchServiceImpl implements BatchService {
 	@Autowired
 	private DreamWrapper wrapper;
 	private BatchDetails batch;
-	
-	
 
 	@Override
 	public ResponseEntity<String> saveDetails(String spreadsheetId, BatchDetailsDto dto, HttpServletRequest request)
@@ -86,27 +84,21 @@ public class BatchServiceImpl implements BatchService {
 		}
 	}
 
-	
-	
 	@Override
-	public ResponseEntity<BatchDetails> getBatchDetailsByCourseName(String spreadsheetId, String courseName)
-			throws IOException {
+	public BatchDetails getBatchDetailsByCourseName(String spreadsheetId, String courseName) throws IOException {
 		List<List<Object>> detailsByCourseName = repository.getCourseDetails(spreadsheetId);
 		batch = null;
-
 		List<List<Object>> filter = detailsByCourseName.stream()
 				.filter(e -> e.contains(courseName) && e.contains("Active")).collect(Collectors.toList());
 		filter.stream().forEach(item -> {
 			this.batch = wrapper.batchDetailsToDto(item);
 		});
 		if (batch != null) {
-			return ResponseEntity.ok(this.batch);
+			return batch;
 		}
 		return null;
 	}
 
-
-	
 	@Override
 	public BatchDetails getBatchDetailsListByCourseName(String spreadsheetId, String courseName) throws IOException {
 		BatchDetails batch = new BatchDetails();
@@ -122,7 +114,7 @@ public class BatchServiceImpl implements BatchService {
 		}
 		return null;
 	}
-	
+
 	@Override
 	public ResponseEntity<List<Object>> getCourseNameByStatus(String spreadsheetId, String status) {
 		List<List<Object>> courseNameByStatus;
@@ -144,6 +136,5 @@ public class BatchServiceImpl implements BatchService {
 		return null;
 
 	}
-
 
 }

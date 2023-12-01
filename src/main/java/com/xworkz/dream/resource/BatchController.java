@@ -35,22 +35,22 @@ public class BatchController {
 		return service.getTraineeDetailsByCourse(spreadsheetId, courseName);
 	}
 
-	
-	
-	    // suhas
-		@GetMapping("/getCourseDetails")
-		public ResponseEntity<BatchDetails> getBatchDetails(@RequestHeader String spreadsheetId,
-				@RequestParam String courseName) throws IOException {
-			log.info("Getting CourseDetails : {}", courseName);
-			return service.getBatchDetailsByCourseName(spreadsheetId, courseName);
+	// suhas
+	@GetMapping("/getCourseDetails")
+	public ResponseEntity<BatchDetails> getBatchDetails(@RequestHeader String spreadsheetId,
+			@RequestParam String courseName) throws IOException {
+		log.info("Getting CourseDetails : {}", courseName);
+		BatchDetails batchDetails = service.getBatchDetailsByCourseName(spreadsheetId, courseName);
+		log.debug("Final batch detiles {}", batchDetails);
+		return ResponseEntity.ok(batchDetails);
 
-		}
+	}
 
-		// suhas
-		@GetMapping("/getCourseName")
-		public ResponseEntity<List<Object>> getCourseName(@RequestHeader String spreadsheetId, @RequestParam String status)
-				throws IOException {
-			log.info("Getting CourseName : {}", status);
-			return service.getCourseNameByStatus(spreadsheetId, status);
-		}
+	// suhas
+	@GetMapping("/getCourseName")
+	public ResponseEntity<List<Object>> getCourseName(@RequestHeader String spreadsheetId, @RequestParam String status)
+			throws IOException {
+		log.info("Getting CourseName : {}", status);
+		return service.getCourseNameByStatus(spreadsheetId, status);
+	}
 }

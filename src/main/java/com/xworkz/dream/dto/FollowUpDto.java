@@ -34,5 +34,6 @@ public class FollowUpDto {
 	private String callback;
 	@JsonProperty("adminDto")
 	private AdminDto adminDto;
+	private String flag;
 
 }

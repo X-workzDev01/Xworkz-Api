@@ -158,7 +158,7 @@ public class FollowUpServiceImpl implements FollowUpService {
 
 			if (!values.isEmpty()) {
 				List<Object> modifiedValues = new ArrayList<>(values.get(0).subList(1, values.get(0).size()));
-				values.set(0, modifiedValues); // Update the values list with the modified sublist
+				values.set(0, modifiedValues);
 			}
 			valueRange.setValues(values);
 			UpdateValuesResponse updated = repo.updateFollow(spreadsheetId, range, valueRange);
@@ -217,10 +217,16 @@ public class FollowUpServiceImpl implements FollowUpService {
 		adminDto.setUpdatedBy(currentlyFollowedBy);
 		adminDto.setUpdatedOn(LocalDateTime.now().toString());
 		if (callBack != null && !callBack.equals("NA")) {
-			followUpDto.setCallback(LocalDateTime.of(LocalDate.parse(callBack), LocalTime.now()).toString());
+			if (LocalDate.now().isEqual(LocalDate.parse(callBack))) {
+				followUpDto.setCallback(callBack);
+				followUpDto.setFlag("InActive");
+
+			} else {
+				followUpDto.setCallback(callBack);
+			}
 		}
 		if (callBack != null && callBack.equals("NA")) {
-			followUpDto.setCallback(LocalDateTime.of(LocalDate.now(), LocalTime.now()).plusDays(1).toString());
+			followUpDto.setCallback(LocalDate.now().toString());
 		}
 		followUpDto.setAdminDto(adminDto);
 		followUpDto.setCourseName("NA");
@@ -234,6 +240,7 @@ public class FollowUpServiceImpl implements FollowUpService {
 		}
 		ValueRange valueRange = new ValueRange();
 		valueRange.setValues(values);
+		System.err.println(values + "                                " + range);
 		UpdateValuesResponse updated = repo.updateFollow(spreadsheetId, range, valueRange);
 		cacheService.updateCacheFollowUp("followUpDetails", spreadsheetId, followUpDto.getBasicInfo().getEmail(),
 				followUpDto);

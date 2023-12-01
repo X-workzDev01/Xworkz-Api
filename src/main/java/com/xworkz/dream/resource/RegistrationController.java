@@ -10,7 +10,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.cache.CacheManager;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -37,9 +36,6 @@ public class RegistrationController {
 	Logger logger = LoggerFactory.getLogger(DreamApiController.class);
 
 	private RegistrationService service;
-
-	@Autowired
-	private CacheManager manager;
 
 	@Autowired
 	public RegistrationController(RegistrationService service) {
@@ -108,9 +104,12 @@ public class RegistrationController {
 
 	@ApiOperation(value = "To get Registration details by email")
 	@GetMapping("/readByEmail")
-	public ResponseEntity<?> getDataByEmail(@RequestHeader String spreadsheetId, @RequestParam String email,
-			HttpServletRequest request) throws IOException {
-		return service.getDetailsByEmail(spreadsheetId, email, request);
+	public ResponseEntity<TraineeDto> getDataByEmail(@RequestHeader String spreadsheetId, @RequestParam String email)
+			throws IOException {
+
+		TraineeDto dto = service.getDetailsByEmail(spreadsheetId, email);
+
+		return ResponseEntity.ok(dto);
 	}
 
 }
