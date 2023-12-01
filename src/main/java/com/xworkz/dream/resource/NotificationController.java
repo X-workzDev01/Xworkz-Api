@@ -27,9 +27,7 @@ public class NotificationController {
 	@GetMapping("/notification")
 	public ResponseEntity<SheetNotificationDto> getFollowupNotification(@RequestParam String email) throws IOException {
 		log.info("Request received for notification with email: {}", email);
-		SheetNotificationDto entity = notificationService.setNotification(email);
-
-		return ResponseEntity.ok(entity);
+		return ResponseEntity.ok(notificationService.setNotification(email));
 
 	}
 

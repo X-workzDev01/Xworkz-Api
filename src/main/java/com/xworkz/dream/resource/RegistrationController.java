@@ -13,6 +13,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cache.CacheManager;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -64,11 +65,11 @@ public class RegistrationController {
 	}
 
 	@ApiOperation(value = "To get Suggestions while search")
-	@GetMapping("register/suggestion")
+	@GetMapping("register/suggestion/{courseName}")
 	public ResponseEntity<List<TraineeDto>> getSearchSuggestion(@RequestHeader String spreadsheetId,
-			@RequestParam String value, HttpServletRequest request) {
+			@RequestParam String value,@PathVariable String courseName, HttpServletRequest request) {
 		log.info("Getting suggestions for search: {}", value);
-		return service.getSearchSuggestion(spreadsheetId, value, request);
+		return service.getSearchSuggestion(spreadsheetId, value, courseName, request);
 
 	}
 
@@ -88,12 +89,14 @@ public class RegistrationController {
 		return service.readData(spreadsheetId, startingIndex, maxRows, courseName);
 	}
 
-	@GetMapping("/filterData")
-	public List<TraineeDto> filterData(@RequestHeader String spreadsheetId, @RequestParam String searchValue) {
+	@GetMapping("/filterData/{courseName}")
+	public List<TraineeDto> filterData(@RequestHeader String spreadsheetId, @PathVariable String courseName,
+			@RequestParam String searchValue) {
+		System.err.println("eeeeeeeee  " + courseName);
 		try {
 			log.info("Filtering data with parameters - SpreadsheetId: {}, Search Value: {}", spreadsheetId,
 					searchValue);
-			return service.filterData(spreadsheetId, searchValue);
+			return service.filterData(spreadsheetId, searchValue, courseName);
 		} catch (IOException e) {
 			log.error("An error occurred during data filtering", e.getMessage());
 		}

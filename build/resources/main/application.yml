@@ -1,12 +1,11 @@
 spring:
    profiles:
-      active: dev
+      active: prod
 
    freemarker:
     template-loader-path: classpath:/templates/
 
 sheets:
- 
   appName: Dream Api
   range: A3:AC
   emailRange: C3:C
@@ -22,10 +21,10 @@ sheets:
   followUprowStartRange: B2
   followUprowEndRange: N
   followUpEmailRange: followUp!C2:C
-  idRange: xworkzApi!A3:A  
+  idRange: xworkzApi!A3:A   
   followUpRowCurrentStartRange: G
   followUpRowCurrentEndRange: H
-  emailAndNameRange: xworkzApi!A2:C
+  emailAndNameRange: xworkzApi!A2:J
   batchDetailsSheetName: batchDetails!
   batchDetailsStartRange: A2
   batchDetailsEndRange: I
@@ -49,6 +48,14 @@ sheets:
   AttandanceInfoSheetName: attendanceInfo!
   attendanceListDefaultRange: attendanceInfo!J2:j
   attendanceInfoMarkAs:  J
+
+
+  spring:
+     cache:
+      redis:
+        time-to-live: '600000'
+
+
 
 mailChimp:
   userName: 7FzbzzHIVQSVJVz5r4n/bGa/lhNWJCXUq6oqBxBCTYQ=

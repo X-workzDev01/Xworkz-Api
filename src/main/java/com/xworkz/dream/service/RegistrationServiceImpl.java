@@ -195,7 +195,7 @@ public class RegistrationServiceImpl implements RegistrationService {
 	}
 
 	@Override
-	public List<TraineeDto> filterData(String spreadsheetId, String searchValue) throws IOException {
+	public List<TraineeDto> filterData(String spreadsheetId, String searchValue, String courseName) throws IOException {
 		try {
 			if (searchValue != null && !searchValue.isEmpty()) {
 				log.info("Filtering data in spreadsheetId: {} with search value: {}", spreadsheetId, searchValue);
@@ -203,13 +203,23 @@ public class RegistrationServiceImpl implements RegistrationService {
 				List<List<Object>> filteredLists = data.stream().filter(list -> list.stream().anyMatch(
 						value -> value != null && value.toString().toLowerCase().contains(searchValue.toLowerCase())))
 						.collect(Collectors.toList());
-				List<TraineeDto> flist = new ArrayList<TraineeDto>();
-				for (List<Object> list2 : filteredLists) {
-					TraineeDto dto = wrapper.listToDto(list2);
-					flist.add(dto);
+				if (!courseName.equals("null")) {
+					List<TraineeDto> flist = filteredLists.stream().map(items -> wrapper.listToDto(items))
+							.filter(dto -> dto.getCourseInfo().getCourse().equalsIgnoreCase(courseName))
+							.collect(Collectors.toList());
+					log.info("Filtered {} TraineeDto objects", flist.size());
+
+					return flist;
+
+				} else {
+					List<TraineeDto> flist = filteredLists.stream().map(items -> wrapper.listToDto(items))
+							.filter(dto -> dto.getBasicInfo().getEmail().equalsIgnoreCase(searchValue))
+							.collect(Collectors.toList());
+					log.info("Filtered {} TraineeDto objects", flist.size());
+
+					return flist;
+
 				}
-				log.info("Filtered {} TraineeDto objects", flist.size());
-				return flist;
 			} else {
 				log.warn("Search value is null or empty. Returning an empty list.");
 				return new ArrayList<>();
@@ -222,29 +232,29 @@ public class RegistrationServiceImpl implements RegistrationService {
 
 	private int findRowIndexByEmail(String spreadsheetId, String email) throws IOException {
 		try {
-		log.info("Finding row index by email in spreadsheetId: {} for email: {}", spreadsheetId, email);
-		List<List<Object>> data = repo.getEmails(spreadsheetId, email);
-		List<List<Object>> values = data;
-		if (values != null) {
-			for (int i = 0; i < values.size(); i++) {
-				List<Object> row = values.get(i);
-				if (row.size() > 0 && row.get(0).toString().equalsIgnoreCase(email)) {
-					 log.info("Found row index {} for email: {}", i + 3, email);
-					return i + 3;
+			log.info("Finding row index by email in spreadsheetId: {} for email: {}", spreadsheetId, email);
+			List<List<Object>> data = repo.getEmails(spreadsheetId, email);
+			List<List<Object>> values = data;
+			if (values != null) {
+				for (int i = 0; i < values.size(); i++) {
+					List<Object> row = values.get(i);
+					if (row.size() > 0 && row.get(0).toString().equalsIgnoreCase(email)) {
+						log.info("Found row index {} for email: {}", i + 3, email);
+						return i + 3;
+					}
 				}
 			}
+			log.info("Email {} not found in the spreadsheet.", email);
+			return -1;
+		} catch (IOException e) {
+			log.error("An error occurred while finding row index by email in spreadsheetId: {}", spreadsheetId, e);
+			throw e;
 		}
-		 log.info("Email {} not found in the spreadsheet.", email);
-		return -1;
-		 } catch (IOException e) {
-	            log.error("An error occurred while finding row index by email in spreadsheetId: {}", spreadsheetId, e);
-	            throw e; 
-	        }
 	}
 
 	@Override
 	public ResponseEntity<String> update(String spreadsheetId, String email, TraineeDto dto) {
-		  log.info("Updating data in spreadsheetId: {} for email: {}", spreadsheetId, email);
+		log.info("Updating data in spreadsheetId: {} for email: {}", spreadsheetId, email);
 		wrapper.setAdminDto(dto);
 		if (email != null && dto.getBasicInfo().getEmail() == "") {
 			dto.getBasicInfo().setEmail(email);
@@ -256,12 +266,12 @@ public class RegistrationServiceImpl implements RegistrationService {
 		try {
 			int rowIndex = findRowIndexByEmail(spreadsheetId, email);
 			if (rowIndex != -1) {
-				 log.info("Found row index {} for email: {}", rowIndex, email);
+				log.info("Found row index {} for email: {}", rowIndex, email);
 				String range = traineeSheetName + rowStartRange + rowIndex + ":" + rowEndRange + rowIndex;
 				List<List<Object>> values = Arrays.asList(wrapper.extractDtoDetails(dto));
 				if (!values.isEmpty()) {
 					List<Object> modifiedValues = new ArrayList<>(values.get(0).subList(1, values.get(0).size()));
-					values.set(0, modifiedValues); 
+					values.set(0, modifiedValues);
 				}
 				ValueRange valueRange = new ValueRange();
 				valueRange.setValues(values);
@@ -270,20 +280,20 @@ public class RegistrationServiceImpl implements RegistrationService {
 				if (updated != null && !updated.isEmpty()) {
 					followUpService.updateFollowUp(spreadsheetId, email, dto);
 					cacheService.getCacheDataByEmail("sheetsData", spreadsheetId, email, dto);
-					  log.info("Updated Successfully. Email: {}", email);
+					log.info("Updated Successfully. Email: {}", email);
 					cacheService.getCacheDataByEmail("emailData", spreadsheetId, email, dto.getBasicInfo().getEmail());
 					return ResponseEntity.ok("Updated Successfully");
 				} else {
-					 log.error("Error updating data. Email: {}", email);
+					log.error("Error updating data. Email: {}", email);
 					return ResponseEntity.ok("error");
 				}
 
 			} else {
-				  log.warn("Email not found: {}", email);
+				log.warn("Email not found: {}", email);
 				return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Email not found");
 			}
 		} catch (IOException | IllegalAccessException e) {
-		    log.error("An error occurred while updating data. Email: {}", email, e);
+			log.error("An error occurred while updating data. Email: {}", email, e);
 			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("An error occurred ");
 		}
 	}
@@ -296,39 +306,52 @@ public class RegistrationServiceImpl implements RegistrationService {
 				.orElse(null);
 
 		if (trainee != null) {
-			  log.info("Details found for email: {}", email);
+			log.info("Details found for email: {}", email);
 			return ResponseEntity.ok(trainee);
 		} else {
-		     log.warn("Email not found: {}", email);
+			log.warn("Email not found: {}", email);
 			return new ResponseEntity<>("Email Not Found", HttpStatus.NOT_FOUND);
 		}
 	}
 
 	@Override
-	public ResponseEntity<List<TraineeDto>> getSearchSuggestion(String spreadsheetId, String value,
+	public ResponseEntity<List<TraineeDto>> getSearchSuggestion(String spreadsheetId, String value, String courseName,
 			HttpServletRequest request) {
 		List<TraineeDto> suggestion = new ArrayList<>();
 		if (value != null) {
 			try {
-				List<List<Object>> dataList = repo.getEmailsAndNames(spreadsheetId, value);
-				List<List<Object>> filteredData = dataList.stream().filter(list -> list.stream().anyMatch(val -> {
-					String strVal = val.toString();
-					return strVal.toLowerCase().startsWith(value.toLowerCase());
-				})).collect(Collectors.toList());
-
-				for (List<Object> list : filteredData) {
-					TraineeDto dto = wrapper.listToDto(list);
-					suggestion.add(dto);
+				System.err.println(courseName);
+				if (!courseName.equalsIgnoreCase("null")) {
+					List<List<Object>> dataList = repo.getEmailsAndNames(spreadsheetId, value).stream()
+							.filter(list -> list.get(9) != null && list.get(9).toString().equalsIgnoreCase(courseName))
+							.collect(Collectors.toList());
+					List<List<Object>> filteredData = dataList.stream().filter(list -> list.stream().anyMatch(val -> {
+						return val.toString().toLowerCase().startsWith(value.toLowerCase());
+					})).collect(Collectors.toList());
+					for (List<Object> list : filteredData) {
+						TraineeDto dto = wrapper.listToDto(list);
+						suggestion.add(dto);
+					}
+				} else {
+					List<List<Object>> dataList = repo.getEmailsAndNames(spreadsheetId, value);
+					List<List<Object>> filteredData = dataList.stream().filter(list -> list.stream().anyMatch(val -> {
+						return val.toString().toLowerCase().startsWith(value.toLowerCase());
+					})).collect(Collectors.toList());
+					for (List<Object> list : filteredData) {
+						TraineeDto dto = wrapper.listToDto(list);
+						suggestion.add(dto);
+					}
 				}
-				 log.info("Returning {} search suggestions", suggestion.size());
+
+				log.info("Returning {} search suggestions", suggestion.size());
 				return ResponseEntity.ok(suggestion);
 			} catch (IOException e) {
-				 log.error("An error occurred while getting search suggestion in spreadsheetId: {}", spreadsheetId, e);
-				return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new ArrayList<>()); 
+				log.error("An error occurred while getting search suggestion in spreadsheetId: {}", spreadsheetId, e);
+				return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new ArrayList<>());
 			}
 		}
-		 log.warn("Null value provided for search suggestion");
-		return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ArrayList<>()); 
+		log.warn("Null value provided for search suggestion");
+		return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ArrayList<>());
 	}
 
 }
