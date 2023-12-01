@@ -3,6 +3,7 @@ package com.xworkz.dream.service;
 import java.io.IOException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -75,13 +76,28 @@ public class BirthadayServiceImpl implements BirthadayService {
 		LocalDate currentDate = LocalDate.now();
 		DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 		List<String> emailsToSend = birthdayDetails.stream().filter(row -> {
-			LocalDate dob = LocalDate.parse((String) row.get(4), dateFormatter);
-			return dob.getMonth() == currentDate.getMonth() && dob.getDayOfMonth() == currentDate.getDayOfMonth();
+			if (row.size() < 5) {
+				log.warn("Row does not have enough columns: {}", row);
+				return false;
+			}
+			String birthday = (String) row.get(4);
+			if ("NA".equals(birthday)) {
+				return false; // Ignore rows with "NA" birthday
+			}
+			try {
+				LocalDate dob = LocalDate.parse((String) row.get(4), dateFormatter);
+				return dob.getMonth() == currentDate.getMonth() && dob.getDayOfMonth() == currentDate.getDayOfMonth();
+			} catch (DateTimeParseException e) {
+				log.warn("Error parsing birthday for row: {}", row);
+				return false; // Skip rows with invalid date format
+			}
 		}).map(row -> (String) row.get(2)).collect(Collectors.toList());
+		System.err.println("emailsToSend : "+emailsToSend);
 		for (String email : emailsToSend) {
 			String nameByEmail = findNameByEmail(email);
-			util.sendBirthadyEmail(email, subject, nameByEmail);
 			log.info("Sent birthday email to '{}' with name '{}'", email, nameByEmail);
+			util.sendBirthadyEmail(email, subject, nameByEmail);
+			
 		}
 	}
 
