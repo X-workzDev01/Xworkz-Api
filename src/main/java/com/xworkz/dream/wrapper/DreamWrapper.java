@@ -10,8 +10,8 @@ import org.springframework.stereotype.Component;
 
 import com.xworkz.dream.constants.FollowUp;
 import com.xworkz.dream.constants.Status;
-import com.xworkz.dream.dto.AdminDto;
 import com.xworkz.dream.dto.AttendanceDto;
+import com.xworkz.dream.dto.AuditDto;
 import com.xworkz.dream.dto.BasicInfoDto;
 import com.xworkz.dream.dto.BatchDetails;
 import com.xworkz.dream.dto.CourseDto;
@@ -83,8 +83,6 @@ public class DreamWrapper {
 			followUpDto.getBasicInfo().setContactNumber(Long.parseLong(row.get(3).toString()));
 		}
 
-		// Note: The code sets the 'registrationDate' property as a string, not a Date
-		// object.
 		if (rowSize > 4 && row.get(4) != null && !row.get(4).toString().isEmpty()) {
 			followUpDto.setRegistrationDate((String) row.get(4));
 		}
@@ -111,14 +109,38 @@ public class DreamWrapper {
 
 		if (rowSize > 10 && row.get(10) != null && !row.get(10).toString().isEmpty()) {
 			if (followUpDto.getAdminDto() == null) {
-				followUpDto.setAdminDto(new AdminDto());
+				followUpDto.setAdminDto(new AuditDto());
+			}
+			followUpDto.getAdminDto().setCreatedBy(row.get(10).toString());
+		}
+
+		if (rowSize > 6 && row.get(6) != null && !row.get(6).toString().isEmpty()) {
+			followUpDto.setCourseName((String) row.get(6));
+		}
+
+		if (rowSize > 7 && row.get(7) != null && !row.get(7).toString().isEmpty()) {
+			followUpDto.setCurrentlyFollowedBy((String) row.get(7));
+		}
+
+		if (rowSize > 8 && row.get(8) != null && !row.get(8).toString().isEmpty()) {
+			followUpDto.setCurrentStatus((String) row.get(8));
+		}
+
+		// Note: The code sets the 'callback' property as a string, not a Date object.
+		if (rowSize > 8 && row.get(9) != null && !row.get(9).toString().isEmpty()) {
+			followUpDto.setCallback((String) row.get(9));
+		}
+
+		if (rowSize > 10 && row.get(10) != null && !row.get(10).toString().isEmpty()) {
+			if (followUpDto.getAdminDto() == null) {
+				followUpDto.setAdminDto(new AuditDto());
 			}
 			followUpDto.getAdminDto().setCreatedBy(row.get(10).toString());
 		}
 
 		if (rowSize > 11 && row.get(11) != null && !row.get(11).toString().isEmpty()) {
 			if (followUpDto.getAdminDto() == null) {
-				followUpDto.setAdminDto(new AdminDto());
+				followUpDto.setAdminDto(new AuditDto());
 			}
 			followUpDto.getAdminDto().setCreatedOn(row.get(11).toString());
 		}
@@ -175,7 +197,7 @@ public class DreamWrapper {
 
 	public TraineeDto listToDto(List<Object> row) {
 		TraineeDto traineeDto = new TraineeDto(0, new BasicInfoDto(), new EducationInfoDto(), new CourseDto(),
-				new OthersDto(), new AdminDto());
+				new OthersDto(), new AuditDto());
 
 		// Assuming the list follows this order: id ,traineeName, email, contactNumber,
 		// qualification, stream,
@@ -594,7 +616,7 @@ public class DreamWrapper {
 	}
 
 	public void setAdminDto(TraineeDto dto) {
-		AdminDto admin = new AdminDto();
+		AuditDto admin = new AuditDto();
 		admin.setCreatedBy(dto.getAdminDto().getCreatedBy());
 		admin.setCreatedOn(dto.getAdminDto().getCreatedOn());
 		admin.setUpdatedBy(dto.getAdminDto().getUpdatedBy());
@@ -617,7 +639,7 @@ public class DreamWrapper {
 		sdto.setComments(statusDto.getComments());
 		sdto.setCallDuration(statusDto.getCallDuration());
 		if (statusDto.getCallBack().equals("NA")) {
-			sdto.setCallBack("1000-01-01");
+			sdto.setCallBack(LocalDate.now().plusDays(1).toString());
 		} else {
 			sdto.setCallBack(statusDto.getCallBack());
 		}

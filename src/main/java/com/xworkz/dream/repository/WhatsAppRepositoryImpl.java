@@ -10,6 +10,8 @@ import java.util.List;
 
 import javax.annotation.PostConstruct;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.Resource;
@@ -42,7 +44,9 @@ public class WhatsAppRepositoryImpl implements WhatsAppRepository {
 
 	@Autowired
 	private ResourceLoader resourceLoader;
-	
+
+	private static final Logger log = LoggerFactory.getLogger(WhatsAppRepositoryImpl.class);
+
 	@PostConstruct
 	private void setSheetsService() throws IOException, FileNotFoundException, GeneralSecurityException {
 
@@ -53,10 +57,11 @@ public class WhatsAppRepositoryImpl implements WhatsAppRepository {
 		sheetsService = new Sheets.Builder(GoogleNetHttpTransport.newTrustedTransport(), JSON_FACTORY,
 				requestInitializer).setApplicationName(applicationName).build();
 	}
-	
-	
+
 	@Override
-	public UpdateValuesResponse updateWhatsAppLink(String spreadsheetId, String range2, ValueRange valueRange) throws IOException {
+	public UpdateValuesResponse updateWhatsAppLink(String spreadsheetId, String range2, ValueRange valueRange)
+			throws IOException {
+		log.info("WhatsApp link updated successfully in spreadsheetId: {}", spreadsheetId);
 		return sheetsService.spreadsheets().values().update(spreadsheetId, range2, valueRange)
 				.setValueInputOption("RAW").execute();
 	}

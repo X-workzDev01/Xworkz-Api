@@ -28,5 +28,6 @@ public interface DreamUtil {
 
 	public boolean sms(TraineeDto dto);
 
-	public boolean sendBirthadyEmail(String traineeEmail, String subject, String name);
+	public void sendBirthadyEmail(String traineeEmail, String subject, String name);
+
 }

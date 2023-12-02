@@ -37,12 +37,13 @@ public class EnquiryServiceImpl implements EnquiryService {
 	@Autowired
 	private CacheService cacheService;
 
-	private static final Logger logger = LoggerFactory.getLogger(DreamServiceImpl.class);
+	private static final Logger log = LoggerFactory.getLogger(DreamServiceImpl.class);
 
+	@Override
 	public ResponseEntity<String> writeDataEnquiry(String spreadsheetId, TraineeDto dto, HttpServletRequest request)
 			throws MessagingException, TemplateException {
 		try {
-
+			log.info("Writing data for TraineeDto: {}", dto);
 			wrapper.setValuesForTraineeDto(dto);
 
 			List<Object> list = wrapper.extractDtoDetails(dto);
@@ -58,13 +59,13 @@ public class EnquiryServiceImpl implements EnquiryService {
 						dto.getBasicInfo().getContactNumber());
 
 			}
-			logger.info("saving birth details:", dto);
+			log.info("Saving birth details: {}", dto);
 			service.saveBirthDayInfo(spreadsheetId, dto, request);
 
 			boolean status = followUpService.addToFollowUpEnquiry(dto, spreadsheetId);
 
 			if (status) {
-				logger.info("Data written successfully to spreadsheetId and Added to Follow Up: {}", spreadsheetId);
+				log.info("Data written successfully to spreadsheetId and Added to Follow Up: {}", spreadsheetId);
 				util.sms(dto);
 				boolean sent = false;
 				if (!dto.getBasicInfo().getEmail().contains("@dummy.com")) {
@@ -80,7 +81,7 @@ public class EnquiryServiceImpl implements EnquiryService {
 			}
 			return ResponseEntity.ok("Data written successfully, not added to Follow Up");
 		} catch (Exception e) {
-			logger.error("Error processing request: " + e.getMessage(), e);
+			log.error("Error processing request: " + e.getMessage(), e);
 			return ResponseEntity.ok("Failed to process the request");
 		}
 
@@ -100,8 +101,7 @@ public class EnquiryServiceImpl implements EnquiryService {
 		try {
 			writeDataEnquiry(spreadsheetId, traineeDto, request);
 		} catch (MessagingException | TemplateException e) {
-			// TODO Auto-generated catch block
-			logger.error("Error Writing enqiry data to sheet");
+			log.error("Error Writing enquiry data to sheet: " + e.getMessage(), e);
 		}
 		return true;
 

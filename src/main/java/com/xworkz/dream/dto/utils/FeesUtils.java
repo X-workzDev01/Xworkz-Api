@@ -14,7 +14,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import com.xworkz.dream.constants.Status;
-import com.xworkz.dream.dto.AdminDto;
+import com.xworkz.dream.dto.AuditDto;
 import com.xworkz.dream.dto.BatchDetails;
 import com.xworkz.dream.dto.TraineeDto;
 import com.xworkz.dream.feesDtos.FeesDto;
@@ -115,7 +115,7 @@ public class FeesUtils {
 	}
 
 	public FeesDto setFeesDetilesDto(FeesUiDto uiDto, FeesDto feesDto, BatchDetails details) {
-		FeesDto feesDtos = new FeesDto(new FeesHistoryDto(), new AdminDto());
+		FeesDto feesDtos = new FeesDto(new FeesHistoryDto(), new AuditDto());
 
 		if (uiDto != null && uiDto.getStatus() != null
 				&& uiDto.getStatus().equalsIgnoreCase(Status.Joined.toString())) {

@@ -41,8 +41,8 @@ public class NotificationSchedulerImpl implements NotificationScheduler {
 	public void notification() {
 		log.info("Notification Schudulur is Running");
 
-		try {
-
+		try { 
+ 
 			List<Team> teamList = team.getTeam();
 			log.debug("Team list is {} ", teamList);
 			if (teamList != null) {

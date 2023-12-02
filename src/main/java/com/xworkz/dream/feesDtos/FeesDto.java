@@ -1,6 +1,6 @@
 package com.xworkz.dream.feesDtos;
 
-import com.xworkz.dream.dto.AdminDto;
+import com.xworkz.dream.dto.AuditDto;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -13,7 +13,7 @@ import lombok.ToString;
 @ToString
 @NoArgsConstructor
 @AllArgsConstructor
-public   class FeesDto {
+public class FeesDto {
 	private int id;
 	private String name;
 	private FeesHistoryDto feesHistoryDto;
@@ -24,11 +24,11 @@ public   class FeesDto {
 	private String feesStatus;
 	private String mailSendStatus;
 	private String comments;
-	private AdminDto admin;
+	private AuditDto admin;
 	private String softFlag;
 	private String courseName;
 
-	public FeesDto(FeesHistoryDto feesHistoryDto, AdminDto admin) {
+	public FeesDto(FeesHistoryDto feesHistoryDto, AuditDto admin) {
 		this.feesHistoryDto = feesHistoryDto;
 		this.admin = admin;
 	}

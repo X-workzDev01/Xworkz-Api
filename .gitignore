@@ -1,9 +1,16 @@
 HELP.md
+<<<<<<< HEAD
 .gradle/
 build/
 !gradle/wrapper/gradle-wrapper.jar
 !**/src/main/**/build/
 .settings/
+=======
+.gradle
+build/
+!gradle/wrapper/gradle-wrapper.jar
+!**/src/main/**/build/
+>>>>>>> b7d17de7bc4bc8454ac08a5b593f5e317104e184
 /*.log
 src/main/resources/META-INF/*.json
 
@@ -12,7 +19,10 @@ src/main/resources/META-INF/*.json
 .classpath
 .factorypath
 .project
+<<<<<<< HEAD
 .settings	
+=======
+>>>>>>> b7d17de7bc4bc8454ac08a5b593f5e317104e184
 .springBeans
 .sts4-cache
 build/

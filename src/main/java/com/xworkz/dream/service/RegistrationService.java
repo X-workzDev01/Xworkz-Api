@@ -27,13 +27,12 @@ public interface RegistrationService {
 
 	public List<TraineeDto> getLimitedRows(List<List<Object>> values, int startingIndex, int maxRows);
 
-	public List<TraineeDto> filterData(String spreadsheetId, String searchValue) throws IOException;
+	public List<TraineeDto> filterData(String spreadsheetId, String searchValue, String courseName) throws IOException;
 
 	public ResponseEntity<String> update(String spreadsheetId, String email, TraineeDto dto);
 
 	public TraineeDto getDetailsByEmail(String spreadsheetId, String email) throws IOException;
 
-	public ResponseEntity<List<TraineeDto>> getSearchSuggestion(String spreadsheetId, String value,
-			HttpServletRequest request);
+	public ResponseEntity<List<TraineeDto>> getSearchSuggestion(String spreadsheetId, String value, String courseName);
 
 }

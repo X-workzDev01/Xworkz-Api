@@ -8,7 +8,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
 import com.xworkz.dream.constants.SheetConstant;
-import com.xworkz.dream.dto.AdminDto;
+import com.xworkz.dream.dto.AuditDto;
 import com.xworkz.dream.dto.BatchDetails;
 import com.xworkz.dream.dto.utils.FeesUtils;
 import com.xworkz.dream.feesDtos.FeesDto;
@@ -26,7 +26,7 @@ public class FeesDetilesWrapperImpl implements FeesDetilesWrapper {
 	@Override
 	public FeesDto listToFeesDTO(List<Object> row) throws IOException {
 		FeesDto feesDto = new FeesDto(0, null, new FeesHistoryDto(), null, null, null, null, null, null, null,
-				new AdminDto(), null, null);
+				new AuditDto(), null, null);
 
 		if (validateCell(SheetConstant.COLUMN_SL_NO)) {
 			feesDto.setId(Integer.valueOf(row.get(SheetConstant.COLUMN_SL_NO.getIndex()).toString()));

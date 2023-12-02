@@ -82,9 +82,9 @@ public class UtilLocal implements DreamUtil {
 	}
 
 	@Override
-	public boolean sendBirthadyEmail(String traineeEmail, String subject, String name) {
+	public void sendBirthadyEmail(String traineeEmail, String subject, String name) {
 		// TODO Auto-generated method stub
-		return false;
+		
 	}
 
 }

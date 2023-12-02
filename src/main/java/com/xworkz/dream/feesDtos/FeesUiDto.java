@@ -1,6 +1,6 @@
 package com.xworkz.dream.feesDtos;
 
-import com.xworkz.dream.dto.AdminDto;
+import com.xworkz.dream.dto.AuditDto;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -19,7 +19,7 @@ public class FeesUiDto {
 
 	private String email;
 	private String name;
-	private AdminDto adminDto;
+	private AuditDto adminDto;
 	private String status;
 	private String transectionId;
 

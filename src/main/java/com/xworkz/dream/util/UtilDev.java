@@ -53,7 +53,7 @@ public class UtilDev implements DreamUtil {
 	@Value("${mailChimp.userName}")
 	private String chimpUserName;
 	@Autowired
-	private ChimpMailService chimpMailService;  
+	private ChimpMailService chimpMailService;
 
 	@Autowired
 	private EncryptionHelper helper;
@@ -163,12 +163,13 @@ public class UtilDev implements DreamUtil {
 	}
 
 	@Override
-	public boolean sendBirthadyEmail(String traineeEmail, String subject, String name) {
+
+	public void sendBirthadyEmail(String traineeEmail, String subject, String name) {
 		if (traineeEmail == null || name == null) {
 			logger.warn("Email or name is null");
-			return false;
+
 		}
-		return sendBirthadyEmailChimp(traineeEmail, subject, name);
+		sendBirthadyEmailChimp(traineeEmail, subject, name);
 	}
 
 	// ================================================================================================
@@ -254,7 +255,8 @@ public class UtilDev implements DreamUtil {
 		return true;
 	}
 
-	private boolean sendBirthadyEmailChimp(String traineeEmail, String subject, String name) {
+	private void sendBirthadyEmailChimp(String traineeEmail, String subject, String name) {
+
 		Context context = new Context();
 
 		context.setVariable("name", name);
@@ -265,13 +267,13 @@ public class UtilDev implements DreamUtil {
 			MimeMessageHelper messageHelper = new MimeMessageHelper(mimeMessage);
 			messageHelper.setFrom("hareeshahr.xworkz@gmail.com");
 
-			messageHelper.addBcc(new InternetAddress(traineeEmail));
+			messageHelper.setTo(traineeEmail);
 
 			messageHelper.setSubject(subject);
 			messageHelper.setText(content, true);
 		};
 
-		return chimpMailService.validateAndSendMailByMailIdDev(messagePreparator);
+		chimpMailService.validateAndSendMail(messagePreparator);
 	}
 
 }

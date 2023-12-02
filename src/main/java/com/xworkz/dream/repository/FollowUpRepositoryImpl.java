@@ -53,7 +53,7 @@ public class FollowUpRepositoryImpl implements FollowUpRepository {
 
 	@Autowired
 	private ResourceLoader resourceLoader;
-	private Logger log = LoggerFactory.getLogger(FollowUpRepositoryImpl.class);
+	private static final Logger log = LoggerFactory.getLogger(FollowUpRepositoryImpl.class);
 
 	@PostConstruct
 	private void setSheetsService() throws IOException, FileNotFoundException, GeneralSecurityException {
@@ -70,7 +70,7 @@ public class FollowUpRepositoryImpl implements FollowUpRepository {
 
 	@Override
 	public boolean saveToFollowUp(String spreadsheetId, List<Object> row) throws IOException {
-		log.info("FollowUp Registration Running Repository {} ",row);
+		log.info("FollowUp Registration Running Repository {} ", row);
 		List<List<Object>> list = new ArrayList<List<Object>>();
 		// Add an empty string as a placeholder for the A column
 		List<Object> rowData = new ArrayList<>();
@@ -80,6 +80,7 @@ public class FollowUpRepositoryImpl implements FollowUpRepository {
 		ValueRange body = new ValueRange().setValues(list);
 		sheetsService.spreadsheets().values().append(spreadsheetId, followUpRange, body)
 				.setValueInputOption("USER_ENTERED").execute();
+		log.info("FollowUp Registration Successful for spreadsheetId: {}", spreadsheetId);
 		return true;
 	}
 
@@ -95,6 +96,7 @@ public class FollowUpRepositoryImpl implements FollowUpRepository {
 		ValueRange body = new ValueRange().setValues(list);
 		sheetsService.spreadsheets().values().append(spreadsheetId, followUpStatus, body)
 				.setValueInputOption("USER_ENTERED").execute();
+		log.info("FollowUp status updated successfully for spreadsheetId: {}", spreadsheetId);
 		return true;
 	}
 
@@ -102,7 +104,7 @@ public class FollowUpRepositoryImpl implements FollowUpRepository {
 //	@Cacheable(value = "followUpDetails", key = "#spreadsheetId", unless = "#result == null")
 	public List<List<Object>> getFollowUpDetails(String spreadsheetId) throws IOException {
 		ValueRange response = sheetsService.spreadsheets().values().get(spreadsheetId, followUpRange).execute();
-
+		log.info("FollowUp details retrieved successfully for spreadsheetId: {}", spreadsheetId);
 		return response.getValues();
 	}
 
@@ -116,32 +118,35 @@ public class FollowUpRepositoryImpl implements FollowUpRepository {
 		ValueRange body = new ValueRange().setValues(list);
 		sheetsService.spreadsheets().values().update(spreadsheetId, currentFollowRange, body)
 				.setValueInputOption("USER_ENTERED").execute();
+		log.info("Current FollowUp status updated successfully for spreadsheetId: {}", spreadsheetId);
 		return true;
 	}
 
 	@Override
 	public ValueRange getEmailList(String spreadsheetId) throws IOException {
 		ValueRange response = sheetsService.spreadsheets().values().get(spreadsheetId, followUpEmailRange).execute();
+		log.info("Email list retrieved successfully for spreadsheetId: {}", spreadsheetId);
 		return response;
 	}
 
 	@Override
 	public ValueRange getStatusId(String spreadsheetId) throws IOException {
 		ValueRange response = sheetsService.spreadsheets().values().get(spreadsheetId, followUpStatusIdRange).execute();
+		log.info("Status ID retrieved successfully for spreadsheetId: {}", spreadsheetId);
 		return response;
 	}
 
 	@Override
 	public List<List<Object>> getEmailsAndNames(String spreadsheetId, String value) throws IOException {
 		ValueRange response = sheetsService.spreadsheets().values().get(spreadsheetId, emailAndNameRange).execute();
-
+		log.info("Emails and Names retrieved successfully for spreadsheetId: {}", spreadsheetId);
 		return response.getValues();
 	}
 
 	@Override
 //	@Cacheable(value = "followUpStatusDetails", key = "#spreadsheetId", unless = "#result == null")
 	public List<List<Object>> getFollowUpStatusDetails(String spreadsheetId) throws IOException {
-
+		log.info("FollowUp Status Details retrieved successfully for spreadsheetId: {}", spreadsheetId);
 		ValueRange response = sheetsService.spreadsheets().values().get(spreadsheetId, followUpStatus).execute();
 		return response.getValues();
 	}
@@ -150,12 +155,14 @@ public class FollowUpRepositoryImpl implements FollowUpRepository {
 //	@Cacheable(value = "followUpDetails", key = "#spreadsheetId", unless = "#result == null")
 	public List<List<Object>> getFollowUpDetailsByid(String spreadsheetId) throws IOException {
 		ValueRange response = sheetsService.spreadsheets().values().get(spreadsheetId, followUpRange).execute();
+		log.info("FollowUp Details by ID retrieved successfully for spreadsheetId: {}", spreadsheetId);
 		return response.getValues();
 	}
 
 	@Override
 	public List<List<Object>> getFollowupStatusByDate(String spreadsheetId) throws IOException {
 		ValueRange response = sheetsService.spreadsheets().values().get(spreadsheetId, followUpRange).execute();
+		log.info("FollowUp Status by Date retrieved successfully for spreadsheetId: {}", spreadsheetId);
 		return response.getValues();
 	}
 
@@ -164,7 +171,7 @@ public class FollowUpRepositoryImpl implements FollowUpRepository {
 	// "#result == null")
 	public UpdateValuesResponse updateFollow(String spreadsheetId, String range2, ValueRange valueRange)
 			throws IOException {
-
+		log.info("FollowUp updated successfully for spreadsheetId: {}", spreadsheetId);
 		return sheetsService.spreadsheets().values().update(spreadsheetId, range2, valueRange)
 				.setValueInputOption("RAW").execute();
 	}

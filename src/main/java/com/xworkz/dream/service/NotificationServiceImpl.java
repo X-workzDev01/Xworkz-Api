@@ -31,10 +31,11 @@ public class NotificationServiceImpl implements NotificationService {
 	@Autowired
 	private DreamUtil util;
 
-	private Logger log = LoggerFactory.getLogger(NotificationServiceImpl.class);
+	private static final Logger log = LoggerFactory.getLogger(NotificationServiceImpl.class);
 
 	public SheetNotificationDto notification(List<Team> teamList, String email) throws IOException {
-		log.info("Notificaton service start email is  {} ", email);
+
+		log.info("Notification service start for email: {}", email);
 		StatusList list = new StatusList();
 		List<String> statusCheck = list.getStatusCheck();
 
@@ -75,6 +76,7 @@ public class NotificationServiceImpl implements NotificationService {
 								"After Checking All notification condition result {}---------------------------------- {} ================{}",
 								yesterday, today, afterFoureDay);
 						SheetNotificationDto dto = new SheetNotificationDto(yesterday, today, afterFoureDay);
+
 						return dto;
 
 					}
@@ -82,6 +84,7 @@ public class NotificationServiceImpl implements NotificationService {
 					listOfData.stream().forEach(e -> {
 						FollowUpDto dto = wrapper.listToFollowUpDTO(e);
 						if (dto.getCallback() != null && dto.getCallback().toString() != "NA") {
+
 							if (LocalDateTime.now()
 									.isAfter(LocalDateTime.of((LocalDate.parse(dto.getCallback())), time))
 									&& LocalDateTime.now().isBefore(LocalDateTime
@@ -109,7 +112,7 @@ public class NotificationServiceImpl implements NotificationService {
 				}
 
 			}
-
+ 
 		}
 		return notificationDtos;
 

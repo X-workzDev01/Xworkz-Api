@@ -6,7 +6,6 @@ spring:
     template-loader-path: classpath:/templates/
 
 sheets:
- 
   appName: Dream Api
   range: A3:AC
   emailRange: C3:C
@@ -22,10 +21,10 @@ sheets:
   followUprowStartRange: B2
   followUprowEndRange: O
   followUpEmailRange: followUp!C2:C
-  idRange: xworkzApi!A3:A  
+  idRange: xworkzApi!A3:A   
   followUpRowCurrentStartRange: G
   followUpRowCurrentEndRange: H
-  emailAndNameRange: xworkzApi!A2:C
+  emailAndNameRange: xworkzApi!A2:J
   batchDetailsSheetName: batchDetails!
   batchDetailsStartRange: A2
   batchDetailsEndRange: I
@@ -54,6 +53,15 @@ sheets:
   getFeesDetilesfollowupRange : FeesFollowup!A2:J
   feesEmailRange: FeesDetiles!C2:C
 
+
+  clientInformationRange: clientDetails!B2:N
+  clientInformationReadRange: clientDetails!A2:N
+
+  clientHrInformationRange: clientHRdetails!B2:K
+  clientHrInformationReadRange: clientHRdetails!A2:K
+
+  hrFollowUpInformationRange: ClientHRFollowUpStatus!B2:I
+  hrFollowUpInformationReadRange: ClientHRFollowUpStatus!A2:I
 
 mailChimp:
   userName: 7FzbzzHIVQSVJVz5r4n/bGa/lhNWJCXUq6oqBxBCTYQ=

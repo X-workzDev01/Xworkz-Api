@@ -45,6 +45,7 @@ public class FeesController {
 		log.info("Running save Fees detiles controller ");
 		return ResponseEntity.ok(feesService.writeFeesDetiles(dto));
 
+
 	}
 
 	@ApiOperation("Update feesDetiles")
