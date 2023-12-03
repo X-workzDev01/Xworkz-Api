@@ -33,7 +33,8 @@ public class FeesServiceImpl implements FeesService {
 
 	@Override
 	public String writeFeesDetiles(FeesUiDto dto) throws IOException, IllegalAccessException {
-		log.info("Running service writeFeesDiteles ");
+		log.info("Running service writeFeesDiteles " + dto);
+
 		FeesDto feesDto = feesUtils.feesDtosetValues(dto);
 		List<Object> list = util.extractDtoDetails(feesDto);
 		boolean write = feesRepository.writeFeesDetiles(list);

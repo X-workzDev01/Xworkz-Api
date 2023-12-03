@@ -82,7 +82,8 @@ public class FeesUtils {
 		} else if (courseName.equals("null") && date.equals("null") && !paymentMode.equals("null")) {
 			log.info("Running filter By Fees Status");
 			List<FeesDto> listDtos = convertingListToDto.stream()
-					.filter(items -> items.getFeesStatus().equals(paymentMode)).collect(Collectors.toList());
+					.filter(items -> items.getFeesHistoryDto().getPaymentMode().equalsIgnoreCase(paymentMode))
+					.collect(Collectors.toList());
 			List<FeesDto> listDto = listDtos.stream().skip(Integer.parseInt(minIndex)).limit(Integer.parseInt(maxIndex))
 					.sorted(Comparator.comparing(FeesDto::getId).reversed()).collect(Collectors.toList());
 			return new SheetFeesDetiles(listDto, listDtos.size());
