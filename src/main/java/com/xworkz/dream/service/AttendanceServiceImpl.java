@@ -206,14 +206,12 @@ public class AttendanceServiceImpl implements AttendanceService {
 		if (attendanceList != null) {
 			List<List<Object>> filter = attendanceList.stream().filter(e -> e.contains(batch))
 					.collect(Collectors.toList());
-			System.err.println("ffffffffffffffffffffffffffffffff" + filter);
 			
 
 			List<AttendanceDto> dtos = this.getLimitedRows(filter, startIndex, maxRows);
 
 			AttadanceSheetDto sheetDto = new AttadanceSheetDto(dtos, filter.size());
 			logger.debug("Dto is  attandance :{} ", sheetDto);
-			System.err.println("ffffffffffffffffffffffffffffffff" + sheetDto);
 
 			return ResponseEntity.ok(sheetDto);
 		}

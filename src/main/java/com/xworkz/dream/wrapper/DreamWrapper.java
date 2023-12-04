@@ -10,8 +10,10 @@ import org.springframework.stereotype.Component;
 
 import com.xworkz.dream.constants.FollowUp;
 import com.xworkz.dream.constants.Status;
+
 import com.xworkz.dream.dto.AuditDto;
 import com.xworkz.dream.dto.AttendanceDto;
+import com.xworkz.dream.dto.AuditDto;
 import com.xworkz.dream.dto.BasicInfoDto;
 import com.xworkz.dream.dto.BatchDetails;
 import com.xworkz.dream.dto.CourseDto;
@@ -62,11 +64,12 @@ public class DreamWrapper {
 	}
 
 	public FollowUpDto listToFollowUpDTO(List<Object> row) {
-		// Create an instance of FollowUpDto with default values
-		FollowUpDto followUpDto = new FollowUpDto(0, new BasicInfoDto(), null, null, null, null, null, null, null);
+		FollowUpDto followUpDto = new FollowUpDto(0, new BasicInfoDto(), null, null, null, null, null, null, null,
+				null);
 		int rowSize = row.size();
+		System.err.println(row);
 
-		// Set FollowUpDto's properties based on the elements in the input list
+
 		if (rowSize > 0 && row.get(0) != null && !row.get(0).toString().isEmpty()) {
 			followUpDto.setId(Integer.valueOf(row.get(0).toString()));
 		}
@@ -83,8 +86,7 @@ public class DreamWrapper {
 			followUpDto.getBasicInfo().setContactNumber(Long.parseLong(row.get(3).toString()));
 		}
 
-		// Note: The code sets the 'registrationDate' property as a string, not a Date
-		// object.
+
 		if (rowSize > 4 && row.get(4) != null && !row.get(4).toString().isEmpty()) {
 			followUpDto.setRegistrationDate((String) row.get(4));
 		}
@@ -93,6 +95,66 @@ public class DreamWrapper {
 			followUpDto.setJoiningDate((String) row.get(5));
 		}
 
+		if (rowSize > 6 && row.get(6) != null && !row.get(6).toString().isEmpty()) {
+			followUpDto.setCourseName((String) row.get(6));
+		}
+
+		if (rowSize > 7 && row.get(7) != null && !row.get(7).toString().isEmpty()) {
+			followUpDto.setCurrentlyFollowedBy((String) row.get(7));
+		}
+
+		if (rowSize > 8 && row.get(8) != null && !row.get(8).toString().isEmpty()) {
+			followUpDto.setCurrentStatus((String) row.get(8));
+		}
+
+
+		if (rowSize > 8 && row.get(9) != null && !row.get(9).toString().isEmpty()) {
+			followUpDto.setCallback((String) row.get(9));
+		}
+
+		if (rowSize > 10 && row.get(10) != null && !row.get(10).toString().isEmpty()) {
+			if (followUpDto.getAdminDto() == null) {
+				followUpDto.setAdminDto(new AuditDto());
+			}
+			followUpDto.getAdminDto().setCreatedBy(row.get(10).toString());
+		}
+
+		if (rowSize > 6 && row.get(6) != null && !row.get(6).toString().isEmpty()) {
+			followUpDto.setCourseName((String) row.get(6));
+		}
+
+		if (rowSize > 7 && row.get(7) != null && !row.get(7).toString().isEmpty()) {
+			followUpDto.setCurrentlyFollowedBy((String) row.get(7));
+		}
+
+		if (rowSize > 8 && row.get(8) != null && !row.get(8).toString().isEmpty()) {
+			followUpDto.setCurrentStatus((String) row.get(8));
+		}
+
+		// Note: The code sets the 'callback' property as a string, not a Date object.
+		if (rowSize > 8 && row.get(9) != null && !row.get(9).toString().isEmpty()) {
+			followUpDto.setCallback((String) row.get(9));
+		}
+
+		if (rowSize > 10 && row.get(10) != null && !row.get(10).toString().isEmpty()) {
+			if (followUpDto.getAdminDto() == null) {
+				followUpDto.setAdminDto(new AuditDto());
+			}
+			followUpDto.getAdminDto().setCreatedBy(row.get(10).toString());
+		}
+
+		if (rowSize > 11 && row.get(11) != null && !row.get(11).toString().isEmpty()) {
+			if (followUpDto.getAdminDto() == null) {
+				followUpDto.setAdminDto(new AuditDto());
+			}
+			followUpDto.getAdminDto().setCreatedOn(row.get(11).toString());
+		}
+		if (rowSize > 14 && row.get(14) != null && !row.get(14).toString().isEmpty()) {
+			followUpDto.setFlag((String) row.get(14));
+		}
+
+		return followUpDto;
+	}
 
 		if (rowSize > 6 && row.get(6) != null && !row.get(6).toString().isEmpty()) {
 			followUpDto.setCourseName((String) row.get(6));
@@ -302,22 +364,6 @@ public class DreamWrapper {
 
 	}
 
-//	public List<Object> followUpToList(FollowUpDto dto){
-//		
-//		List<Object> row = new ArrayList<>();
-//		row.add(dto.getId());
-//		row.add(dto.getBasicInfo().getTraineeName());
-//		row.add(dto.getBasicInfo().getEmail());
-//		row.add(dto.getBasicInfo().getContactNumber());
-//		row.add(dto.getRegistrationDate());
-//		row.add(dto.getCourseName());
-//		row.add(dto.getJoiningDate());
-//		row.add(dto.getCurrentlyFollowedBy());
-//		row.add(dto.getCurrentStatus());
-//		
-//		return row;
-//		
-//	}
 	public List<Object> extractDtoDetails(Object dto) throws IllegalAccessException {
 		List<Object> detailsList = new ArrayList<>();
 
@@ -351,7 +397,7 @@ public class DreamWrapper {
 		row.add(dto.getId());
 		row.add(dto.getCourseName());
 		row.add(dto.getTrainerName());
-		row.add(dto.getStartTime());
+		row.add(dto.getStartDate());
 		row.add(dto.getBatchType());
 		row.add(dto.getTiming());
 		row.add(dto.getBranch());
@@ -363,7 +409,7 @@ public class DreamWrapper {
 
 	public BatchDetails batchDetailsToDto(List<Object> row) {
 
-		BatchDetails details = new BatchDetails(null, null, null, null, null, null, null, null, null);
+		BatchDetails details = new BatchDetails(null, null, null, null, null, null, null, null, null, null);
 		int rowSize = row.size();
 		if (rowSize > 0 && row.get(0) != null && !row.get(0).toString().isEmpty()) {
 			details.setId(Integer.valueOf(row.get(0).toString()));
@@ -375,7 +421,7 @@ public class DreamWrapper {
 			details.setTrainerName(String.valueOf(row.get(2).toString()));
 		}
 		if (rowSize > 3 && row.get(3) != null && !row.get(3).toString().isEmpty()) {
-			details.setStartTime(String.valueOf(row.get(3).toString()));
+			details.setStartDate(String.valueOf(row.get(3).toString()));
 		}
 		if (rowSize > 4 && row.get(4) != null && !row.get(4).toString().isEmpty()) {
 			details.setBatchType(String.valueOf(row.get(4).toString()));
@@ -391,6 +437,9 @@ public class DreamWrapper {
 		}
 		if (rowSize > 8 && row.get(8) != null && !row.get(8).toString().isEmpty()) {
 			details.setWhatsAppLink(String.valueOf(row.get(8).toString()));
+		}
+		if (rowSize > 9 && row.get(9) != null && !row.get(9).toString().isEmpty()) {
+			details.setTotalAmount(Long.valueOf(row.get(9).toString()));
 		}
 
 		return details;

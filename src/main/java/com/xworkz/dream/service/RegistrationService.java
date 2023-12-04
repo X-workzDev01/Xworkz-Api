@@ -31,10 +31,9 @@ public interface RegistrationService {
 
 	public ResponseEntity<String> update(String spreadsheetId, String email, TraineeDto dto);
 
-	public ResponseEntity<?> getDetailsByEmail(String spreadsheetId, String email, HttpServletRequest request)
-			throws IOException;
+	public TraineeDto getDetailsByEmail(String spreadsheetId, String email) throws IOException;
 
-	public ResponseEntity<List<TraineeDto>> getSearchSuggestion(String spreadsheetId, String value,String courseName,
-			HttpServletRequest request);
+	public ResponseEntity<List<TraineeDto>> getSearchSuggestion(String spreadsheetId, String value, String courseName);
+
 
 }

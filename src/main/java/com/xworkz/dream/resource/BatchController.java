@@ -37,6 +37,7 @@ public class BatchController {
 		return service.getTraineeDetailsByCourse(spreadsheetId, courseName);
 	}
 
+
 	@GetMapping("/getCourseDetails")
 	public ResponseEntity<BatchDetails> getBatchDetails(@RequestHeader String spreadsheetId,
 			@RequestParam String courseName) throws IOException {

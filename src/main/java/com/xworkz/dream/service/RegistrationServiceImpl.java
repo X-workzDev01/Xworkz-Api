@@ -299,24 +299,24 @@ public class RegistrationServiceImpl implements RegistrationService {
 	}
 
 	@Override
-	public ResponseEntity<?> getDetailsByEmail(String spreadsheetId, String email, HttpServletRequest request)
+	public TraineeDto getDetailsByEmail(String spreadsheetId, String email)
 			throws IOException {
 		List<List<Object>> data = repo.readData(spreadsheetId);
 		TraineeDto trainee = data.stream().filter(list -> list.contains(email)).findFirst().map(wrapper::listToDto)
 				.orElse(null);
 
 		if (trainee != null) {
-			log.info("Details found for email: {}", email);
-			return ResponseEntity.ok(trainee);
+			return trainee;
 		} else {
-			log.warn("Email not found: {}", email);
-			return new ResponseEntity<>("Email Not Found", HttpStatus.NOT_FOUND);
+			return null;
+
+
 		}
 	}
 
 	@Override
-	public ResponseEntity<List<TraineeDto>> getSearchSuggestion(String spreadsheetId, String value, String courseName,
-			HttpServletRequest request) {
+	public ResponseEntity<List<TraineeDto>> getSearchSuggestion(String spreadsheetId, String value, String courseName) {
+
 		List<TraineeDto> suggestion = new ArrayList<>();
 		if (value != null) {
 			try {

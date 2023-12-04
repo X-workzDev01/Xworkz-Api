@@ -3,7 +3,6 @@ package com.xworkz.dream.service;
 import java.io.IOException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -27,7 +26,8 @@ import org.springframework.stereotype.Service;
 import com.google.api.services.sheets.v4.model.UpdateValuesResponse;
 import com.google.api.services.sheets.v4.model.ValueRange;
 import com.xworkz.dream.constants.Status;
-import com.xworkz.dream.dto.AdminDto;
+import com.xworkz.dream.dto.AuditDto;
+
 import com.xworkz.dream.dto.FollowUpDataDto;
 import com.xworkz.dream.dto.FollowUpDto;
 import com.xworkz.dream.dto.StatusDto;
@@ -214,8 +214,9 @@ public class FollowUpServiceImpl implements FollowUpService {
 
 		log.info("Setting follow-up DTO. SpreadsheetId: {}, Email: {}", spreadsheetId,
 				followUpDto.getBasicInfo().getEmail());
-		AdminDto existingAdminDto = followUpDto.getAdminDto();
-		AdminDto adminDto = new AdminDto();
+		AuditDto existingAdminDto = followUpDto.getAdminDto();
+		AuditDto adminDto = new AuditDto();
+
 
 		if (existingAdminDto != null) {
 			adminDto.setCreatedBy(existingAdminDto.getCreatedBy());
@@ -232,10 +233,18 @@ public class FollowUpServiceImpl implements FollowUpService {
 		adminDto.setUpdatedBy(currentlyFollowedBy);
 		adminDto.setUpdatedOn(LocalDateTime.now().toString());
 		if (callBack != null && !callBack.equals("NA")) {
-			followUpDto.setCallback(callBack);
+			if (LocalDate.now().isEqual(LocalDate.parse(callBack))) {
+				followUpDto.setCallback(callBack);
+				followUpDto.setFlag("InActive");
+
+			} else {
+				followUpDto.setCallback(callBack);
+			}
+
+
 		}
 		if (callBack != null && callBack.equals("NA")) {
-			followUpDto.setCallback(LocalDateTime.of(LocalDate.now(), LocalTime.now()).plusDays(1).toString());
+			followUpDto.setCallback(LocalDate.now().toString());
 		}
 		followUpDto.setAdminDto(adminDto);
 		followUpDto.setCourseName("NA");
@@ -248,6 +257,7 @@ public class FollowUpServiceImpl implements FollowUpService {
 		}
 		ValueRange valueRange = new ValueRange();
 		valueRange.setValues(values);
+		System.err.println(values + "                                " + range);
 		UpdateValuesResponse updated = repo.updateFollow(spreadsheetId, range, valueRange);
 		cacheService.updateCacheFollowUp("followUpDetails", spreadsheetId, followUpDto.getBasicInfo().getEmail(),
 				followUpDto);

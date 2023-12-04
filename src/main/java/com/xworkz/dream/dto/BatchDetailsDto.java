@@ -17,5 +17,7 @@ public class BatchDetailsDto {
 	private String startTime;
 	private String branchName;
 	private String batchStatus;
+	private String whatsAppLink;
+	private Long totalAmount;
 
 }

@@ -11,6 +11,9 @@ src/main/resources/META-INF/*.json
 .classpath
 .factorypath
 .project
+
+.settings	
+
 .springBeans
 .sts4-cache
 build/

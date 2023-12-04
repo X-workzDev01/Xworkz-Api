@@ -83,19 +83,18 @@ public class BatchServiceImpl implements BatchService {
 	}
 
 	@Override
-	public ResponseEntity<BatchDetails> getBatchDetailsByCourseName(String spreadsheetId, String courseName)
-			throws IOException {
+	public BatchDetails getBatchDetailsByCourseName(String spreadsheetId, String courseName) throws IOException {
 		List<List<Object>> detailsByCourseName = repository.getCourseDetails(spreadsheetId);
 		batch = null;
-
 		List<List<Object>> filter = detailsByCourseName.stream()
 				.filter(e -> e.contains(courseName) && e.contains("Active")).collect(Collectors.toList());
 		filter.stream().forEach(item -> {
 			this.batch = wrapper.batchDetailsToDto(item);
 		});
 		if (batch != null) {
-			log.info("Batch details retrieved successfully for course: {}", courseName);
-			return ResponseEntity.ok(this.batch);
+			return batch;
+
+
 		}
 		log.info("No batch details found for course: {}", courseName);
 		return null;

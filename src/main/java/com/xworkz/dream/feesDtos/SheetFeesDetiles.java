@@ -1,4 +1,4 @@
-package com.xworkz.dream.dto;
+package com.xworkz.dream.feesDtos;
 
 import java.util.List;
 
@@ -8,14 +8,13 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 
-@ToString
 @Getter
 @Setter
+@ToString
 @NoArgsConstructor
 @AllArgsConstructor
-public class SheetNotificationDto {
-	private List<FollowUpDto> yesterdayCandidates;
-	private List<FollowUpDto> todayCandidates;
-	private List<FollowUpDto> afterFourDayCandidates;
+public class SheetFeesDetiles {
+	private List<FeesDto> listOfFeesDto;
+	private int size;
 
 }

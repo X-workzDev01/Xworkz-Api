@@ -2,7 +2,6 @@ package com.xworkz.dream.configuration;
 
 import java.util.ArrayList;
 import java.util.List;
-
 import org.springframework.cache.Cache;
 import org.springframework.cache.CacheManager;
 import org.springframework.cache.annotation.EnableCaching;
@@ -30,9 +29,11 @@ public class CacheConfig {
 		caches.add(new ConcurrentMapCache("batchDetails"));
 		caches.add(new ConcurrentMapCache("followUpDetails")); 
 		caches.add(new ConcurrentMapCache("followUpStatusDetails"));
+
 		caches.add(new ConcurrentMapCache("clientInformation"));
 
 		cacheManager.setCaches(caches);
 		return cacheManager;
 	}
+
 }
