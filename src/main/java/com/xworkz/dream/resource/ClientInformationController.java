@@ -61,4 +61,16 @@ public class ClientInformationController {
 		log.info("get client details by id {}:", companyId);
 		return clientInformationService.getClientDtoById(companyId);
 	}
+
+	@ApiOperation("To check the email Id of Company")
+	@GetMapping("/checkcompanyemail")
+	public String checkEmail(@RequestParam String companyEmail) throws IOException {
+		log.info("checking company Email exist of not email is:{}", companyEmail);
+		if (clientInformationService.checkEmail(companyEmail)) {
+			return "Company Email Already Exists";
+		} else {
+			return "Company Email Not Exists";
+		}
+	}
+
 }

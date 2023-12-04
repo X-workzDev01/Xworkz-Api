@@ -18,6 +18,7 @@ public class ClientCacheServiceImpl implements ClientCacheService {
 
 	private static final Logger log = LoggerFactory.getLogger(ClientCacheServiceImpl.class);
 
+	@SuppressWarnings("unchecked")
 	@Override
 	public void addNewDtoToCache(String cacheName, String key, List<Object> data) {
 		
@@ -37,6 +38,7 @@ public class ClientCacheServiceImpl implements ClientCacheService {
 		}
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
 	public void addHRDetailsToCache(String cacheName, String key, List<Object> data) {
 
