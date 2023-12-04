@@ -6,4 +6,5 @@ public enum Status {
 	Wrong_number, Not_reachable, Not_joining, Joined_other_institute, Higher_studies, Let_us_know, Need_online, Joined,
 	FollowUpComplete, FollowUpInComplete, Drop_After_Placement, Drop_After_Course;
 
+
 }

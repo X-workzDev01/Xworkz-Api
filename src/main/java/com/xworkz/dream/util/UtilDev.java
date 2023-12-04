@@ -165,11 +165,11 @@ public class UtilDev implements DreamUtil {
 	@Override
 
 	public void sendBirthadyEmail(String traineeEmail, String subject, String name) {
-		if (traineeEmail == null || name == null) {
+		if(traineeEmail ==null || name ==null) {
 			logger.warn("Email or name is null");
-
+			
 		}
-		sendBirthadyEmailChimp(traineeEmail, subject, name);
+		 sendBirthadyEmailChimp(traineeEmail, subject, name);
 	}
 
 	// ================================================================================================
@@ -255,8 +255,8 @@ public class UtilDev implements DreamUtil {
 		return true;
 	}
 
+	
 	private void sendBirthadyEmailChimp(String traineeEmail, String subject, String name) {
-
 		Context context = new Context();
 
 		context.setVariable("name", name);
@@ -273,7 +273,8 @@ public class UtilDev implements DreamUtil {
 			messageHelper.setText(content, true);
 		};
 
-		chimpMailService.validateAndSendMail(messagePreparator);
+
+		 chimpMailService.validateAndSendMail(messagePreparator);
 	}
 
 }

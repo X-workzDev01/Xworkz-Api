@@ -67,6 +67,7 @@ public class RegistrationController {
 		log.info("Getting suggestions for search: {}", value);
 		return service.getSearchSuggestion(spreadsheetId, value, courseName);
 
+
 	}
 
 	@ApiOperation(value = "To register Check whether contact number already exist while registering")
@@ -116,6 +117,7 @@ public class RegistrationController {
 			throws IOException {
 		log.info("Getting details by email - SpreadsheetId: {}, Email: {}", spreadsheetId, email);
 		return ResponseEntity.ok(service.getDetailsByEmail(spreadsheetId, email));
+
 	}
 
 }

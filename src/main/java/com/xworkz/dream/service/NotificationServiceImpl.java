@@ -75,6 +75,7 @@ public class NotificationServiceImpl implements NotificationService {
 						log.info(
 								"After Checking All notification condition result {}---------------------------------- {} ================{}",
 								yesterday, today, afterFoureDay);
+
 						SheetNotificationDto dto = new SheetNotificationDto(yesterday, today, afterFoureDay);
 
 						return dto;
@@ -84,6 +85,7 @@ public class NotificationServiceImpl implements NotificationService {
 					listOfData.stream().forEach(e -> {
 						FollowUpDto dto = wrapper.listToFollowUpDTO(e);
 						if (dto.getCallback() != null && dto.getCallback().toString() != "NA") {
+
 
 							if (LocalDateTime.now()
 									.isAfter(LocalDateTime.of((LocalDate.parse(dto.getCallback())), time))
