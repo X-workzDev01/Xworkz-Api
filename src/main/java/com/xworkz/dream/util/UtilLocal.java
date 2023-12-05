@@ -13,7 +13,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
 
-import com.xworkz.dream.dto.StatusDto;
+import com.xworkz.dream.dto.FollowUpDto;
 import com.xworkz.dream.dto.TraineeDto;
 import com.xworkz.dream.dto.utils.Team;
 
@@ -57,7 +57,7 @@ public class UtilLocal implements DreamUtil {
 	}
 
 	@Override
-	public boolean sendNotificationToEmail(List<Team> teamList, List<StatusDto> notificationStatus) {
+	public boolean sendNotificationToEmail(List<Team> teamList, List<FollowUpDto> notificationStatus) {
 		// TODO Auto-generated method stub
 		return false;
 	}
@@ -82,9 +82,9 @@ public class UtilLocal implements DreamUtil {
 	}
 
 	@Override
-	public boolean sendBirthadyEmail(String traineeEmail, String subject, String name) {
+	public void sendBirthadyEmail(String traineeEmail, String subject, String name) {
 		// TODO Auto-generated method stub
-		return false;
+		
 	}
 
 }

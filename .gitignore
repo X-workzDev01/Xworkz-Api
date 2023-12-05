@@ -2,11 +2,12 @@ HELP.md
 .gradle
 build/
 !gradle/wrapper/gradle-wrapper.jar
-!**/src/main/**/build/
 !**/src/test/**/build/
 !**/src/main/**/META-INF/
 .settings/
 !**/src/main/resources/META-INF/
+/*.log
+src/main/resources/META-INF/*.json
 
 ### STS ###
 .apt_generated
@@ -16,6 +17,7 @@ build/
 .settings	
 .springBeans
 .sts4-cache
+build/
 bin/
 !**/src/main/**/bin/
 !**/src/test/**/bin/

@@ -11,7 +11,8 @@ import lombok.ToString;
 @Getter
 @Setter
 @NoArgsConstructor
-@AllArgsConstructor
+@AllArgsConstructor 
+
 public class AuditDto {
 
 	private String createdBy;

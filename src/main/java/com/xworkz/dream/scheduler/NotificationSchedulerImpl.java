@@ -1,30 +1,18 @@
 package com.xworkz.dream.scheduler;
 
 import java.io.IOException;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.LocalTime;
-import java.util.ArrayList;
 import java.util.List;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.ResponseEntity;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 import com.xworkz.dream.dto.SheetNotificationDto;
-import com.xworkz.dream.dto.StatusDto;
-import com.xworkz.dream.dto.utils.StatusList;
 import com.xworkz.dream.dto.utils.Team;
-import com.xworkz.dream.repository.NotificationRepository;
 import com.xworkz.dream.service.NotificationService;
 import com.xworkz.dream.userYml.TeamList;
-import com.xworkz.dream.userYml.TeamListImpl;
-import com.xworkz.dream.util.DreamUtil;
-import com.xworkz.dream.wrapper.DreamWrapper;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -53,8 +41,8 @@ public class NotificationSchedulerImpl implements NotificationScheduler {
 	public void notification() {
 		log.info("Notification Schudulur is Running");
 
-		try {
-
+		try { 
+ 
 			List<Team> teamList = team.getTeam();
 			log.debug("Team list is {} ", teamList);
 			if (teamList != null) {

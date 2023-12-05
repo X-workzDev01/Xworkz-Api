@@ -18,8 +18,7 @@ public interface BatchService {
 
 	public List<TraineeDto> getTraineeDetailsByCourse(String spreadsheetId, String courseName) throws IOException;
 
-	public ResponseEntity<BatchDetails> getBatchDetailsByCourseName(String spreadsheetId, String courseName)
-			throws IOException;
+	public BatchDetails getBatchDetailsByCourseName(String spreadsheetId, String courseName) throws IOException;
 
 	public BatchDetails getBatchDetailsListByCourseName(String spreadsheetId, String courseName) throws IOException;
 

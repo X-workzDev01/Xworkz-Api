@@ -10,6 +10,8 @@ import java.util.List;
 
 import javax.annotation.PostConstruct;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.Resource;
@@ -28,8 +30,8 @@ import com.google.auth.oauth2.GoogleCredentials;
 
 @Repository
 public class NotificationRepositoryImpl implements NotificationRepository {
-	@Value("${sheets.followUpStatus}")
-	private String followUpStatus;
+	@Value("${sheets.followUpRange}")
+	private String followUpRange;
 	private Sheets sheetsService;
 	private static final JsonFactory JSON_FACTORY = GsonFactory.getDefaultInstance();
 	private static final List<String> SCOPES = Collections.singletonList(SheetsScopes.SPREADSHEETS);
@@ -39,6 +41,8 @@ public class NotificationRepositoryImpl implements NotificationRepository {
 	private String credentialsPath;
 	@Autowired
 	private ResourceLoader resourceLoader;
+
+	private static final Logger log = LoggerFactory.getLogger(NotificationRepositoryImpl.class);
 
 	@PostConstruct
 	private void setSheetsService() throws IOException, FileNotFoundException, GeneralSecurityException {
@@ -52,11 +56,11 @@ public class NotificationRepositoryImpl implements NotificationRepository {
 		sheetsService = new Sheets.Builder(GoogleNetHttpTransport.newTrustedTransport(), JSON_FACTORY,
 				requestInitializer).setApplicationName(applicationName).build();
 	}
-
 	@Override
 	public List<List<Object>> notification(String spreadsheetId) throws IOException {
-		ValueRange response = sheetsService.spreadsheets().values().get(spreadsheetId, followUpStatus).execute();
-		return response.getValues();
+		ValueRange response = sheetsService.spreadsheets().values().get(spreadsheetId, followUpRange).execute();
+		log.info("Notification details retrieved successfully for spreadsheetId: {}", spreadsheetId);
+]		return response.getValues();
 	}
 
 }

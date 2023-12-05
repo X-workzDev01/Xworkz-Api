@@ -11,6 +11,8 @@ import java.util.List;
 
 import javax.annotation.PostConstruct;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.Resource;
@@ -26,9 +28,10 @@ import com.google.api.services.sheets.v4.SheetsScopes;
 import com.google.api.services.sheets.v4.model.ValueRange;
 import com.google.auth.http.HttpCredentialsAdapter;
 import com.google.auth.oauth2.GoogleCredentials;
+
 @Repository
-public class BirthadayRepositoryImpl implements BirthadayRepository{
-	
+public class BirthadayRepositoryImpl implements BirthadayRepository {
+
 	@Value("${sheets.appName}")
 	private String applicationName;
 	@Value("${sheets.credentialsPath}")
@@ -40,11 +43,12 @@ public class BirthadayRepositoryImpl implements BirthadayRepository{
 	private String dateOfBirthDetailsRange;
 	@Value("${sheets.birthdayRange}")
 	private String birthdayRange;
-	
+
 	@Autowired
 	private ResourceLoader resourceLoader;
-
 	
+	private static final Logger log = LoggerFactory.getLogger(BirthadayRepositoryImpl.class);
+
 	@PostConstruct
 	private void setSheetsService() throws IOException, FileNotFoundException, GeneralSecurityException {
 
@@ -57,17 +61,17 @@ public class BirthadayRepositoryImpl implements BirthadayRepository{
 		sheetsService = new Sheets.Builder(GoogleNetHttpTransport.newTrustedTransport(), JSON_FACTORY,
 				requestInitializer).setApplicationName(applicationName).build();
 	}
-	
+
 	@Override
 	public ValueRange getBirthDayId(String spreadsheetId) throws IOException {
 		ValueRange response = sheetsService.spreadsheets().values().get(spreadsheetId, birthdayRange).execute();
+		log.info("Birthday ID retrieved successfully for spreadsheetId: {}", spreadsheetId);
 		return response;
 	}
 
 	@Override
 	public boolean saveBirthDayDetails(String spreadsheetId, List<Object> row) throws IOException {
 		List<List<Object>> values = new ArrayList<>();
-		// Add an empty string as a placeholder for the A column
 		List<Object> rowData = new ArrayList<>();
 		rowData.add(""); // Placeholder for A column
 		rowData.addAll(row.subList(1, row.size())); // Start from the second element (B column)
@@ -75,17 +79,16 @@ public class BirthadayRepositoryImpl implements BirthadayRepository{
 		ValueRange body = new ValueRange().setValues(values);
 		sheetsService.spreadsheets().values().append(spreadsheetId, dateOfBirthDetailsRange, body)
 				.setValueInputOption("USER_ENTERED").execute();
+		log.info("Birthday details saved successfully for spreadsheetId: {}", spreadsheetId);
 		return true;
 	}
-	
 
 	@Override
 	public List<List<Object>> getBirthadayDetails(String spreadsheetId) throws IOException {
 		ValueRange response = sheetsService.spreadsheets().values().get(spreadsheetId, dateOfBirthDetailsRange)
 				.execute();
+		log.info("Birthday details retrieved successfully for spreadsheetId: {}", spreadsheetId);
 		return response.getValues();
 	}
-
-
 
 }

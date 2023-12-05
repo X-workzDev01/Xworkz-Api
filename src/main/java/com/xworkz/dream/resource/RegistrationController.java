@@ -10,9 +10,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.cache.CacheManager;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -31,26 +31,23 @@ import io.swagger.annotations.ApiOperation;
 @RestController
 @RequestMapping("/api")
 public class RegistrationController {
-	
+
 	@Value("${login.sheetId}")
 	private String id;
-	Logger logger = LoggerFactory.getLogger(DreamApiController.class);
+	private static final Logger log = LoggerFactory.getLogger(RegistrationController.class);
 
 	private RegistrationService service;
-
-	@Autowired
-	private CacheManager manager;
 
 	@Autowired
 	public RegistrationController(RegistrationService service) {
 		this.service = service;
 	}
-	                                                                      
+
 	@ApiOperation(value = "To register the trainee details in the google sheets")
 	@PostMapping("/register")
 	public ResponseEntity<String> register(@RequestHeader String spreadsheetId, @RequestBody TraineeDto values,
 			HttpServletRequest request) throws IOException, MessagingException, TemplateException {
-		logger.debug("Registering trainee details: {}", values);
+		log.info("Received request to register trainee details: {}", values);
 
 		return service.writeData(spreadsheetId, values, request);
 	}
@@ -59,16 +56,17 @@ public class RegistrationController {
 	@GetMapping("/emailCheck")
 	public ResponseEntity<String> emailCheck(@RequestHeader String spreadsheetId, @RequestParam String email,
 			HttpServletRequest request) {
-		logger.info("Checking email: {}", email);
+		log.info("Checking email existence: {}", email);
 		return service.emailCheck(spreadsheetId, email, request);
 	}
 
 	@ApiOperation(value = "To get Suggestions while search")
-	@GetMapping("register/suggestion")
+	@GetMapping("register/suggestion/{courseName}")
 	public ResponseEntity<List<TraineeDto>> getSearchSuggestion(@RequestHeader String spreadsheetId,
-			@RequestParam String value, HttpServletRequest request) {
-		logger.info("Getting suggesstions: {}", value);
-		return service.getSearchSuggestion(spreadsheetId, value, request);
+			@RequestParam String value, @PathVariable String courseName, HttpServletRequest request) {
+		log.info("Getting suggestions for search: {}", value);
+		return service.getSearchSuggestion(spreadsheetId, value, courseName);
+
 
 	}
 
@@ -76,23 +74,28 @@ public class RegistrationController {
 	@GetMapping("/contactNumberCheck")
 	public ResponseEntity<String> contactNumberCheck(@RequestHeader String spreadsheetId,
 			@RequestParam Long contactNumber, HttpServletRequest request) {
-		logger.info("Checking contact number: {}", contactNumber);
+		log.info("Checking contact number existence: {}", contactNumber);
 		return service.contactNumberCheck(spreadsheetId, contactNumber, request);
 	}
 
 	@GetMapping("/readData")
 	public ResponseEntity<SheetsDto> readData(@RequestHeader String spreadsheetId, @RequestParam int startingIndex,
-			@RequestParam int maxRows) {
-		return service.readData(spreadsheetId, startingIndex, maxRows);
+			@RequestParam int maxRows, @RequestParam String courseName) {
+		log.info("Reading data with parameters - SpreadsheetId: {}, Starting Index: {}, Max Rows: {}, Course Name: {}",
+				spreadsheetId, startingIndex, maxRows, courseName);
+		return service.readData(spreadsheetId, startingIndex, maxRows, courseName);
 	}
 
-	@GetMapping("/filterData")
-	public List<TraineeDto> filterData(@RequestHeader String spreadsheetId, @RequestParam String searchValue) {
+	@GetMapping("/filterData/{courseName}")
+	public List<TraineeDto> filterData(@RequestHeader String spreadsheetId, @PathVariable String courseName,
+			@RequestParam String searchValue) {
+		System.err.println("eeeeeeeee  " + courseName);
 		try {
-			return service.filterData(spreadsheetId, searchValue);
+			log.info("Filtering data with parameters - SpreadsheetId: {}, Search Value: {}", spreadsheetId,
+					searchValue);
+			return service.filterData(spreadsheetId, searchValue, courseName);
 		} catch (IOException e) {
-
-			e.printStackTrace();
+			log.error("An error occurred during data filtering", e.getMessage());
 		}
 		return null;
 
@@ -102,17 +105,19 @@ public class RegistrationController {
 	@PutMapping("/update")
 	public ResponseEntity<String> update(@RequestHeader String spreadsheetId, @RequestParam String email,
 			@RequestBody TraineeDto dto) {
+		log.info("Updating trainee details with parameters - SpreadsheetId: {}, Email: {}, TraineeDto: {}",
+				spreadsheetId, email, dto);
 		return service.update(spreadsheetId, email, dto);
 	}
 
-	
-
 	@ApiOperation(value = "To get Registration details by email")
 	@GetMapping("/readByEmail")
-	public ResponseEntity<?> getDataByEmail(@RequestHeader String spreadsheetId, @RequestParam String email,
-			HttpServletRequest request) throws IOException {
-		return service.getDetailsByEmail(spreadsheetId, email, request);
+
+	public ResponseEntity<?> getDataByEmail(@RequestHeader String spreadsheetId, @RequestParam String email)
+			throws IOException {
+		log.info("Getting details by email - SpreadsheetId: {}, Email: {}", spreadsheetId, email);
+		return ResponseEntity.ok(service.getDetailsByEmail(spreadsheetId, email));
+
 	}
-	
 
 }

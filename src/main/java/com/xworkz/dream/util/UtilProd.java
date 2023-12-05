@@ -30,7 +30,7 @@ import org.springframework.stereotype.Component;
 import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.context.Context;
 
-import com.xworkz.dream.dto.StatusDto;
+import com.xworkz.dream.dto.FollowUpDto;
 import com.xworkz.dream.dto.TraineeDto;
 import com.xworkz.dream.dto.utils.Team;
 import com.xworkz.dream.service.ChimpMailService;
@@ -96,7 +96,7 @@ public class UtilProd implements DreamUtil {
 	}
 
 	@Override
-	public boolean sendNotificationToEmail(List<Team> teamList, List<StatusDto> notificationStatus) {
+	public boolean sendNotificationToEmail(List<Team> teamList, List<FollowUpDto> notificationStatus) {
 
 		if (teamList == null || notificationStatus == null) {
 			logger.warn("teamList or notificationStatus is null");
@@ -178,16 +178,17 @@ public class UtilProd implements DreamUtil {
 		return sendWhatsAppLinkToChimp(traineeEmail, subject, whatsAppLink);
 
 	}
-	
+
 	@Override
-	public boolean sendBirthadyEmail(String traineeEmail, String subject, String name) {
+
+	public void sendBirthadyEmail(String traineeEmail, String subject, String name) {
 		if(traineeEmail ==null || name ==null) {
 			logger.warn("Email or name is null");
-			return false;
+			
 		}
-		return sendBirthadyEmailChimp(traineeEmail, subject, name);
+		 sendBirthadyEmailChimp(traineeEmail, subject, name);
 	}
-	
+
 	// ================================================================================================
 	// this is mail chimp if use below code send mail through contact@xworkz.in
 	private boolean otpMailService(String email, int otp, String subject) {
@@ -208,7 +209,7 @@ public class UtilProd implements DreamUtil {
 		return chimpMailService.validateAndSendMailByMailOtp(messagePreparator);
 	}
 
-	private boolean sendBulkMailToNotification(List<String> recipients, String subject, List<StatusDto> body) {
+	private boolean sendBulkMailToNotification(List<String> recipients, String subject, List<FollowUpDto> body) {
 		Context context = new Context();
 
 		context.setVariable("listDto", body);
@@ -274,8 +275,6 @@ public class UtilProd implements DreamUtil {
 		String status = null;
 		try {
 			String mobileNumber = dto.getBasicInfo().getContactNumber().toString();
-//			String mobileNumber = "9900775088";
-
 			if (Objects.nonNull(mobileNumber)) {
 
 				String smsMessage = "Hi " + dto.getBasicInfo().getTraineeName().toString() + "," + "\n"
@@ -310,8 +309,8 @@ public class UtilProd implements DreamUtil {
 			return false;
 		}
 	}
-	
-	private boolean sendBirthadyEmailChimp(String traineeEmail, String subject, String name) {
+
+	private void sendBirthadyEmailChimp(String traineeEmail, String subject, String name) {
 		Context context = new Context();
 
 		context.setVariable("name", name);
@@ -322,13 +321,14 @@ public class UtilProd implements DreamUtil {
 			MimeMessageHelper messageHelper = new MimeMessageHelper(mimeMessage);
 			messageHelper.setFrom(helper.decrypt(chimpUserName));
 
-			messageHelper.addBcc(new InternetAddress(traineeEmail));
+			messageHelper.setTo(traineeEmail);
 
 			messageHelper.setSubject(subject);
 			messageHelper.setText(content, true);
 		};
 
-		return chimpMailService.validateAndSendMailByMailId(messagePreparator);
+
+	     chimpMailService.validateAndSendBirthdayMail(messagePreparator);
 	}
 
 }
