@@ -28,7 +28,7 @@ public class ClientHrInformationController {
 	private ClientHrService clientHrService;
 
 	@ApiOperation("To save Client information")
-	@PostMapping("/registerclienthrinfo")
+	@PostMapping("/registerclienthr")
 	public String saveClientHrInformation(@RequestBody ClientHrDto clientHrDto)
 			throws IllegalAccessException, IOException {
 		log.info("client Hr controller {}", clientHrDto);
@@ -52,5 +52,4 @@ public class ClientHrInformationController {
 			return "Email does not exist.";
 		}
 	}
-
 }

@@ -15,6 +15,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.ResourceLoader;
 import org.springframework.stereotype.Repository;
@@ -68,6 +69,7 @@ public class HrFollowUpRepositoryImpl implements HrFollowUpRepository {
 	@Override
 	public boolean saveHrFollowUpDetails(List<Object> row) throws IOException {
 		log.info("Hr follow up repository ");
+		log.info("list of data to save into sheet: {}",row);
 		List<List<Object>> values = new ArrayList<>();
 		List<Object> rowData = new ArrayList<>();
 		ValueRange valueRange = sheetsService.spreadsheets().values().get(sheetId, hrFollowUpInformationRange)
@@ -92,6 +94,7 @@ public class HrFollowUpRepositoryImpl implements HrFollowUpRepository {
 	}
 
 	@Override
+	@Cacheable(value = "hrFollowUpDetails", key = "'hrFollowUp'")
 	public List<List<Object>> readFollowUpDetailsById() throws IOException {
 		List<List<Object>> values = sheetsService.spreadsheets().values().get(sheetId, hrFollowUpInformationReadRange)
 				.execute().getValues();

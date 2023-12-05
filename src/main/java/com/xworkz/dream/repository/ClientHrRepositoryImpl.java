@@ -8,9 +8,7 @@ import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import javax.annotation.PostConstruct;
 
@@ -18,6 +16,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.ResourceLoader;
 import org.springframework.stereotype.Repository;
@@ -31,8 +30,6 @@ import com.google.api.services.sheets.v4.SheetsScopes;
 import com.google.api.services.sheets.v4.model.ValueRange;
 import com.google.auth.http.HttpCredentialsAdapter;
 import com.google.auth.oauth2.GoogleCredentials;
-import com.xworkz.dream.dto.ClientHrDto;
-import com.xworkz.dream.wrapper.ClientHrWrapper;
 
 /**
  * @author vinoda
@@ -54,8 +51,6 @@ public class ClientHrRepositoryImpl implements ClientHrRepository {
 	private String clientHrInformationReadRange;
 	@Value("${login.sheetId}")
 	public String sheetId;
-	@Autowired
-	private ClientHrWrapper clientHrWrapper;
 
 	@Autowired
 	private ResourceLoader resourceLoader;
@@ -100,6 +95,7 @@ public class ClientHrRepositoryImpl implements ClientHrRepository {
 	}
 
 	@Override
+	@Cacheable(value = "hrDetails", key = "'listofHRDetails'")
 	public List<List<Object>> readData() throws IOException {
 		List<List<Object>> values = sheetsService.spreadsheets().values().get(sheetId, clientHrInformationReadRange)
 				.execute().getValues();
