@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -71,6 +72,13 @@ public class ClientInformationController {
 		} else {
 			return "Company Email Not Exists";
 		}
-	}
+	} 
 
+//	@ApiOperation("update client dto")
+//	@PutMapping("/updateclient")
+//	public String updateClientDetails(@RequestBody ClientDto clientDto,@RequestParam int clientId) {
+//		log.info("updating client dto, {}, id {}",clientDto,clientId);
+//		clientInformationService.updateClientDetails(clientDto);
+//		return null;
+//	}
 }

@@ -29,6 +29,7 @@ public class ClientInformationImpl implements ClientInformationUtil {
 		if (dto.getDesignation() == null) {
 			dto.setDesignation("NA");
 		}
+		
 		if (dto.getStatus() == null) {
 			dto.setStatus("NA");
 		}
