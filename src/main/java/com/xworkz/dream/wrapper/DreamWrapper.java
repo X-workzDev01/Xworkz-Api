@@ -10,6 +10,8 @@ import org.springframework.stereotype.Component;
 
 import com.xworkz.dream.constants.FollowUp;
 import com.xworkz.dream.constants.Status;
+
+import com.xworkz.dream.dto.AuditDto;
 import com.xworkz.dream.dto.AttendanceDto;
 import com.xworkz.dream.dto.AuditDto;
 import com.xworkz.dream.dto.BasicInfoDto;
@@ -66,6 +68,7 @@ public class DreamWrapper {
 				null);
 		int rowSize = row.size();
 
+
 		if (rowSize > 0 && row.get(0) != null && !row.get(0).toString().isEmpty()) {
 			followUpDto.setId(Integer.valueOf(row.get(0).toString()));
 		}
@@ -81,6 +84,7 @@ public class DreamWrapper {
 		if (rowSize > 3 && row.get(3) != null && !row.get(3).toString().isEmpty()) {
 			followUpDto.getBasicInfo().setContactNumber(Long.parseLong(row.get(3).toString()));
 		}
+
 
 		if (rowSize > 4 && row.get(4) != null && !row.get(4).toString().isEmpty()) {
 			followUpDto.setRegistrationDate((String) row.get(4));
@@ -101,6 +105,7 @@ public class DreamWrapper {
 		if (rowSize > 8 && row.get(8) != null && !row.get(8).toString().isEmpty()) {
 			followUpDto.setCurrentStatus((String) row.get(8));
 		}
+
 
 		if (rowSize > 8 && row.get(9) != null && !row.get(9).toString().isEmpty()) {
 			followUpDto.setCallback((String) row.get(9));
@@ -147,6 +152,39 @@ public class DreamWrapper {
 			followUpDto.setFlag((String) row.get(14));
 		}
 
+		return followUpDto;
+	}
+
+		if (rowSize > 6 && row.get(6) != null && !row.get(6).toString().isEmpty()) {
+			followUpDto.setCourseName((String) row.get(6));
+		}
+
+		if (rowSize > 7 && row.get(7) != null && !row.get(7).toString().isEmpty()) {
+			followUpDto.setCurrentlyFollowedBy((String) row.get(7));
+		}
+
+		if (rowSize > 8 && row.get(8) != null && !row.get(8).toString().isEmpty()) {
+			followUpDto.setCurrentStatus((String) row.get(8));
+		}
+
+		// Note: The code sets the 'callback' property as a string, not a Date object.
+		if (rowSize > 8 && row.get(9) != null && !row.get(9).toString().isEmpty()) {
+			followUpDto.setCallback((String) row.get(9));
+		}
+
+		if (rowSize > 10 && row.get(10) != null && !row.get(10).toString().isEmpty()) {
+			if (followUpDto.getAdminDto() == null) {
+				followUpDto.setAdminDto(new AdminDto());
+			}
+			followUpDto.getAdminDto().setCreatedBy(row.get(10).toString());
+		}
+
+		if (rowSize > 11 && row.get(11) != null && !row.get(11).toString().isEmpty()) {
+			if (followUpDto.getAdminDto() == null) {
+				followUpDto.setAdminDto(new AdminDto());
+			}
+			followUpDto.getAdminDto().setCreatedOn(row.get(11).toString());
+		}
 		return followUpDto;
 	}
 

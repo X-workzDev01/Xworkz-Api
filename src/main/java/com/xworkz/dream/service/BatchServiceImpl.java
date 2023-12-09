@@ -34,7 +34,6 @@ public class BatchServiceImpl implements BatchService {
 	private DreamWrapper wrapper;
 	private BatchDetails batch;
 
-
 	private static final Logger log = LoggerFactory.getLogger(BatchServiceImpl.class);
 
 	@Override
@@ -94,6 +93,7 @@ public class BatchServiceImpl implements BatchService {
 		});
 		if (batch != null) {
 			return batch;
+
 
 		}
 		log.info("No batch details found for course: {}", courseName);

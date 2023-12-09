@@ -310,11 +310,13 @@ public class RegistrationServiceImpl implements RegistrationService {
 		} else {
 			return null;
 
+
 		}
 	}
 
 	@Override
 	public ResponseEntity<List<TraineeDto>> getSearchSuggestion(String spreadsheetId, String value, String courseName) {
+
 		List<TraineeDto> suggestion = new ArrayList<>();
 		if (value != null) {
 			try {

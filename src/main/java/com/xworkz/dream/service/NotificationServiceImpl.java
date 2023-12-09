@@ -91,6 +91,7 @@ public class NotificationServiceImpl implements NotificationService {
 						log.info(
 								"After Checking All notification condition result {}---------------------------------- {} ================{}",
 								yesterday, today, afterFoureDay);
+
 						SheetNotificationDto dto = new SheetNotificationDto(yesterday, today, afterFoureDay);
 
 						return dto;
@@ -123,6 +124,7 @@ public class NotificationServiceImpl implements NotificationService {
 
 								if (dto.getCallback().length() > 11 && LocalDate.now().isEqual(LocalDate
 										.parse(LocalDateTime.parse(dto.getCallback()).format(dateFormatter)))) {
+
 									notificationStatus.add(dto);
 								} else if (dto.getCallback().length() == 10 && LocalDate.now().isEqual(
 										LocalDate.parse(LocalDate.parse(dto.getCallback()).format(dateFormatter)))) {

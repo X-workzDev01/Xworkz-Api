@@ -182,11 +182,11 @@ public class UtilProd implements DreamUtil {
 	@Override
 
 	public void sendBirthadyEmail(String traineeEmail, String subject, String name) {
-		if (traineeEmail == null || name == null) {
+		if(traineeEmail ==null || name ==null) {
 			logger.warn("Email or name is null");
-
+			
 		}
-		sendBirthadyEmailChimp(traineeEmail, subject, name);
+		 sendBirthadyEmailChimp(traineeEmail, subject, name);
 	}
 
 	// ================================================================================================
@@ -327,7 +327,8 @@ public class UtilProd implements DreamUtil {
 			messageHelper.setText(content, true);
 		};
 
-		chimpMailService.validateAndSendBirthdayMail(messagePreparator);
+
+	     chimpMailService.validateAndSendBirthdayMail(messagePreparator);
 	}
 
 }

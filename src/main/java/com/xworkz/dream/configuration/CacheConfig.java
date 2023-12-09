@@ -26,21 +26,16 @@ public class CacheConfig {
 		caches.add(new ConcurrentMapCache("register"));
 		caches.add(new ConcurrentMapCache("contactData"));
 		caches.add(new ConcurrentMapCache("getDropdowns"));
-		// caches.add(new ConcurrentMapCache("getFollowUpStatusData"));
-		// caches.add(new ConcurrentMapCache("getFollowUpData"));
 		caches.add(new ConcurrentMapCache("batchDetails"));
-		caches.add(new ConcurrentMapCache("followUpDetails"));
+		caches.add(new ConcurrentMapCache("followUpDetails")); 
 		caches.add(new ConcurrentMapCache("followUpStatusDetails"));
-		caches.add(new ConcurrentMapCache("feesDetiles"));
-		caches.add(new ConcurrentMapCache("feesDetilesFollowup"));
-		// caches.add(new ConcurrentMapCache("byEmail"));
-		// caches.add(new ConcurrentMapCache("writeAttendance"));
-		// caches.add(new ConcurrentMapCache("everyDay"));
-		// caches.add(new ConcurrentMapCache("getEmail"));
-		// caches.add(new ConcurrentMapCache("update"));
 
+		caches.add(new ConcurrentMapCache("clientInformation"));
+		caches.add(new ConcurrentMapCache("hrDetails"));
+		caches.add(new ConcurrentMapCache("hrFollowUpDetails"));
 		cacheManager.setCaches(caches);
 		return cacheManager;
 	}
+
 
 }
