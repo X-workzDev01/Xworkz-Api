@@ -65,7 +65,6 @@ public class DreamWrapper {
 		FollowUpDto followUpDto = new FollowUpDto(0, new BasicInfoDto(), null, null, null, null, null, null, null,
 				null);
 		int rowSize = row.size();
-		System.err.println(row);
 
 		if (rowSize > 0 && row.get(0) != null && !row.get(0).toString().isEmpty()) {
 			followUpDto.setId(Integer.valueOf(row.get(0).toString()));
