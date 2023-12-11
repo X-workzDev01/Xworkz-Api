@@ -60,6 +60,7 @@ public class ClientInformationServiceImpl implements ClientInformationService {
 		List<List<Object>> listOfData = clientRepository.readData();
 		if (listOfData != null) {
 			List<ClientDto> ListOfClientDto = listOfData.stream().map(clientWrapper::listToClientDto)
+					.filter(dto ->!dto.getStatus().equalsIgnoreCase("InActive"))
 					.sorted(Comparator.comparing(ClientDto::getId, Comparator.reverseOrder()))
 					.collect(Collectors.toList());
 			List<ClientDto> clientData = ListOfClientDto.stream().skip(startingIndex).limit(maxRows)
@@ -81,7 +82,7 @@ public class ClientInformationServiceImpl implements ClientInformationService {
 			}
 		}
 		return false;
-	} 
+	}
 
 	@Override
 	public ClientDto getClientDtoById(int companyId) throws IOException {
@@ -113,7 +114,7 @@ public class ClientInformationServiceImpl implements ClientInformationService {
 
 	@Override
 	public boolean updateClientDetails(ClientDto clientDto) {
-		log.info("running service clientdto,{}",clientDto);
+		log.info("running service clientdto,{}", clientDto);
 		return false;
 	}
 }
