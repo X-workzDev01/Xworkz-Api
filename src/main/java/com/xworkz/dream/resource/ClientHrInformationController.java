@@ -58,7 +58,7 @@ public class ClientHrInformationController {
 	@GetMapping("/gethrdetails")
 	public List<ClientHrDto> getHrNameByCompanyId(@RequestParam int companyId) throws IOException{
 		log.info("get HR name by companyId, {}",companyId);
-		return clientHrService.getHrNameByCompanyId(companyId);
+		return clientHrService.getHrDetailsByCompanyId(companyId);
 	}
 	
 }
