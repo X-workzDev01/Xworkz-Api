@@ -12,7 +12,7 @@ public class cacheScheduler {
 
 	@Scheduled(fixedRate = 86400000)
 	@CacheEvict(value = { "emailData", "sheetsData", "register", "contactData", "getDropdowns", "batchDetails",
-			"followUpDetails", "followUpStatusDetails" })
+			"followUpDetails", "followUpStatusDetails" }, allEntries = true)
 	private void clearCache() {
 		log.info("Clear Cache after 24 Hours");
 	}

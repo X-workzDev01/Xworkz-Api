@@ -15,7 +15,6 @@
 				<th>Candidate Name</th>
 				<th>Email</th>
 				<th>Call Back Date</th>
-				<th>Call Back Time</th>
 				<th>Contact No</th>
 			</tr>
 		</thead>
@@ -25,8 +24,7 @@
 				<td th:text="${dto.id}"></td>
 				<td th:text=${dto.basicInfo.traineeName}></td>
 				<td th:text="${dto.basicInfo.email}"></td>
-				<td th:text="${dto.callBack}"></td>
-				<td th:text="${dto.callBackTime}"></td>
+				<td th:text="${dto.getCallback()}"></td>
 				<td th:text="${dto.basicInfo.contactNumber}"></td>
 
 

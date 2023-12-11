@@ -202,8 +202,9 @@ public class UtilDev implements DreamUtil {
 
 			MimeMessageHelper messageHelper = new MimeMessageHelper(mimeMessage);
 			messageHelper.setFrom("hareeshahr.xworkz@gmail.com");
+			messageHelper.addTo(recipients.get(0));
 			for (String recepent : recipients) {
-				messageHelper.addTo(new InternetAddress(recepent));
+				messageHelper.addCc(new InternetAddress(recepent));
 			}
 			messageHelper.setSubject(subject);
 			messageHelper.setText(content, true);

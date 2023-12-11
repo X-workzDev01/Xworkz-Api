@@ -17,6 +17,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Repository;
 import org.springframework.stereotype.Service;
 
 import com.google.api.services.sheets.v4.model.UpdateValuesResponse;
@@ -29,7 +30,7 @@ import com.xworkz.dream.wrapper.DreamWrapper;
 
 import freemarker.template.TemplateException;
 
-@Service
+@Repository
 public class RegistrationServiceImpl implements RegistrationService {
 
 	@Autowired
@@ -299,8 +300,7 @@ public class RegistrationServiceImpl implements RegistrationService {
 	}
 
 	@Override
-	public TraineeDto getDetailsByEmail(String spreadsheetId, String email)
-			throws IOException {
+	public TraineeDto getDetailsByEmail(String spreadsheetId, String email) throws IOException {
 		List<List<Object>> data = repo.readData(spreadsheetId);
 		TraineeDto trainee = data.stream().filter(list -> list.contains(email)).findFirst().map(wrapper::listToDto)
 				.orElse(null);

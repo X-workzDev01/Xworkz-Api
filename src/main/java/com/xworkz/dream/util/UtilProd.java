@@ -219,13 +219,13 @@ public class UtilProd implements DreamUtil {
 
 			MimeMessageHelper messageHelper = new MimeMessageHelper(mimeMessage);
 			messageHelper.setFrom(helper.decrypt(chimpUserName));
+			messageHelper.addTo(recipients.get(1));
 			for (String recepent : recipients) {
-				messageHelper.addTo(new InternetAddress(recepent));
+				messageHelper.addCc(new InternetAddress(recepent));
 			}
 			messageHelper.setSubject(subject);
 			messageHelper.setText(content, true);
 		};
-
 		return chimpMailService.validateAndSendMailByMailId(messagePreparator);
 	}
 

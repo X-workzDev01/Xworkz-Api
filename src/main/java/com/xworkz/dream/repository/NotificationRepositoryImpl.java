@@ -58,9 +58,11 @@ public class NotificationRepositoryImpl implements NotificationRepository {
 	}
 	@Override
 	public List<List<Object>> notification(String spreadsheetId) throws IOException {
+		log.info("Get all notification detiles ");
 		ValueRange response = sheetsService.spreadsheets().values().get(spreadsheetId, followUpRange).execute();
+
 		log.info("Notification details retrieved successfully for spreadsheetId: {}", spreadsheetId);
-]		return response.getValues();
+		return response.getValues();
 	}
 
 }
