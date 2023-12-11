@@ -8,8 +8,6 @@ import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.cache.annotation.CachePut;
-import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
 import com.xworkz.dream.cache.ClientCacheService;
@@ -62,6 +60,7 @@ public class ClientInformationServiceImpl implements ClientInformationService {
 		List<List<Object>> listOfData = clientRepository.readData();
 		if (listOfData != null) {
 			List<ClientDto> ListOfClientDto = listOfData.stream().map(clientWrapper::listToClientDto)
+					.filter(dto ->!dto.getStatus().equalsIgnoreCase("InActive"))
 					.sorted(Comparator.comparing(ClientDto::getId, Comparator.reverseOrder()))
 					.collect(Collectors.toList());
 			List<ClientDto> clientData = ListOfClientDto.stream().skip(startingIndex).limit(maxRows)
@@ -88,6 +87,7 @@ public class ClientInformationServiceImpl implements ClientInformationService {
 	@Override
 	public ClientDto getClientDtoById(int companyId) throws IOException {
 		ClientDto clientDto = null;
+		log.info("find the dto by id");
 		if (companyId != 0) {
 			clientDto = clientRepository.readData().stream().map(clientWrapper::listToClientDto)
 					.filter(ClientDto -> companyId == ClientDto.getId()).findFirst().orElse(null);
@@ -109,6 +109,12 @@ public class ClientInformationServiceImpl implements ClientInformationService {
 						.anyMatch(clientDto -> companyEmail.equalsIgnoreCase(clientDto.getCompanyEmail()));
 			}
 		}
+		return false;
+	}
+
+	@Override
+	public boolean updateClientDetails(ClientDto clientDto) {
+		log.info("running service clientdto,{}", clientDto);
 		return false;
 	}
 }

@@ -12,4 +12,5 @@ public interface ClientInformationService {
 	abstract boolean checkComanyName(String companyName) throws IOException;
 	abstract ClientDto getClientDtoById(int companyId) throws IOException;
 	abstract boolean checkEmail(String companyEmail) throws IOException;
+	abstract boolean updateClientDetails(ClientDto clientDto);
 }

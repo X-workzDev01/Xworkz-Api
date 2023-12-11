@@ -57,17 +57,23 @@ public class ClientHrServiceImpl implements ClientHrService {
 	}
 
 	@Override
-	public ClientHrData readData(int startingIndex, int maxRows) throws IOException {
-
+	public ClientHrData readData(int startingIndex, int maxRows, int companyId) throws IOException {
+		log.info("get data from client hr");
 		int size = clientHrRepository.readData().size();
-		List<ClientHrDto> sortedData = clientHrRepository.readData().stream().map(clientWrapper::listToClientHrDto)
-				.sorted(Comparator.comparing(ClientHrDto::getId, Comparator.reverseOrder()))
-				.collect(Collectors.toList());
+		if (companyId != 0) {
+			List<ClientHrDto> listOfDto = getHrDetailsByCompanyId(companyId);
+			return new ClientHrData(listOfDto, listOfDto.size());
 
-		List<ClientHrDto> listOfClientHrDto = sortedData.stream().skip(startingIndex).limit(size)
-				.collect(Collectors.toList());
+		} else {
+			List<ClientHrDto> sortedData = clientHrRepository.readData().stream().map(clientWrapper::listToClientHrDto)
+					.sorted(Comparator.comparing(ClientHrDto::getId, Comparator.reverseOrder()))
+					.collect(Collectors.toList());
 
-		return new ClientHrData(listOfClientHrDto, sortedData.size());
+			List<ClientHrDto> listOfClientHrDto = sortedData.stream().skip(startingIndex).limit(size)
+					.collect(Collectors.toList());
+
+			return new ClientHrData(listOfClientHrDto, sortedData.size());
+		}
 	}
 
 	@Override
@@ -78,5 +84,13 @@ public class ClientHrServiceImpl implements ClientHrService {
 		} else {
 			return false;
 		}
+	}
+
+	@Override
+	public List<ClientHrDto> getHrDetailsByCompanyId(int companyId) throws IOException {
+		log.info("get details by companyId, {}", companyId);
+		List<ClientHrDto> listofClientHr = clientHrRepository.readData().stream().map(clientWrapper::listToClientHrDto)
+				.filter(clientHrDto -> clientHrDto.getCompanyId() == companyId).collect(Collectors.toList());
+		return listofClientHr;
 	}
 }
