@@ -14,6 +14,6 @@ public interface ClientHrService {
 
 	abstract boolean hrEmailcheck(String companyName) throws IOException;
 
-	abstract List<ClientHrDto> getHrNameByCompanyId(int companyId) throws IOException;
+	abstract List<ClientHrDto> getHrDetailsByCompanyId(int companyId) throws IOException;
 
 }

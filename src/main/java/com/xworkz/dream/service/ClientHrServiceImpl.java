@@ -61,7 +61,7 @@ public class ClientHrServiceImpl implements ClientHrService {
 		log.info("get data from client hr");
 		int size = clientHrRepository.readData().size();
 		if (companyId != 0) {
-			List<ClientHrDto> listOfDto = getHrNameByCompanyId(companyId);
+			List<ClientHrDto> listOfDto = getHrDetailsByCompanyId(companyId);
 			return new ClientHrData(listOfDto, listOfDto.size());
 
 		} else {
@@ -87,7 +87,7 @@ public class ClientHrServiceImpl implements ClientHrService {
 	}
 
 	@Override
-	public List<ClientHrDto> getHrNameByCompanyId(int companyId) throws IOException {
+	public List<ClientHrDto> getHrDetailsByCompanyId(int companyId) throws IOException {
 		log.info("get details by companyId, {}", companyId);
 		List<ClientHrDto> listofClientHr = clientHrRepository.readData().stream().map(clientWrapper::listToClientHrDto)
 				.filter(clientHrDto -> clientHrDto.getCompanyId() == companyId).collect(Collectors.toList());

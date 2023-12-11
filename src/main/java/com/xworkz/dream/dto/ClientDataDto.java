@@ -9,6 +9,6 @@ import lombok.Data;
 @AllArgsConstructor
 public class ClientDataDto {
 
-	private List<ClientDto> clientData;
+	private List<?> clientData;
 	private int size;
 }
