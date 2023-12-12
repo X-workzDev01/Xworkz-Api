@@ -55,11 +55,14 @@ public class MailConfig {
 		mailSender.setPort(587);
 		mailSender.setUsername("hareeshahr.xworkz@gmail.com");
 		mailSender.setPassword("vtgf meha ujpx ficd");
-		Properties props = mailSender.getJavaMailProperties();
-		props.put("mail.transport.protocol", "smtp");
-		props.put("mail.smtp.auth", "true");
-		props.put("mail.smtp.starttls.enable", "true");
-		props.put("mail.debug", "true"); 
+		Properties javaMailProperties = new Properties();
+		javaMailProperties.put("mail.smtp.starttls.enable", "true");
+		javaMailProperties.put("mail.smtp.auth", "true");
+		javaMailProperties.put("mail.transport.protocol", "smtp");
+		javaMailProperties.put("mail.debug", "true");
+		javaMailProperties.put("mail.smtp.ssl.trust", "*"); // Trust Gmail SSL certificate
+		javaMailProperties.setProperty("mail.smtp.ssl.protocols", "TLSv1.2");
+		mailSender.setJavaMailProperties(javaMailProperties);
 		return mailSender;
 
 	}

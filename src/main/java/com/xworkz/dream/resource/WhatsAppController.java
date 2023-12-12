@@ -2,6 +2,8 @@ package com.xworkz.dream.resource;
 
 import java.io.IOException;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -13,32 +15,32 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.xworkz.dream.dto.BatchDetails;
 import com.xworkz.dream.service.BatchService;
-import com.xworkz.dream.service.DreamService;
 import com.xworkz.dream.service.WhatsAppService;
-
-import lombok.extern.slf4j.Slf4j;
 
 @RestController
 @RequestMapping("/api")
-@Slf4j
+
 public class WhatsAppController {
-	
+
 	@Autowired
 	private WhatsAppService whatsAppService;
 	@Autowired
 	private BatchService service;
-	
-	
+
+	private static final Logger log = LoggerFactory.getLogger(WhatsAppController.class);
+
 	@PutMapping("/updateWhatsAppLink")
-	public boolean updateWhatsAppLinkByCourseName(@RequestHeader String spreadsheetId, @RequestParam String cousreName,
+	public boolean updateWhatsAppLinkByCourseName(@RequestHeader String spreadsheetId, @RequestParam String courseName,
 			@RequestParam String whatsAppLink) throws IllegalAccessException, IOException {
-		log.info("cousreName : whatsAppLink" + cousreName + " : " + whatsAppLink);
-		return whatsAppService.updateWhatsAppLinkByCourseName(spreadsheetId, cousreName, whatsAppLink);
+		log.info("Updating WhatsApp link - SpreadsheetId: {}, CourseName: {}, WhatsAppLink: {}", spreadsheetId,
+				courseName, whatsAppLink);
+		return whatsAppService.updateWhatsAppLinkByCourseName(spreadsheetId, courseName, whatsAppLink);
 	}
-	
+
 	@GetMapping("/getWhatsAppLink")
 	public String getWhatsAppLinkByCourseName(@RequestHeader String spreadsheetId, @RequestParam String courseName)
 			throws IOException {
+		log.info("Getting WhatsApp link - SpreadsheetId: {}, CourseName: {}", spreadsheetId, courseName);
 		ResponseEntity<BatchDetails> batchDetailsByCourseName = service.getBatchDetailsByCourseName(spreadsheetId,
 				courseName);
 		return batchDetailsByCourseName.getBody().getWhatsAppLink();
@@ -47,9 +49,9 @@ public class WhatsAppController {
 	@GetMapping("/sendWhatsAppLink")
 	public boolean mailWhatsAppLink(@RequestHeader String spreadsheetId, @RequestParam String courseName)
 			throws IOException {
+		log.info("Sending WhatsApp link - SpreadsheetId: {}, CourseName: {}", spreadsheetId, courseName);
 		boolean sendWhatsAppLink = whatsAppService.sendWhatsAppLink(spreadsheetId, courseName);
 		return sendWhatsAppLink;
-	}	
-	
+	}
 
 }

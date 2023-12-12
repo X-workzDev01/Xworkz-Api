@@ -61,54 +61,54 @@ public class DreamWrapper {
 		return suggestionDto;
 	}
 
-
 	public FollowUpDto listToFollowUpDTO(List<Object> row) {
-	    // Create an instance of FollowUpDto with default values
-	    FollowUpDto followUpDto = new FollowUpDto(0, new BasicInfoDto(), null, null, null, null, null, null, null);
-	    int rowSize = row.size();
+		// Create an instance of FollowUpDto with default values
+		FollowUpDto followUpDto = new FollowUpDto(0, new BasicInfoDto(), null, null, null, null, null, null, null);
+		int rowSize = row.size();
 
-	    // Set FollowUpDto's properties based on the elements in the input list
-	    if (rowSize > 0 && row.get(0) != null && !row.get(0).toString().isEmpty()) {
-	        followUpDto.setId(Integer.valueOf(row.get(0).toString()));
-	    }
+		// Set FollowUpDto's properties based on the elements in the input list
+		if (rowSize > 0 && row.get(0) != null && !row.get(0).toString().isEmpty()) {
+			followUpDto.setId(Integer.valueOf(row.get(0).toString()));
+		}
 
-	    if (rowSize > 1 && row.get(1) != null && !row.get(1).toString().isEmpty()) {
-	        followUpDto.getBasicInfo().setTraineeName((String) row.get(1));
-	    }
+		if (rowSize > 1 && row.get(1) != null && !row.get(1).toString().isEmpty()) {
+			followUpDto.getBasicInfo().setTraineeName((String) row.get(1));
+		}
 
-	    if (rowSize > 2 && row.get(2) != null && !row.get(2).toString().isEmpty()) {
-	        followUpDto.getBasicInfo().setEmail((String) row.get(2));
-	    }
+		if (rowSize > 2 && row.get(2) != null && !row.get(2).toString().isEmpty()) {
+			followUpDto.getBasicInfo().setEmail((String) row.get(2));
+		}
 
-	    if (rowSize > 3 && row.get(3) != null && !row.get(3).toString().isEmpty()) {
-	        followUpDto.getBasicInfo().setContactNumber(Long.parseLong(row.get(3).toString()));
-	    }
+		if (rowSize > 3 && row.get(3) != null && !row.get(3).toString().isEmpty()) {
+			followUpDto.getBasicInfo().setContactNumber(Long.parseLong(row.get(3).toString()));
+		}
 
-	    // Note: The code sets the 'registrationDate' property as a string, not a Date object.
-	    if (rowSize > 4 && row.get(4) != null && !row.get(4).toString().isEmpty()) {
-	        followUpDto.setRegistrationDate((String) row.get(4));
-	    }
+		// Note: The code sets the 'registrationDate' property as a string, not a Date
+		// object.
+		if (rowSize > 4 && row.get(4) != null && !row.get(4).toString().isEmpty()) {
+			followUpDto.setRegistrationDate((String) row.get(4));
+		}
 
-	    if (rowSize > 5 && row.get(5) != null && !row.get(5).toString().isEmpty()) {
-	        followUpDto.setJoiningDate((String) row.get(5));
-	    }
+		if (rowSize > 5 && row.get(5) != null && !row.get(5).toString().isEmpty()) {
+			followUpDto.setJoiningDate((String) row.get(5));
+		}
 
-	    if (rowSize > 6 && row.get(6) != null && !row.get(6).toString().isEmpty()) {
-	        followUpDto.setCourseName((String) row.get(6));
-	    }
+		if (rowSize > 6 && row.get(6) != null && !row.get(6).toString().isEmpty()) {
+			followUpDto.setCourseName((String) row.get(6));
+		}
 
-	    if (rowSize > 7 && row.get(7) != null && !row.get(7).toString().isEmpty()) {
-	        followUpDto.setCurrentlyFollowedBy((String) row.get(7));
-	    }
+		if (rowSize > 7 && row.get(7) != null && !row.get(7).toString().isEmpty()) {
+			followUpDto.setCurrentlyFollowedBy((String) row.get(7));
+		}
 
-	    if (rowSize > 8 && row.get(8) != null && !row.get(8).toString().isEmpty()) {
-	        followUpDto.setCurrentStatus((String) row.get(8));
-	    }
+		if (rowSize > 8 && row.get(8) != null && !row.get(8).toString().isEmpty()) {
+			followUpDto.setCurrentStatus((String) row.get(8));
+		}
 
-	    // Note: The code sets the 'callback' property as a string, not a Date object.
-	    if (rowSize > 8 && row.get(9) != null && !row.get(9).toString().isEmpty()) {
-	        followUpDto.setCallback((String) row.get(9));
-	    }
+		// Note: The code sets the 'callback' property as a string, not a Date object.
+		if (rowSize > 8 && row.get(9) != null && !row.get(9).toString().isEmpty()) {
+			followUpDto.setCallback((String) row.get(9));
+		}
 
 	    if (rowSize > 10 && row.get(10) != null && !row.get(10).toString().isEmpty()) {
 	        if (followUpDto.getAdminDto() == null) {
@@ -125,7 +125,6 @@ public class DreamWrapper {
 	    }
 	    return followUpDto;
 	}
-
 
 	public StatusDto listToStatusDto(List<Object> rows) {
 
@@ -628,7 +627,7 @@ public class DreamWrapper {
 		sdto.setComments(statusDto.getComments());
 		sdto.setCallDuration(statusDto.getCallDuration());
 		if (statusDto.getCallBack().equals("NA")) {
-			sdto.setCallBack("1000-01-01");
+			sdto.setCallBack(LocalDate.now().plusDays(1).toString());
 		} else {
 			sdto.setCallBack(statusDto.getCallBack());
 		}
