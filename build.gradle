@@ -73,3 +73,4 @@ tasks.named('test') {
     useJUnitPlatform()
 }
 
+apply plugin : 'eclipse'
