@@ -10,7 +10,7 @@ import org.springframework.stereotype.Component;
 
 import com.xworkz.dream.constants.FollowUp;
 import com.xworkz.dream.constants.Status;
-import com.xworkz.dream.dto.AuditDto;
+import com.xworkz.dream.dto.AdminDto;
 import com.xworkz.dream.dto.AttendanceDto;
 import com.xworkz.dream.dto.BasicInfoDto;
 import com.xworkz.dream.dto.BatchDetails;
@@ -62,7 +62,6 @@ public class DreamWrapper {
 	}
 
 	public FollowUpDto listToFollowUpDTO(List<Object> row) {
-
 		// Create an instance of FollowUpDto with default values
 		FollowUpDto followUpDto = new FollowUpDto(0, new BasicInfoDto(), null, null, null, null, null, null, null);
 		int rowSize = row.size();
@@ -173,7 +172,7 @@ public class DreamWrapper {
 
 	public TraineeDto listToDto(List<Object> row) {
 		TraineeDto traineeDto = new TraineeDto(0, new BasicInfoDto(), new EducationInfoDto(), new CourseDto(),
-				new OthersDto(), new AuditDto());
+				new OthersDto(), new AdminDto());
 
 		// Assuming the list follows this order: id ,traineeName, email, contactNumber,
 		// qualification, stream,
@@ -605,7 +604,7 @@ public class DreamWrapper {
 	}
 
 	public void setAdminDto(TraineeDto dto) {
-		AuditDto admin = new AuditDto();
+		AdminDto admin = new AdminDto();
 		admin.setCreatedBy(dto.getAdminDto().getCreatedBy());
 		admin.setCreatedOn(dto.getAdminDto().getCreatedOn());
 		admin.setUpdatedBy(dto.getAdminDto().getUpdatedBy());

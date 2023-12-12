@@ -33,6 +33,6 @@ public class FollowUpDto {
 	private String currentStatus;
 	private String callback;
 	@JsonProperty("adminDto")
-	private AuditDto adminDto;
+	private AdminDto adminDto;
 
 }

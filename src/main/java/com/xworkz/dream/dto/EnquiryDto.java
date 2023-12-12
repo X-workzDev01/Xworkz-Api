@@ -16,6 +16,6 @@ public class EnquiryDto {
 	@JsonProperty("educationInfo")
 	private EducationInfoDto educationInfo;
 	@JsonProperty("adminDto")
-	private AuditDto adminDto;
+	private AdminDto adminDto;
 
 }

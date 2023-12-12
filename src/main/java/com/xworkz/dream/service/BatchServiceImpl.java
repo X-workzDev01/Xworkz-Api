@@ -34,8 +34,8 @@ public class BatchServiceImpl implements BatchService {
 	private DreamWrapper wrapper;
 	private BatchDetails batch;
 
-
 	private static final Logger log = LoggerFactory.getLogger(BatchServiceImpl.class);
+
 	@Override
 	public ResponseEntity<String> saveDetails(String spreadsheetId, BatchDetailsDto dto, HttpServletRequest request)
 			throws IOException, IllegalAccessException {
