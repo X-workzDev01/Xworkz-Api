@@ -12,7 +12,7 @@ import lombok.ToString;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class AdminDto {
+public class AuditDto {
 
 	private String createdBy;
 	private String createdOn;
