@@ -12,6 +12,7 @@ import javax.annotation.PostConstruct;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.ResourceLoader;
 import org.springframework.stereotype.Repository;
@@ -54,16 +55,11 @@ public class WhatsAppRepositoryImpl implements WhatsAppRepository {
 				requestInitializer).setApplicationName(applicationName).build();
 	}
 	
+	
 	@Override
-	public UpdateValuesResponse updateBatchDetails(String spreadsheetId, String range2, ValueRange valueRange)
-			throws IOException {
+	public UpdateValuesResponse updateWhatsAppLink(String spreadsheetId, String range2, ValueRange valueRange) throws IOException {
 		return sheetsService.spreadsheets().values().update(spreadsheetId, range2, valueRange)
 				.setValueInputOption("RAW").execute();
 	}
 
-	@Override
-	public ValueRange getCourseNameList(String spreadsheetId) throws IOException {
-		ValueRange response = sheetsService.spreadsheets().values().get(spreadsheetId, batchDetailsCourseNameRange).execute();
-		return response;
-	}
 }

@@ -8,14 +8,35 @@ sheets:
   attendanceList: attendanceList!A2:J
   attendanceListRange: attendanceList!A2:M
   credentialsPath: classpath:META-INF/credentials-dev.json
+  liveKey: live_1c9a44377323556a9243
+
+mailChimp:
+  userName: 7FzbzzHIVQSVJVz5r4n/bGa/lhNWJCXUq6oqBxBCTYQ=
+  password: +mgZp4MIPWMTkaJ/pwphDw==
+  smtpHostChimp: yj/mpkyGHCjMIsVaHCMyxQZ4EBNjg/Ep6CbXhjKA7v0= 
+
+logging:
+  file:
+    name: ../Dream.log
+    max-size: 1MB
+    total-size-cap: 10MB
+    max-history: '10'
+    clean-history-on-start: 'true'
 
 
- 
+  level:
+    root: INFO
+  pattern:
+    console: "%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n"
+    file: "%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n"
+    rolling-file-name: Dream-%d{yyyy-MM-dd}.%i.log
+
+
 mail:
    smtpHost: smtp.office365.com
    smtpPort: 587
    userName: xworkzdev@outlook.com
-   password: KeepIT@Temp789 
+   password: KeepIT@Temp789
     
 login: 
   teamFile: classpath:team.yml

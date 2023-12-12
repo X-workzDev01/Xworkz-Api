@@ -1,7 +1,5 @@
 package com.xworkz.dream.dto;
 
-import java.time.Duration;
-
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import lombok.AllArgsConstructor;

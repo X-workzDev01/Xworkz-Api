@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="ISO-8859-1">
+<title>Birthday Email</title>
+</head>
+<body>
+    <div id="container">
+        <h1> Happy Birthday! </h1>
+        <img src="https://t4.ftcdn.net/jpg/03/94/24/89/360_F_394248954_hX5vNfwgLefXAxQcxlxCfmRRwxEyzdSW.jpg" alt="Birthday Celebration" style="margin-bottom: 20px;">
+      <p> 
+       Dear  <span th:text="${name}">,</span>
+      	</p>
+        <p>Wishing you a fantastic birthday filled with joy, laughter, and all the things you love. May this year bring you closer to your dreams and aspirations.</p>
+        <p>Enjoy your special day to the fullest!</p>
+        <p>Best wishes,</p>
+        <p>X-workz Team</p>
+	<p>
+		<a href="https://www.x-workz.in"><img
+			src="https://www.x-workz.in/static/media/Logo.cf195593dc1b3f921369.png"
+			alt="X-Workz Logo" width="100"></a>
+	</p>
+    </div>	
+</body>
+</html>
