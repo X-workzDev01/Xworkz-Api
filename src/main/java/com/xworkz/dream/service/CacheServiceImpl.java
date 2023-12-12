@@ -26,7 +26,7 @@ public class CacheServiceImpl implements CacheService {
 	@Autowired
 	private CacheManager cacheManager;
 
-	private static final Logger logger = LoggerFactory.getLogger(CacheServiceImpl.class);
+	private static final Logger log = LoggerFactory.getLogger(CacheServiceImpl.class);
 
 	@SuppressWarnings("unchecked")
 	public void updateCache(String cacheName, String key, List<Object> data) {
@@ -67,6 +67,7 @@ public class CacheServiceImpl implements CacheService {
 				if (matchingIndex >= 0) {
 
 					listOfItems.set(matchingIndex, list);
+					log.info("Updated cache data for email: {}", email);
 
 				}
 
@@ -100,10 +101,11 @@ public class CacheServiceImpl implements CacheService {
 				if (matchingIndex >= 0) {
 
 					ListOfItems.set(matchingIndex, list);
+					log.info("Updated cache data for email: {}", email);
 				}
 
 			} else {
-				logger.debug("Data not found in the cache for the specified email: " + email);
+				log.debug("Data not found in the cache for the specified email: {}", email);
 			}
 		}
 	}
@@ -132,10 +134,11 @@ public class CacheServiceImpl implements CacheService {
 				if (matchingIndex >= 0) {
 
 					ListOfItems.set(matchingIndex, list);
+					log.info("Updated cache data for email: {}", email);
 				}
 
 			} else {
-				logger.debug("Data not found in the cache for the specified email: " + email);
+				log.debug("Data not found in the cache for the specified email: {}", email);
 			}
 		}
 	}
@@ -155,6 +158,7 @@ public class CacheServiceImpl implements CacheService {
 					data.remove(4); // Removes the element at index 4
 				}
 				((List<List<Object>>) valueWrapper.get()).add(data);
+				log.info("Updated cache for key: {}", key);
 			}
 		}
 	}
@@ -171,6 +175,7 @@ public class CacheServiceImpl implements CacheService {
 				data.set(0, size + 1);
 
 				((List<List<Object>>) valueWrapper.get()).add(data);
+				log.info("Updated cache for key: {}", key);
 			}
 		}
 	}
@@ -189,6 +194,7 @@ public class CacheServiceImpl implements CacheService {
 				data.remove(4);
 
 				((List<List<Object>>) valueWrapper.get()).add(data);
+				log.info("Updated cache for key: {}", key);
 			}
 		}
 	}
@@ -198,7 +204,7 @@ public class CacheServiceImpl implements CacheService {
 	public void addEmailToCache(String cacheName, String spreadSheetId, String email) {
 		Cache cache = cacheManager.getCache(cacheName);
 		if (cache != null) {
-			logger.info("Email added into cache {} ", email);
+			log.info("Email added into cache {} ", email);
 
 			ValueWrapper valueWrapper = cache.get(spreadSheetId);
 			if (valueWrapper != null && valueWrapper.get() instanceof List) {
@@ -214,6 +220,8 @@ public class CacheServiceImpl implements CacheService {
 	public void addContactNumberToCache(String cacheName, String spreadSheetId, Long contactNumber) {
 		Cache cache = cacheManager.getCache(cacheName);
 		if (cache != null) {
+			log.info("Contact number added into cache: {}", contactNumber);
+			@SuppressWarnings("unchecked")
 			ValueWrapper valueWrapper = cache.get(spreadSheetId);
 			if (valueWrapper != null && valueWrapper.get() instanceof List) {
 				List<Object> contactNumbers = new ArrayList<Object>(Arrays.asList(contactNumber));
@@ -244,6 +252,7 @@ public class CacheServiceImpl implements CacheService {
 				if (matchingIndex >= 0) {
 
 					listOfItems.set(matchingIndex, Stream.of(newEmail).collect(Collectors.toList()));
+					log.info("Updated cache for key: {} with new email: {}", key, newEmail);
 
 				}
 

@@ -1,6 +1,5 @@
 package com.xworkz.dream.repository;
 
-
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -12,6 +11,8 @@ import java.util.List;
 
 import javax.annotation.PostConstruct;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cache.annotation.Cacheable;
@@ -46,9 +47,10 @@ public class DreamRepositoryImpl implements DreamRepository {
 	@Value("${sheets.loginInfoRange}")
 	private String loginInfoRange;
 
-
 	@Autowired
 	private ResourceLoader resourceLoader;
+
+	private static final Logger log = LoggerFactory.getLogger(DreamRepositoryImpl.class);
 
 	@PostConstruct
 	private void setSheetsService() throws IOException, FileNotFoundException, GeneralSecurityException {
@@ -63,12 +65,10 @@ public class DreamRepositoryImpl implements DreamRepository {
 				requestInitializer).setApplicationName(applicationName).build();
 	}
 
-
-
 	@Override
 	public ValueRange getIds(String spreadsheetId) throws IOException {
 		ValueRange response = sheetsService.spreadsheets().values().get(spreadsheetId, idRange).execute();
-
+		log.info("IDs retrieved successfully for spreadsheetId: {}", spreadsheetId);
 		return response;
 	}
 
@@ -76,6 +76,7 @@ public class DreamRepositoryImpl implements DreamRepository {
 	@Cacheable(value = "getDropdowns", key = "#spreadsheetId", unless = "#result == null")
 	public List<List<Object>> getDropdown(String spreadsheetId) throws IOException {
 		ValueRange response = sheetsService.spreadsheets().values().get(spreadsheetId, dropdownRange).execute();
+		log.info("Dropdown values retrieved successfully for spreadsheetId: {}", spreadsheetId);
 		return response.getValues();
 	}
 
@@ -87,13 +88,9 @@ public class DreamRepositoryImpl implements DreamRepository {
 
 		sheetsService.spreadsheets().values().append(spreadsheetId, loginInfoRange, body)
 				.setValueInputOption("USER_ENTERED").execute();
+		log.info("Login information updated successfully for spreadsheetId: {}", spreadsheetId);
 		return true;
 
 	}
-
-
-	
-
-
 
 }
