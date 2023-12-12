@@ -1,8 +1,6 @@
 package com.xworkz.dream.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.xworkz.dream.constants.BatchInfo;
-
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.Getter;

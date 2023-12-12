@@ -3,16 +3,19 @@ HELP.md
 build/
 !gradle/wrapper/gradle-wrapper.jar
 !**/src/main/**/build/
-!**/src/test/**/build/
-META-INF/credentials.json
+.settings/
+/*.log
+src/main/resources/META-INF/*.json
+
 ### STS ###
 .apt_generated
 .classpath
 .factorypath
 .project
-.settings
+.settings	
 .springBeans
 .sts4-cache
+build/
 bin/
 !**/src/main/**/bin/
 !**/src/test/**/bin/

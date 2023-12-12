@@ -1,7 +1,6 @@
 package com.xworkz.dream.service;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -17,8 +16,8 @@ import com.google.api.services.sheets.v4.model.UpdateValuesResponse;
 import com.google.api.services.sheets.v4.model.ValueRange;
 import com.xworkz.dream.dto.BatchDetails;
 import com.xworkz.dream.dto.TraineeDto;
-import com.xworkz.dream.repository.DreamRepository;
-import com.xworkz.dream.repository.WhatsAppRepository;
+import com.xworkz.dream.repository.BatchRepository;
+import com.xworkz.dream.repository.RegisterRepository;
 import com.xworkz.dream.util.DreamUtil;
 import com.xworkz.dream.wrapper.DreamWrapper;
 
@@ -26,15 +25,17 @@ import com.xworkz.dream.wrapper.DreamWrapper;
 public class WhatsAppServiceImpl implements WhatsAppService {
 
 	@Autowired
-	private WhatsAppRepository repository;
+	private BatchRepository repository;
 	@Autowired
-	private DreamRepository repo;
+	private RegisterRepository repo;
+	@Autowired
+	private RegistrationService registrationService;
 	@Autowired
 	private DreamWrapper wrapper;
 	@Autowired
 	private DreamUtil util;
 	@Autowired
-	private DreamService service;
+	private BatchService service;
 	@Value("${sheets.batchDetailsSheetName}")
 	private String batchDetailsSheetName;
 	@Value("${sheets.batchDetailsStartRange}")
@@ -42,8 +43,8 @@ public class WhatsAppServiceImpl implements WhatsAppService {
 	@Value("${sheets.batchDetailsEndRange}")
 	private String batchDetailsEndRange;
 
-	private static final Logger logger = LoggerFactory.getLogger(WhatsAppServiceImpl.class);
-
+	private static final Logger log = LoggerFactory.getLogger(WhatsAppServiceImpl.class);
+	
 	private int findByCourseNameForUpdate(String spreadsheetId, String courseName) throws IOException {
 		ValueRange data = repository.getCourseNameList(spreadsheetId);
 		List<List<Object>> values = data.getValues();
@@ -51,36 +52,22 @@ public class WhatsAppServiceImpl implements WhatsAppService {
 			for (int i = 0; i < values.size(); i++) {
 				List<Object> row = values.get(i);
 				if (row.size() > 0 && row.get(0).toString().equalsIgnoreCase(courseName)) {
+					   log.info("Found row index {} for course name: {}", i + 2, courseName);
 					return i + 2;
 				}
 			}
 		}
+		 log.warn("Course name not found: {}", courseName);
 		return -1;
 	}
 
 	@Override
-	public BatchDetails getBatchDetailsListByCourseName(String spreadsheetId, String courseName) throws IOException {
-		BatchDetails batch = new BatchDetails();
-		if (courseName != null && !courseName.isEmpty()) {
-			List<List<Object>> detailsByCourseName = repo.getCourseDetails(spreadsheetId);
-			List<List<Object>> data = detailsByCourseName.stream()
-					.filter(list -> list.stream().anyMatch(value -> value.toString().equalsIgnoreCase(courseName)))
-					.collect(Collectors.toList());
-			for (List<Object> row : data) {
-				batch = wrapper.batchDetailsToDto(row);
-			}
-			return batch;
-		}
-		return null;
-	}
-
-	@Override
-	public boolean updateWhatsAppLinkByCourseName(String spreadsheetId, String cousreName, String whatsAppLink)
+	public boolean updateWhatsAppLinkByCourseName(String spreadsheetId, String courseName, String whatsAppLink)
 			throws IOException, IllegalAccessException {
-		BatchDetails batchDetails = getBatchDetailsListByCourseName(spreadsheetId, cousreName);
-		logger.info("loading batch details using sheetId : {}, course name :{} : batchdetails : {}", spreadsheetId,
-				cousreName, batchDetails);
-		int rowIndex = findByCourseNameForUpdate(spreadsheetId, cousreName);
+		BatchDetails batchDetails =service.getBatchDetailsListByCourseName(spreadsheetId, courseName);
+		log.info("loading batch details using sheetId : {}, course name :{} : batchdetails : {}", spreadsheetId,
+				courseName, batchDetails);
+		int rowIndex = findByCourseNameForUpdate(spreadsheetId, courseName);
 		String range = batchDetailsSheetName + batchDetailsStartRange + rowIndex + ":" + batchDetailsEndRange
 				+ rowIndex;
 		batchDetails.setWhatsAppLink(whatsAppLink);
@@ -89,34 +76,80 @@ public class WhatsAppServiceImpl implements WhatsAppService {
 		valueRange.setValues(values);
 		UpdateValuesResponse updateBatchDetails = repository.updateBatchDetails(spreadsheetId, range, valueRange);
 		if (updateBatchDetails.isEmpty()) {
-			return false;
-		} else {
-			return true;
-		}
+		     log.warn("Update failed for WhatsApp link. Course name: {}", courseName);
+             return false;
+         } else {
+             log.info("WhatsApp link updated successfully. Course name: {}", courseName);
+             return true;
+         }
 
 	}
 
 	@Override
-	public boolean getEmailByCourseName(String spreadsheetId, String courseName) throws IOException {
+	public List<String> getEmailByCourseName(String spreadsheetId, String courseName) throws IOException {
 		List<List<Object>> readData = repo.readData(spreadsheetId);
-		String subject = "whatsApp Link";
-		ResponseEntity<BatchDetails> batchDetailsByCourseName = service.getBatchDetailsByCourseName(spreadsheetId,courseName);
-     List<String> emailList = readData.stream()
-    		    .filter(row -> row.size() > 2 && row.get(9) instanceof String) // Ensure row size and check if element is String
-    		    .filter(row -> "No".equalsIgnoreCase((String) row.get(23))) // Filter rows by a specific field (e.g., "Status") being equal to "No"
-    		    .map(row -> (String) row.get(2)) // Extract email addresses from the filtered rows
-    		    .collect(Collectors.toList());
-     	System.out.println("emailList : "+emailList);
-     
-//     if(!emailList.isEmpty()) {
-//    	 boolean sendWhatsAppLink = util.sendWhatsAppLink(emailList, subject, batchDetailsByCourseName.getBody().getWhatsAppLink());
-//    	 if(sendWhatsAppLink) {
-//    		 
-//    	 }
-			return true;
-//     }
-     
-//	return false;
+		List<String> emailList = readData.stream().filter(row -> row.size() > 2 && row.get(9) instanceof String).filter(
+				row -> courseName.equalsIgnoreCase((String) row.get(9)) && "No".equalsIgnoreCase((String) row.get(23)))
+				.map(row -> (String) row.get(2)).collect(Collectors.toList());
+		  log.info("Found {} emails by course name: {}", emailList.size(), courseName);
+		return emailList;
 	}
 
+	public synchronized void processAndBulkUpdate(String spreadsheetId, String courseName) throws IOException {
+		List<List<Object>> readData = repo.readData(spreadsheetId);
+		List<String> emailsToUpdate = readData.stream().filter(row -> row.size() > 2 && row.get(9) instanceof String)
+				.filter(row -> courseName.equalsIgnoreCase((String) row.get(9))
+						&& "No".equalsIgnoreCase((String) row.get(23)))
+				.map(row -> (String) row.get(2)).collect(Collectors.toList());
+
+		if (!emailsToUpdate.isEmpty()) {
+			   log.info("Bulk updating WhatsApp link for {} emails", emailsToUpdate.size());
+			bulkUpdateWhatsAppLink(spreadsheetId, emailsToUpdate, courseName);
+		}
+	}
+
+	private void bulkUpdateWhatsAppLink(String spreadsheetId, List<String> emails, String courseName)
+			throws IOException {
+		   log.info("Processing and bulk updating in spreadsheetId: {} for courseName: {}", spreadsheetId, courseName);
+		List<List<Object>> readData = repo.readData(spreadsheetId);
+
+		for (String email : emails) {
+			TraineeDto trainee = readData.stream().filter(list -> list.contains(email)).findFirst()
+					.map(wrapper::listToDto).orElse(null);
+			 if (trainee != null) {
+			trainee.getOthersDto().setSendWhatsAppLink("Yes");
+			ResponseEntity<String> update = registrationService.update(spreadsheetId, email, trainee);
+			  log.info("Bulk update WhatsAppLinkSend for email {}: {}", email, update);
+			 } else {
+                 log.warn("Trainee not found for email: {}", email);
+             }
+		}
+	}
+
+	@Override
+	public boolean sendWhatsAppLink(String spreadsheetId, String courseName) throws IOException {
+
+		List<String> emailByCourseName = this.getEmailByCourseName(spreadsheetId, courseName);
+		String subject = "WhatsApp Link";
+		ResponseEntity<BatchDetails> batchDetailsByCourseName = service.getBatchDetailsByCourseName(spreadsheetId,
+				courseName);
+		if (!emailByCourseName.isEmpty()) {
+
+			boolean sendWhatsAppLink = util.sendWhatsAppLink(emailByCourseName, subject,
+					batchDetailsByCourseName.getBody().getWhatsAppLink());
+			if (sendWhatsAppLink == true) {
+				log.info("WhatsApp link sent successfully for courseName: {}", courseName);
+				this.processAndBulkUpdate(spreadsheetId, courseName);
+				return true;
+			} else {
+                log.warn("Failed to send WhatsApp link for courseName: {}", courseName);
+            }
+        } else {
+            log.warn("No emails found for courseName: {}", courseName);
+        }
+		return false;
+	}
+
+	
+	
 }

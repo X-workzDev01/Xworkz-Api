@@ -19,18 +19,17 @@ public class LoginController {
 
 	@Autowired
 	private LoginService service;
-	
-	private static final Logger logger = LoggerFactory.getLogger(LoginController.class);
 
+	private static final Logger log = LoggerFactory.getLogger(LoginController.class);
 
 	@PostMapping("/login")
 	public ResponseEntity<String> login(@RequestParam String email) {
-		try { 
-			logger.info("Logging in with email: {}", email);
+		try {
+			log.info("Logging in with email: {}", email);
 			return service.validateLogin(email);
 		} catch (IOException e) {
 
-			 logger.error("An error occurred during login", e);
+			log.error("An error occurred during login", e);
 			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("An error occured");
 		}
 
@@ -39,15 +38,13 @@ public class LoginController {
 	@PostMapping("/otp")
 	public ResponseEntity<String> validateOtp(@RequestParam String email, @RequestParam int otp) {
 		try {
-			 logger.info("Validating OTP for email: {}, OTP: {}", email, otp);
+			log.info("Validating OTP for email: {}, OTP: {}", email, otp);
 			return service.validateOTP(email, otp);
 		} catch (FileNotFoundException e) {
 
-			logger.error("An error occurred during OTP validation", e);
+			log.error("An error occurred during OTP validation", e);
 			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("An error occured");
 		}
 	}
-	
-	
 
 }
