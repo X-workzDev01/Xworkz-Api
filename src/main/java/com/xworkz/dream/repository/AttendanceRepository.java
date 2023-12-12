@@ -9,7 +9,7 @@ import com.google.api.services.sheets.v4.model.ValueRange;
 public interface AttendanceRepository {
 	public boolean writeAttendance(String spreadsheetId, List<Object> row, String range) throws IOException;
 
-	List<List<Object>> getEmail(String spreadsheetId, String attendanceInfoRange) throws IOException;
+	List<List<Object>> getId(String spreadsheetId, String attendanceInfoRange) throws IOException;
 
 	public boolean everyDayAttendance(String spreadsheetId, List<Object> row, String range) throws IOException;
 

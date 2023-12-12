@@ -58,8 +58,10 @@ public class AttendanceRepositoryImpl implements AttendanceRepository {
 
 	public boolean writeAttendance(String spreadsheetId, List<Object> row, String range) throws IOException {
 		List<List<Object>> values = new ArrayList<>();
-		values.add(row);
-		System.err.println("row                  " + row);
+		List<Object> rowData = new ArrayList<>();
+		rowData.add(""); // Placeholder for A column
+		rowData.addAll(row.subList(1, row.size())); // Start from the second element (B column)
+		values.add(rowData);
 		ValueRange body = new ValueRange().setValues(values);
 		sheetsService.spreadsheets().values().append(spreadsheetId, range, body).setValueInputOption("USER_ENTERED")
 				.execute();
@@ -85,8 +87,7 @@ public class AttendanceRepositoryImpl implements AttendanceRepository {
 	}
 
 	@Override
-
-	public List<List<Object>> getEmail(String spreadsheetId, String range) throws IOException {
+	public List<List<Object>> getId(String spreadsheetId, String range) throws IOException {
 		ValueRange response = sheetsService.spreadsheets().values().get(spreadsheetId, range).execute();
 		return response.getValues();
 	}

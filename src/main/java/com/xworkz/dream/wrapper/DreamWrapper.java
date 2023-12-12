@@ -398,14 +398,13 @@ public class DreamWrapper {
 	public List<Object> listOfAttendance(AttendanceDto dto) {
 
 		List<Object> row = new ArrayList<Object>();
-
+		row.add(dto.getAttendanceId());
 		row.add(dto.getId());
-		row.add(dto.getBasicInfo().getTraineeName());
-		row.add(dto.getBasicInfo().getEmail());
-		row.add(dto.getBasicInfo().getContactNumber());
 		row.add(dto.getCourseInfo().getCourse());
-		row.add(dto.getCourseInfo().getBranch());
-		row.add(dto.getCourseInfo().getBatchType());
+		row.add(dto.getTotalAbsent());
+		row.add(dto.getAbsentDate());
+		row.add(dto.getReason());
+		
 
 		return row;
 
@@ -415,124 +414,53 @@ public class DreamWrapper {
 
 		List<Object> row = new ArrayList<Object>();
 
+		row.add(dto.getAttendanceId());
 		row.add(dto.getId());
-		row.add(dto.getBasicInfo().getTraineeName());
-		row.add(dto.getBasicInfo().getEmail());
-		row.add(dto.getBasicInfo().getContactNumber());
 		row.add(dto.getCourseInfo().getCourse());
-		row.add(dto.getCourseInfo().getBranch());
-		row.add(dto.getCourseInfo().getBatchTiming());
-		row.add(LocalDate.now().toString());
-		row.add(dto.getMarkAs());
-		row.add("true");
+		row.add(dto.getTotalAbsent());
+		row.add(dto.getAbsentDate());
+		row.add(dto.getReason());
+		
 
 		return row;
 
 	}
 
 	public AttendanceDto attendanceListToDto(List<Object> row) {
-		AttendanceDto attendanceDto = new AttendanceDto(0, new BasicInfoDto(), new CourseDto(), null, null, null, null,
-				null, null, null, null, null);
+		AttendanceDto attendanceDto = new AttendanceDto(null, null, new CourseDto(), null, null, null, null);
 		int rowSize = row.size();
-
 		if (rowSize > 0 && row.get(0) != null && !row.get(0).toString().isEmpty()) {
-			attendanceDto.setId(Integer.valueOf(row.get(0).toString()));
+			attendanceDto.setAttendanceId(Integer.valueOf(row.get(0).toString()));
 		}
-
 		if (rowSize > 1 && row.get(1) != null && !row.get(1).toString().isEmpty()) {
-			attendanceDto.getBasicInfo().setTraineeName((String) row.get(1));
+			attendanceDto.setId(Integer.valueOf(row.get(1).toString()));
 		}
-
 		if (rowSize > 2 && row.get(2) != null && !row.get(2).toString().isEmpty()) {
-			attendanceDto.getBasicInfo().setEmail((String) row.get(2));
+			attendanceDto.getCourseInfo().setCourse((String) row.get(2));
 		}
-
 		if (rowSize > 3 && row.get(3) != null && !row.get(3).toString().isEmpty()) {
-			attendanceDto.getBasicInfo().setContactNumber(Long.parseLong(row.get(3).toString()));
+			attendanceDto.setTotalAbsent(Integer.valueOf(row.get(3).toString()));
 		}
-
 		if (rowSize > 4 && row.get(4) != null && !row.get(4).toString().isEmpty()) {
-			attendanceDto.getCourseInfo().setCourse((String) row.get(4));
+			attendanceDto.setAbsentDate((String) row.get(4));
 		}
 		if (rowSize > 5 && row.get(5) != null && !row.get(5).toString().isEmpty()) {
-			attendanceDto.getCourseInfo().setBranch((String) row.get(5));
+			attendanceDto.setReason((String) row.get(5));
 		}
-
-		if (rowSize > 6 && row.get(6) != null && !row.get(6).toString().isEmpty()) {
-			attendanceDto.getCourseInfo().setBatchTiming((String) row.get(6));
-		}
-
-		if (rowSize > 7 && row.get(7) != null && !row.get(7).toString().isEmpty()) {
-			attendanceDto.setDate((String) row.get(7));
-		}
-
-		if (rowSize > 8 && row.get(8) != null && !row.get(8).toString().isEmpty()) {
-			attendanceDto.setMarkAs((String) (row.get(8)));
-		}
-		if (rowSize > 9 && row.get(9) != null && !row.get(9).toString().isEmpty()) {
-			attendanceDto.setIsButton(Boolean.parseBoolean((row.get(9).toString())));
-		}
-		if (rowSize > 10 && row.get(10) != null && !row.get(10).toString().isEmpty()) {
-			attendanceDto.setYColor((String) row.get(10));
-		}
-		if (rowSize > 10 && row.get(11) != null && !row.get(11).toString().isEmpty()) {
-			attendanceDto.setNColor((String) row.get(11));
-		}
-
 		return attendanceDto;
 	}
 
-	public AttendanceDto attendanceListEverydayToDto(List<Object> row) {
-
-		AttendanceDto attendanceDto = new AttendanceDto(0, new BasicInfoDto(), new CourseDto(), null, null, null, null,
-				null, null, null, null, null);
-
-		int rowSize = row.size();
-
-		if (rowSize > 0 && row.get(0) != null && !row.get(0).toString().isEmpty()) {
-			attendanceDto.setId(Integer.valueOf(row.get(0).toString()));
+	public void setValueAttendaceDto(AttendanceDto dto) {
+		if (dto.getTotalAbsent() == null) {
+			dto.setTotalAbsent(0);
+		}
+		if (dto.getAbsentDate() == null) {
+			dto.setAbsentDate("NA");
+		}
+		if (dto.getReason() == null) {
+			dto.setReason("NA");
 		}
 
-		if (rowSize > 1 && row.get(1) != null && !row.get(1).toString().isEmpty()) {
-			attendanceDto.getBasicInfo().setTraineeName((String) row.get(1));
-		}
-
-		if (rowSize > 2 && row.get(2) != null && !row.get(2).toString().isEmpty()) {
-			attendanceDto.getBasicInfo().setEmail((String) row.get(2));
-		}
-
-		if (rowSize > 3 && row.get(3) != null && !row.get(3).toString().isEmpty()) {
-			attendanceDto.getBasicInfo().setContactNumber(Long.parseLong(row.get(3).toString()));
-		}
-
-		if (rowSize > 4 && row.get(4) != null && !row.get(4).toString().isEmpty()) {
-			attendanceDto.getCourseInfo().setCourse((String) row.get(4));
-		}
-		if (rowSize > 5 && row.get(5) != null && !row.get(5).toString().isEmpty()) {
-			attendanceDto.getCourseInfo().setBranch((String) row.get(5));
-		}
-
-		if (rowSize > 6 && row.get(6) != null && !row.get(6).toString().isEmpty()) {
-			attendanceDto.getCourseInfo().setBatchTiming((String) row.get(6));
-		}
-
-		if (rowSize > 7 && row.get(7) != null && !row.get(7).toString().isEmpty()) {
-			attendanceDto.setPresent((String) row.get(7));
-		}
-
-		if (rowSize > 8 && row.get(8) != null && !row.get(8).toString().isEmpty()) {
-			attendanceDto.setAbsent((row.get(8).toString()));
-		}
-		if (rowSize > 9 && row.get(9) != null && !row.get(9).toString().isEmpty()) {
-			attendanceDto.setIsButton(Boolean.parseBoolean((row.get(9).toString())));
-		}
-		if (rowSize > 10 && row.get(10) != null && !row.get(10).toString().isEmpty()) {
-			attendanceDto.setYColor((String) row.get(10));
-		}
-		if (rowSize > 11 && row.get(11) != null && !row.get(11).toString().isEmpty()) {
-			attendanceDto.setNColor((String) row.get(11));
-		}
-		return attendanceDto;
 	}
 
 	public EnquiryDto validateEnquiry(EnquiryDto dto) {
