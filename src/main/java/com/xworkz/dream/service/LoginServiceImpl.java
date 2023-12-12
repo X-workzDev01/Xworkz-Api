@@ -6,9 +6,10 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
-import java.util.Collections;
+
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletResponse;
 
@@ -40,8 +41,6 @@ public class LoginServiceImpl implements LoginService {
 	@Value("${login.cookieDomain}")
 	private String cookieDomain;
 
-	//private static final int otpLenth = 6;
-	//private static final int otpExpiration = 10;
 	List<User> users = new ArrayList<User>();
 
 	@Autowired
@@ -51,7 +50,7 @@ public class LoginServiceImpl implements LoginService {
 	@Autowired
 	private DreamRepository repo;
 
-	private static final Logger logger = LoggerFactory.getLogger(LoginServiceImpl.class);
+	private static final Logger log = LoggerFactory.getLogger(LoginServiceImpl.class);
 
 	private List<User> getUsers() throws IOException {
 	    Yaml yaml = new Yaml();
@@ -77,42 +76,42 @@ public class LoginServiceImpl implements LoginService {
 
 	@Override
 	public ResponseEntity<String> validateLogin(String email) throws IOException {
-	    logger.info("Validating login for email: {}", email);
+	    log.info("Validating login for email: {}", email);
 
 	    User user = findUserByEmail(email);
 
 	    if (user == null) {
-	        logger.warn("User not found for email: {}", email);
+	        log.warn("User not found for email: {}", email);
 	        return ResponseEntity.status(HttpStatus.NOT_FOUND).body("User Not Found");
 	    }
 
 	    int otp = util.generateOTP();
 
-	    logger.debug("Generated OTP: {}", otp);
-	    //System.out.println(cookieDomain);
+	    log.debug("Generated OTP: {}", otp);
+	   
 
 	    boolean otpSent = util.sendOtptoEmail(user.getEmail(), otp);
 	    if (otpSent) {
-	        logger.info("OTP sent successfully for email: {}", email);
+	        log.info("OTP sent successfully for email: {}", email);
 	        user.setOtp(otp);
 	        user.setOtpExpiration(LocalDateTime.now().plusMinutes(10));
 
 	        return ResponseEntity.ok("OTP sent");
 	    } else {
-	        logger.error("Failed to send OTP for email: {}", email);
+	        log.error("Failed to send OTP for email: {}", email);
 	        return ResponseEntity.status(HttpStatus.FOUND).body("User Found, OTP Not Sent");
 	    }
 	}
 
 	@Override
 	public ResponseEntity<String> validateOTP(String email, int otp) throws FileNotFoundException {
-	    logger.info("Validating OTP for email: {}, OTP: {}", email, otp);
+	    log.info("Validating OTP for email: {}, OTP: {}", email, otp);
 
 	    HttpServletResponse response = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes())
 	            .getResponse();
 
 	    if (response == null) {
-	        logger.error("Failed to get HttpServletResponse");
+	        log.error("Failed to get HttpServletResponse");
 	        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Internal Server Error");
 	    }
 
@@ -124,12 +123,12 @@ public class LoginServiceImpl implements LoginService {
 
 	    User user = findUser(email);
 
-	    logger.debug("Found user: {}", user);
+	    log.debug("Found user: {}", user);
 
 	    LocalDateTime currentDateTime = LocalDateTime.now();
 
 	    if (user == null) {
-	        logger.warn("User not found for email: {}", email);
+	        log.warn("User not found for email: {}", email);
 	        return ResponseEntity.status(HttpStatus.NOT_FOUND).body("User not Found, Login First");
 	    }
 
@@ -149,23 +148,23 @@ public class LoginServiceImpl implements LoginService {
 	                response.addCookie(cookie);
 	                boolean updateStatus = updateLoginInfo(user, sheetId);
 	                if (updateStatus) {
-	                    logger.info("Login successful for email: {}", email);
+	                    log.info("Login successful for email: {}", email);
 	                    return ResponseEntity.ok("Login successful");
 	                } else {
-	                    logger.error("Failed to update login info for email: {}", email);
+	                    log.error("Failed to update login info for email: {}", email);
 	                    return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
 	                            .body("Failed to update login info");
 	                }
 	            } else {
-	                logger.warn("Wrong OTP for email: {}", email);
+	                log.warn("Wrong OTP for email: {}", email);
 	                return ResponseEntity.status(HttpStatus.OK).body("OTP Wrong");
 	            }
 	        } else {
-	            logger.warn("OTP expired for email: {}", email);
+	            log.warn("OTP expired for email: {}", email);
 	            return ResponseEntity.status(HttpStatus.GONE).body("OTP EXPIRED");
 	        }
 	    } else {
-	        logger.error("OTP not saved for email: {}", email);
+	        log.error("OTP not saved for email: {}", email);
 	        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("OTP IS NOT SAVED & GENERATE AGAIN");
 	    }
 	}
@@ -174,11 +173,11 @@ public class LoginServiceImpl implements LoginService {
 
 	private boolean updateLoginInfo(User user, String spreadsheetId) {
 	    if (user == null || user.getEmail() == null) {
-	        logger.warn("User or user email is null");
+	        log.warn("User or user email is null");
 	        return false;
 	    }
 
-	    logger.info("Updating login info for user: {}", user.getEmail());
+	    log.info("Updating login info for user: {}", user.getEmail());
 
 	    user.setLoginTime(LocalDateTime.now().toString());
 	    List<Object> list = DreamWrapper.userToList(user);
@@ -187,7 +186,7 @@ public class LoginServiceImpl implements LoginService {
 	        boolean status = repo.updateLoginInfo(spreadsheetId, list);
 	        return status;
 	    } catch (IOException e) {
-	        logger.error("Failed to update login info for user: {}", user.getEmail(), e);
+	        log.error("Failed to update login info for user: {}", user.getEmail(), e);
 	        e.printStackTrace();
 	    }
 	    return false;
@@ -195,17 +194,17 @@ public class LoginServiceImpl implements LoginService {
 
 
 	private User findUserByEmail(String email) throws IOException {
-		logger.debug("Finding user by email: {}", email);
+		log.debug("Finding user by email: {}", email);
 
 		if (email == null) {
-			logger.warn("Email is null");
+			log.warn("Email is null");
 			return null;
 		}
 
 		List<User> users = getUsers();
 
 		if (users == null) {
-			logger.error("Failed to retrieve users");
+			log.error("Failed to retrieve users");
 			return null;
 		}
 
@@ -214,18 +213,18 @@ public class LoginServiceImpl implements LoginService {
 			return userEmail != null && userEmail.equalsIgnoreCase(email);
 		}).findFirst().orElse(null);
 
-		logger.debug("Found user by email: {}", email);
+		log.debug("Found user by email: {}", email);
 
 		return gotUser;
 	}
 
 	private User findUser(String email) throws FileNotFoundException {
-		logger.debug("Finding user by email: {}", email);
+		log.debug("Finding user by email: {}", email);
 
 		User gotUser = users.stream().filter(user -> user.getEmail() != null && user.getEmail().equalsIgnoreCase(email))
 				.findFirst().orElse(null);
 
-		logger.debug("Found user by email: {}", email);
+		log.debug("Found user by email: {}", email);
 
 		return gotUser;
 	}

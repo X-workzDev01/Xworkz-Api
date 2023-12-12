@@ -4,6 +4,8 @@ import java.io.IOException;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -21,12 +23,13 @@ import io.swagger.annotations.ApiOperation;
 public class BirthdayController {
 	@Autowired
 	private BirthadayService service;
-	
+	private Logger log = LoggerFactory.getLogger(BirthdayController.class);
 	
 	@ApiOperation(value = "To update Birth day info while registering")
 	@PostMapping("/birthDayInfo")
 	public ResponseEntity<String> updateBirthDayInfo(@RequestHeader String spreadsheetId, @RequestBody TraineeDto dto,
 			HttpServletRequest request) throws IllegalAccessException, IOException {
+		 log.info("Request received for updateBirthDayInfo. SpreadsheetId: {}", spreadsheetId);
 		return service.saveBirthDayInfo(spreadsheetId, dto, request);
 
 	}

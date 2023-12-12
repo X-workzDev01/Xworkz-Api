@@ -14,28 +14,27 @@ import com.xworkz.dream.dto.TraineeDto;
 import freemarker.template.TemplateException;
 
 public interface RegistrationService {
-	
+
 	public ResponseEntity<String> writeData(String spreadsheetId, TraineeDto dto, HttpServletRequest request)
 			throws MessagingException, TemplateException;
 
 	public ResponseEntity<String> emailCheck(String spreadsheetId, String email, HttpServletRequest request);
 
 	public ResponseEntity<String> contactNumberCheck(String spreadsheetId, Long contactNumber,
-			HttpServletRequest request);	
+			HttpServletRequest request);
 
-
-	public ResponseEntity<SheetsDto> readData(String spreadsheetId, int startingIndex, int maxRows);
+	public ResponseEntity<SheetsDto> readData(String spreadsheetId, int startingIndex, int maxRows, String courseName);
 
 	public List<TraineeDto> getLimitedRows(List<List<Object>> values, int startingIndex, int maxRows);
 
-	public List<TraineeDto> filterData(String spreadsheetId, String searchValue) throws IOException;
+	public List<TraineeDto> filterData(String spreadsheetId, String searchValue, String courseName) throws IOException;
 
 	public ResponseEntity<String> update(String spreadsheetId, String email, TraineeDto dto);
 
 	public ResponseEntity<?> getDetailsByEmail(String spreadsheetId, String email, HttpServletRequest request)
 			throws IOException;
-	
-	public ResponseEntity<List<TraineeDto>> getSearchSuggestion(String spreadsheetId, String value,
+
+	public ResponseEntity<List<TraineeDto>> getSearchSuggestion(String spreadsheetId, String value,String courseName,
 			HttpServletRequest request);
 
 }

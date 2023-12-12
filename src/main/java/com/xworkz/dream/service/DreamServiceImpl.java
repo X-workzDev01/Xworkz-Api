@@ -21,6 +21,7 @@ public class DreamServiceImpl implements DreamService {
 
 	@Override
 	public String verifyEmails(String email) {
+		 logger.info("Verifying email: {}", email);
 		return emailableClient.verifyEmail(email, API_KEY);
 	}
 
