@@ -1,6 +1,7 @@
 spring:
    profiles:
       active: prod
+
    freemarker:
     template-loader-path: classpath:/templates/
 
@@ -11,19 +12,19 @@ sheets:
   contactNumberRange: D3:D
   dropdownRange: dropDowns!A2:I
   loginInfoRange: loginInfo!A2:B
-  followUpRange: followUp!A2:M
+  followUpRange: followUp!A2:N
   followUpStatus: followUpStatus!A2:L
-  rowStartRange: A
+  rowStartRange: B
   rowEndRange: AC    
   traineeSheetName: xworkzApi!
   followUpSheetName: followUp!
-  followUprowStartRange: A2
-  followUprowEndRange: M
+  followUprowStartRange: B2
+  followUprowEndRange: N
   followUpEmailRange: followUp!C2:C
-  idRange: xworkzApi!A3:A  
+  idRange: xworkzApi!A3:A   
   followUpRowCurrentStartRange: G
   followUpRowCurrentEndRange: H
-  emailAndNameRange: xworkzApi!A2:C
+  emailAndNameRange: xworkzApi!A2:J
   batchDetailsSheetName: batchDetails!
   batchDetailsStartRange: A2
   batchDetailsEndRange: I
@@ -31,9 +32,9 @@ sheets:
   batchDetailsRange: batchDetails!A2:I 
   batchIdRange: batchDetails!A2:A
   dateOfBirthDetailsSheetName: dateOfBirthDetails!
-  dateOfBirthDetailsRange: dateOfBirthDetails!A2:D
+  dateOfBirthDetailsRange: dateOfBirthDetails!A2:E
   birthdayRange: dateOfBirthDetails!A2:A
-  attendanceInfoRange: attendanceInfo!A2:J
+  attendanceInfoRange: attendanceInfo!A2:M
   attendanceInfoIDRange: attendanceInfo!A2:J
   followUpStatusIdRange: followUpStatus!A2:A
   attendanceInfoByName: attendanceInfo!A2:E
@@ -48,21 +49,37 @@ sheets:
   attendanceListDefaultRange: attendanceInfo!J2:j
   attendanceInfoMarkAs:  J
 
+
+  spring:
+     cache:
+      redis:
+        time-to-live: '600000'
+
+
+
+mailChimp:
+  userName: 7FzbzzHIVQSVJVz5r4n/bGa/lhNWJCXUq6oqBxBCTYQ=
+  password: +mgZp4MIPWMTkaJ/pwphDw==
+  smtpHostChimp: yj/mpkyGHCjMIsVaHCMyxQZ4EBNjg/Ep6CbXhjKA7v0=
+
 mail:
    smtpHost: smtp.office365.com
    smtpPort: 587
    userName: xworkzdev@outlook.com
    password: KeepIT@Temp789 
-logging:
-  level:
-    root: INFO
+
+
     
 login:
   userFile: classpath:users.yml
+  teamFile: classpath:team.yml
+
   
 
 server:
   port : 8081
+
+  
 
 ---
 

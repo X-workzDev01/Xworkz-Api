@@ -1,19 +1,13 @@
 package com.xworkz.dream.util;
 
 import java.io.IOException;
-import java.io.StringWriter;
-import java.security.KeyPair;
 import java.security.SecureRandom;
 import java.util.ArrayList;
 import java.util.Base64;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Properties;
 import java.util.Random;
-import java.util.Set;
-import java.util.stream.Collectors;
-
+import java.util.Objects;
 import javax.mail.Authenticator;
 import javax.mail.Message;
 import javax.mail.MessagingException;
@@ -26,25 +20,18 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Profile;
-import org.springframework.mail.javamail.JavaMailSender;
-import org.springframework.mail.javamail.JavaMailSenderImpl;
+
 import org.springframework.mail.javamail.MimeMessageHelper;
+import org.springframework.mail.javamail.MimeMessagePreparator;
 import org.springframework.stereotype.Component;
-import org.springframework.ui.Model;
-import org.springframework.ui.freemarker.FreeMarkerTemplateUtils;
-import org.springframework.web.servlet.view.freemarker.FreeMarkerConfigurer;
+
 import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.context.Context;
-
-import com.google.api.client.util.ArrayMap;
 import com.xworkz.dream.dto.StatusDto;
 import com.xworkz.dream.dto.TraineeDto;
 import com.xworkz.dream.dto.utils.Team;
-
-import freemarker.template.Configuration;
-import freemarker.template.Template;
+import com.xworkz.dream.service.ChimpMailService;
 import freemarker.template.TemplateException;
 
 @Component
@@ -61,18 +48,17 @@ public class UtilDev implements DreamUtil {
 	private String userName;
 	@Value("${mail.password}")
 	private String password;
+	@Value("${mailChimp.userName}")
+	private String chimpUserName;
+	@Autowired
+	private ChimpMailService chimpMailService;
 
 	@Autowired
-	private JavaMailSender mailSender;
+	private EncryptionHelper helper;
 
-	@Autowired
-	private Configuration freemarkerConfig;
-
-	private static final Logger logger = LoggerFactory.getLogger(UtilLocal.class);
+	private static final Logger logger = LoggerFactory.getLogger(UtilDev.class);
 
 	public int generateOTP() {
-		// Generate a random OTP
-		int otpLength = 6;
 		int otpMinValue = 100000;
 		int otpMaxValue = 999999;
 		Random random = new Random();
@@ -81,30 +67,44 @@ public class UtilDev implements DreamUtil {
 	}
 
 	public boolean sendOtptoEmail(String email, int otp) {
-
+		if (email == null) {
+			logger.warn("Email is null");
+			return false;
+		}
 		String subject = "OTP for Login";
-		String body = "Hi , Your Otp is  " + otp + "   Thank You!";
 		logger.debug("Sending email to {}: Subject: {},", email, subject);
-		return sendEmail(email, subject, body);
+		otpMailService(email, otp, subject);
+		return true;
 	}
 
+	@Override
 	public boolean sendNotificationToEmail(List<Team> teamList, List<StatusDto> notificationStatus) {
+		if (teamList == null || notificationStatus == null) {
+			logger.warn("teamList or notificationStatus is null");
+			return false;
+		}
+
 		List<String> body = new ArrayList<String>();
 		for (int i = 0; i < notificationStatus.size(); i++) {
 			body.add(" Candidate name  :" + notificationStatus.get(i).getBasicInfo().getTraineeName() + "\tEmail :"
 					+ notificationStatus.get(i).getBasicInfo().getEmail() + "Contactt No :"
 					+ notificationStatus.get(i).getBasicInfo().getContactNumber() + "\n");
 		}
-		String subject = "Follow Up Candidate Detiles";
+		String subject = "Follow Up Candidate Details";
 		logger.debug("Sending email to {}: Subject: {},", teamList, subject);
-		List<String> recipents = new ArrayList<String>();
-		teamList.stream().forEach(e -> recipents.add(e.getEmail()));
-		bulkSendMail(recipents, subject, notificationStatus);
+		List<String> recipients = new ArrayList<String>();
+		teamList.stream().filter(Objects::nonNull).forEach(e -> recipients.add(e.getEmail()));
+		sendBulkMailToNotification(recipients, subject, notificationStatus);
 
 		return true;
 	}
 
 	public boolean sendEmail(String email, String subject, String body) {
+		if (email == null || subject == null || body == null) {
+			logger.warn("Email, subject, or body is null");
+			return false;
+		}
+
 		// Email properties
 		Properties props = new Properties();
 		props.put("mail.smtp.auth", "true");
@@ -132,9 +132,7 @@ public class UtilDev implements DreamUtil {
 			logger.info("Email sent to {}: Subject: {}", email, subject);
 			return true; // Email sent successfully
 		} catch (MessagingException e) {
-			System.out.println("");
 			logger.error("Failed to send email ", e);
-			e.printStackTrace();
 			return false; // Failed to send email
 		}
 	}
@@ -149,125 +147,130 @@ public class UtilDev implements DreamUtil {
 	@Override
 	public boolean sendCourseContent(String email, String recipientName)
 			throws MessagingException, IOException, TemplateException {
-		try {
-			Properties props = new Properties();
-			props.put("mail.smtp.auth", "true");
-			props.put("mail.smtp.starttls.enable", "true");
-			props.put("mail.smtp.host", "smtp.office365.com");
-			props.put("mail.smtp.port", smtpPort);
-
-			Session session = Session.getInstance(props, new javax.mail.Authenticator() {
-				protected PasswordAuthentication getPasswordAuthentication() {
-					return new PasswordAuthentication(userName, password);
-				}
-			});
-			MimeMessage message = new MimeMessage(session);
-			message.setFrom(new InternetAddress(userName)); // Replace with your email address
-			message.setRecipients(Message.RecipientType.TO, InternetAddress.parse(email)); // Use the provided email
-																							// parameter
-			message.setSubject("Course Content");
-
-			// Assuming renderFreemarkerTemplate correctly generates the content
-			String content = renderJspTemplate("CourseContentTemplate", recipientName);
-			message.setContent(content, "text/html; charset=UTF-8");
-			Transport.send(message);
-
-			return true; // Email sent successfully
-		} catch (MessagingException e) {
-			// Handle the messaging exception appropriately
-			e.printStackTrace();
-			throw e;
+		if (email == null || recipientName == null) {
+			logger.warn("Email or recipientName is null");
+			return false;
 		}
-	}
-
-	private String renderJspTemplate(String templateName, String recipientName) throws IOException, TemplateException {
-		Template template = freemarkerConfig.getTemplate(templateName + ".html"); // Use .ftl extension
-
-		Map<String, Object> model = new HashMap<>();
-		model.put("recipientName", recipientName);
-
-		return FreeMarkerTemplateUtils.processTemplateIntoString(template, model);
-	}
-
-	public boolean bulkSendMail(List<String> recipients, String subject, List<StatusDto> body) {
-
-		String from = userName;
-		Properties properties = new Properties();
-		properties.put("mail.smtp.auth", "true");
-		properties.put("mail.smtp.starttls.enable", "true");
-		properties.put("mail.smtp.host", "smtp.office365.com");
-		properties.put("mail.smtp.port", "587"); // SMTP port (587 for TLS)
-
-		Session session = Session.getInstance(properties, new javax.mail.Authenticator() {
-			protected PasswordAuthentication getPasswordAuthentication() {
-				return new PasswordAuthentication(userName, password);
-			}
-		});
-
-		try {
-			MimeMessage message = new MimeMessage(session);
-			message.setFrom(new InternetAddress(from));
-			for (String recipient : recipients) {
-				message.addRecipient(Message.RecipientType.TO, new InternetAddress(recipient));
-			}
-			Context context = new Context();
-			context.setVariable("listDto", body);
-			String emailContent = templateEngine.process("FollowCandidateFollowupTemplete", context);
-			MimeMessageHelper helper = new MimeMessageHelper(message, true);
-			helper.setText(emailContent);
-			message.setSubject(subject);
-			message.setText(body.toString());
-			message.setContent(emailContent, "text/html; charset=UTF-8");
-//			Transport.send(message);
-			System.out.println("Emails sent successfully.");
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		return false;
-
+		return this.sendCourseContentMailChimp(email, recipientName);
 	}
 
 	@Override
 	public boolean sendWhatsAppLink(List<String> traineeEmail, String subject, String whatsAppLink) {
-		String from = userName;
-		Properties properties = new Properties();
-		properties.put("mail.smtp.auth", "true");
-		properties.put("mail.smtp.starttls.enable", "true");
-		properties.put("mail.smtp.host", "smtp.office365.com");
-		properties.put("mail.smtp.port", "587"); // SMTP port (587 for TLS)
-
-		Session session = Session.getInstance(properties, new javax.mail.Authenticator() {
-			protected PasswordAuthentication getPasswordAuthentication() {
-				return new PasswordAuthentication(userName, password);
-			}
-		});
-
-		try {
-			MimeMessage message = new MimeMessage(session);
-			message.setFrom(new InternetAddress(from));
-			for (String recipient : traineeEmail) {
-				message.addRecipient(Message.RecipientType.TO, new InternetAddress(recipient));
-
-			}
-
-			Context context = new Context();
-			context.setVariable("whatsAppLink", whatsAppLink);
-			String emailContent = templateEngine.process("WhatsAppLinkContentTemplate", context);
-			MimeMessageHelper helper = new MimeMessageHelper(message, true);
-			helper.setText(emailContent);
-			message.setSubject(subject);
-			message.setText(whatsAppLink.toString());
-			System.err.println("4444444444444 " + emailContent);
-			message.setContent(emailContent, "text/html; charset=UTF-8");
-			System.out.println("running           " + message);
-
-			Transport.send(message);
-			System.out.println("Emails sent successfully.");
-		} catch (Exception e) {
-			logger.error(e.getMessage());
-		}
-		return false;
+		return sendWhatsAppLinkToChimp(traineeEmail, subject, whatsAppLink);
 
 	}
 
+	@Override
+	public void sendBirthadyEmail(String traineeEmail, String subject, String name) {
+		if(traineeEmail ==null || name ==null) {
+			logger.warn("Email or name is null");
+			
+		}
+		 sendBirthadyEmailChimp(traineeEmail, subject, name);
+	}
+
+	
+	// ================================================================================================
+	// this is mail chimp if use below code send mail through contact@xworkz.in
+	private boolean otpMailService(String email, int otp, String subject) {
+		Context context = new Context();
+
+		context.setVariable("onetimepass", otp);
+		String content = templateEngine.process("otpMailTemplate", context);
+
+		MimeMessagePreparator messagePreparator = mimeMessage -> {
+
+			MimeMessageHelper messageHelper = new MimeMessageHelper(mimeMessage);
+			messageHelper.setFrom(helper.decrypt(chimpUserName));
+			messageHelper.setTo(email);
+			messageHelper.setSubject(subject);
+			messageHelper.setText(content, true);
+		};
+
+		return chimpMailService.validateAndSendMailByMailOtp(messagePreparator);
+	}
+
+
+	private boolean sendBulkMailToNotification(List<String> recipients, String subject, List<StatusDto> body) {
+		Context context = new Context();
+
+		context.setVariable("listDto", body);
+		String content = templateEngine.process("FollowCandidateFollowupTemplete", context);
+
+		MimeMessagePreparator messagePreparator = mimeMessage -> {
+
+			MimeMessageHelper messageHelper = new MimeMessageHelper(mimeMessage);
+			messageHelper.setFrom("hareeshahr.xworkz@gmail.com");
+			for (String recepent : recipients) {
+				messageHelper.addTo(new InternetAddress(recepent));
+			}
+			messageHelper.setSubject(subject);
+			messageHelper.setText(content, true);
+		};
+
+		return chimpMailService.validateAndSendMailByMailIdDev(messagePreparator);
+	}
+
+	private boolean sendWhatsAppLinkToChimp(List<String> traineeEmail, String subject, String whatsAppLink) {
+		Context context = new Context();
+
+		context.setVariable("whatsAppLink", whatsAppLink);
+		String content = templateEngine.process("WhatsAppLinkContentTemplate", context);
+
+		MimeMessagePreparator messagePreparator = mimeMessage -> {
+
+			MimeMessageHelper messageHelper = new MimeMessageHelper(mimeMessage);
+			messageHelper.setFrom("hareeshahr.xworkz@gmail.com");
+			for (String recepent : traineeEmail) {
+				messageHelper.addTo(new InternetAddress(recepent));
+			}
+			messageHelper.setSubject(subject); 
+			messageHelper.setText(content, true);
+		};
+
+		return chimpMailService.validateAndSendMailByMailIdDev(messagePreparator);
+	}
+
+	private boolean sendCourseContentMailChimp(String email, String recipientName)
+
+			throws MessagingException, IOException, TemplateException {
+
+		Context context = new Context();
+		context.setVariable("recipientName", recipientName);
+		String content = templateEngine.process("CourseContentTemplate", context);
+		MimeMessagePreparator messagePreparator = mimeMessage -> {
+			MimeMessageHelper messageHelper = new MimeMessageHelper(mimeMessage);
+			messageHelper.setFrom("hareeshahr.xworkz@gmail.com");
+			messageHelper.setTo(email);
+			messageHelper.setSubject("Course Content");
+			messageHelper.setText(content, true);
+		};
+
+		return chimpMailService.validateAndSendMailByMailIdDev(messagePreparator);
+	}
+
+	@Override
+	public boolean sms(TraineeDto dto) {
+		return true;
+	}
+	
+	private void sendBirthadyEmailChimp(String traineeEmail, String subject, String name) {
+		Context context = new Context();
+
+		context.setVariable("name", name);
+		String content = templateEngine.process("BirthadyaMail", context);
+
+		MimeMessagePreparator messagePreparator = mimeMessage -> {
+
+			MimeMessageHelper messageHelper = new MimeMessageHelper(mimeMessage);
+			messageHelper.setFrom("hareeshahr.xworkz@gmail.com");
+
+			messageHelper.setTo(traineeEmail);
+
+			messageHelper.setSubject(subject);
+			messageHelper.setText(content, true);
+		};
+
+		 chimpMailService.validateAndSendMail(messagePreparator);
+	}
 }
