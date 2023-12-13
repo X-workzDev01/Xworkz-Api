@@ -1,6 +1,7 @@
-package com.xworkz.dream.dto;
+package com.xworkz.dream.feesDtos;
 
 import lombok.AllArgsConstructor;
+import lombok.Data;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -9,21 +10,18 @@ import lombok.ToString;
 @Getter
 @Setter
 @ToString
-@NoArgsConstructor
 @AllArgsConstructor
-public class FeesDto {
-
-	private String name;
+@NoArgsConstructor
+@Data
+public class FeesHistoryDto {
+	private Integer id;
 	private String email;
-	private String batchStartDate;
-	private String reminderDate;
 	private String lastFeesPaidDate;
 	private String transectionId;
-	private String totalAmount;
 	private String paidAmount;
-	private String balance;
-	private String status;
-	private String mailSendStatus;
-	private String comments;
+	private String paymentMode;
+	private String followupstatus;
+	private String feesfollowupDate;
+	private String followupCallbackDate;
 
 }

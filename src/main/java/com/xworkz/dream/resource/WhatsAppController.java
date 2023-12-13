@@ -40,10 +40,10 @@ public class WhatsAppController {
 	@GetMapping("/getWhatsAppLink")
 	public String getWhatsAppLinkByCourseName(@RequestHeader String spreadsheetId, @RequestParam String courseName)
 			throws IOException {
-		log.info("Getting WhatsApp link - SpreadsheetId: {}, CourseName: {}", spreadsheetId, courseName);
-		ResponseEntity<BatchDetails> batchDetailsByCourseName = service.getBatchDetailsByCourseName(spreadsheetId,
-				courseName);
-		return batchDetailsByCourseName.getBody().getWhatsAppLink();
+  	log.info("Getting WhatsApp link - SpreadsheetId: {}, CourseName: {}", spreadsheetId, courseName);
+		BatchDetails batchDetailsByCourseName = service.getBatchDetailsByCourseName(spreadsheetId, courseName);
+		return batchDetailsByCourseName.getWhatsAppLink();
+	
 	}
 
 	@GetMapping("/sendWhatsAppLink")

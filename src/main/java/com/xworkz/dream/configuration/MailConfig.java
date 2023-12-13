@@ -34,17 +34,11 @@ public class MailConfig {
 	@Bean
 	public JavaMailSender javaMailSender() {
 		JavaMailSenderImpl mailSender = new JavaMailSenderImpl();
-		// Set mail sender properties (host, port, username, password, etc.)
-
-		// Set mail sender properties
 		mailSender.setHost(smtpHost);
 		mailSender.setPort(smtpPort);
-
 		Properties props = mailSender.getJavaMailProperties();
 		props.put("mail.smtp.starttls.enable", "true");
-		// props.put("mail.smtp.starttls.enable", "true");
 		props.put("mail.smtp.auth", "true");
-
 		return mailSender;
 	}
 
@@ -55,6 +49,7 @@ public class MailConfig {
 		mailSender.setPort(587);
 		mailSender.setUsername("hareeshahr.xworkz@gmail.com");
 		mailSender.setPassword("vtgf meha ujpx ficd");
+
 		Properties javaMailProperties = new Properties();
 		javaMailProperties.put("mail.smtp.starttls.enable", "true");
 		javaMailProperties.put("mail.smtp.auth", "true");

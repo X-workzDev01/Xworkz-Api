@@ -160,6 +160,4 @@ public class AttendanceServiceImpl implements AttendanceService {
 		return -1;
 	}
 
-
-
 }

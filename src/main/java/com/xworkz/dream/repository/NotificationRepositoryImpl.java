@@ -30,8 +30,8 @@ import com.google.auth.oauth2.GoogleCredentials;
 
 @Repository
 public class NotificationRepositoryImpl implements NotificationRepository {
-	@Value("${sheets.followUpStatus}")
-	private String followUpStatus;
+	@Value("${sheets.followUpRange}")
+	private String followUpRange;
 	private Sheets sheetsService;
 	private static final JsonFactory JSON_FACTORY = GsonFactory.getDefaultInstance();
 	private static final List<String> SCOPES = Collections.singletonList(SheetsScopes.SPREADSHEETS);
@@ -56,7 +56,6 @@ public class NotificationRepositoryImpl implements NotificationRepository {
 		sheetsService = new Sheets.Builder(GoogleNetHttpTransport.newTrustedTransport(), JSON_FACTORY,
 				requestInitializer).setApplicationName(applicationName).build();
 	}
-
 	@Override
 	public List<List<Object>> notification(String spreadsheetId) throws IOException {
 		ValueRange response = sheetsService.spreadsheets().values().get(spreadsheetId, followUpStatus).execute();

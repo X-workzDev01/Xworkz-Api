@@ -6,15 +6,13 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
-
+import com.xworkz.dream.dto.FollowUpDto;
 import com.xworkz.dream.dto.SheetNotificationDto;
-import com.xworkz.dream.dto.StatusDto;
 import com.xworkz.dream.dto.utils.StatusList;
 import com.xworkz.dream.dto.utils.Team;
 import com.xworkz.dream.repository.NotificationRepository;
@@ -41,41 +39,41 @@ public class NotificationServiceImpl implements NotificationService {
 		List<String> statusCheck = list.getStatusCheck();
 
 		LocalTime time = LocalTime.of(17, 59, 01, 500_000_000);
-		List<StatusDto> notificationStatus = new ArrayList<StatusDto>();
-		List<StatusDto> today = new ArrayList<StatusDto>();
-		List<StatusDto> yesterday = new ArrayList<StatusDto>();
-		List<StatusDto> afterFoureDay = new ArrayList<StatusDto>();
+		List<FollowUpDto> notificationStatus = new ArrayList<FollowUpDto>();
+		List<FollowUpDto> today = new ArrayList<FollowUpDto>();
+		List<FollowUpDto> yesterday = new ArrayList<FollowUpDto>();
+		List<FollowUpDto> afterFoureDay = new ArrayList<FollowUpDto>();
 		if (spreadsheetId != null) {
-			List<List<Object>> listOfData = notificationRepository.notification(spreadsheetId);
+			List<List<Object>> listOfData = notificationRepository
+					.notification(spreadsheetId);
 			if (listOfData != null) {
 
 				if (!listOfData.isEmpty()) {
 					if (email != null) {
+						System.out.println(listOfData);
 						listOfData.stream().forEach(e -> {
-							StatusDto dto = wrapper.listToStatusDto(e);
-							if (LocalDate.now().isEqual(LocalDate.parse(dto.getCallBack()))
-									&& email.equalsIgnoreCase(dto.getAttemptedBy())
-									&& statusCheck.contains(dto.getAttemptStatus())) {
+							FollowUpDto dto = wrapper.listToFollowUpDTO(e);
+							if (LocalDate.now().isEqual(LocalDate.parse(dto.getCallback()))
+									&& statusCheck.contains(dto.getCurrentStatus())) {
 
 								today.add(dto);
 							}
-							if (LocalDate.now().minusDays(1).isEqual(LocalDate.parse(dto.getCallBack()))
-									&& email.equalsIgnoreCase(dto.getAttemptedBy())
-									&& statusCheck.contains(dto.getAttemptStatus())) {
+							if (LocalDate.now().minusDays(1).isEqual(LocalDate.parse(dto.getCallback()))
+									&& statusCheck.contains(dto.getCurrentStatus())) {
 								yesterday.add(dto);
-
+ 
 							}
-							if (LocalDate.now().plusDays(4).isEqual(LocalDate.parse(dto.getCallBack()))
-									&& email.equalsIgnoreCase(dto.getAttemptedBy())
-									&& statusCheck.contains(dto.getAttemptStatus())) {
+							if (LocalDate.now().plusDays(4).isEqual(LocalDate.parse(dto.getCallback()))
+
+									&& statusCheck.contains(dto.getCurrentStatus())) {
 								afterFoureDay.add(dto);
 
 							}
 
 						});
-						log.debug(
-								"After checking all notification conditions. Result: Today={}, Yesterday={}, AfterFourDays={}",
-								today, yesterday, afterFoureDay);
+						log.info(
+								"After Checking All notification condition result {}---------------------------------- {} ================{}",
+								yesterday, today, afterFoureDay);
 						SheetNotificationDto dto = new SheetNotificationDto(yesterday, today, afterFoureDay);
 
 						return dto;
@@ -83,16 +81,15 @@ public class NotificationServiceImpl implements NotificationService {
 					}
 
 					listOfData.stream().forEach(e -> {
-						StatusDto dto = wrapper.listToStatusDto(e);
-						if (dto.getCallBack() != null && dto.getCallBack().toString() != "NA") {
-
+						FollowUpDto dto = wrapper.listToFollowUpDTO(e);
+						if (dto.getCallback() != null && dto.getCallback().toString() != "NA") {
 							if (LocalDateTime.now()
-									.isAfter(LocalDateTime.of((LocalDate.parse(dto.getCallBack())), time))
+									.isAfter(LocalDateTime.of((LocalDate.parse(dto.getCallback())), time))
 									&& LocalDateTime.now().isBefore(LocalDateTime
-											.of((LocalDate.parse(dto.getCallBack())), time.plusMinutes(26)))) {
+											.of((LocalDate.parse(dto.getCallback())), time.plusMinutes(26)))) {
 
-								if (statusCheck.contains(dto.getAttemptStatus())
-										&& LocalDate.now().isEqual(LocalDate.parse(dto.getCallBack()))) {
+								if (statusCheck.contains(dto.getCurrentStatus())
+										&& LocalDate.now().isEqual(LocalDate.parse(dto.getCallback()))) {
 
 									notificationStatus.add(dto);
 

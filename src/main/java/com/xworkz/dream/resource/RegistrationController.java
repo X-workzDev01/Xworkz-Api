@@ -10,7 +10,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.cache.CacheManager;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -40,9 +39,6 @@ public class RegistrationController {
 	private RegistrationService service;
 
 	@Autowired
-	private CacheManager manager;
-
-	@Autowired
 	public RegistrationController(RegistrationService service) {
 		this.service = service;
 	}
@@ -67,9 +63,10 @@ public class RegistrationController {
 	@ApiOperation(value = "To get Suggestions while search")
 	@GetMapping("register/suggestion/{courseName}")
 	public ResponseEntity<List<TraineeDto>> getSearchSuggestion(@RequestHeader String spreadsheetId,
-			@RequestParam String value,@PathVariable String courseName, HttpServletRequest request) {
+			@RequestParam String value, @PathVariable String courseName, HttpServletRequest request) {
 		log.info("Getting suggestions for search: {}", value);
-		return service.getSearchSuggestion(spreadsheetId, value, courseName, request);
+		return service.getSearchSuggestion(spreadsheetId, value, courseName);
+		
 
 	}
 
@@ -115,10 +112,12 @@ public class RegistrationController {
 
 	@ApiOperation(value = "To get Registration details by email")
 	@GetMapping("/readByEmail")
-	public ResponseEntity<?> getDataByEmail(@RequestHeader String spreadsheetId, @RequestParam String email,
-			HttpServletRequest request) throws IOException {
+
+	public ResponseEntity<?> getDataByEmail(@RequestHeader String spreadsheetId, @RequestParam String email)
+			throws IOException {
 		log.info("Getting details by email - SpreadsheetId: {}, Email: {}", spreadsheetId, email);
-		return service.getDetailsByEmail(spreadsheetId, email, request);
+		return ResponseEntity.ok(service.getDetailsByEmail(spreadsheetId, email));
+
 	}
 
 }

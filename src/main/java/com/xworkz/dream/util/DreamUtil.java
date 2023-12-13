@@ -5,9 +5,7 @@ import java.util.List;
 
 import javax.mail.MessagingException;
 
-import org.springframework.mail.javamail.MimeMessagePreparator;
-
-import com.xworkz.dream.dto.StatusDto;
+import com.xworkz.dream.dto.FollowUpDto;
 import com.xworkz.dream.dto.TraineeDto;
 import com.xworkz.dream.dto.utils.Team;
 
@@ -17,7 +15,7 @@ public interface DreamUtil {
 
 	public boolean sendOtptoEmail(String email, int otp);
 
-	public boolean sendNotificationToEmail(List<Team> teamList, List<StatusDto> notificationStatus);
+	public boolean sendNotificationToEmail(List<Team> teamList, List<FollowUpDto> notificationStatus);
 
 	public int generateOTP();
 
@@ -29,6 +27,7 @@ public interface DreamUtil {
 	public boolean sendWhatsAppLink(List<String> traineeEmail, String subject, String whatsAppLink);
 
 	public boolean sms(TraineeDto dto);
-	
+
 	public void sendBirthadyEmail(String traineeEmail, String subject, String name);
+
 }
