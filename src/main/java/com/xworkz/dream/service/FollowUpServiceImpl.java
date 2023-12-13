@@ -36,7 +36,6 @@ import com.xworkz.dream.repository.RegisterRepository;
 import com.xworkz.dream.wrapper.DreamWrapper;
 
 @Service
-
 public class FollowUpServiceImpl implements FollowUpService {
 
 	@Autowired
@@ -214,7 +213,6 @@ public class FollowUpServiceImpl implements FollowUpService {
 				followUpDto.getBasicInfo().getEmail());
 		AuditDto existingAdminDto = followUpDto.getAdminDto();
 		AuditDto adminDto = new AuditDto();
-
 		if (existingAdminDto != null) {
 			adminDto.setCreatedBy(existingAdminDto.getCreatedBy());
 			adminDto.setCreatedOn(existingAdminDto.getCreatedOn());
@@ -236,11 +234,14 @@ public class FollowUpServiceImpl implements FollowUpService {
 
 			} else {
 				followUpDto.setCallback(callBack);
-			}
+				followUpDto.setFlag("Active");
 
+			}
 		}
 		if (callBack != null && callBack.equals("NA")) {
-			followUpDto.setCallback(LocalDate.now().toString());
+			followUpDto.setCallback(LocalDate.now().plusDays(1).toString());
+			followUpDto.setFlag("Active");
+
 		}
 		followUpDto.setAdminDto(adminDto);
 		followUpDto.setCourseName("NA");
@@ -315,7 +316,7 @@ public class FollowUpServiceImpl implements FollowUpService {
 		List<List<Object>> traineeData = repository.readData(spreadsheetId);
 
 		if (status != null && !status.isEmpty() && lists != null) {
-			if (status.toString().equalsIgnoreCase(Status.Enquiry.toString())) {
+			if (status.toString().equalsIgnoreCase(Status.ENQUIRY.toString())) {
 				List<List<Object>> data = lists.stream()
 						.filter(list -> list.stream()
 								.anyMatch(value -> value != null && value.toString().equalsIgnoreCase(status)))

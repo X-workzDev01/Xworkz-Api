@@ -63,10 +63,11 @@ public class RegistrationController {
 	@ApiOperation(value = "To get Suggestions while search")
 	@GetMapping("register/suggestion/{courseName}")
 	public ResponseEntity<List<TraineeDto>> getSearchSuggestion(@RequestHeader String spreadsheetId,
-			@RequestParam String value, @PathVariable String courseName, HttpServletRequest request) {
+
+			@RequestParam String value, @PathVariable String courseName) {
 		log.info("Getting suggestions for search: {}", value);
 		return service.getSearchSuggestion(spreadsheetId, value, courseName);
-		
+
 
 	}
 

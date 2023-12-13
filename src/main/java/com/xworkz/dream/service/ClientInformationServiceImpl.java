@@ -14,6 +14,7 @@ import com.xworkz.dream.cache.ClientCacheService;
 import com.xworkz.dream.dto.ClientDataDto;
 import com.xworkz.dream.dto.ClientDto;
 import com.xworkz.dream.repository.ClientRepository;
+import com.xworkz.dream.util.ClientInformationUtil;
 import com.xworkz.dream.wrapper.ClientWrapper;
 import com.xworkz.dream.wrapper.DreamWrapper;
 
@@ -29,17 +30,22 @@ public class ClientInformationServiceImpl implements ClientInformationService {
 	@Autowired
 	private ClientCacheService clientCacheService;
 
+	@Autowired
+	private ClientInformationUtil clientInformationUtil;
+
 	private static final Logger log = LoggerFactory.getLogger(ClientInformationServiceImpl.class);
 
 	@Override
 	public String writeClientInformation(ClientDto dto) throws IOException, IllegalAccessException {
 		if (dto != null) {
-			clientWrapper.setValuesToClientDto(dto);
+
+			clientInformationUtil.setValuesToClientDto(dto);
 			List<Object> list = dreamWrapper.extractDtoDetails(dto);
 			log.info("in client service, Extracted values: {}", list);
 			if (clientRepository.writeClientInformation(list)) {
 				log.debug("adding newly added data to the cache, clientInformation :{}", list);
-				clientCacheService.addNewDtoToCache("clientInformation", "ListOfClientDto", dto);
+
+				clientCacheService.addNewDtoToCache("clientInformation", "ListOfClientDto", list);
 				return "Client Information saved successfully";
 			} else {
 				return "Client Information not saved";
@@ -56,30 +62,36 @@ public class ClientInformationServiceImpl implements ClientInformationService {
 		List<List<Object>> listOfData = clientRepository.readData();
 		if (listOfData != null) {
 			List<ClientDto> ListOfClientDto = listOfData.stream().map(clientWrapper::listToClientDto)
+					.filter(dto ->!dto.getStatus().equalsIgnoreCase("InActive"))
 					.sorted(Comparator.comparing(ClientDto::getId, Comparator.reverseOrder()))
 					.collect(Collectors.toList());
 			List<ClientDto> clientData = ListOfClientDto.stream().skip(startingIndex).limit(maxRows)
 					.collect(Collectors.toList());
 			return new ClientDataDto(clientData, ListOfClientDto.size());
 		} else {
-			return null;
+
+			return new ClientDataDto(null, 0);
 		}
 	}
 
 	@Override
 	public boolean checkComanyName(String companyName) throws IOException {
 		log.info("checkComanyName service class " + companyName);
+
+		List<List<Object>> listOfData = clientRepository.readData();
 		if (companyName != null) {
-			return clientRepository.readData().stream().map(clientWrapper::listToClientDto)
-					.anyMatch(clientDto -> companyName.equals(clientDto.getCompanyName()));
-		} else {
-			return false;
+			if (listOfData != null) {
+				return listOfData.stream().map(clientWrapper::listToClientDto)
+						.anyMatch(clientDto -> companyName.equalsIgnoreCase(clientDto.getCompanyName()));
+			}
 		}
+		return false;
 	}
 
 	@Override
 	public ClientDto getClientDtoById(int companyId) throws IOException {
 		ClientDto clientDto = null;
+		log.info("find the dto by id");
 		if (companyId != 0) {
 			clientDto = clientRepository.readData().stream().map(clientWrapper::listToClientDto)
 					.filter(ClientDto -> companyId == ClientDto.getId()).findFirst().orElse(null);
@@ -89,4 +101,19 @@ public class ClientInformationServiceImpl implements ClientInformationService {
 		}
 		return null;
 	}
+
+	@Override
+	public boolean checkEmail(String companyEmail) throws IOException {
+		// TODO Auto-generated method stub
+		log.info("checking company Email: {}", companyEmail);
+		List<List<Object>> listOfData = clientRepository.readData();
+		if (companyEmail != null) {
+			if (listOfData != null) {
+				return listOfData.stream().map(clientWrapper::listToClientDto)
+						.anyMatch(clientDto -> companyEmail.equalsIgnoreCase(clientDto.getCompanyEmail()));
+			}
+		}
+		return false;
+	}
+
 }

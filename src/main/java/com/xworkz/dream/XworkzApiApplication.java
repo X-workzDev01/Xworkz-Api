@@ -1,8 +1,5 @@
 package com.xworkz.dream;
 
-import java.util.ArrayList;
-import java.util.Collection;
-
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.cache.annotation.EnableCaching;

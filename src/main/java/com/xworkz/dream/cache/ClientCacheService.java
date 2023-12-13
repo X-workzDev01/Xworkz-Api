@@ -1,8 +1,9 @@
 package com.xworkz.dream.cache;
 
-import com.xworkz.dream.dto.ClientDto;
+import java.util.List;
 
 public interface ClientCacheService {
-	
-	abstract void addNewDtoToCache(String cacheName, String key, ClientDto dto);
+
+	abstract void addNewDtoToCache(String cacheName, String key, List<Object> list);
+	abstract void addHRDetailsToCache(String cacheName, String key, List<Object> list);
 }

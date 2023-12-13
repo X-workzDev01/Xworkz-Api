@@ -65,7 +65,6 @@ public class DreamWrapper {
 		FollowUpDto followUpDto = new FollowUpDto(0, new BasicInfoDto(), null, null, null, null, null, null, null,
 				null);
 		int rowSize = row.size();
-		System.err.println(row);
 
 		if (rowSize > 0 && row.get(0) != null && !row.get(0).toString().isEmpty()) {
 			followUpDto.setId(Integer.valueOf(row.get(0).toString()));
@@ -103,7 +102,7 @@ public class DreamWrapper {
 			followUpDto.setCurrentStatus((String) row.get(8));
 		}
 
-		if (rowSize > 8 && row.get(9) != null && !row.get(9).toString().isEmpty()) {
+		if (rowSize > 9 && row.get(9) != null && !row.get(9).toString().isEmpty()) {
 			followUpDto.setCallback((String) row.get(9));
 		}
 
@@ -416,7 +415,6 @@ public class DreamWrapper {
 		row.add(dto.getTotalAbsent());
 		row.add(dto.getAbsentDate());
 		row.add(dto.getReason());
-		
 
 		return row;
 
@@ -432,7 +430,6 @@ public class DreamWrapper {
 		row.add(dto.getTotalAbsent());
 		row.add(dto.getAbsentDate());
 		row.add(dto.getReason());
-		
 
 		return row;
 

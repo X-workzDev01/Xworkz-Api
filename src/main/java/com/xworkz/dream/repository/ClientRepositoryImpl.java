@@ -15,6 +15,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.ResourceLoader;
 import org.springframework.stereotype.Repository;
@@ -28,8 +29,6 @@ import com.google.api.services.sheets.v4.SheetsScopes;
 import com.google.api.services.sheets.v4.model.ValueRange;
 import com.google.auth.http.HttpCredentialsAdapter;
 import com.google.auth.oauth2.GoogleCredentials;
-import com.xworkz.dream.dto.ClientDto;
-import com.xworkz.dream.wrapper.ClientWrapper;
 
 @Repository
 public class ClientRepositoryImpl implements ClientRepository {
@@ -50,9 +49,7 @@ public class ClientRepositoryImpl implements ClientRepository {
 	public String sheetId;
 
 	@Autowired
-	private ClientWrapper clientWrapper;
 
-	@Autowired
 	private ResourceLoader resourceLoader;
 	private static final Logger log = LoggerFactory.getLogger(ClientRepositoryImpl.class);
 
@@ -94,15 +91,13 @@ public class ClientRepositoryImpl implements ClientRepository {
 		return true;
 	}
 
-	@Override
-	// @Cacheable(value = "clientInformation", key = "'ListOfClientDto'", unless =
-	// "#result == null")
+
+	@Cacheable(value = "clientInformation", key = "'ListOfClientDto'")
 	public List<List<Object>> readData() throws IOException {
 		log.info(" client repository, reading client information ");
-
-		List<List<Object>> values = sheetsService.spreadsheets().values().get(sheetId, clientInformationReadRange)
-				.execute().getValues();
-
-		return values;
+		ValueRange valueRange = sheetsService.spreadsheets().values().get(sheetId, clientInformationReadRange)
+				.execute();
+			List<List<Object>> values = valueRange.getValues();
+			return values;
 	}
 }

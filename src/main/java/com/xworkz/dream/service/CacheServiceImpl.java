@@ -214,9 +214,7 @@ public class CacheServiceImpl implements CacheService {
 			ValueWrapper valueWrapper = cache.get(spreadSheetId);
 			if (valueWrapper != null && valueWrapper.get() instanceof List) {
 				List<Object> contactNumbers = new ArrayList<Object>(Arrays.asList(email));
-				
-				
-				
+
 			}
 		}
 
@@ -227,6 +225,7 @@ public class CacheServiceImpl implements CacheService {
 	public void addContactNumberToCache(String cacheName, String spreadSheetId, Long contactNumber) {
 		Cache cache = cacheManager.getCache(cacheName);
 		if (cache != null) {
+
 			log.info("Contact number added into cache: {}", contactNumber);
 			@SuppressWarnings("unchecked")
 			ValueWrapper valueWrapper = cache.get(spreadSheetId);

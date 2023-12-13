@@ -6,9 +6,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.cache.annotation.CachePut;
-import org.springframework.cache.annotation.Cacheable;
-import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -17,6 +14,7 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
 import com.xworkz.dream.dto.utils.FeesWithHistoryDto;
 import com.xworkz.dream.feesDtos.FeesDto;
 import com.xworkz.dream.feesDtos.FeesUiDto;
@@ -31,13 +29,14 @@ public class FeesController {
 
 	@Autowired
 	private FeesService feesService;
+
+	private Logger log = LoggerFactory.getLogger(FeesController.class);
 	@Value("${sheets.getFeesDetiles}")
 	private String getFeesDetilesRange;
 	private String range;
 	@Value("${sheets.getFeesDetilesfollowupRange}")
 	private String getFeesDetilesfollowupRange;
 
-	private static final Logger log = LoggerFactory.getLogger(FeesController.class);
 
 	@ApiOperation("Saving feesDetiles")
 	@PostMapping("/saveFees")

@@ -182,6 +182,7 @@ public class UtilProd implements DreamUtil {
 	@Override
 
 	public void sendBirthadyEmail(String traineeEmail, String subject, String name) {
+
 		if (traineeEmail == null || name == null) {
 			logger.warn("Email or name is null");
 
@@ -219,13 +220,13 @@ public class UtilProd implements DreamUtil {
 
 			MimeMessageHelper messageHelper = new MimeMessageHelper(mimeMessage);
 			messageHelper.setFrom(helper.decrypt(chimpUserName));
+			messageHelper.addTo(recipients.get(1));
 			for (String recepent : recipients) {
-				messageHelper.addTo(new InternetAddress(recepent));
+				messageHelper.addCc(new InternetAddress(recepent));
 			}
 			messageHelper.setSubject(subject);
 			messageHelper.setText(content, true);
 		};
-
 		return chimpMailService.validateAndSendMailByMailId(messagePreparator);
 	}
 
@@ -309,6 +310,7 @@ public class UtilProd implements DreamUtil {
 			return false;
 		}
 	}
+
 	private void sendBirthadyEmailChimp(String traineeEmail, String subject, String name) {
 		Context context = new Context();
 
@@ -325,7 +327,6 @@ public class UtilProd implements DreamUtil {
 			messageHelper.setSubject(subject);
 			messageHelper.setText(content, true);
 		};
-
 		chimpMailService.validateAndSendBirthdayMail(messagePreparator);
 	}
 

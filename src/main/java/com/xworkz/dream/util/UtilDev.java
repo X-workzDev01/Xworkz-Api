@@ -165,11 +165,12 @@ public class UtilDev implements DreamUtil {
 	@Override
 
 	public void sendBirthadyEmail(String traineeEmail, String subject, String name) {
-		if (traineeEmail == null || name == null) {
-			logger.warn("Email or name is null");
 
+		if(traineeEmail ==null || name ==null) {
+			logger.warn("Email or name is null");
+			
 		}
-		sendBirthadyEmailChimp(traineeEmail, subject, name);
+		 sendBirthadyEmailChimp(traineeEmail, subject, name);
 	}
 
 	// ================================================================================================
@@ -202,8 +203,9 @@ public class UtilDev implements DreamUtil {
 
 			MimeMessageHelper messageHelper = new MimeMessageHelper(mimeMessage);
 			messageHelper.setFrom("hareeshahr.xworkz@gmail.com");
+			messageHelper.addTo(recipients.get(0));
 			for (String recepent : recipients) {
-				messageHelper.addTo(new InternetAddress(recepent));
+				messageHelper.addCc(new InternetAddress(recepent));
 			}
 			messageHelper.setSubject(subject);
 			messageHelper.setText(content, true);
@@ -254,6 +256,7 @@ public class UtilDev implements DreamUtil {
 	public boolean sms(TraineeDto dto) {
 		return true;
 	}
+
 	private void sendBirthadyEmailChimp(String traineeEmail, String subject, String name) {
 		Context context = new Context();
 
@@ -270,8 +273,7 @@ public class UtilDev implements DreamUtil {
 			messageHelper.setSubject(subject);
 			messageHelper.setText(content, true);
 		};
-
-		chimpMailService.validateAndSendMail(messagePreparator);
+		 chimpMailService.validateAndSendMail(messagePreparator);
 	}
 
 }

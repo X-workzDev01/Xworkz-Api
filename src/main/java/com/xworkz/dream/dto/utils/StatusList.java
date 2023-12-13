@@ -18,6 +18,6 @@ public class StatusList {
 			Status.Interested.toString(), Status.RNR.toString(), Status.Not_interested.toString().replace('_', ' '),
 			Status.Incomingcall_not_available.toString().replace('_', ' '),
 			Status.Not_reachable.toString().replace('_', ' '), Status.Let_us_know.toString().replace('_', ' '),
-			Status.Need_online.toString().replace('_', ' ')).collect(Collectors.toList());
+			Status.Need_online.toString().replace('_', ' '),Status.Joining.toString(),Status.ENQUIRY.toString()).collect(Collectors.toList());
 
 }

@@ -1,6 +1,7 @@
 package com.xworkz.dream.resource;
 
 import java.io.IOException;
+import java.util.List;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -28,7 +29,7 @@ public class ClientHrInformationController {
 	private ClientHrService clientHrService;
 
 	@ApiOperation("To save Client information")
-	@PostMapping("/registerclienthrinfo")
+	@PostMapping("/registerclienthr")
 	public String saveClientHrInformation(@RequestBody ClientHrDto clientHrDto)
 			throws IllegalAccessException, IOException {
 		log.info("client Hr controller {}", clientHrDto);
@@ -37,14 +38,15 @@ public class ClientHrInformationController {
 
 	@ApiOperation("To save client HR information")
 	@GetMapping("/hrdetails")
-	public ClientHrData readData(@RequestParam int startingIndex, @RequestParam int maxRows) throws IOException {
+
+	public ClientHrData readData(@RequestParam int startingIndex, @RequestParam int maxRows,@RequestParam int companyId) throws IOException {
 		log.debug("Reading client HR information");
-		return clientHrService.readData(startingIndex, maxRows);
+		return clientHrService.readData(startingIndex, maxRows,companyId);
 	}
 
 	@ApiOperation("To check Whether CompanyName is exists or not")
 	@GetMapping("/hremailcheck")
-	public String checkComanyName(@RequestParam String hrEmail) throws IOException {
+	public String checkHrEmail(@RequestParam String hrEmail) throws IOException {
 		log.info("checking company is already exist or not  {}", hrEmail);
 		if (clientHrService.hrEmailcheck(hrEmail)) {
 			return "Email already exists.";
@@ -53,4 +55,12 @@ public class ClientHrInformationController {
 		}
 	}
 
+	
+	@ApiOperation("To get the HR name based on the companyID")
+	@GetMapping("/gethrdetails")
+	public List<ClientHrDto> getHrNameByCompanyId(@RequestParam int companyId) throws IOException{
+		log.info("get HR name by companyId, {}",companyId);
+		return clientHrService.getHrDetailsByCompanyId(companyId);
+	}
+	
 }

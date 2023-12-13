@@ -11,4 +11,6 @@ public interface ClientInformationService {
 	abstract ClientDataDto readClientData(int startingIndex,int maxRows) throws IOException;
 	abstract boolean checkComanyName(String companyName) throws IOException;
 	abstract ClientDto getClientDtoById(int companyId) throws IOException;
+	abstract boolean checkEmail(String companyEmail) throws IOException;
+
 }
