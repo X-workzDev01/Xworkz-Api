@@ -34,17 +34,13 @@ sheets:
   dateOfBirthDetailsSheetName: dateOfBirthDetails!
   dateOfBirthDetailsRange: dateOfBirthDetails!A2:E
   birthdayRange: dateOfBirthDetails!A2:A
-  attendanceInfoRange: attendanceInfo!A2:M
-  attendanceInfoIDRange: attendanceInfo!A2:J
   followUpStatusIdRange: followUpStatus!A2:A
-  attendanceInfoByName: attendanceInfo!A2:E
-  attendanceList: attendanceList!A2:J
-  attendanceListByEmail: attendanceList!A2:J
-  attendanceListRange: attendanceList!A2:M
   batchDetailsCourseNameRange: batchDetails!B2:B
-  idAttandanceInfoRange: A3:A
-  presentRange: H
-  absentRange: I
+  attendanceInfoRange: attendanceInfo!A2:F
+  attendanceInfoIDRange: attendanceInfo!A2:F
+  attendanceInfoByName: attendanceInfo!A2:F
+  attendanceInfoStartRange : B2
+  attendanceInfoEndRange : F
   AttandanceInfoSheetName: attendanceInfo!
   attendanceListDefaultRange: attendanceInfo!J2:j
   attendanceInfoMarkAs:  J
@@ -62,6 +58,7 @@ sheets:
 
   hrFollowUpInformationRange: ClientHRFollowUpStatus!B2:I
   hrFollowUpInformationReadRange: ClientHRFollowUpStatus!A2:I
+
 
 mailChimp:
   userName: 7FzbzzHIVQSVJVz5r4n/bGa/lhNWJCXUq6oqBxBCTYQ=

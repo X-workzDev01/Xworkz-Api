@@ -163,7 +163,6 @@ public class RegistrationServiceImpl implements RegistrationService {
 				}
 
 				List<TraineeDto> dtos = getLimitedRows(sortedData, startingIndex, maxRows);
-
 				SheetsDto dto = new SheetsDto(dtos, sortedData.size());
 				log.info("Returning response for spreadsheetId: {}", spreadsheetId);
 				return ResponseEntity.ok(dto);
@@ -309,7 +308,6 @@ public class RegistrationServiceImpl implements RegistrationService {
 			return trainee;
 		} else {
 			return null;
-
 		}
 	}
 

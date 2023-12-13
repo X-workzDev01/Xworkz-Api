@@ -254,9 +254,7 @@ public class UtilDev implements DreamUtil {
 	public boolean sms(TraineeDto dto) {
 		return true;
 	}
-
 	private void sendBirthadyEmailChimp(String traineeEmail, String subject, String name) {
-
 		Context context = new Context();
 
 		context.setVariable("name", name);

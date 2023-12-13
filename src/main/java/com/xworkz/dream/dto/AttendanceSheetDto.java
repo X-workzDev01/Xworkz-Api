@@ -13,7 +13,7 @@ import lombok.ToString;
 @NoArgsConstructor
 @AllArgsConstructor
 @ToString
-public class AttadanceSheetDto {
+public class AttendanceSheetDto {
 	private List<AttendanceDto> dto;
 	private Integer size;
 

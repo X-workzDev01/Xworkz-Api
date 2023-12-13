@@ -9,6 +9,8 @@ import java.util.List;
 
 import javax.annotation.PostConstruct;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.Resource;
@@ -21,7 +23,6 @@ import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.gson.GsonFactory;
 import com.google.api.services.sheets.v4.Sheets;
 import com.google.api.services.sheets.v4.SheetsScopes;
-import com.google.api.services.sheets.v4.model.ClearValuesRequest;
 import com.google.api.services.sheets.v4.model.UpdateValuesResponse;
 import com.google.api.services.sheets.v4.model.ValueRange;
 import com.google.auth.http.HttpCredentialsAdapter;
@@ -40,7 +41,7 @@ public class AttendanceRepositoryImpl implements AttendanceRepository {
 	private static final List<String> SCOPES = Collections.singletonList(SheetsScopes.SPREADSHEETS);
 	@Autowired
 	private ResourceLoader resourceLoader;
-
+	private static final Logger log = LoggerFactory.getLogger(AttendanceRepositoryImpl.class);
 	@PostConstruct
 	private void setSheetsService() throws Exception  {
 
@@ -52,56 +53,40 @@ public class AttendanceRepositoryImpl implements AttendanceRepository {
 		HttpRequestInitializer requestInitializer = new HttpCredentialsAdapter(credentials);
 		sheetsService = new Sheets.Builder(GoogleNetHttpTransport.newTrustedTransport(), JSON_FACTORY,
 				requestInitializer).setApplicationName(applicationName).build();
+		 log.info("Sheets service setup complete.");
 	}
 
 	@Override
 
 	public boolean writeAttendance(String spreadsheetId, List<Object> row, String range) throws IOException {
+		  log.info("Writing attendance to sheet...");
 		List<List<Object>> values = new ArrayList<>();
-		values.add(row);
-		System.err.println("row                  " + row);
+		List<Object> rowData = new ArrayList<>();
+		rowData.add(""); // Placeholder for A column
+		rowData.addAll(row.subList(1, row.size())); // Start from the second element (B column)
+		values.add(rowData);
 		ValueRange body = new ValueRange().setValues(values);
 		sheetsService.spreadsheets().values().append(spreadsheetId, range, body).setValueInputOption("USER_ENTERED")
 				.execute();
+		 log.info("Attendance written successfully.");
 		return true;
 	}
 
-	@Override
-
-	public List<List<Object>> attendanceDetilesByEmail(String sheetId, String email, String range) throws IOException {
-		ValueRange response = sheetsService.spreadsheets().values().get(sheetId, range).execute();
-		return response.getValues();
-	}
 
 	@Override
-
-	public boolean everyDayAttendance(String spreadsheetId, List<Object> row, String range) throws IOException {
-		List<List<Object>> values = new ArrayList<>();
-		values.add(row);
-		ValueRange body = new ValueRange().setValues(values);
-		sheetsService.spreadsheets().values().append(spreadsheetId, range, body).setValueInputOption("USER_ENTERED")
-				.execute();
-		return true;
-	}
-
-	@Override
-
-	public List<List<Object>> getEmail(String spreadsheetId, String range) throws IOException {
+	public List<List<Object>> getId(String spreadsheetId, String range) throws IOException {
+		 log.info("Getting data from sheet...");
 		ValueRange response = sheetsService.spreadsheets().values().get(spreadsheetId, range).execute();
+		log.info("Data retrieved successfully.");
 		return response.getValues();
 	}
 
 	@Override
 
 	public UpdateValuesResponse update(String spreadsheetId, String range, ValueRange valueRange) throws IOException {
+		 log.info("Updating sheet data...");
 		return sheetsService.spreadsheets().values().update(spreadsheetId, range, valueRange).setValueInputOption("RAW")
 				.execute();
 	}
 
-	@Override
-	public void clearColumnData(String spreadsheetId, String range) throws IOException {
-		Sheets.Spreadsheets.Values.Clear request = sheetsService.spreadsheets().values().clear(spreadsheetId, range,
-				new ClearValuesRequest());
-		request.execute();
-	}
 }

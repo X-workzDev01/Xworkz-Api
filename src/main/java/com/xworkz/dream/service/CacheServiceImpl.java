@@ -28,6 +28,11 @@ public class CacheServiceImpl implements CacheService {
 
 	private static final Logger log = LoggerFactory.getLogger(CacheServiceImpl.class);
 
+	@Autowired
+	public CacheServiceImpl(CacheManager cacheManager) {
+		this.cacheManager = cacheManager;
+	}
+
 	@SuppressWarnings("unchecked")
 	public void updateCache(String cacheName, String key, List<Object> data) {
 		Cache cache = cacheManager.getCache(cacheName);
@@ -222,7 +227,6 @@ public class CacheServiceImpl implements CacheService {
 	public void addContactNumberToCache(String cacheName, String spreadSheetId, Long contactNumber) {
 		Cache cache = cacheManager.getCache(cacheName);
 		if (cache != null) {
-
 			log.info("Contact number added into cache: {}", contactNumber);
 			@SuppressWarnings("unchecked")
 			ValueWrapper valueWrapper = cache.get(spreadSheetId);

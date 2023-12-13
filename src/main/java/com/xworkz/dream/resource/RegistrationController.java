@@ -66,6 +66,7 @@ public class RegistrationController {
 			@RequestParam String value, @PathVariable String courseName, HttpServletRequest request) {
 		log.info("Getting suggestions for search: {}", value);
 		return service.getSearchSuggestion(spreadsheetId, value, courseName);
+		
 
 	}
 
@@ -116,6 +117,7 @@ public class RegistrationController {
 			throws IOException {
 		log.info("Getting details by email - SpreadsheetId: {}, Email: {}", spreadsheetId, email);
 		return ResponseEntity.ok(service.getDetailsByEmail(spreadsheetId, email));
+
 	}
 
 }

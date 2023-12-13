@@ -210,7 +210,6 @@ public class FollowUpServiceImpl implements FollowUpService {
 	private UpdateValuesResponse setFollowUpDto(String callBack, String spreadsheetId, String currentStatus,
 			String currentlyFollowedBy, FollowUpDto followUpDto, String joiningDate, String range)
 			throws IllegalAccessException, IOException {
-
 		log.info("Setting follow-up DTO. SpreadsheetId: {}, Email: {}", spreadsheetId,
 				followUpDto.getBasicInfo().getEmail());
 		AuditDto existingAdminDto = followUpDto.getAdminDto();

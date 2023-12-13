@@ -309,7 +309,6 @@ public class UtilProd implements DreamUtil {
 			return false;
 		}
 	}
-
 	private void sendBirthadyEmailChimp(String traineeEmail, String subject, String name) {
 		Context context = new Context();
 

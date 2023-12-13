@@ -17,25 +17,23 @@ import lombok.ToString;
 @AllArgsConstructor
 public class AttendanceDto {
 
+	@JsonProperty("attendanceId")
+	private Integer attendanceId;
 	@JsonProperty("id")
-	private int id;
-	@JsonProperty("basicInfo")
-	private BasicInfoDto basicInfo;
+	private Integer id;
 	@JsonProperty("courseInfo")
 	private CourseDto courseInfo;
-	@JsonProperty("preferredLocation")
-	private String preferredLocation;
 	@JsonProperty("attemptStatus")
 	private String attemptStatus;
-	@JsonProperty("date")
-	private String date;
-	@JsonProperty("markAs")
-	private String markAs;
-	private String absent;
-	private String present;
-	private Boolean isButton;
-	private String yColor;
-	private String nColor;
+	@JsonProperty("totalAbsent")
+	private Integer totalAbsent;
+	@JsonProperty("absentDate")
+	private String absentDate;
+	@JsonProperty("reason")
+	private String reason;
+	
+	
+	
 
 
 

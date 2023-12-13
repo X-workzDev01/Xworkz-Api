@@ -31,12 +31,13 @@ public class FeesController {
 
 	@Autowired
 	private FeesService feesService;
-	private Logger log = LoggerFactory.getLogger(FeesController.class);
 	@Value("${sheets.getFeesDetiles}")
 	private String getFeesDetilesRange;
 	private String range;
 	@Value("${sheets.getFeesDetilesfollowupRange}")
 	private String getFeesDetilesfollowupRange;
+
+	private static final Logger log = LoggerFactory.getLogger(FeesController.class);
 
 	@ApiOperation("Saving feesDetiles")
 	@PostMapping("/saveFees")
@@ -60,6 +61,7 @@ public class FeesController {
 		return ResponseEntity
 				.ok(feesService.getDetilesByEmail(email, getFeesDetilesRange, getFeesDetilesfollowupRange));
 	}
+
 
 	@ApiOperation("Get All feesDetiles By Selected Option")
 	@GetMapping("/getFeesDetilesBySelectedOption/{minIndex}/{maxIndex}/{date}/{batch}/{paymentMode}")
