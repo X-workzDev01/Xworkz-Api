@@ -25,14 +25,14 @@ public class TraineeDto {
 	@JsonProperty("othersDto")
 	private OthersDto othersDto ;
 	@JsonProperty("adminDto")
-	private AdminDto adminDto;
+	private AuditDto adminDto;
 
 	public Integer getId() {
 		return id;
 	}
 
 	public TraineeDto(Integer id, BasicInfoDto basicInfo, EducationInfoDto educationInfo, CourseDto courseInfo,
-			AdminDto adminDto) {
+			AuditDto adminDto) {
 		super();
 		this.id = id;
 		this.basicInfo = basicInfo;

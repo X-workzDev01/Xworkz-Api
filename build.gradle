@@ -60,11 +60,6 @@ dependencies {
     implementation group: 'org.json', name: 'json', version: '20230227'
     implementation 'org.reactivestreams:reactive-streams:1.0.3' // or the latest version
     
-
-    
-    
-	
-    
 }
 
 dependencyManagement {
@@ -77,4 +72,6 @@ dependencyManagement {
 tasks.named('test') {
     useJUnitPlatform()
 }
+
+apply plugin : 'eclipse'
 

@@ -10,7 +10,7 @@ import org.springframework.stereotype.Component;
 
 import com.xworkz.dream.constants.FollowUp;
 import com.xworkz.dream.constants.Status;
-import com.xworkz.dream.dto.AdminDto;
+import com.xworkz.dream.dto.AuditDto;
 import com.xworkz.dream.dto.AttendanceDto;
 import com.xworkz.dream.dto.BasicInfoDto;
 import com.xworkz.dream.dto.BatchDetails;
@@ -110,20 +110,21 @@ public class DreamWrapper {
 			followUpDto.setCallback((String) row.get(9));
 		}
 
-		if (rowSize > 10 && row.get(10) != null && !row.get(10).toString().isEmpty()) {
-			if (followUpDto.getAdminDto() == null) {
-				followUpDto.setAdminDto(new AdminDto());
-			}
-			followUpDto.getAdminDto().setCreatedBy(row.get(10).toString());
-		}
 
-		if (rowSize > 11 && row.get(11) != null && !row.get(11).toString().isEmpty()) {
-			if (followUpDto.getAdminDto() == null) {
-				followUpDto.setAdminDto(new AdminDto());
-			}
-			followUpDto.getAdminDto().setCreatedOn(row.get(11).toString());
-		}
-		return followUpDto;
+	    if (rowSize > 10 && row.get(10) != null && !row.get(10).toString().isEmpty()) {
+	        if (followUpDto.getAdminDto() == null) {
+	            followUpDto.setAdminDto(new AuditDto());
+	        }
+	        followUpDto.getAdminDto().setCreatedBy(row.get(10).toString());
+	    }
+
+	    if (rowSize > 11 && row.get(11) != null && !row.get(11).toString().isEmpty()) {
+	        if (followUpDto.getAdminDto() == null) {
+	            followUpDto.setAdminDto(new AuditDto());
+	        }
+	        followUpDto.getAdminDto().setCreatedOn(row.get(11).toString());
+	    }
+	    return followUpDto;
 	}
 
 	public StatusDto listToStatusDto(List<Object> rows) {
@@ -172,7 +173,7 @@ public class DreamWrapper {
 
 	public TraineeDto listToDto(List<Object> row) {
 		TraineeDto traineeDto = new TraineeDto(0, new BasicInfoDto(), new EducationInfoDto(), new CourseDto(),
-				new OthersDto(), new AdminDto());
+				new OthersDto(), new AuditDto());
 
 		// Assuming the list follows this order: id ,traineeName, email, contactNumber,
 		// qualification, stream,
@@ -532,7 +533,7 @@ public class DreamWrapper {
 	}
 
 	public void setAdminDto(TraineeDto dto) {
-		AdminDto admin = new AdminDto();
+		AuditDto admin = new AuditDto();
 		admin.setCreatedBy(dto.getAdminDto().getCreatedBy());
 		admin.setCreatedOn(dto.getAdminDto().getCreatedOn());
 		admin.setUpdatedBy(dto.getAdminDto().getUpdatedBy());

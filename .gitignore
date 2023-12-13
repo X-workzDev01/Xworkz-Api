@@ -3,9 +3,16 @@ HELP.md
 build/
 !gradle/wrapper/gradle-wrapper.jar
 !**/src/main/**/build/
+<<<<<<< HEAD
 .settings/
 /*.log
 src/main/resources/META-INF/*.json
+=======
+!**/src/test/**/build/
+!**/src/main/**/META-INF/
+.settings/
+!**/src/main/resources/META-INF/
+>>>>>>> magic
 
 ### STS ###
 .apt_generated
@@ -15,7 +22,10 @@ src/main/resources/META-INF/*.json
 .settings	
 .springBeans
 .sts4-cache
+<<<<<<< HEAD
 build/
+=======
+>>>>>>> magic
 bin/
 !**/src/main/**/bin/
 !**/src/test/**/bin/
