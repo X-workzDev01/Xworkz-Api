@@ -67,7 +67,7 @@ public class ClientInformationServiceImpl implements ClientInformationService {
 					.collect(Collectors.toList());
 			List<ClientDto> clientData = ListOfClientDto.stream().skip(startingIndex).limit(maxRows)
 					.collect(Collectors.toList());
-			return new ClientDataDto(clientData, ListOfClientDto.size());
+			return new ClientDataDto(clientData, listOfData.size());
 		} else {
 
 			return new ClientDataDto(null, 0);
@@ -104,7 +104,6 @@ public class ClientInformationServiceImpl implements ClientInformationService {
 
 	@Override
 	public boolean checkEmail(String companyEmail) throws IOException {
-		// TODO Auto-generated method stub
 		log.info("checking company Email: {}", companyEmail);
 		List<List<Object>> listOfData = clientRepository.readData();
 		if (companyEmail != null) {

@@ -87,7 +87,7 @@ public class NotificationServiceImpl implements NotificationService {
 								}
 							}
 						});
-						log.info(
+						log.debug(
 								"After Checking All notification condition result {}---------------------------------- {} ================{}",
 								yesterday, today, afterFoureDay);
 
