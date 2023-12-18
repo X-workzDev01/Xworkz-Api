@@ -19,5 +19,6 @@ public class BatchDetailsDto {
 	private String batchStatus;
 	private String whatsAppLink;
 	private Long totalAmount;
+	private Integer totalClass;
 
 }

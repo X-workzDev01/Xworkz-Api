@@ -21,6 +21,8 @@ public class AttendanceDto {
 	private Integer attendanceId;
 	@JsonProperty("id")
 	private Integer id;
+	@JsonProperty("basicInfo")
+	private BasicInfoDto basicInfo;
 	@JsonProperty("courseInfo")
 	private CourseDto courseInfo;
 	@JsonProperty("attemptStatus")
@@ -33,8 +35,4 @@ public class AttendanceDto {
 	private String reason;
 	
 	
-	
-
-
-
 }
