@@ -57,7 +57,6 @@ public class AttendanceRepositoryImpl implements AttendanceRepository {
 	}
 
 	@Override
-
 	public boolean writeAttendance(String spreadsheetId, List<Object> row, String range) throws IOException {
 		  log.info("Writing attendance to sheet...");
 		List<List<Object>> values = new ArrayList<>();
@@ -82,9 +81,9 @@ public class AttendanceRepositoryImpl implements AttendanceRepository {
 	}
 
 	@Override
-
 	public UpdateValuesResponse update(String spreadsheetId, String range, ValueRange valueRange) throws IOException {
 		 log.info("Updating sheet data...");
+		 System.err.println("valueRange : "+valueRange);
 		return sheetsService.spreadsheets().values().update(spreadsheetId, range, valueRange).setValueInputOption("RAW")
 				.execute();
 	}

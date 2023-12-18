@@ -27,20 +27,21 @@ sheets:
   emailAndNameRange: xworkzApi!A2:J
   batchDetailsSheetName: batchDetails!
   batchDetailsStartRange: A2
-  batchDetailsEndRange: I
+  batchDetailsEndRange: K
   batchDetails: batchDetails!A2:I
-  batchDetailsRange: batchDetails!A2:J
+  batchDetailsRange: batchDetails!A2:K
   batchIdRange: batchDetails!A2:A
   dateOfBirthDetailsSheetName: dateOfBirthDetails!
   dateOfBirthDetailsRange: dateOfBirthDetails!A2:E
   birthdayRange: dateOfBirthDetails!A2:A
   followUpStatusIdRange: followUpStatus!A2:A
   batchDetailsCourseNameRange: batchDetails!B2:B
-  attendanceInfoRange: attendanceInfo!A2:F
-  attendanceInfoIDRange: attendanceInfo!A2:F
-  attendanceInfoByName: attendanceInfo!A2:F
-  attendanceInfoStartRange : B2
-  attendanceInfoEndRange : F
+
+  attendanceInfoRange: attendanceInfo!A2:G
+  attendanceInfoIDRange: attendanceInfo!A2:G
+  attendanceInfoByName: attendanceInfo!A2:G
+  attendanceInfoStartRange : B
+  attendanceInfoEndRange : G
   AttandanceInfoSheetName: attendanceInfo!
   attendanceListDefaultRange: attendanceInfo!J2:j
   attendanceInfoMarkAs:  J

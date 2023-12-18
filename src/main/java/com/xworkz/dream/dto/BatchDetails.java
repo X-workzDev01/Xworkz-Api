@@ -22,5 +22,6 @@ public class BatchDetails {
 	private String status;
 	private String whatsAppLink;
 	private Long totalAmount;
+	private Integer totalClass;
 
 }

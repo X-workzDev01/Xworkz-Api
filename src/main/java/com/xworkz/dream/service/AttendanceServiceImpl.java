@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
@@ -46,8 +47,6 @@ public class AttendanceServiceImpl implements AttendanceService {
 	private String attendanceEndRange;
 	@Value("${sheets.AttandanceInfoSheetName}")
 	private String AttandanceInfoSheetName;
-	
-	
 
 	@Autowired
 	private DreamWrapper wrapper;
@@ -83,31 +82,33 @@ public class AttendanceServiceImpl implements AttendanceService {
 	@Override
 	public void markAndSaveAbsentDetails(List<AttendanceDto> attendanceDtoList)
 			throws IOException, IllegalAccessException {
-		 log.info("Marking and saving absent details...");
+		log.info("Marking and saving absent details...");
 		List<List<Object>> attendanceList = attendanceRepository.getId(sheetId, attendanceInfoIDRange);
-		 log.info("attendanceList in attendanceinfo sheet: " + attendanceList);
+		log.info("attendanceList in attendanceinfo sheet: " + attendanceList);
 
 		for (List<Object> list : attendanceList) {
-			AttendanceDto toDto = wrapper.attendanceListToDto(list);
-			for (AttendanceDto dto : attendanceDtoList) {
-				updateAttendanceDetails(toDto, dto);
+			AttendanceDto attendanceDto = wrapper.attendanceListToDto(list);
+			System.err.println("toDto: " + attendanceDto);{
+			for (AttendanceDto dto : attendanceDtoList) 
+				updateAttendanceDetails(attendanceDto, dto);
 			}
 		}
 	}
 
-	private void updateAttendanceDetails(AttendanceDto toDto, AttendanceDto dto)
+	private void updateAttendanceDetails(AttendanceDto attendanceDto, AttendanceDto dto)
 			throws IOException, IllegalAccessException {
-		if (dto.getId().equals(toDto.getId())) {
-			int rowIndex = findByID(sheetId, toDto.getId());
+		if (dto.getId().equals(attendanceDto.getId())) {
+			int rowIndex = findByID(sheetId, attendanceDto.getId());
 			String range = AttandanceInfoSheetName + attendanceStartRange + rowIndex + ":" + attendanceEndRange
 					+ rowIndex;
-			if (toDto.getId() != null) {
-				updateAbsentDatesAndReasons(dto, toDto);
-				updateTotalAbsent(dto, toDto);
-
+			System.err.println("range : " + range);
+			if (attendanceDto.getId() != null) {
+				updateAbsentDatesAndReasons(dto, attendanceDto);
+				updateTotalAbsent(dto, attendanceDto);
 				List<List<Object>> values = Arrays.asList(wrapper.extractDtoDetails(dto));
 				ValueRange valueRange = new ValueRange();
 				valueRange.setValues(values);
+				System.err.println(" values :"+values);
 				UpdateValuesResponse update = attendanceRepository.update(sheetId, range, valueRange);
 
 				if (update.isEmpty()) {
@@ -119,8 +120,11 @@ public class AttendanceServiceImpl implements AttendanceService {
 		}
 	}
 
-	private void updateAbsentDatesAndReasons(AttendanceDto dto, AttendanceDto toDto) {
-		String currentAbsentDates = toDto.getAbsentDate();
+	private void updateAbsentDatesAndReasons(AttendanceDto dto, AttendanceDto attendanceDto) {
+		System.out.println("dto in service class : "+dto+ " ************* : ***************" +attendanceDto.getBasicInfo().getTraineeName());
+		dto.setBasicInfo(attendanceDto.getBasicInfo());
+		dto.setCourseInfo(attendanceDto.getCourseInfo());
+		String currentAbsentDates = attendanceDto.getAbsentDate();
 		LocalDate localDate = LocalDate.now();
 		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 		String newAbsentDate = localDate.format(formatter);
@@ -129,16 +133,16 @@ public class AttendanceServiceImpl implements AttendanceService {
 				: currentAbsentDates + "," + newAbsentDate;
 		dto.setAbsentDate(updatedAbsentDates);
 
-		String currentReason = toDto.getReason();
+		String currentReason = attendanceDto.getReason();
 		String newReason = dto.getReason();
 		String updatedReasons = !currentReason.equals(null) && currentReason.contains("NA") ? newReason
 				: currentReason + "," + newReason;
 		dto.setReason(updatedReasons);
-		  log.info("Absent dates and reasons updated: " + dto.getAbsentDate() + ", " + dto.getReason());
+		log.info("Absent dates and reasons updated: " + dto.getAbsentDate() + ", " + dto.getReason());
 	}
 
-	private void updateTotalAbsent(AttendanceDto dto, AttendanceDto toDto) {
-		Integer currentAbsent = toDto.getTotalAbsent();
+	private void updateTotalAbsent(AttendanceDto dto, AttendanceDto attendanceDto) {
+		Integer currentAbsent = attendanceDto.getTotalAbsent();
 		Integer updateAbsent = !currentAbsent.equals(null) && currentAbsent.equals(0) ? 1 : currentAbsent + 1;
 		dto.setTotalAbsent(updateAbsent);
 		log.info("Total absent updated: " + dto.getTotalAbsent());
@@ -151,7 +155,7 @@ public class AttendanceServiceImpl implements AttendanceService {
 			if (data != null && !data.isEmpty()) {
 				for (int i = 0; i < data.size(); i++) {
 					List<Object> row = data.get(i);
-					if (row.size() > 0 && row.get(1).toString().equalsIgnoreCase(id.toString())) {
+					if (row.size() > 0 && row.get(1).toString().equals(id.toString())) {
 						return i + 2;
 					}
 				}
