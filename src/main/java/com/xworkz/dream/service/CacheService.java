@@ -2,6 +2,7 @@ package com.xworkz.dream.service;
 
 import java.util.List;
 
+import com.xworkz.dream.dto.AttendanceDto;
 import com.xworkz.dream.dto.FollowUpDto;
 import com.xworkz.dream.dto.StatusDto;
 import com.xworkz.dream.dto.TraineeDto;
@@ -28,6 +29,9 @@ public interface CacheService {
 	void addContactNumberToCache(String cacheName, String spreadSheetId, Long contactNumber);
 
 	public void getCacheDataByEmail(String cacheName, String key, String oldEmail, String newEmail)
+			throws IllegalAccessException;
+	
+	public void updateCacheAttendancde(String cacheName, String key, Integer id, AttendanceDto dto)
 			throws IllegalAccessException;
 
 }
