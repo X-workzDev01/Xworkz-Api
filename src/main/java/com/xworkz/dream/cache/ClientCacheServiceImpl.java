@@ -1,30 +1,21 @@
 package com.xworkz.dream.cache;
 
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.logging.log4j2.Log4J2LoggingSystem;
 import org.springframework.cache.Cache;
 import org.springframework.cache.Cache.ValueWrapper;
 import org.springframework.cache.CacheManager;
 import org.springframework.stereotype.Service;
-
-import com.xworkz.dream.dto.ClientDto;
-import com.xworkz.dream.wrapper.DreamWrapper;
 
 @Service
 public class ClientCacheServiceImpl implements ClientCacheService {
 
 	@Autowired
 	private CacheManager cacheManager;
-	@Autowired
-	private DreamWrapper dreamWrapper;
+	
 
 	private static final Logger log = LoggerFactory.getLogger(ClientCacheServiceImpl.class);
 
