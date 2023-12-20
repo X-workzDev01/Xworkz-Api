@@ -143,6 +143,12 @@ public class DreamWrapper {
 			}
 			followUpDto.getAdminDto().setCreatedOn(row.get(11).toString());
 		}
+		if (rowSize > 12 && row.get(12) != null && !row.get(12).toString().isEmpty()) {
+			if (followUpDto.getAdminDto() == null) {
+				followUpDto.setAdminDto(new AuditDto());
+			}
+			followUpDto.getAdminDto().setUpdatedBy(row.get(12).toString());
+		}
 		if (rowSize > 14 && row.get(14) != null && !row.get(14).toString().isEmpty()) {
 			followUpDto.setFlag((String) row.get(14));
 		}
@@ -269,7 +275,7 @@ public class DreamWrapper {
 		}
 
 		if (rowSize > 16 && row.get(16) != null && !row.get(16).toString().isEmpty()) {
-			traineeDto.getOthersDto().setReferalName((String) row.get(16));
+			traineeDto.getOthersDto().setReferalName((String) row.get(16)); 
 		}
 		if (rowSize > 17 && row.get(17) != null && !row.get(17).toString().isEmpty()) {
 			Long referalContactNumber = Long.parseLong(row.get(17).toString());
@@ -280,7 +286,7 @@ public class DreamWrapper {
 		}
 		if (rowSize > 19 && row.get(19) != null && !row.get(19).toString().isEmpty()) {
 			traineeDto.getOthersDto().setXworkzEmail((String) row.get(19).toString());
-		}
+		} 
 		if (rowSize > 20 && row.get(20) != null && !row.get(20).toString().isEmpty()) {
 			traineeDto.getOthersDto().setWorking((String) row.get(20).toString());
 		}
@@ -520,6 +526,9 @@ public class DreamWrapper {
 		followUpDto.setCurrentlyFollowedBy(FollowUp.NONE.toString());
 		followUpDto.setCurrentStatus(FollowUp.NEW.toString());
 		followUpDto.setAdminDto(traineeDto.getAdminDto());
+		followUpDto.getAdminDto().setUpdatedBy("NA");
+		followUpDto.getAdminDto().setUpdatedOn("NA");
+		followUpDto.setFlag("Active");
 		return followUpDto;
 	}
 
@@ -537,6 +546,11 @@ public class DreamWrapper {
 		followUpDto.setCurrentlyFollowedBy(FollowUp.NONE.toString());
 		followUpDto.setCurrentStatus(FollowUp.ENQUIRY.toString());
 		followUpDto.setAdminDto(traineeDto.getAdminDto());
+		followUpDto.getAdminDto().setUpdatedBy("NA");
+		followUpDto.getAdminDto().setUpdatedOn("NA");
+		followUpDto.setFlag("Active");
+
+
 		return followUpDto;
 	}
 

@@ -31,5 +31,4 @@ public interface FollowUpRepository {
 	public UpdateValuesResponse updateFollow(String spreadsheetId, String range2, ValueRange valueRange)
 			throws IOException;
 
-	void evictFollowUpStatusDetails();
 }

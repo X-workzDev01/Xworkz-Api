@@ -85,8 +85,7 @@ public class FollowUpRepositoryImpl implements FollowUpRepository {
 	}
 
 	@Override
-	// @CachePut(value = "followUpDetails", key = "#spreadsheetId", unless =
-	// "#result == null")
+
 	public boolean updateFollowUpStatus(String spreadsheetId, List<Object> statusData) throws IOException {
 		List<List<Object>> list = new ArrayList<List<Object>>();
 		List<Object> rowData = new ArrayList<>();
@@ -101,7 +100,6 @@ public class FollowUpRepositoryImpl implements FollowUpRepository {
 	}
 
 	@Override
-//	@Cacheable(value = "followUpDetails", key = "#spreadsheetId", unless = "#result == null")
 	public List<List<Object>> getFollowUpDetails(String spreadsheetId) throws IOException {
 		ValueRange response = sheetsService.spreadsheets().values().get(spreadsheetId, followUpRange).execute();
 		log.info("FollowUp details retrieved successfully for spreadsheetId: {}", spreadsheetId);
@@ -109,8 +107,6 @@ public class FollowUpRepositoryImpl implements FollowUpRepository {
 	}
 
 	@Override
-	// @CachePut(value = "followUpDetails", key = "#spreadsheetId", unless =
-	// "#result == null")
 	public boolean updateCurrentFollowUpStatus(String spreadsheetId, String currentFollowRange, List<Object> data)
 			throws IOException {
 		List<List<Object>> list = new ArrayList<List<Object>>();
@@ -144,7 +140,6 @@ public class FollowUpRepositoryImpl implements FollowUpRepository {
 	}
 
 	@Override
-//	@Cacheable(value = "followUpStatusDetails", key = "#spreadsheetId", unless = "#result == null")
 	public List<List<Object>> getFollowUpStatusDetails(String spreadsheetId) throws IOException {
 		log.info("FollowUp Status Details retrieved successfully for spreadsheetId: {}", spreadsheetId);
 		ValueRange response = sheetsService.spreadsheets().values().get(spreadsheetId, followUpStatus).execute();
@@ -152,7 +147,6 @@ public class FollowUpRepositoryImpl implements FollowUpRepository {
 	}
 
 	@Override
-//	@Cacheable(value = "followUpDetails", key = "#spreadsheetId", unless = "#result == null")
 	public List<List<Object>> getFollowUpDetailsByid(String spreadsheetId) throws IOException {
 		ValueRange response = sheetsService.spreadsheets().values().get(spreadsheetId, followUpRange).execute();
 		log.info("FollowUp Details by ID retrieved successfully for spreadsheetId: {}", spreadsheetId);
@@ -167,8 +161,6 @@ public class FollowUpRepositoryImpl implements FollowUpRepository {
 	}
 
 	@Override
-	// @CachePut(value = "followUpDetails", key = "#spreadsheetId", unless =
-	// "#result == null")
 	public UpdateValuesResponse updateFollow(String spreadsheetId, String range2, ValueRange valueRange)
 			throws IOException {
 		log.info("FollowUp updated successfully for spreadsheetId: {}", spreadsheetId);
@@ -176,11 +168,5 @@ public class FollowUpRepositoryImpl implements FollowUpRepository {
 				.setValueInputOption("RAW").execute();
 	}
 
-	@Override
-//	@CacheEvict(value = { "followUpStatusDetails" }, allEntries = true)
-	public void evictFollowUpStatusDetails() {
-		// This method will be scheduled to run every 12 hours
-		// and will evict all entries in the specified caches
-	}
-
+	
 }
