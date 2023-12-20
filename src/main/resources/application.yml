@@ -52,6 +52,10 @@ sheets:
 
   clientInformationRange: clientDetails!B2:N
   clientInformationReadRange: clientDetails!A2:N
+  clientIds: clientIds!A2:A
+  clientStartRow: B
+  clientEndRow: N
+  clientSheetName: clientDetails!
 
   clientHrInformationRange: clientHRdetails!B2:K
   clientHrInformationReadRange: clientHRdetails!A2:K

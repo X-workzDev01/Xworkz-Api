@@ -3,7 +3,9 @@ package com.xworkz.dream.service;
 import java.io.IOException;
 import java.util.Comparator;
 import java.util.List;
+import java.util.OptionalInt;
 import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -99,4 +101,8 @@ public class ClientHrServiceImpl implements ClientHrService {
 				.filter(clientHrDto -> clientHrDto.getCompanyId() == companyId).collect(Collectors.toList());
 		return listofClientHr;
 	}
+	
+	
+
+
 }
