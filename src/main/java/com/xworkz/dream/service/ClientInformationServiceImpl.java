@@ -6,10 +6,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
-import java.util.OptionalInt;
 import java.util.stream.Collectors;
-import java.util.stream.IntStream;
-import java.util.stream.Stream;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -160,6 +157,7 @@ public class ClientInformationServiceImpl implements ClientInformationService {
 			auditDto.setUpdatedOn(LocalDateTime.now().toString());
 			clientDto.getAdminDto().setUpdatedOn(auditDto.getUpdatedOn());
 			List<List<Object>> values = Arrays.asList(dreamWrapper.extractDtoDetails(clientDto));
+			
 			if (!values.isEmpty()) {
 				List<Object> modifiedValues = new ArrayList<>(values.get(0).subList(1, values.get(0).size()));
 				modifiedValues.remove(0);
@@ -171,6 +169,8 @@ public class ClientInformationServiceImpl implements ClientInformationService {
 			UpdateValuesResponse updated = clientRepository.updateclientInfor(range, valueRange);
 			log.info("update response is :{}", updated);
 			if (updated == null) {
+				List<List<Object>> listOfItems = Arrays.asList(dreamWrapper.extractDtoDetails(clientDto));
+				clientCacheService.updateClientDetailsInCache("clientInformation","ListOfClientDto",listOfItems);
 				return "updated Successfully";
 			} else {
 				return "not updated successfully";
