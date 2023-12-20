@@ -14,7 +14,7 @@ import lombok.ToString;
 @Setter
 @ToString
 public class StatusList {
-	private List<String> statusCheck = Stream.of(Status.Busy.toString(), Status.New.toString(),
+	private List<String> statusCheck = Stream.of(Status.Busy.toString(), Status.NEW.toString(),
 			Status.Interested.toString(), Status.RNR.toString(), Status.Not_interested.toString().replace('_', ' '),
 			Status.Incomingcall_not_available.toString().replace('_', ' '),
 			Status.Not_reachable.toString().replace('_', ' '), Status.Let_us_know.toString().replace('_', ' '),

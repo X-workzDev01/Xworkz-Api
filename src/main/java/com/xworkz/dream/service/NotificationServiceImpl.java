@@ -101,7 +101,7 @@ public class NotificationServiceImpl implements NotificationService {
 						FollowUpDto dto = wrapper.listToFollowUpDTO(e);
 
 						if (dto.getCallback() != null && dto.getFlag() != null
-								&& !dto.getFlag().equalsIgnoreCase("Inactive")) {
+								&& !dto.getFlag().equalsIgnoreCase("Inactive")&&statusCheck.contains(dto.getCurrentStatus())) {
 							if (dto.getCallback().length() > 10
 									&& LocalDateTime.now()
 											.isAfter(LocalDateTime.of(LocalDate.parse(
