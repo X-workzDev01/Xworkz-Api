@@ -50,8 +50,10 @@ public class AttendanceServiceImpl implements AttendanceService {
 
 	@Autowired
 	private DreamWrapper wrapper;
+	@Autowired
+	private CacheService cacheService;
 
-	Logger log = LoggerFactory.getLogger(AttendanceServiceImpl.class);
+	private static Logger log = LoggerFactory.getLogger(AttendanceServiceImpl.class);
 
 	@Override
 	public ResponseEntity<String> writeAttendance(String spreadsheetId, AttendanceDto dto, HttpServletRequest request)
@@ -88,11 +90,15 @@ public class AttendanceServiceImpl implements AttendanceService {
 
 		for (List<Object> list : attendanceList) {
 			AttendanceDto attendanceDto = wrapper.attendanceListToDto(list);
-			System.err.println("toDto: " + attendanceDto);{
-			for (AttendanceDto dto : attendanceDtoList) 
-				updateAttendanceDetails(attendanceDto, dto);
-			}
+			System.err.println("toDto: " + attendanceDto);
+			{
+				for (AttendanceDto dto : attendanceDtoList) 
+					updateAttendanceDetails(attendanceDto, dto);
+
+				}
+			
 		}
+		
 	}
 
 	private void updateAttendanceDetails(AttendanceDto attendanceDto, AttendanceDto dto)
@@ -108,9 +114,9 @@ public class AttendanceServiceImpl implements AttendanceService {
 				List<List<Object>> values = Arrays.asList(wrapper.extractDtoDetails(dto));
 				ValueRange valueRange = new ValueRange();
 				valueRange.setValues(values);
-				System.err.println(" values :"+values);
+				System.err.println(" values :" + values);
 				UpdateValuesResponse update = attendanceRepository.update(sheetId, range, valueRange);
-
+				cacheService.updateCacheAttendancde("attendanceDataGetById", sheetId, dto.getId(), dto);
 				if (update.isEmpty()) {
 					log.info("Not updated attendance");
 				} else {
@@ -121,7 +127,6 @@ public class AttendanceServiceImpl implements AttendanceService {
 	}
 
 	private void updateAbsentDatesAndReasons(AttendanceDto dto, AttendanceDto attendanceDto) {
-		System.out.println("dto in service class : "+dto+ " ************* : ***************" +attendanceDto.getBasicInfo().getTraineeName());
 		dto.setBasicInfo(attendanceDto.getBasicInfo());
 		dto.setCourseInfo(attendanceDto.getCourseInfo());
 		String currentAbsentDates = attendanceDto.getAbsentDate();
