@@ -158,6 +158,7 @@ public class ClientInformationServiceImpl implements ClientInformationService {
 		if (companyId != 0 && clientDto != null) {
 			AuditDto auditDto = new AuditDto();
 			auditDto.setUpdatedOn(LocalDateTime.now().toString());
+			clientDto.getAdminDto().setUpdatedOn(auditDto.getUpdatedOn());
 			List<List<Object>> values = Arrays.asList(dreamWrapper.extractDtoDetails(clientDto));
 			if (!values.isEmpty()) {
 				List<Object> modifiedValues = new ArrayList<>(values.get(0).subList(1, values.get(0).size()));
