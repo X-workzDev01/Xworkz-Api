@@ -14,9 +14,11 @@ import lombok.ToString;
 @AllArgsConstructor
 @ToString
 public class AttendanceSheetDto {
-	private List<AttendanceDto> dto;
+	
+	private List<AbsenteesDto> dto;
+	private String batchName;
 	private Integer size;
 
-
+	
 
 }

@@ -26,6 +26,7 @@ import com.google.api.services.sheets.v4.model.UpdateValuesResponse;
 import com.google.api.services.sheets.v4.model.ValueRange;
 import com.xworkz.dream.constants.Status;
 import com.xworkz.dream.dto.AttendanceDto;
+import com.xworkz.dream.dto.AttendanceTrainee;
 import com.xworkz.dream.repository.AttendanceRepository;
 import com.xworkz.dream.wrapper.DreamWrapper;
 
@@ -47,6 +48,10 @@ public class AttendanceServiceImpl implements AttendanceService {
 	private String attendanceEndRange;
 	@Value("${sheets.AttandanceInfoSheetName}")
 	private String AttandanceInfoSheetName;
+	
+	
+	
+	
 
 	@Autowired
 	private DreamWrapper wrapper;
@@ -162,6 +167,18 @@ public class AttendanceServiceImpl implements AttendanceService {
 			}
 		}
 		return -1;
+	}
+
+	@Override
+	public List<AttendanceTrainee> getTrainee(String batch ) {
+		try {
+			List<List<Object>> list = attendanceRepository.getId(sheetId , attendanceInfoIDRange);
+			System.out.println(list);
+		} catch (IOException e) {
+
+			e.printStackTrace();
+		}
+		return null;
 	}
 
 }

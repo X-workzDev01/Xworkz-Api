@@ -9,6 +9,7 @@ import javax.servlet.http.HttpServletRequest;
 import org.springframework.http.ResponseEntity;
 
 import com.xworkz.dream.dto.AttendanceDto;
+import com.xworkz.dream.dto.AttendanceTrainee;
 
 import freemarker.template.TemplateException;
 
@@ -19,5 +20,5 @@ public interface AttendanceService {
 	
 	public void markAndSaveAbsentDetails(List<AttendanceDto> attendanceDtoList) throws IOException,IllegalAccessException;
 
-
+	public List<AttendanceTrainee> getTrainee(String batch);
 }
