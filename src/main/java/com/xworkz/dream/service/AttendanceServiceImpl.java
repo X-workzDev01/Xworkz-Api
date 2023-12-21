@@ -4,10 +4,10 @@ import java.io.IOException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import javax.mail.MessagingException;
 import javax.servlet.http.HttpServletRequest;
@@ -26,6 +26,7 @@ import com.google.api.services.sheets.v4.model.UpdateValuesResponse;
 import com.google.api.services.sheets.v4.model.ValueRange;
 import com.xworkz.dream.constants.Status;
 import com.xworkz.dream.dto.AttendanceDto;
+import com.xworkz.dream.dto.AttendanceTrainee;
 import com.xworkz.dream.repository.AttendanceRepository;
 import com.xworkz.dream.wrapper.DreamWrapper;
 
@@ -167,6 +168,26 @@ public class AttendanceServiceImpl implements AttendanceService {
 			}
 		}
 		return -1;
+	}
+	
+	@Override
+	public List<AttendanceTrainee> getTrainee(String batch) {
+		try {
+			List<List<Object>> list = attendanceRepository.getId(sheetId, attendanceInfoIDRange);
+			List<List<Object>> filteredList = list.stream()
+					.filter(entry -> batch.equals(entry.get(3))) // Filter by
+					.collect(Collectors.toList());
+			List<AttendanceTrainee> traineeInfoList = filteredList.stream()
+					.map(entry -> new AttendanceTrainee(Integer.valueOf((String) entry.get(1)),
+							String.valueOf(entry.get(2))))
+					.collect(Collectors.toList());
+			System.err.println(traineeInfoList);
+			return traineeInfoList;
+		} catch (IOException e) {
+
+			e.printStackTrace();
+		}
+		return null;
 	}
 
 }
