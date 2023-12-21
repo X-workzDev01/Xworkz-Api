@@ -9,4 +9,5 @@ public interface HrFollowUpService {
 	
 	abstract String saveHrFollowUpDetails(HrFollowUpDto dto) throws IllegalAccessException, IOException;
 	List<HrFollowUpDto> getHrFollowUpDetailsBy(int hrId) throws IOException;
+	
 }

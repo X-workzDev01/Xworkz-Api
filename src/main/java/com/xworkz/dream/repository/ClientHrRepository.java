@@ -8,6 +8,6 @@ import java.util.List;
 public interface ClientHrRepository {
 	void setSheetsService() throws IOException, FileNotFoundException, GeneralSecurityException;
 
-	abstract boolean saveClientHrInformation(List<Object> row) throws IOException;
-	abstract List<List<Object>> readData() throws IOException;
+	 boolean saveClientHrInformation(List<Object> row) throws IOException;
+	 List<List<Object>> readData() throws IOException;
 }

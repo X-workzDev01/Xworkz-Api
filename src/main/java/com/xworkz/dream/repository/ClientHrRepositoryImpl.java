@@ -51,6 +51,7 @@ public class ClientHrRepositoryImpl implements ClientHrRepository {
 	private String clientHrInformationReadRange;
 	@Value("${login.sheetId}")
 	public String sheetId;
+	
 	@Autowired
 	private ResourceLoader resourceLoader;
 	private static final Logger log = LoggerFactory.getLogger(ClientHrRepositoryImpl.class);
@@ -100,5 +101,7 @@ public class ClientHrRepositoryImpl implements ClientHrRepository {
 				.execute().getValues();
 		return values;
 	}
+
+	
 
 }

@@ -26,6 +26,7 @@ import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.gson.GsonFactory;
 import com.google.api.services.sheets.v4.Sheets;
 import com.google.api.services.sheets.v4.SheetsScopes;
+import com.google.api.services.sheets.v4.model.UpdateValuesResponse;
 import com.google.api.services.sheets.v4.model.ValueRange;
 import com.google.auth.http.HttpCredentialsAdapter;
 import com.google.auth.oauth2.GoogleCredentials;
@@ -100,4 +101,14 @@ public class ClientRepositoryImpl implements ClientRepository {
 			List<List<Object>> values = valueRange.getValues();
 			return values;
 	}
+
+	@Override
+	public UpdateValuesResponse updateclientInfor(String range, ValueRange valueRange) throws IOException {
+		System.out.println(valueRange);
+		System.out.println(range);
+		UpdateValuesResponse response = sheetsService.spreadsheets().values().update(sheetId, range, valueRange)
+				.setValueInputOption("RAW").execute();
+		return null;
+	}
+	
 }

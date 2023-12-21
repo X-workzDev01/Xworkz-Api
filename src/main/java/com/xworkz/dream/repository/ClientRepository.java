@@ -5,13 +5,16 @@ import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.List;
 
-import com.xworkz.dream.dto.ClientDto;
+import com.google.api.services.sheets.v4.model.UpdateValuesResponse;
+import com.google.api.services.sheets.v4.model.ValueRange;
 
 public interface ClientRepository {
 
 	void setSheetsService() throws IOException, FileNotFoundException, GeneralSecurityException;
 
-	abstract boolean writeClientInformation(List<Object> row) throws IOException;
-	abstract List<List<Object>> readData() throws IOException;
+	 boolean writeClientInformation(List<Object> row) throws IOException;
+	 List<List<Object>> readData() throws IOException;
+
+	UpdateValuesResponse updateclientInfor(String range, ValueRange valueRange) throws IOException;
 
 }
