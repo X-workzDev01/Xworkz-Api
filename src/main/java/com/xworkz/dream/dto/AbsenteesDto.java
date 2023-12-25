@@ -16,7 +16,7 @@ import lombok.NoArgsConstructor;
 public class AbsenteesDto {
 	
 	@JsonProperty("id")
-	private int id;
+	private Integer id;
 	@JsonProperty("name")
 	private String name;
 	@JsonProperty("reason")

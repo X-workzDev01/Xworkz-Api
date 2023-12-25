@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.xworkz.dream.dto.AbsenteesDto;
 import com.xworkz.dream.dto.AttendanceDto;
 import com.xworkz.dream.dto.AttendanceTrainee;
 import com.xworkz.dream.service.AttendanceService;
@@ -44,15 +45,16 @@ public class AttendanceController {
 	        return response;
 	}
 	
-	@ApiOperation(value = "Everyday mark attendance")
+	@ApiOperation(value = "Everyday mark absentees by batch")
 	@PostMapping("/absentees")
-	public void markAttendance(@RequestBody List<AttendanceDto> attendanceDtoList) throws IOException, IllegalAccessException {
+	public void markAttendance(@RequestBody List<AbsenteesDto> absentDtoList , @RequestParam String batch) throws IOException, IllegalAccessException {
 		log.info("Received request to mark attendance for multiple users.");
-		attendanceService.markAndSaveAbsentDetails(attendanceDtoList);
+		attendanceService.markAndSaveAbsentDetails(absentDtoList,batch);
 		log.info("Attendance marking completed.");
 		
 	}
 	
+	@ApiOperation(value = "Get trainees joined by batch")
 	@GetMapping("/trainee")
 	public List<AttendanceTrainee> getAttendanceTrainee(@RequestParam String batch){
 		List<AttendanceTrainee> trainee = attendanceService.getTrainee(batch);

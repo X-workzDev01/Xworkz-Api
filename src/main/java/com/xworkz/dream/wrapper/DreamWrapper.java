@@ -449,9 +449,6 @@ public class DreamWrapper {
 	public AttendanceDto attendanceListToDto(List<Object> row) {
 		AttendanceDto attendanceDto = new AttendanceDto(null, null,new BasicInfoDto(), new CourseDto(), null, null, null, null);
 		int rowSize = row.size();
-		if (rowSize > 0 && row.get(0) != null && !row.get(0).toString().isEmpty()) {
-			attendanceDto.setAttendanceId(Integer.valueOf(row.get(0).toString()));
-		}
 		if (rowSize > 1 && row.get(1) != null && !row.get(1).toString().isEmpty()) {
 			attendanceDto.setId(Integer.valueOf(row.get(1).toString()));
 		}
