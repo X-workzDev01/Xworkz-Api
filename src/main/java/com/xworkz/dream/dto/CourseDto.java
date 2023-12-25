@@ -31,8 +31,8 @@ public class CourseDto {
 	private String batchType;
 	@JsonProperty("batchTiming")
 	private String batchTiming;
-	@JsonProperty("startTime")
-	private String startTime;
+	@JsonProperty("startDate")
+	private String startDate;
 	@JsonProperty("offeredAs")
 	private String offeredAs;
 	
@@ -43,7 +43,7 @@ public class CourseDto {
 		this.trainerName = value;
 		this.batchType = value;
 		this.batchTiming = value;
-		this.startTime = value;
+		this.startDate = value;
 		this.offeredAs = value;
 	}
 

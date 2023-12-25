@@ -215,7 +215,7 @@ public class CacheServiceImpl implements CacheService {
 			ValueWrapper valueWrapper = cache.get(spreadSheetId);
 			if (valueWrapper != null && valueWrapper.get() instanceof List) {
 				List<Object> contactNumbers = new ArrayList<Object>(Arrays.asList(email));
-
+				((List<List<Object>>) valueWrapper.get()).add(contactNumbers);
 			}
 		}
 
@@ -266,7 +266,7 @@ public class CacheServiceImpl implements CacheService {
 			}
 		}
 	}
-	
+
 	@Override
 	public void updateCacheAttendancde(String cacheName, String key, Integer id, AttendanceDto dto)
 			throws IllegalAccessException {
@@ -282,7 +282,7 @@ public class CacheServiceImpl implements CacheService {
 				for (int i = 0; i < ListOfItems.size(); i++) {
 					List<Object> items = ListOfItems.get(i);
 					if (items.get(1).equals(id)) {
-						matchingIndex = i; 
+						matchingIndex = i;
 					}
 				}
 				List<Object> list = wrapper.extractDtoDetails(dto);
@@ -297,6 +297,5 @@ public class CacheServiceImpl implements CacheService {
 			}
 		}
 	}
-	
 
 }

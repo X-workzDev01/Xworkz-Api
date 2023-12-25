@@ -23,7 +23,7 @@ public class TraineeDto {
 	@JsonProperty("courseInfo")
 	private CourseDto courseInfo;
 	@JsonProperty("othersDto")
-	private OthersDto othersDto ;
+	private OthersDto othersDto ; 
 	@JsonProperty("adminDto")
 	private AuditDto adminDto;
 

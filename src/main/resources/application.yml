@@ -36,7 +36,6 @@ sheets:
   birthdayRange: dateOfBirthDetails!A2:A
   followUpStatusIdRange: followUpStatus!A2:A
   batchDetailsCourseNameRange: batchDetails!B2:B
-
   attendanceInfoRange: attendanceInfo!A2:G
   attendanceInfoIDRange: attendanceInfo!A2:G
   attendanceInfoByName: attendanceInfo!A2:G
@@ -49,14 +48,10 @@ sheets:
   getFeesDetiles: FeesDetiles!A2:U
   getFeesDetilesfollowupRange : FeesFollowup!A2:J
   feesEmailRange: FeesDetiles!C2:C
-
-
   clientInformationRange: clientDetails!B2:N
   clientInformationReadRange: clientDetails!A2:N
-
   clientHrInformationRange: clientHRdetails!B2:K
   clientHrInformationReadRange: clientHRdetails!A2:K
-
   hrFollowUpInformationRange: ClientHRFollowUpStatus!B2:I
   hrFollowUpInformationReadRange: ClientHRFollowUpStatus!A2:I
 

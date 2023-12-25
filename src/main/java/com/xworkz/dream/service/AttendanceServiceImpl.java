@@ -64,7 +64,7 @@ public class AttendanceServiceImpl implements AttendanceService {
 
 		if (violation.isEmpty() && dto != null) {
 			if (dto.getAttemptStatus().equalsIgnoreCase(Status.Joined.toString())) {
-				dto.getCourseInfo().setStartTime(LocalDateTime.now().toString());
+				dto.getCourseInfo().setStartDate(LocalDateTime.now().toString());
 				wrapper.setValueAttendaceDto(dto);
 				List<Object> list = wrapper.listOfAttendance(dto);
 				attendanceRepository.writeAttendance(spreadsheetId, list, attendanceInfoRange);

@@ -267,7 +267,7 @@ public class DreamWrapper {
 			traineeDto.getCourseInfo().setBatchTiming((String) row.get(13));
 		}
 		if (rowSize > 14 && row.get(14) != null && !row.get(14).toString().isEmpty()) {
-			traineeDto.getCourseInfo().setStartTime((String) row.get(14));
+			traineeDto.getCourseInfo().setStartDate((String) row.get(14));
 		}
 
 		if (rowSize > 15 && row.get(15) != null && !row.get(15).toString().isEmpty()) {
@@ -275,7 +275,7 @@ public class DreamWrapper {
 		}
 
 		if (rowSize > 16 && row.get(16) != null && !row.get(16).toString().isEmpty()) {
-			traineeDto.getOthersDto().setReferalName((String) row.get(16)); 
+			traineeDto.getOthersDto().setReferalName((String) row.get(16));
 		}
 		if (rowSize > 17 && row.get(17) != null && !row.get(17).toString().isEmpty()) {
 			Long referalContactNumber = Long.parseLong(row.get(17).toString());
@@ -286,7 +286,7 @@ public class DreamWrapper {
 		}
 		if (rowSize > 19 && row.get(19) != null && !row.get(19).toString().isEmpty()) {
 			traineeDto.getOthersDto().setXworkzEmail((String) row.get(19).toString());
-		} 
+		}
 		if (rowSize > 20 && row.get(20) != null && !row.get(20).toString().isEmpty()) {
 			traineeDto.getOthersDto().setWorking((String) row.get(20).toString());
 		}
@@ -376,7 +376,7 @@ public class DreamWrapper {
 
 	public BatchDetails batchDetailsToDto(List<Object> row) {
 
-		BatchDetails details = new BatchDetails(null, null, null, null, null, null, null, null, null, null,null);
+		BatchDetails details = new BatchDetails(null, null, null, null, null, null, null, null, null, null, null);
 		int rowSize = row.size();
 		if (rowSize > 0 && row.get(0) != null && !row.get(0).toString().isEmpty()) {
 			details.setId(Integer.valueOf(row.get(0).toString()));
@@ -447,7 +447,8 @@ public class DreamWrapper {
 	}
 
 	public AttendanceDto attendanceListToDto(List<Object> row) {
-		AttendanceDto attendanceDto = new AttendanceDto(null, null,new BasicInfoDto(), new CourseDto(), null, null, null, null);
+		AttendanceDto attendanceDto = new AttendanceDto(null, null, new BasicInfoDto(), new CourseDto(), null, null,
+				null, null);
 		int rowSize = row.size();
 		if (rowSize > 0 && row.get(0) != null && !row.get(0).toString().isEmpty()) {
 			attendanceDto.setAttendanceId(Integer.valueOf(row.get(0).toString()));
@@ -558,7 +559,6 @@ public class DreamWrapper {
 		followUpDto.getAdminDto().setUpdatedOn("NA");
 		followUpDto.setFlag("Active");
 
-
 		return followUpDto;
 	}
 
@@ -613,8 +613,8 @@ public class DreamWrapper {
 		if (dto.getCourseInfo().getBatchTiming() == null) {
 			dto.getCourseInfo().setBatchTiming("NA");
 		}
-		if (dto.getCourseInfo().getStartTime() == null) {
-			dto.getCourseInfo().setStartTime("NA");
+		if (dto.getCourseInfo().getStartDate() == null) {
+			dto.getCourseInfo().setStartDate("NA");
 		}
 	}
 

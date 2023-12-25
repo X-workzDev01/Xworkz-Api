@@ -65,10 +65,8 @@ public class FeesRepositoryImpl implements FeesRepository {
 
 	@Override
 	public String updateFeesDetiles(String getFeesDetilesfollowupRange, List<Object> list) throws IOException {
-		System.err.println("updateFeesDetiles                              " + list);
 		log.info("update Fees Detiles is Running");
 		ValueRange body = saveOpration.updateDetilesToSheet(list);
-		System.err.println(body);
 		return sheetsRepository.spreadsheets().values().update(spreadSheetId, getFeesDetilesfollowupRange, body)
 				.setValueInputOption("RAW").execute().setSpreadsheetId(spreadSheetId).getUpdatedRange();
 	}
