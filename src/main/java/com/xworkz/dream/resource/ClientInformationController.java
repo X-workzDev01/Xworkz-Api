@@ -1,6 +1,7 @@
 package com.xworkz.dream.resource;
 
 import java.io.IOException;
+import java.util.List;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -8,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -61,6 +63,7 @@ public class ClientInformationController {
 		log.info("get client details by id {}:", companyId);
 		return clientInformationService.getClientDtoById(companyId);
 	}
+
 	@ApiOperation("To check the email Id of Company")
 	@GetMapping("/checkcompanyemail")
 	public String checkEmail(@RequestParam String companyEmail) throws IOException {
@@ -70,6 +73,20 @@ public class ClientInformationController {
 		} else {
 			return "Company Email Not Exists";
 		}
-	} 
+	}
+
+	@ApiOperation("get suggestiong by name")
+	@GetMapping("/client/suggestions")
+	public List<ClientDto> getSuggestion(@RequestParam String companyName) throws IOException {
+		log.info("getting suggestion by company name,  {}", companyName);
+		return clientInformationService.getSuggestionDetails(companyName);
+	}
+
+	@ApiOperation("updating client data by id")
+	@PutMapping("/clientupdate")
+	public String updateClientDto(@RequestParam int companyId, @RequestBody ClientDto clientDto) throws IOException, IllegalAccessException {
+		log.info("updating client dto {}", clientDto);
+		return clientInformationService.updateClientDto(companyId, clientDto);
+	}
 
 }

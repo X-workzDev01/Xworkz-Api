@@ -10,27 +10,27 @@ import org.springframework.cache.Cache.ValueWrapper;
 import org.springframework.cache.CacheManager;
 import org.springframework.stereotype.Service;
 
-
 @Service
 public class ClientCacheServiceImpl implements ClientCacheService {
 
 	@Autowired
 	private CacheManager cacheManager;
+	
 
 	private static final Logger log = LoggerFactory.getLogger(ClientCacheServiceImpl.class);
 
 	@SuppressWarnings("unchecked")
 	@Override
 	public void addNewDtoToCache(String cacheName, String key, List<Object> data) {
-		
+
 		Cache cache = cacheManager.getCache(cacheName);
-		log.info("cache name: {}, cache key: {},",cacheName,key);
+		log.info("cache name: {}, cache key: {},", cacheName, key);
 		if (cache != null) {
 			ValueWrapper valueWrapper = cache.get(key);
 			if (valueWrapper != null && valueWrapper.get() instanceof List) {
 				// cache.put(key, existingData);
 				// adding single list to the cache
-				log.info("adding list to the cache {}:",data);
+				log.info("adding list to the cache {}:", data);
 				int size = (((List<List<Object>>) valueWrapper.get()).size());
 				data.set(0, size + 1);
 				data.remove(1);
@@ -44,18 +44,48 @@ public class ClientCacheServiceImpl implements ClientCacheService {
 	public void addHRDetailsToCache(String cacheName, String key, List<Object> data) {
 
 		Cache cache = cacheManager.getCache(cacheName);
-		log.info("cache name: {}, cache key: {},",cacheName,key);
+		log.info("cache name: {}, cache key: {},", cacheName, key);
 		if (cache != null) {
 			ValueWrapper valueWrapper = cache.get(key);
 			if (valueWrapper != null && valueWrapper.get() instanceof List) {
 				// cache.put(key, existingData);
 				// adding single list to the cache
-				log.info("adding list to the cache {}:",data);
+				log.info("adding list to the cache {}:", data);
 				int size = (((List<List<Object>>) valueWrapper.get()).size());
 				data.set(0, size + 1);
 				((List<List<Object>>) valueWrapper.get()).add(data);
 			}
 		}
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public void updateClientDetailsInCache(String cacheName, String key, List<List<Object>> list)
+			throws IllegalAccessException {
+		Cache cache = cacheManager.getCache(cacheName);
+		log.info("cache name: {}, cache key: {}", cacheName, key);
+
+		if (cache != null) {
+			ValueWrapper valueWrapper = cache.get(key);
+			if (valueWrapper != null && valueWrapper.get() instanceof List) {
+				List<List<Object>> cacheItem = ((List<List<Object>>) valueWrapper.get());
+				log.info("List data to be added {}", list);
+				List<Object> item = list.get(0);
+				item.remove(0);
+				int matchingIndex = -1;
+				for (int i = 0; i < cacheItem.size(); i++) {
+					Integer val = Integer.parseInt((String) cacheItem.get(i).get(0));
+					if (val.equals(item.get(0))) {
+						matchingIndex = i;
+					}
+				}
+				if (matchingIndex != -1) {
+					cacheItem.set(matchingIndex, item);
+					cache.put(key, cacheItem);
+				}
+			}
+		}
+
 	}
 
 }

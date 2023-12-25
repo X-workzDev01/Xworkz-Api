@@ -48,8 +48,16 @@ sheets:
   getFeesDetiles: FeesDetiles!A2:U
   getFeesDetilesfollowupRange : FeesFollowup!A2:J
   feesEmailRange: FeesDetiles!C2:C
-  clientInformationRange: clientDetails!B2:N
-  clientInformationReadRange: clientDetails!A2:N
+
+
+
+  clientInformationRange: clientDetails!B2:O
+  clientInformationReadRange: clientDetails!A2:O
+  clientIds: clientIds!A2:A
+  clientStartRow: B
+  clientEndRow: O
+  clientSheetName: clientDetails!
+
   clientHrInformationRange: clientHRdetails!B2:K
   clientHrInformationReadRange: clientHRdetails!A2:K
   hrFollowUpInformationRange: ClientHRFollowUpStatus!B2:I

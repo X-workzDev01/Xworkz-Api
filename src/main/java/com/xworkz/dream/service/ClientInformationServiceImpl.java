@@ -1,6 +1,9 @@
 package com.xworkz.dream.service;
 
 import java.io.IOException;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -8,9 +11,13 @@ import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
+import com.google.api.services.sheets.v4.model.UpdateValuesResponse;
+import com.google.api.services.sheets.v4.model.ValueRange;
 import com.xworkz.dream.cache.ClientCacheService;
+import com.xworkz.dream.dto.AuditDto;
 import com.xworkz.dream.dto.ClientDataDto;
 import com.xworkz.dream.dto.ClientDto;
 import com.xworkz.dream.repository.ClientRepository;
@@ -29,6 +36,13 @@ public class ClientInformationServiceImpl implements ClientInformationService {
 	private ClientWrapper clientWrapper;
 	@Autowired
 	private ClientCacheService clientCacheService;
+
+	@Value("${sheets.clientStartRow}")
+	private String clientStartRow;
+	@Value("${sheets.clientEndRow}")
+	private String clientEndRow;
+	@Value("${sheets.clientSheetName}")
+	private String clientSheetName;
 
 	@Autowired
 	private ClientInformationUtil clientInformationUtil;
@@ -60,9 +74,10 @@ public class ClientInformationServiceImpl implements ClientInformationService {
 	public ClientDataDto readClientData(int startingIndex, int maxRows) throws IOException {
 		log.debug("start index {} and end index {}", startingIndex, maxRows);
 		List<List<Object>> listOfData = clientRepository.readData();
+
 		if (listOfData != null) {
 			List<ClientDto> ListOfClientDto = listOfData.stream().map(clientWrapper::listToClientDto)
-					.filter(dto ->!dto.getStatus().equalsIgnoreCase("InActive"))
+					.filter(dto -> !dto.getStatus().equalsIgnoreCase("InActive"))
 					.sorted(Comparator.comparing(ClientDto::getId, Comparator.reverseOrder()))
 					.collect(Collectors.toList());
 			List<ClientDto> clientData = ListOfClientDto.stream().skip(startingIndex).limit(maxRows)
@@ -113,6 +128,55 @@ public class ClientInformationServiceImpl implements ClientInformationService {
 			}
 		}
 		return false;
+	}
+
+	@Override
+	public List<ClientDto> getSuggestionDetails(String companyName) throws IOException {
+		log.info("get the suggestion details by companyName :{}", companyName);
+		List<ClientDto> suggestionList = new ArrayList<ClientDto>();
+		List<List<Object>> listOfData = clientRepository.readData();
+		if (companyName != null) {
+			if (listOfData != null) {
+
+				return suggestionList = listOfData.stream().map(clientWrapper::listToClientDto).filter(
+						clientDto -> clientDto.getCompanyName().toLowerCase().contains(companyName.toLowerCase()))
+						.collect(Collectors.toList());
+			}
+			log.info("suggestionList is, {}", suggestionList);
+		}
+		return suggestionList;
+	}
+
+	@Override
+	public String updateClientDto(int companyId, ClientDto clientDto) throws IOException, IllegalAccessException {
+		log.info("updating client dto {}, Id {}", clientDto, companyId);
+		String range = clientSheetName + clientStartRow + (companyId + 1) + ":" + clientEndRow + (companyId + 1);
+
+		if (companyId != 0 && clientDto != null) {
+			AuditDto auditDto = new AuditDto();
+			auditDto.setUpdatedOn(LocalDateTime.now().toString());
+			clientDto.getAdminDto().setUpdatedOn(auditDto.getUpdatedOn());
+			List<List<Object>> values = Arrays.asList(dreamWrapper.extractDtoDetails(clientDto));
+			
+			if (!values.isEmpty()) {
+				List<Object> modifiedValues = new ArrayList<>(values.get(0).subList(1, values.get(0).size()));
+				modifiedValues.remove(0);
+				values.set(0, modifiedValues);
+				log.debug("values {}", values);
+			}
+			ValueRange valueRange = new ValueRange();
+			valueRange.setValues(values);
+			UpdateValuesResponse updated = clientRepository.updateclientInfor(range, valueRange);
+			log.info("update response is :{}", updated);
+			if (updated == null) {
+				List<List<Object>> listOfItems = Arrays.asList(dreamWrapper.extractDtoDetails(clientDto));
+				clientCacheService.updateClientDetailsInCache("clientInformation","ListOfClientDto",listOfItems);
+				return "updated Successfully";
+			} else {
+				return "not updated successfully";
+			}
+		}
+		return null;
 	}
 
 }
