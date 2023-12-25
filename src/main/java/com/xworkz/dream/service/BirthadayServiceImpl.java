@@ -72,7 +72,7 @@ public class BirthadayServiceImpl implements BirthadayService {
 	public void sendBirthdayEmails() throws IOException {
 		String subject = "Birthday Wishes : X-workZ";
 		List<List<Object>> birthdayDetails = repository.getBirthadayDetails(spreadsheetId);
-		log.info("Birthday details: {}", birthdayDetails);
+		log.debug("Birthday details: {}", birthdayDetails);
 		LocalDate currentDate = LocalDate.now();
 		DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 		List<String> emailsToSend = birthdayDetails.stream().filter(row -> {
