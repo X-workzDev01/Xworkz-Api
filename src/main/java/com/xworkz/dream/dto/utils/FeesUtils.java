@@ -105,7 +105,7 @@ public class FeesUtils {
 
 		}
 		return new SheetFeesDetiles(Collections.emptyList(), 0);
-	} 
+	}
 
 	public FeesDto feesDtosetValues(FeesUiDto uidto) throws IOException {
 		FeesDto feesDto = new FeesDto();

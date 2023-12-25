@@ -442,7 +442,7 @@ public class FollowUpServiceImpl implements FollowUpService {
 						.collect(Collectors.toList());
 				data.stream().forEach(items -> {
 					FollowUpDto dto = wrapper.listToFollowUpDTO(items);
-					if (dto.getAdminDto().getUpdatedBy().equalsIgnoreCase("NA")) {
+					if (dto.getCurrentlyFollowedBy().equalsIgnoreCase("NONE")) {
 						followUpDtos.add(dto);
 					}
 				});
