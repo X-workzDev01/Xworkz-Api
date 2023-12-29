@@ -135,7 +135,7 @@ public class ClientInformationServiceImpl implements ClientInformationService {
 		log.info("get the suggestion details by companyName :{}", companyName);
 		List<ClientDto> suggestionList = new ArrayList<ClientDto>();
 		List<List<Object>> listOfData = clientRepository.readData();
-				if (companyName != null) {
+		if (companyName != null) {
 			if (listOfData != null) {
 
 				return suggestionList = listOfData.stream().map(clientWrapper::listToClientDto).filter(
@@ -148,13 +148,15 @@ public class ClientInformationServiceImpl implements ClientInformationService {
 	}
 
 	@Override
-	public ClientDto getDetailsbyCompanyName(String companyName) throws IOException {
-		ClientDto clientDto = null;
+	public List<ClientDto> getDetailsbyCompanyName(String companyName) throws IOException {
+		List<ClientDto> clientDto = null;
 		List<List<Object>> listofDtos = clientRepository.readData();
-		if (companyName != null && listofDtos != null) {
-			clientDto = listofDtos.stream().map(clientWrapper::listToClientDto)
-					.filter(ClientDto -> companyName.equals(ClientDto.getCompanyName())).findFirst().orElse(null);
-			log.info("returned company dto is, {}",clientDto);
+		if (companyName != null) {
+			if (listofDtos != null) {
+				clientDto = listofDtos.stream().map(clientWrapper::listToClientDto).filter(ClientDto -> ClientDto.getCompanyName().equalsIgnoreCase(companyName))
+						.collect(Collectors.toList());
+				log.info("returned company dto is, {}", clientDto);
+			}
 		}
 		if (clientDto != null) {
 			return clientDto;

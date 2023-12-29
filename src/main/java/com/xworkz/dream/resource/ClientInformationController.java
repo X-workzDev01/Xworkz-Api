@@ -84,7 +84,7 @@ public class ClientInformationController {
 
 	@ApiOperation("get details by companyname")
 	@GetMapping("/getdetailsbycompanyname")
-	public ClientDto getDetailsByCompanyName(@RequestParam String companyName) throws IOException {
+	public List<ClientDto> getDetailsByCompanyName(@RequestParam String companyName) throws IOException {
 		log.info("get details by company name,{}", companyName);
 		return clientInformationService.getDetailsbyCompanyName(companyName);
 	}
