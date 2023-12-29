@@ -63,4 +63,11 @@ public class ClientHrInformationController {
 		return clientHrService.getHrDetailsByCompanyId(companyId);
 	}
 	
+	@ApiOperation("To get the HR details by HR ID")
+	@GetMapping("/getdetailsbyhrid")
+	public ClientHrDto getHRDetailsByHrId(@RequestParam int hrId) throws IOException {
+		log.info("get details by Hr Id: {}",hrId);
+		return clientHrService.getHRDetailsByHrId(hrId);
+	}
+	
 }

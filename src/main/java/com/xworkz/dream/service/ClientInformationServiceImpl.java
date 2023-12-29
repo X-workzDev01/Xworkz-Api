@@ -114,7 +114,7 @@ public class ClientInformationServiceImpl implements ClientInformationService {
 		if (clientDto != null) {
 			return clientDto;
 		}
-		return null;
+		return clientDto;
 	}
 
 	@Override
@@ -135,7 +135,7 @@ public class ClientInformationServiceImpl implements ClientInformationService {
 		log.info("get the suggestion details by companyName :{}", companyName);
 		List<ClientDto> suggestionList = new ArrayList<ClientDto>();
 		List<List<Object>> listOfData = clientRepository.readData();
-		if (companyName != null) {
+				if (companyName != null) {
 			if (listOfData != null) {
 
 				return suggestionList = listOfData.stream().map(clientWrapper::listToClientDto).filter(
@@ -148,6 +148,22 @@ public class ClientInformationServiceImpl implements ClientInformationService {
 	}
 
 	@Override
+	public ClientDto getDetailsbyCompanyName(String companyName) throws IOException {
+		ClientDto clientDto = null;
+		List<List<Object>> listofDtos = clientRepository.readData();
+		if (companyName != null && listofDtos != null) {
+			clientDto = listofDtos.stream().map(clientWrapper::listToClientDto)
+					.filter(ClientDto -> companyName.equals(ClientDto.getCompanyName())).findFirst().orElse(null);
+			log.info("returned company dto is, {}",clientDto);
+		}
+		if (clientDto != null) {
+			return clientDto;
+		} else {
+			return clientDto;
+		}
+	}
+
+	@Override
 	public String updateClientDto(int companyId, ClientDto clientDto) throws IOException, IllegalAccessException {
 		log.info("updating client dto {}, Id {}", clientDto, companyId);
 		String range = clientSheetName + clientStartRow + (companyId + 1) + ":" + clientEndRow + (companyId + 1);
@@ -157,7 +173,7 @@ public class ClientInformationServiceImpl implements ClientInformationService {
 			auditDto.setUpdatedOn(LocalDateTime.now().toString());
 			clientDto.getAdminDto().setUpdatedOn(auditDto.getUpdatedOn());
 			List<List<Object>> values = Arrays.asList(dreamWrapper.extractDtoDetails(clientDto));
-			
+
 			if (!values.isEmpty()) {
 				List<Object> modifiedValues = new ArrayList<>(values.get(0).subList(1, values.get(0).size()));
 				modifiedValues.remove(0);
@@ -170,7 +186,7 @@ public class ClientInformationServiceImpl implements ClientInformationService {
 			log.info("update response is :{}", updated);
 			if (updated == null) {
 				List<List<Object>> listOfItems = Arrays.asList(dreamWrapper.extractDtoDetails(clientDto));
-				clientCacheService.updateClientDetailsInCache("clientInformation","ListOfClientDto",listOfItems);
+				clientCacheService.updateClientDetailsInCache("clientInformation", "ListOfClientDto", listOfItems);
 				return "updated Successfully";
 			} else {
 				return "not updated successfully";

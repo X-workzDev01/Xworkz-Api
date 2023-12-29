@@ -22,4 +22,6 @@ public interface ClientInformationService {
 
 	String updateClientDto(int companyId, ClientDto clientDto) throws IOException, IllegalAccessException;
 
+	ClientDto getDetailsbyCompanyName(String companyName) throws IOException;
+
 }
