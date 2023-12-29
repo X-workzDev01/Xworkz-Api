@@ -15,6 +15,8 @@ public interface ClientHrService {
 	boolean hrEmailcheck(String companyName) throws IOException;
 
 	List<ClientHrDto> getHrDetailsByCompanyId(int companyId) throws IOException;
+
+	ClientHrDto getHRDetailsByHrId(int hrId) throws IOException;
 	
 
 }

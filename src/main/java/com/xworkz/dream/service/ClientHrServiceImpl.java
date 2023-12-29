@@ -13,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.xworkz.dream.cache.ClientCacheService;
+import com.xworkz.dream.dto.ClientDto;
 import com.xworkz.dream.dto.ClientHrData;
 import com.xworkz.dream.dto.ClientHrDto;
 import com.xworkz.dream.repository.ClientHrRepository;
@@ -25,8 +26,6 @@ public class ClientHrServiceImpl implements ClientHrService {
 
 	@Autowired
 	private ClientHrRepository clientHrRepository;
-
-
 
 	@Autowired
 	private DreamWrapper dreamWrapper;
@@ -93,7 +92,6 @@ public class ClientHrServiceImpl implements ClientHrService {
 		}
 	}
 
-
 	@Override
 	public List<ClientHrDto> getHrDetailsByCompanyId(int companyId) throws IOException {
 		log.info("get details by companyId, {}", companyId);
@@ -101,8 +99,16 @@ public class ClientHrServiceImpl implements ClientHrService {
 				.filter(clientHrDto -> clientHrDto.getCompanyId() == companyId).collect(Collectors.toList());
 		return listofClientHr;
 	}
-	
-	
 
+	@Override
+	public ClientHrDto getHRDetailsByHrId(int hrId) throws IOException {
+		ClientHrDto hrDto = null;
+		if (hrId != 0) {
+			return hrDto = clientHrRepository.readData().stream().map(clientWrapper::listToClientHrDto)
+					.filter(ClientHrDto -> hrId == ClientHrDto.getId()).findFirst().orElse(hrDto);
+
+		}
+		return hrDto;
+	}
 
 }

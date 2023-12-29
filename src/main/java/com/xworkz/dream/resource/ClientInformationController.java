@@ -82,9 +82,17 @@ public class ClientInformationController {
 		return clientInformationService.getSuggestionDetails(companyName);
 	}
 
+	@ApiOperation("get details by companyname")
+	@GetMapping("/getdetailsbycompanyname")
+	public List<ClientDto> getDetailsByCompanyName(@RequestParam String companyName) throws IOException {
+		log.info("get details by company name,{}", companyName);
+		return clientInformationService.getDetailsbyCompanyName(companyName);
+	}
+
 	@ApiOperation("updating client data by id")
 	@PutMapping("/clientupdate")
-	public String updateClientDto(@RequestParam int companyId, @RequestBody ClientDto clientDto) throws IOException, IllegalAccessException {
+	public String updateClientDto(@RequestParam int companyId, @RequestBody ClientDto clientDto)
+			throws IOException, IllegalAccessException {
 		log.info("updating client dto {}", clientDto);
 		return clientInformationService.updateClientDto(companyId, clientDto);
 	}
