@@ -59,7 +59,7 @@ public class ClientInformationServiceImpl implements ClientInformationService {
 			if (clientRepository.writeClientInformation(list)) {
 				log.debug("adding newly added data to the cache, clientInformation :{}", list);
 
-				clientCacheService.addNewDtoToCache("clientInformation", "ListOfClientDto", list);
+				//clientCacheService.addNewDtoToCache("clientInformation", "ListOfClientDto", list);
 				return "Client Information saved successfully";
 			} else {
 				return "Client Information not saved";
@@ -184,11 +184,11 @@ public class ClientInformationServiceImpl implements ClientInformationService {
 			}
 			ValueRange valueRange = new ValueRange();
 			valueRange.setValues(values);
-			UpdateValuesResponse updated = clientRepository.updateclientInfor(range, valueRange);
+			UpdateValuesResponse updated = clientRepository.updateclientInfo(range, valueRange);
 			log.info("update response is :{}", updated);
-			if (updated == null) {
-				List<List<Object>> listOfItems = Arrays.asList(dreamWrapper.extractDtoDetails(clientDto));
-				clientCacheService.updateClientDetailsInCache("clientInformation", "ListOfClientDto", listOfItems);
+			if (updated != null) {
+				//List<List<Object>> listOfItems = Arrays.asList(dreamWrapper.extractDtoDetails(clientDto));
+				//clientCacheService.updateClientDetailsInCache("clientInformation", "ListOfClientDto", listOfItems);
 				return "updated Successfully";
 			} else {
 				return "not updated successfully";

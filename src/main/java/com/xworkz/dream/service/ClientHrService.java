@@ -17,6 +17,8 @@ public interface ClientHrService {
 	List<ClientHrDto> getHrDetailsByCompanyId(int companyId) throws IOException;
 
 	ClientHrDto getHRDetailsByHrId(int hrId) throws IOException;
+
+	String updateHrDetails(int hrId, ClientHrDto clientHrDto) throws IllegalAccessException, IOException;
 	
 
 }

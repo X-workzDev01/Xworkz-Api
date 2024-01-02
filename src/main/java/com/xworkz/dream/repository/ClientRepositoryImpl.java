@@ -93,7 +93,7 @@ public class ClientRepositoryImpl implements ClientRepository {
 	}
 
 
-	@Cacheable(value = "clientInformation", key = "'ListOfClientDto'")
+//	@Cacheable(value = "clientInformation", key = "'ListOfClientDto'")
 	public List<List<Object>> readData() throws IOException {
 		log.info(" client repository, reading client information ");
 		ValueRange valueRange = sheetsService.spreadsheets().values().get(sheetId, clientInformationReadRange)
@@ -103,12 +103,11 @@ public class ClientRepositoryImpl implements ClientRepository {
 	}
 
 	@Override
-	public UpdateValuesResponse updateclientInfor(String range, ValueRange valueRange) throws IOException {
-		System.out.println(valueRange);
-		System.out.println(range);
+	public UpdateValuesResponse updateclientInfo(String range, ValueRange valueRange) throws IOException {
+		log.info("updating Coompany Details to the sheet, {}",range);
 		UpdateValuesResponse response = sheetsService.spreadsheets().values().update(sheetId, range, valueRange)
 				.setValueInputOption("RAW").execute();
-		return null;
+		return response;
 	}
 	
 }

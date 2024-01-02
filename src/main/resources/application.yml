@@ -53,13 +53,17 @@ sheets:
 
   clientInformationRange: clientDetails!B2:O
   clientInformationReadRange: clientDetails!A2:O
-  clientIds: clientIds!A2:A
   clientStartRow: B
   clientEndRow: O
   clientSheetName: clientDetails!
 
   clientHrInformationRange: clientHRdetails!B2:K
   clientHrInformationReadRange: clientHRdetails!A2:K
+  hrStartRow: B
+  hrEndRow: K
+  hrSheetName: clientHRdetails!
+
+
   hrFollowUpInformationRange: ClientHRFollowUpStatus!B2:I
   hrFollowUpInformationReadRange: ClientHRFollowUpStatus!A2:I
 
