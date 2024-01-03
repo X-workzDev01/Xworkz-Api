@@ -19,6 +19,8 @@ public interface ClientHrService {
 	ClientHrDto getHRDetailsByHrId(int hrId) throws IOException;
 
 	String updateHrDetails(int hrId, ClientHrDto clientHrDto) throws IllegalAccessException, IOException;
+
+	boolean hrContactNumberCheck(Long contactNumber) throws IOException;
 	
 
 }

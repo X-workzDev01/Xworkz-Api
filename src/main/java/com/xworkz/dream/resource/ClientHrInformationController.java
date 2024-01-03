@@ -39,7 +39,6 @@ public class ClientHrInformationController {
 
 	@ApiOperation("To save client HR information")
 	@GetMapping("/hrdetails")
-
 	public ClientHrData readData(@RequestParam int startingIndex, @RequestParam int maxRows,@RequestParam int companyId) throws IOException {
 		log.debug("Reading client HR information");
 		return clientHrService.readData(startingIndex, maxRows,companyId);
@@ -53,6 +52,17 @@ public class ClientHrInformationController {
 			return "Email already exists.";
 		} else {
 			return "Email does not exist.";
+		}
+	}
+	
+	@ApiOperation("To check Whether CompanyName is exists or not")
+	@GetMapping("/hrcontactnumbercheck")
+	public String checkHrContactNumberCheck(@RequestParam Long contactNumber) throws IOException {
+		log.info("checking company is already exist or not  {}", contactNumber);
+		if (clientHrService.hrContactNumberCheck(contactNumber)) {
+			return "Contact Number Already exist.";
+		} else {
+			return "Contact Number does not exist.";
 		}
 	}
 

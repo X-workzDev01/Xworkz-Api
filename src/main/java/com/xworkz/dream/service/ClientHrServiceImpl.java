@@ -95,7 +95,6 @@ public class ClientHrServiceImpl implements ClientHrService {
 	@Override
 	public boolean hrEmailcheck(String hrEmail) throws IOException {
 		if (hrEmail != null) {
-
 			return clientHrRepository.readData().stream().map(clientWrapper::listToClientHrDto)
 					.anyMatch(clientHrDto -> hrEmail.equals(clientHrDto.getHrEmail()));
 		} else {
@@ -117,9 +116,21 @@ public class ClientHrServiceImpl implements ClientHrService {
 		if (hrId != 0) {
 			return hrDto = clientHrRepository.readData().stream().map(clientWrapper::listToClientHrDto)
 					.filter(ClientHrDto -> hrId == ClientHrDto.getId()).findFirst().orElse(hrDto);
-
 		}
 		return hrDto;
+	}
+
+	@Override
+	public boolean hrContactNumberCheck(Long contactNumber) throws IOException {
+		log.info("checking contact number, {}", contactNumber);
+		List<List<Object>> listOfHrDetails = clientHrRepository.readData();
+		if (contactNumber != null) {
+			if (listOfHrDetails != null) {
+				return listOfHrDetails.stream().map(clientWrapper::listToClientHrDto)
+						.anyMatch(clientHrDto-> contactNumber.equals(clientHrDto.getHrContactNumber()));
+			}
+		}
+		return false;
 	}
 
 	@Override
@@ -142,7 +153,7 @@ public class ClientHrServiceImpl implements ClientHrService {
 			valueRange.setValues(values);
 			UpdateValuesResponse updated = clientHrRepository.updateHrDetails(range, valueRange);
 			log.info("update response is :{}", updated);
-			if (updated!= null) {
+			if (updated != null) {
 				return "updated Successfully";
 			} else {
 				return "not updated successfully";
