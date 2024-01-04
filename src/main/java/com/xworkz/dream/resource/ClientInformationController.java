@@ -74,6 +74,29 @@ public class ClientInformationController {
 			return "Company Email Not Exists";
 		}
 	}
+	
+	@ApiOperation("To check the contactNumber of Company")
+	@GetMapping("/checkContactNumber")
+	public String checkContactNumber(@RequestParam String contactNumber) throws IOException {
+		log.info("checking company contactNumber exist of not contactNumber is:{}", contactNumber);
+		if (clientInformationService.checkContactNumber(contactNumber)) {
+			return "Company ContactNumber Already Exists";
+		} else {
+			return "Company ContactNumber Not Exists";
+		}
+	}
+
+	@ApiOperation("To check the CompanyWebsite")
+	@GetMapping("/checkCompanyWebsite")
+	public String checkCompanyWebsite(@RequestParam String companyWebsite) throws IOException {
+		log.info("checking company CompanyWebsite exist of not CompanyWebsite is:{}", companyWebsite);
+		if (clientInformationService.checkCompanyWebsite(companyWebsite)) {
+			return "CompanyWebsite Already Exists";
+		} else {
+			return "CompanyWebsite Not Exists";
+		}
+	}
+
 
 	@ApiOperation("get suggestiong by name")
 	@GetMapping("/client/suggestions")
