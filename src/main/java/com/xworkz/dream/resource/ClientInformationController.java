@@ -75,12 +75,18 @@ public class ClientInformationController {
 		}
 	}
 
-	
 	@ApiOperation("get suggestiong by name")
 	@GetMapping("/client/suggestions")
 	public List<ClientDto> getSuggestion(@RequestParam String companyName) throws IOException {
 		log.info("getting suggestion by company name,  {}", companyName);
 		return clientInformationService.getSuggestionDetails(companyName);
+	}
+
+	@ApiOperation("get details by companyname")
+	@GetMapping("/getdetailsbycompanyname")
+	public List<ClientDto> getDetailsByCompanyName(@RequestParam String companyName) throws IOException {
+		log.info("get details by company name,{}", companyName);
+		return clientInformationService.getDetailsbyCompanyName(companyName);
 	}
 
 	@ApiOperation("updating client data by id")

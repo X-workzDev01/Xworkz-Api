@@ -27,6 +27,7 @@ import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.gson.GsonFactory;
 import com.google.api.services.sheets.v4.Sheets;
 import com.google.api.services.sheets.v4.SheetsScopes;
+import com.google.api.services.sheets.v4.model.UpdateValuesResponse;
 import com.google.api.services.sheets.v4.model.ValueRange;
 import com.google.auth.http.HttpCredentialsAdapter;
 import com.google.auth.oauth2.GoogleCredentials;
@@ -95,11 +96,19 @@ public class ClientHrRepositoryImpl implements ClientHrRepository {
 	}
 
 	@Override
-	@Cacheable(value = "hrDetails", key = "'listofHRDetails'")
+	//@Cacheable(value = "hrDetails", key = "'listofHRDetails'")
 	public List<List<Object>> readData() throws IOException {
 		List<List<Object>> values = sheetsService.spreadsheets().values().get(sheetId, clientHrInformationReadRange)
 				.execute().getValues();
 		return values;
+	}
+
+	@Override
+	public UpdateValuesResponse updateHrDetails(String range, ValueRange valueRange) throws IOException {
+		log.info("updating the HR details ,{}",range);
+		UpdateValuesResponse response = sheetsService.spreadsheets().values().update(sheetId, range, valueRange)
+				.setValueInputOption("RAW").execute();
+		return response;
 	}
 
 	
