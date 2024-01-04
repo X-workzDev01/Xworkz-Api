@@ -74,7 +74,7 @@ public class ClientInformationController {
 			return "Company Email Not Exists";
 		}
 	}
-	
+
 	@ApiOperation("get suggestiong by name")
 	@GetMapping("/client/suggestions")
 	public List<ClientDto> getSuggestion(@RequestParam String companyName) throws IOException {

@@ -1,6 +1,6 @@
 spring:
    profiles:
-      active: local
+      active: dev
 
    freemarker:
     template-loader-path: classpath:/templates/
@@ -36,11 +36,11 @@ sheets:
   birthdayRange: dateOfBirthDetails!A2:A
   followUpStatusIdRange: followUpStatus!A2:A
   batchDetailsCourseNameRange: batchDetails!B2:B
-  attendanceInfoRange: attendanceInfo!A2:G
-  attendanceInfoIDRange: attendanceInfo!A2:G
-  attendanceInfoByName: attendanceInfo!A2:G
+  attendanceInfoRange: attendanceInfo!A2:K
+  attendanceInfoIDRange: attendanceInfo!A2:K
+  attendanceInfoByName: attendanceInfo!A2:K
   attendanceInfoStartRange : B
-  attendanceInfoEndRange : G
+  attendanceInfoEndRange : K
   AttandanceInfoSheetName: attendanceInfo!
   attendanceListDefaultRange: attendanceInfo!J2:j
   attendanceInfoMarkAs:  J

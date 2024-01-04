@@ -38,7 +38,7 @@ public class CacheConfig {
 		caches.add(new ConcurrentMapCache("clientInformation"));
 		caches.add(new ConcurrentMapCache("hrDetails"));
 		caches.add(new ConcurrentMapCache("hrFollowUpDetails"));
-		caches.add(new ConcurrentMapCache("attendanceDataGetById"));
+		caches.add(new ConcurrentMapCache("attendanceData"));
 		cacheManager.setCaches(caches);
 		return cacheManager;
 	}
