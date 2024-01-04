@@ -165,6 +165,8 @@ public class ClientInformationServiceImpl implements ClientInformationService {
 		}
 	}
 
+	
+	
 	@Override
 	public String updateClientDto(int companyId, ClientDto clientDto) throws IOException, IllegalAccessException {
 		log.info("updating client dto {}, Id {}", clientDto, companyId);
@@ -196,5 +198,6 @@ public class ClientInformationServiceImpl implements ClientInformationService {
 		}
 		return null;
 	}
+
 
 }
