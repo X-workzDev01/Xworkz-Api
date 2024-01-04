@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
@@ -30,6 +31,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import com.google.api.services.sheets.v4.model.UpdateValuesResponse;
 import com.google.api.services.sheets.v4.model.ValueRange;
 import com.xworkz.dream.constants.Status;
+import com.xworkz.dream.dto.AbsentDaysDto;
 import com.xworkz.dream.dto.AbsenteesDto;
 import com.xworkz.dream.dto.AttendanceDto;
 import com.xworkz.dream.dto.AttendanceTrainee;
@@ -197,9 +199,11 @@ public class AttendanceServiceImpl implements AttendanceService {
 	}
 
 	@Override
-	public Map<String, String> getAttendanceById(Integer id) {
+	public List<AbsentDaysDto> getAttendanceById(Integer id) {
 		log.info("Searching for attendance with ID: {}", id);
 		List<List<Object>> list;
+	
+		List<AbsentDaysDto> absentDaysList=new ArrayList<AbsentDaysDto>();
 		try {
 			list = attendanceRepository.getAttendanceData(sheetId, attendanceInfoIDRange);
 			if (list != null) {
@@ -211,20 +215,24 @@ public class AttendanceServiceImpl implements AttendanceService {
 					AttendanceDto attendanceListToDto = matchingAttendances.get(0);
 					String[] splitAbsentDate = attendanceListToDto.getAbsentDate().split(",");
 					String[] splitReason = attendanceListToDto.getReason().split(",");
-					Map<String, String> dateReasonMap = new HashMap<>();
 					for (int i = 0; i < splitAbsentDate.length; i++) {
+						AbsentDaysDto daysDto=new AbsentDaysDto();
 						String date = splitAbsentDate[i].trim();
 						String reason = splitReason[i].trim();
-						dateReasonMap.put(date, reason);
+						daysDto.setDate(date);
+						daysDto.setReason(reason);
+						absentDaysList.add(daysDto);
 					}
-					return dateReasonMap;
+					
+					
+					return absentDaysList;
 				}
 			}
 		} catch (IOException e) {
 			log.error("Error while fetching attendance data", e.getMessage());
 		}
 		log.warn("ID not found: {}", id);
-		return Collections.singletonMap("message", "ID not found");
+		return null;
 
 	}
 

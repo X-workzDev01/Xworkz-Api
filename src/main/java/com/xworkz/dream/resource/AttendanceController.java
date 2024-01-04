@@ -20,6 +20,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.xworkz.dream.dto.AbsentDaysDto;
+import com.xworkz.dream.dto.AbsentDto;
 import com.xworkz.dream.dto.AbsenteesDto;
 import com.xworkz.dream.dto.AttendanceDto;
 import com.xworkz.dream.dto.AttendanceTrainee;
@@ -65,18 +67,21 @@ public class AttendanceController {
 		return trainee;
 	}
 
-	@GetMapping("/absentById")
-	public ResponseEntity<Map<String, String>> getAbsentDetails(@RequestParam Integer id) {
-		Map<String, String> attendanceById = attendanceService.getAttendanceById(id);
-		ResponseEntity<Map<String, String>> entity = new ResponseEntity<Map<String, String>>(attendanceById,
-				HttpStatus.OK);
-		return entity;
+	@GetMapping("/id")
+	public ResponseEntity<AbsentDto> getAbsentDetails(@RequestParam Integer id) {
+		List<AbsentDaysDto> listOfAbsentDays = attendanceService.getAttendanceById(id);
+		AbsentDto absentDto = new AbsentDto();
+		absentDto.setList(listOfAbsentDays);
+		absentDto.setTotalClass(30);
+		ResponseEntity<AbsentDto> responseEntity = new ResponseEntity<AbsentDto>(absentDto, HttpStatus.OK);
+		return responseEntity;
 	}
 
-	@GetMapping("/absentByBatch")
+	@GetMapping("/batch")
 	public ResponseEntity<List<AttendanceDto>> getAbsentDataByBatch(@RequestParam String batch) throws IOException {
 		List<AttendanceDto> attendanceByBatch = attendanceService.getAbsentListByBatch(batch);
-		ResponseEntity<List<AttendanceDto>> attendanceList = new ResponseEntity<List<AttendanceDto>>(attendanceByBatch, HttpStatus.OK);
+		ResponseEntity<List<AttendanceDto>> attendanceList = new ResponseEntity<List<AttendanceDto>>(attendanceByBatch,
+				HttpStatus.OK);
 		return attendanceList;
 	}
 

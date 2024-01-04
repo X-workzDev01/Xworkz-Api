@@ -11,6 +11,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import com.xworkz.dream.dto.AbsentDaysDto;
 import com.xworkz.dream.dto.AbsenteesDto;
 import com.xworkz.dream.dto.AttendanceDto;
 import com.xworkz.dream.dto.AttendanceTrainee;
@@ -26,7 +27,7 @@ public interface AttendanceService {
 
 	public List<AttendanceTrainee> getTrainee(String batch);
 	
-    public Map<String, String>  getAttendanceById(Integer id);
+    public List<AbsentDaysDto>  getAttendanceById(Integer id);
     
     public List<AttendanceDto> getAbsentListByBatch(String batch) throws IOException;
 
