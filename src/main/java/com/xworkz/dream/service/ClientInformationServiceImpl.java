@@ -129,7 +129,8 @@ public class ClientInformationServiceImpl implements ClientInformationService {
 		}
 		return false;
 	}
-
+	
+	
 	@Override
 	public List<ClientDto> getSuggestionDetails(String companyName) throws IOException {
 		log.info("get the suggestion details by companyName :{}", companyName);

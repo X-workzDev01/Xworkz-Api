@@ -13,7 +13,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.ResourceLoader;
@@ -75,8 +74,8 @@ public class AttendanceRepositoryImpl implements AttendanceRepository {
 
 
 	@Override
-	@Cacheable(value = "attendanceDataGetById", key = "#spreadsheetId", unless = "#result == null")
-	public List<List<Object>> getId(String spreadsheetId, String range) throws IOException {
+	@Cacheable(value = "attendanceData", key = "'listOfAttendance'")
+	public List<List<Object>> getAttendanceData(String spreadsheetId, String range) throws IOException {
 		 log.info("Getting data from sheet...");
 		ValueRange response = sheetsService.spreadsheets().values().get(spreadsheetId, range).execute();
 		log.info("Data retrieved successfully.");

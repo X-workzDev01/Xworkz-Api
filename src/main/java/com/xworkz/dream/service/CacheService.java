@@ -30,7 +30,9 @@ public interface CacheService {
 
 	public void getCacheDataByEmail(String cacheName, String key, String oldEmail, String newEmail)
 			throws IllegalAccessException;
-	
+
+	public void addAttendancdeToCache(String cacheName, String key, List<Object> data);
+
 	public void updateCacheAttendancde(String cacheName, String key, Integer id, AttendanceDto dto)
 			throws IllegalAccessException;
 

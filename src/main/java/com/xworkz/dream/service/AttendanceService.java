@@ -2,6 +2,7 @@ package com.xworkz.dream.service;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.Map;
 
 import javax.mail.MessagingException;
 import javax.servlet.http.HttpServletRequest;
@@ -21,8 +22,12 @@ public interface AttendanceService {
 	public ResponseEntity<String> writeAttendance(String spreadsheetId, AttendanceDto dto, HttpServletRequest request)
 			throws IOException, MessagingException, TemplateException;
 	
-	public void markAndSaveAbsentDetails(@RequestBody List<AbsenteesDto> attendanceDtoList , @RequestParam String batch) throws IOException,IllegalAccessException;
+	public void markAndSaveAbsentDetails(List<AbsenteesDto> attendanceDtoList ,String batch) throws IOException,IllegalAccessException;
 
 	public List<AttendanceTrainee> getTrainee(String batch);
+	
+    public Map<String, String>  getAttendanceById(Integer id);
+    
+    public List<AttendanceDto> getAbsentListByBatch(String batch) throws IOException;
 
 }
