@@ -8,7 +8,7 @@ import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.scheduling.annotation.EnableScheduling;
 
 @EnableAsync
-@EnableScheduling
+@EnableScheduling 
 @SpringBootApplication
 @EnableCaching
 @EnableFeignClients("com.xworkz.dream.interfaces")

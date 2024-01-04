@@ -20,10 +20,11 @@ public class FeesDto {
 	private String reminderDate;
 	private Long totalAmount;
 	private Long balance;
-	private Long feeConcession;
+	private int feeConcession;
 	private String feesStatus;
 	private String mailSendStatus;
 	private String comments;
+	private Long lateFees;
 	private AuditDto admin;
 	private String softFlag;
 	private String courseName;

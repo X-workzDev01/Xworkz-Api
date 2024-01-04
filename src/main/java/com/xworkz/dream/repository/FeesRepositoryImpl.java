@@ -56,7 +56,7 @@ public class FeesRepositoryImpl implements FeesRepository {
 	}
 
 	@Override
-	
+
 	public List<List<Object>> getFeesDetilesByemailInFollowup(String getFeesDetilesfollowupRange) throws IOException {
 		log.info("get fees followUp detiles form the sheet");
 		return sheetsRepository.spreadsheets().values().get(spreadSheetId, getFeesDetilesfollowupRange).execute()
@@ -66,6 +66,8 @@ public class FeesRepositoryImpl implements FeesRepository {
 	@Override
 	public String updateFeesDetiles(String getFeesDetilesfollowupRange, List<Object> list) throws IOException {
 		log.info("update Fees Detiles is Running");
+		System.err.println(getFeesDetilesfollowupRange); 
+		System.err.println(list);
 		ValueRange body = saveOpration.updateDetilesToSheet(list);
 		return sheetsRepository.spreadsheets().values().update(spreadSheetId, getFeesDetilesfollowupRange, body)
 				.setValueInputOption("RAW").execute().setSpreadsheetId(spreadSheetId).getUpdatedRange();
