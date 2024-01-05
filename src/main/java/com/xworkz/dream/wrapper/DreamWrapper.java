@@ -417,7 +417,7 @@ public class DreamWrapper {
 	}
 
 	public List<Object> listOfAttendance(AttendanceDto dto) {
-
+System.err.println("dto : "+dto);
 		List<Object> row = new ArrayList<Object>();
 		row.add(dto.getAttendanceId());
 		row.add(dto.getId());
@@ -426,7 +426,8 @@ public class DreamWrapper {
 		row.add(dto.getTotalAbsent());
 		row.add(dto.getAbsentDate());
 		row.add(dto.getReason());
-
+		row.add(dto.getAdminDto().getCreatedBy());
+		row.add(dto.getAdminDto().getCreatedOn());
 		return row;
 
 	}
@@ -500,6 +501,9 @@ public class DreamWrapper {
 		}
 		if (dto.getReason() == null) {
 			dto.setReason("NA");
+		}
+		if(dto.getAdminDto().getCreatedOn()==null) {
+			dto.getAdminDto().setCreatedOn(LocalDate.now().toString());
 		}
 
 	}
