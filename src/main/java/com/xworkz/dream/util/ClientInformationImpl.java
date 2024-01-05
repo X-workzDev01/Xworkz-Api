@@ -1,6 +1,5 @@
 package com.xworkz.dream.util;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 import org.slf4j.Logger;
@@ -48,7 +47,7 @@ public class ClientInformationImpl implements ClientInformationUtil {
 		if (dto.getAttemptBy() == null) {
 			dto.setAttemptBy("NA");
 		}
-		dto.setAttemptOn(LocalDate.now().toString());
+		dto.setAttemptOn(LocalDateTime.now().toString());
 		if (dto.getAttemptStatus() == null) {
 			dto.setAttemptStatus("NA");
 		}

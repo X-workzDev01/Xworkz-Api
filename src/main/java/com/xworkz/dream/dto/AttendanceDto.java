@@ -33,6 +33,8 @@ public class AttendanceDto {
 	private String absentDate;
 	@JsonProperty("reason")
 	private String reason;
+	@JsonProperty("adminDto")
+	private AuditDto adminDto;
 	
 	
 }

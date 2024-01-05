@@ -3,6 +3,7 @@ package com.xworkz.dream.wrapper;
 import java.lang.reflect.Field;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -430,25 +431,9 @@ public class DreamWrapper {
 
 	}
 
-	public List<Object> listOfAddAttendance(AttendanceDto dto) {
-
-		List<Object> row = new ArrayList<Object>();
-
-		row.add(dto.getAttendanceId());
-		row.add(dto.getId());
-		row.add(dto.getBasicInfo().getTraineeName());
-		row.add(dto.getCourseInfo().getCourse());
-		row.add(dto.getTotalAbsent());
-		row.add(dto.getAbsentDate());
-		row.add(dto.getReason());
-
-		return row;
-
-	}
-
 	public AttendanceDto attendanceListToDto(List<Object> row) {
 		AttendanceDto attendanceDto = new AttendanceDto(null, null, new BasicInfoDto(), new CourseDto(), null, null,
-				null, null);
+				null, null, new AuditDto());
 		int rowSize = row.size();
 		if (rowSize > 1 && row.get(1) != null && !row.get(1).toString().isEmpty()) {
 			attendanceDto.setId(Integer.valueOf(row.get(1).toString()));
@@ -467,6 +452,41 @@ public class DreamWrapper {
 		}
 		if (rowSize > 6 && row.get(6) != null && !row.get(6).toString().isEmpty()) {
 			attendanceDto.setReason((String) row.get(6));
+		}
+//		if (rowSize > 7 && row.get(7) != null && !row.get(7).toString().isEmpty()) {
+//			if (attendanceDto.getAdminDto() == null) {
+//				attendanceDto.setAdminDto(new AuditDto());
+//			}
+//			attendanceDto.getAdminDto().setCreatedBy(row.get(7).toString());
+//		}
+//
+//		if (rowSize > 8 && row.get(8) != null && !row.get(8).toString().isEmpty()) {
+//			if (attendanceDto.getAdminDto() == null) {
+//				attendanceDto.setAdminDto(new AuditDto());
+//			}
+//			attendanceDto.getAdminDto().setCreatedOn(row.get(8).toString());
+//		}
+//		if (rowSize > 9 && row.get(9) != null && !row.get(9).toString().isEmpty()) {
+//			if (attendanceDto.getAdminDto() == null) {
+//				attendanceDto.setAdminDto(new AuditDto());
+//			}
+//			attendanceDto.getAdminDto().setUpdatedBy(row.get(9).toString());
+//		}
+		if (rowSize > 7 && row.get(7) != null && !row.get(7).toString().isEmpty()) {
+			attendanceDto.getAdminDto().setCreatedBy(row.get(7).toString());
+		}
+
+		if (rowSize > 8 && row.get(8) != null && !row.get(8).toString().isEmpty()) {
+			String createdOnValue = row.get(8).toString();
+			attendanceDto.getAdminDto().setCreatedOn(createdOnValue);
+		}
+
+		if (rowSize > 9 && row.get(9) != null && !row.get(9).toString().isEmpty()) {
+			attendanceDto.getAdminDto().setUpdatedBy(row.get(9).toString());
+		}
+
+		if (rowSize > 10 && row.get(10) != null && !row.get(10).toString().isEmpty()) {
+			attendanceDto.getAdminDto().setUpdatedOn(row.get(10).toString());
 		}
 		return attendanceDto;
 	}

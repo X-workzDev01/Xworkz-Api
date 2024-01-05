@@ -130,6 +130,7 @@ public class ClientInformationServiceImpl implements ClientInformationService {
 		return false;
 	}
 	
+
 	@Override
 	public boolean checkContactNumber(String contactNumber) throws IOException {
 		log.info("checking company contactNumber: {}", contactNumber);
@@ -192,6 +193,8 @@ public class ClientInformationServiceImpl implements ClientInformationService {
 		}
 	}
 
+	
+	
 	@Override
 	public String updateClientDto(int companyId, ClientDto clientDto) throws IOException, IllegalAccessException {
 		log.info("updating client dto {}, Id {}", clientDto, companyId);
@@ -223,5 +226,6 @@ public class ClientInformationServiceImpl implements ClientInformationService {
 		}
 		return null;
 	}
+
 
 }

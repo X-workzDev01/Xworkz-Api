@@ -383,7 +383,6 @@ public class FollowUpServiceImpl implements FollowUpService {
 
 				}
 			}
-
 			else if (status.toString().equalsIgnoreCase(Status.Past_followup.toString().replace('_', ' ').toString())) {
 				List<FollowUpDto> followUpDtos = new ArrayList<FollowUpDto>();
 				StatusList statusList = new StatusList();
