@@ -130,7 +130,34 @@ public class ClientInformationServiceImpl implements ClientInformationService {
 		return false;
 	}
 	
+
+	@Override
+	public boolean checkContactNumber(String contactNumber) throws IOException {
+		log.info("checking company contactNumber: {}", contactNumber);
+		List<List<Object>> listOfData = clientRepository.readData();
+		if (contactNumber != null) {
+			if (listOfData != null) {
+				 Long companyLandLineNumber = Long.parseLong(contactNumber);
+				return listOfData.stream().map(clientWrapper::listToClientDto)
+						.anyMatch(clientDto -> companyLandLineNumber.equals(clientDto.getCompanyLandLineNumber()));
+			}
+		}
+		return false;
+	}
 	
+	@Override
+	public boolean checkCompanyWebsite(String companyWebsite) throws IOException {
+		log.info("checking company ompanyWebsite: {}", companyWebsite);
+		List<List<Object>> listOfData = clientRepository.readData();
+		if (companyWebsite != null) {
+			if (listOfData != null) {
+				return listOfData.stream().map(clientWrapper::listToClientDto)
+						.anyMatch(clientDto -> companyWebsite.equalsIgnoreCase(clientDto.getCompanyWebsite()));
+			}
+		}
+		return false;
+	}
+
 	@Override
 	public List<ClientDto> getSuggestionDetails(String companyName) throws IOException {
 		log.info("get the suggestion details by companyName :{}", companyName);
