@@ -20,7 +20,7 @@ public class FeesHistoryDto {
 	private String transectionId;
 	private String paidAmount;
 	private String paymentMode;
-	private String followupstatus;
+	private String paidTo;
 	private String feesfollowupDate;
 	private String followupCallbackDate;
 

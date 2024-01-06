@@ -44,13 +44,11 @@ sheets:
   AttandanceInfoSheetName: attendanceInfo!
   attendanceListDefaultRange: attendanceInfo!J2:j
   attendanceInfoMarkAs:  J
-  feesRegister: FeesDetiles!B2:U
-  getFeesDetiles: FeesDetiles!A2:U
+  feesRegister: FeesDetiles!B2:X
+  getFeesDetiles: FeesDetiles!A2:X
   getFeesDetilesfollowupRange : FeesFollowup!A2:J
   feesEmailRange: FeesDetiles!C2:C
-
-
-
+  
   clientInformationRange: clientDetails!B2:O
   clientInformationReadRange: clientDetails!A2:O
   clientStartRow: B
@@ -88,9 +86,6 @@ login:
 
 server:
   port : 8081
-
-  
-
 ---
 
 

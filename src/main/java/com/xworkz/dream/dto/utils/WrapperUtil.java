@@ -76,13 +76,22 @@ public class WrapperUtil {
 			updateDto.setFeesHistoryDto(feesDto.getFeesHistoryDto());
 			updateDto.getAdmin().setCreatedBy(dto.getAdmin().getCreatedBy());
 			updateDto.getAdmin().setCreatedOn(dto.getAdmin().getCreatedOn());
+			updateDto.getAdmin().setUpdatedOn(LocalDate.now().toString());
+			if (feesDto.getComments() != null) {
+				updateDto.setComments(feesDto.getComments());
+			} else { 
+				updateDto.setComments(dto.getComments());
+			}
+			if (feesDto.getLateFees() != null) {
+				updateDto.setLateFees(feesDto.getLateFees());
+			} else {
+				updateDto.setLateFees(dto.getLateFees());
+			}
 			updateDto.getFeesHistoryDto().setFeesfollowupDate(LocalDate.now().toString());
 			updateDto.setBalance(null);
 			updateDto.getFeesHistoryDto()
 					.setPaidAmount(String.valueOf(Integer.parseInt(feesDto.getFeesHistoryDto().getPaidAmount())
 							+ Integer.parseInt(dto.getFeesHistoryDto().getPaidAmount())));
-//			System.out.println("gggg           " + Integer.parseInt(feesDto.getFeesHistoryDto().getPaidAmount())
-//					+ Integer.parseInt(dto.getFeesHistoryDto().getPaidAmount()));
 			updateDto.setFeesStatus("Pending");
 			updateDto.getFeesHistoryDto().setId(null);
 			updateDto.setCourseName(null);
@@ -94,13 +103,14 @@ public class WrapperUtil {
 			try {
 
 				int index = findIndex(feesDto.getFeesHistoryDto().getEmail());
-				String followupRanges = "FeesDetiles!B" + index + ":T" + index;
+				String followupRanges = "FeesDetiles!B" + index + ":V" + index;
 				feesRepository.updateFeesDetiles(followupRanges, extractDtoDetails(updateDto));
 
 				log.info("FeesDetiles Updated Sucessfully");
 				return "Feesfollowup and feesDetiles Updated Sucessfully";
 
 			} catch (IllegalAccessException | IOException e) {
+				log.error("fees Detiles Cannot be updated some exception is there");
 
 			}
 		}
@@ -116,7 +126,7 @@ public class WrapperUtil {
 		feesHistoryDto.setPaymentMode(dto.getFeesHistoryDto().getPaymentMode());
 		feesHistoryDto.setTransectionId(dto.getFeesHistoryDto().getTransectionId());
 		feesHistoryDto.setPaidAmount(fees);
-		feesHistoryDto.setFollowupstatus(dto.getFeesHistoryDto().getFollowupstatus());
+		feesHistoryDto.setPaidTo(dto.getFeesHistoryDto().getPaidTo());
 		feesHistoryDto.setId(null);
 
 		feesRepository.updateDetilesToFollowUp("FeesFollowup!B2", extractDtoDetails(feesHistoryDto));
