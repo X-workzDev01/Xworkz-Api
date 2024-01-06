@@ -74,6 +74,29 @@ public class ClientInformationController {
 			return "Company Email Not Exists";
 		}
 	}
+	
+	@ApiOperation("To check the contactNumber of Company")
+	@GetMapping("/checkContactNumber")
+	public String checkContactNumber(@RequestParam String contactNumber) throws IOException {
+		log.info("checking company contactNumber exist of not contactNumber is:{}", contactNumber);
+		if (clientInformationService.checkContactNumber(contactNumber)) {
+			return "Company ContactNumber Already Exists";
+		} else {
+			return "Company ContactNumber Not Exists";
+		}
+	}
+
+	@ApiOperation("To check the CompanyWebsite")
+	@GetMapping("/checkCompanyWebsite")
+	public String checkCompanyWebsite(@RequestParam String companyWebsite) throws IOException {
+		log.info("checking company CompanyWebsite exist of not CompanyWebsite is:{}", companyWebsite);
+		if (clientInformationService.checkCompanyWebsite(companyWebsite)) {
+			return "CompanyWebsite Already Exists";
+		} else {
+			return "CompanyWebsite Not Exists";
+		}
+	}
+
 
 	@ApiOperation("get suggestiong by name")
 	@GetMapping("/client/suggestions")
@@ -82,9 +105,17 @@ public class ClientInformationController {
 		return clientInformationService.getSuggestionDetails(companyName);
 	}
 
+	@ApiOperation("get details by companyname")
+	@GetMapping("/getdetailsbycompanyname")
+	public List<ClientDto> getDetailsByCompanyName(@RequestParam String companyName) throws IOException {
+		log.info("get details by company name,{}", companyName);
+		return clientInformationService.getDetailsbyCompanyName(companyName);
+	}
+
 	@ApiOperation("updating client data by id")
 	@PutMapping("/clientupdate")
-	public String updateClientDto(@RequestParam int companyId, @RequestBody ClientDto clientDto) throws IOException, IllegalAccessException {
+	public String updateClientDto(@RequestParam int companyId, @RequestBody ClientDto clientDto)
+			throws IOException, IllegalAccessException {
 		log.info("updating client dto {}", clientDto);
 		return clientInformationService.updateClientDto(companyId, clientDto);
 	}

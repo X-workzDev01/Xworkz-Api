@@ -43,6 +43,7 @@ logging:
     name: ../opt/tomcat1/logs/Dream-Prod-Logs/Dream.log
     max-size: 10MB
     total-size-cap: 10MB
+
     max-history: '1'
     clean-history-on-start: 'true'
   level:

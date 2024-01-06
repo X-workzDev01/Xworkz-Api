@@ -25,7 +25,7 @@ public class FeesDetilesWrapperImpl implements FeesDetilesWrapper {
 
 	@Override
 	public FeesDto listToFeesDTO(List<Object> row) throws IOException {
-		FeesDto feesDto = new FeesDto(0, null, new FeesHistoryDto(), null, null, null, null, null, null, null,
+		FeesDto feesDto = new FeesDto(0, null, new FeesHistoryDto(), null, null, null, 0, null, null, null, null,
 				new AuditDto(), null, null);
 
 		if (validateCell(SheetConstant.COLUMN_SL_NO)) {
@@ -58,8 +58,7 @@ public class FeesDetilesWrapperImpl implements FeesDetilesWrapper {
 			feesDto.getFeesHistoryDto().setPaymentMode((String) row.get(SheetConstant.COLUMN_PAYMENT_MODE.getIndex()));
 		}
 		if (validateCell(SheetConstant.COLUMN__FOLLOWUP_STATUS)) {
-			feesDto.getFeesHistoryDto()
-					.setFollowupstatus((String) row.get(SheetConstant.COLUMN__FOLLOWUP_STATUS.getIndex()));
+			feesDto.getFeesHistoryDto().setPaidTo((String) row.get(SheetConstant.COLUMN__FOLLOWUP_STATUS.getIndex()));
 		}
 		if (validateCell(SheetConstant.COLUMN_FEES_FOLLOWUP_DATE)) {
 			feesDto.getFeesHistoryDto()
@@ -73,7 +72,8 @@ public class FeesDetilesWrapperImpl implements FeesDetilesWrapper {
 			feesDto.setReminderDate((String) row.get(SheetConstant.COLUMN_REMINDER_DATE.getIndex()));
 		}
 		if (validateCell(SheetConstant.COLUMN_FEES_CONCESSION)) {
-			feesDto.setFeeConcession(Long.valueOf(row.get(SheetConstant.COLUMN_FEES_CONCESSION.getIndex()).toString()));
+			feesDto.setFeeConcession(
+					Integer.valueOf(row.get(SheetConstant.COLUMN_FEES_CONCESSION.getIndex()).toString()));
 		}
 		if (validateCell(SheetConstant.COLUMN_FEES_STATUS)) {
 			feesDto.setFeesStatus((String) row.get(SheetConstant.COLUMN_FEES_STATUS.getIndex()));
@@ -99,6 +99,9 @@ public class FeesDetilesWrapperImpl implements FeesDetilesWrapper {
 		if (validateCell(SheetConstant.COLUMN_DATA_FLAG)) {
 			feesDto.setSoftFlag((String) row.get(SheetConstant.COLUMN_DATA_FLAG.getIndex()));
 		}
+		if (validateCell(SheetConstant.LATE_FEES)) {
+			feesDto.setLateFees(Long.valueOf(row.get(SheetConstant.LATE_FEES.getIndex()).toString()));
+		}
 		if (validateCell(SheetConstant.COLUMN_EMAIL)) {
 			BatchDetails details = feesUtiles
 					.getBatchDetiles(row.get(SheetConstant.COLUMN_EMAIL.getIndex()).toString());
@@ -106,7 +109,8 @@ public class FeesDetilesWrapperImpl implements FeesDetilesWrapper {
 
 			feesDto.setTotalAmount(details.getTotalAmount()
 					- Long.valueOf(row.get(SheetConstant.COLUMN_FEES_CONCESSION.getIndex()).toString())
-							* details.getTotalAmount() / 100);
+							* details.getTotalAmount() / 100
+					+ Long.parseLong(row.get(SheetConstant.LATE_FEES.getIndex()).toString()));
 			feesDto.setBalance(feesDto.getTotalAmount()
 					- Long.valueOf((String) row.get(SheetConstant.COLUMN_PAID_AMOUNT.getIndex())));
 
@@ -139,7 +143,7 @@ public class FeesDetilesWrapperImpl implements FeesDetilesWrapper {
 					.setFeesfollowupDate((String) row.get(SheetConstant.COLUMN_FEES_FOLLOWUP_DATE.getIndex() - 1));
 		}
 		if (validateCell(SheetConstant.COLUMN__FOLLOWUP_STATUS)) {
-			feesHistoryDto.setFollowupstatus((String) row.get(SheetConstant.COLUMN__FOLLOWUP_STATUS.getIndex() - 1));
+			feesHistoryDto.setPaidTo((String) row.get(SheetConstant.COLUMN__FOLLOWUP_STATUS.getIndex() - 1));
 		}
 		if (validateCell(SheetConstant.COLUMN_PAYMENT_MODE)) {
 			feesHistoryDto.setPaymentMode((String) row.get(SheetConstant.COLUMN_PAYMENT_MODE.getIndex() - 1));

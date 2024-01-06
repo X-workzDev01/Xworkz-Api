@@ -321,7 +321,7 @@ public class UtilProd implements DreamUtil {
 
 			MimeMessageHelper messageHelper = new MimeMessageHelper(mimeMessage);
 			messageHelper.setFrom(helper.decrypt(chimpUserName));
-
+			messageHelper.addCc("hr@x-workz.in");
 			messageHelper.setTo(traineeEmail);
 
 			messageHelper.setSubject(subject);

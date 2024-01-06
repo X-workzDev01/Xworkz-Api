@@ -1,18 +1,23 @@
 package com.xworkz.dream.service;
 
 import java.io.IOException;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
-import java.util.OptionalInt;
 import java.util.stream.Collectors;
-import java.util.stream.IntStream;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
+import com.google.api.services.sheets.v4.model.UpdateValuesResponse;
+import com.google.api.services.sheets.v4.model.ValueRange;
 import com.xworkz.dream.cache.ClientCacheService;
+import com.xworkz.dream.dto.AuditDto;
 import com.xworkz.dream.dto.ClientHrData;
 import com.xworkz.dream.dto.ClientHrDto;
 import com.xworkz.dream.repository.ClientHrRepository;
@@ -22,11 +27,15 @@ import com.xworkz.dream.wrapper.DreamWrapper;
 
 @Service
 public class ClientHrServiceImpl implements ClientHrService {
+	@Value("${sheets.hrStartRow}")
+	private String hrStartRow;
+	@Value("${sheets.hrEndRow}")
+	private String hrEndRow;
+	@Value("${sheets.hrSheetName}")
+	private String hrSheetName;
 
 	@Autowired
 	private ClientHrRepository clientHrRepository;
-
-
 
 	@Autowired
 	private DreamWrapper dreamWrapper;
@@ -49,7 +58,8 @@ public class ClientHrServiceImpl implements ClientHrService {
 			List<Object> listItem = dreamWrapper.extractDtoDetails(clientHrDto);
 
 			if (clientHrRepository.saveClientHrInformation(listItem)) {
-				clientCacheService.addHRDetailsToCache("hrDetails", "listofHRDetails", listItem);
+				// clientCacheService.addHRDetailsToCache("hrDetails", "listofHRDetails",
+				// listItem);
 				log.info("Client HR information saved successfully");
 				return "Client HR information saved successfully";
 			} else {
@@ -85,14 +95,12 @@ public class ClientHrServiceImpl implements ClientHrService {
 	@Override
 	public boolean hrEmailcheck(String hrEmail) throws IOException {
 		if (hrEmail != null) {
-
 			return clientHrRepository.readData().stream().map(clientWrapper::listToClientHrDto)
 					.anyMatch(clientHrDto -> hrEmail.equals(clientHrDto.getHrEmail()));
 		} else {
 			return false;
 		}
 	}
-
 
 	@Override
 	public List<ClientHrDto> getHrDetailsByCompanyId(int companyId) throws IOException {
@@ -101,8 +109,57 @@ public class ClientHrServiceImpl implements ClientHrService {
 				.filter(clientHrDto -> clientHrDto.getCompanyId() == companyId).collect(Collectors.toList());
 		return listofClientHr;
 	}
-	
-	
 
+	@Override
+	public ClientHrDto getHRDetailsByHrId(int hrId) throws IOException {
+		ClientHrDto hrDto = null;
+		if (hrId != 0) {
+			return hrDto = clientHrRepository.readData().stream().map(clientWrapper::listToClientHrDto)
+					.filter(ClientHrDto -> hrId == ClientHrDto.getId()).findFirst().orElse(hrDto);
+		}
+		return hrDto;
+	}
+
+	@Override
+	public boolean hrContactNumberCheck(Long contactNumber) throws IOException {
+		log.info("checking contact number, {}", contactNumber);
+		List<List<Object>> listOfHrDetails = clientHrRepository.readData();
+		if (contactNumber != null) {
+			if (listOfHrDetails != null) {
+				return listOfHrDetails.stream().map(clientWrapper::listToClientHrDto)
+						.anyMatch(clientHrDto-> contactNumber.equals(clientHrDto.getHrContactNumber()));
+			}
+		}
+		return false;
+	}
+
+	@Override
+	public String updateHrDetails(int hrId, ClientHrDto clientHrDto) throws IllegalAccessException, IOException {
+		int rowNumber = hrId + 1;
+		String range = hrSheetName + hrStartRow + rowNumber + ":" + hrEndRow + rowNumber;
+		if (hrId != 0 && clientHrDto != null) {
+			AuditDto auditDto = new AuditDto();
+			auditDto.setUpdatedOn(LocalDateTime.now().toString());
+			clientHrDto.getAdminDto().setUpdatedOn(LocalDateTime.now().toString());
+			System.out.println("updated values:" + clientHrDto);
+			List<List<Object>> values = Arrays.asList(dreamWrapper.extractDtoDetails(clientHrDto));
+
+			if (!values.isEmpty()) {
+				List<Object> modifiedValues = new ArrayList<>(values.get(0).subList(1, values.get(0).size()));
+				values.set(0, modifiedValues);
+				log.debug("values {}", values);
+			}
+			ValueRange valueRange = new ValueRange();
+			valueRange.setValues(values);
+			UpdateValuesResponse updated = clientHrRepository.updateHrDetails(range, valueRange);
+			log.info("update response is :{}", updated);
+			if (updated != null) {
+				return "updated Successfully";
+			} else {
+				return "not updated successfully";
+			}
+		}
+		return null;
+	}
 
 }

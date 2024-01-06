@@ -18,8 +18,14 @@ public interface ClientInformationService {
 
 	boolean checkEmail(String companyEmail) throws IOException;
 
+	boolean checkContactNumber(String contactNumber) throws IOException;
+
+	boolean checkCompanyWebsite(String companyWebsite) throws IOException;
+
 	List<ClientDto> getSuggestionDetails(String companyName) throws IOException;
 
 	String updateClientDto(int companyId, ClientDto clientDto) throws IOException, IllegalAccessException;
+
+	List<ClientDto> getDetailsbyCompanyName(String companyName) throws IOException;
 
 }

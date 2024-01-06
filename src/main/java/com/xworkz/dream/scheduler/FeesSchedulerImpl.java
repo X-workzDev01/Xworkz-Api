@@ -50,7 +50,6 @@ public class FeesSchedulerImpl implements FeesScheduler {
 								BatchDetails detiles = feesUtil.getBatchDetiles(dto.getFeesHistoryDto().getEmail());
 								updateCSRofferedAfterFreeTraining(dto, detiles);
 								return null;
-
 							} else {
 								BatchDetails detiles = feesUtil.getBatchDetiles(dto.getFeesHistoryDto().getEmail());
 								afterAMonthChangeStatusAutometically(dto, detiles);

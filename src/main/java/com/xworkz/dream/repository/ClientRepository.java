@@ -15,6 +15,6 @@ public interface ClientRepository {
 	 boolean writeClientInformation(List<Object> row) throws IOException;
 	 List<List<Object>> readData() throws IOException;
 
-	UpdateValuesResponse updateclientInfor(String range, ValueRange valueRange) throws IOException;
+	UpdateValuesResponse updateclientInfo(String range, ValueRange valueRange) throws IOException;
 
 }

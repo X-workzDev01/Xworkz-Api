@@ -59,7 +59,7 @@ public class ClientInformationServiceImpl implements ClientInformationService {
 			if (clientRepository.writeClientInformation(list)) {
 				log.debug("adding newly added data to the cache, clientInformation :{}", list);
 
-				clientCacheService.addNewDtoToCache("clientInformation", "ListOfClientDto", list);
+				//clientCacheService.addNewDtoToCache("clientInformation", "ListOfClientDto", list);
 				return "Client Information saved successfully";
 			} else {
 				return "Client Information not saved";
@@ -114,7 +114,7 @@ public class ClientInformationServiceImpl implements ClientInformationService {
 		if (clientDto != null) {
 			return clientDto;
 		}
-		return null;
+		return clientDto;
 	}
 
 	@Override
@@ -125,6 +125,34 @@ public class ClientInformationServiceImpl implements ClientInformationService {
 			if (listOfData != null) {
 				return listOfData.stream().map(clientWrapper::listToClientDto)
 						.anyMatch(clientDto -> companyEmail.equalsIgnoreCase(clientDto.getCompanyEmail()));
+			}
+		}
+		return false;
+	}
+	
+
+	@Override
+	public boolean checkContactNumber(String contactNumber) throws IOException {
+		log.info("checking company contactNumber: {}", contactNumber);
+		List<List<Object>> listOfData = clientRepository.readData();
+		if (contactNumber != null) {
+			if (listOfData != null) {
+				 Long companyLandLineNumber = Long.parseLong(contactNumber);
+				return listOfData.stream().map(clientWrapper::listToClientDto)
+						.anyMatch(clientDto -> companyLandLineNumber.equals(clientDto.getCompanyLandLineNumber()));
+			}
+		}
+		return false;
+	}
+	
+	@Override
+	public boolean checkCompanyWebsite(String companyWebsite) throws IOException {
+		log.info("checking company ompanyWebsite: {}", companyWebsite);
+		List<List<Object>> listOfData = clientRepository.readData();
+		if (companyWebsite != null) {
+			if (listOfData != null) {
+				return listOfData.stream().map(clientWrapper::listToClientDto)
+						.anyMatch(clientDto -> companyWebsite.equalsIgnoreCase(clientDto.getCompanyWebsite()));
 			}
 		}
 		return false;
@@ -148,6 +176,26 @@ public class ClientInformationServiceImpl implements ClientInformationService {
 	}
 
 	@Override
+	public List<ClientDto> getDetailsbyCompanyName(String companyName) throws IOException {
+		List<ClientDto> clientDto = null;
+		List<List<Object>> listofDtos = clientRepository.readData();
+		if (companyName != null) {
+			if (listofDtos != null) {
+				clientDto = listofDtos.stream().map(clientWrapper::listToClientDto).filter(ClientDto -> ClientDto.getCompanyName().equalsIgnoreCase(companyName))
+						.collect(Collectors.toList());
+				log.info("returned company dto is, {}", clientDto);
+			}
+		}
+		if (clientDto != null) {
+			return clientDto;
+		} else {
+			return clientDto;
+		}
+	}
+
+	
+	
+	@Override
 	public String updateClientDto(int companyId, ClientDto clientDto) throws IOException, IllegalAccessException {
 		log.info("updating client dto {}, Id {}", clientDto, companyId);
 		String range = clientSheetName + clientStartRow + (companyId + 1) + ":" + clientEndRow + (companyId + 1);
@@ -157,7 +205,7 @@ public class ClientInformationServiceImpl implements ClientInformationService {
 			auditDto.setUpdatedOn(LocalDateTime.now().toString());
 			clientDto.getAdminDto().setUpdatedOn(auditDto.getUpdatedOn());
 			List<List<Object>> values = Arrays.asList(dreamWrapper.extractDtoDetails(clientDto));
-			
+
 			if (!values.isEmpty()) {
 				List<Object> modifiedValues = new ArrayList<>(values.get(0).subList(1, values.get(0).size()));
 				modifiedValues.remove(0);
@@ -166,11 +214,11 @@ public class ClientInformationServiceImpl implements ClientInformationService {
 			}
 			ValueRange valueRange = new ValueRange();
 			valueRange.setValues(values);
-			UpdateValuesResponse updated = clientRepository.updateclientInfor(range, valueRange);
+			UpdateValuesResponse updated = clientRepository.updateclientInfo(range, valueRange);
 			log.info("update response is :{}", updated);
-			if (updated == null) {
-				List<List<Object>> listOfItems = Arrays.asList(dreamWrapper.extractDtoDetails(clientDto));
-				clientCacheService.updateClientDetailsInCache("clientInformation","ListOfClientDto",listOfItems);
+			if (updated != null) {
+				//List<List<Object>> listOfItems = Arrays.asList(dreamWrapper.extractDtoDetails(clientDto));
+				//clientCacheService.updateClientDetailsInCache("clientInformation", "ListOfClientDto", listOfItems);
 				return "updated Successfully";
 			} else {
 				return "not updated successfully";
@@ -178,5 +226,6 @@ public class ClientInformationServiceImpl implements ClientInformationService {
 		}
 		return null;
 	}
+
 
 }

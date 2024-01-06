@@ -21,5 +21,6 @@ public class FeesUiDto {
 	private String name;
 	private AuditDto adminDto;
 	private String status;
+	private Long lateFees;
 
 }

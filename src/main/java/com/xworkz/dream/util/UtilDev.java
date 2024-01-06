@@ -267,7 +267,7 @@ public class UtilDev implements DreamUtil {
 
 			MimeMessageHelper messageHelper = new MimeMessageHelper(mimeMessage);
 			messageHelper.setFrom("hareeshahr.xworkz@gmail.com");
-
+			messageHelper.addCc("hr@x-workz.in");
 			messageHelper.setTo(traineeEmail);
 
 			messageHelper.setSubject(subject);

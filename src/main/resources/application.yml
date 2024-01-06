@@ -1,6 +1,7 @@
 spring:
    profiles:
-      active: prod
+
+      active: dev
 
    freemarker:
     template-loader-path: classpath:/templates/
@@ -36,30 +37,32 @@ sheets:
   birthdayRange: dateOfBirthDetails!A2:A
   followUpStatusIdRange: followUpStatus!A2:A
   batchDetailsCourseNameRange: batchDetails!B2:B
-  attendanceInfoRange: attendanceInfo!A2:G
-  attendanceInfoIDRange: attendanceInfo!A2:G
-  attendanceInfoByName: attendanceInfo!A2:G
+  attendanceInfoRange: attendanceInfo!A2:K
+  attendanceInfoIDRange: attendanceInfo!A2:K
+  attendanceInfoByName: attendanceInfo!A2:K
   attendanceInfoStartRange : B
-  attendanceInfoEndRange : G
+  attendanceInfoEndRange : K
   AttandanceInfoSheetName: attendanceInfo!
   attendanceListDefaultRange: attendanceInfo!J2:j
   attendanceInfoMarkAs:  J
-  feesRegister: FeesDetiles!B2:U
-  getFeesDetiles: FeesDetiles!A2:U
+  feesRegister: FeesDetiles!B2:X
+  getFeesDetiles: FeesDetiles!A2:X
   getFeesDetilesfollowupRange : FeesFollowup!A2:J
   feesEmailRange: FeesDetiles!C2:C
-
-
-
+  
   clientInformationRange: clientDetails!B2:O
   clientInformationReadRange: clientDetails!A2:O
-  clientIds: clientIds!A2:A
   clientStartRow: B
   clientEndRow: O
   clientSheetName: clientDetails!
 
   clientHrInformationRange: clientHRdetails!B2:K
   clientHrInformationReadRange: clientHRdetails!A2:K
+  hrStartRow: B
+  hrEndRow: K
+  hrSheetName: clientHRdetails!
+
+
   hrFollowUpInformationRange: ClientHRFollowUpStatus!B2:I
   hrFollowUpInformationReadRange: ClientHRFollowUpStatus!A2:I
 
@@ -84,9 +87,6 @@ login:
 
 server:
   port : 8081
-
-  
-
 ---
 
 

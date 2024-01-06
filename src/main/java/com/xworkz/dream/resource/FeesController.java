@@ -29,7 +29,8 @@ public class FeesController {
 
 	@Autowired
 	private FeesService feesService;
-
+	@Value("${sheets.feesEmailRange}")
+	private String feesEmailRange;
 	private Logger log = LoggerFactory.getLogger(FeesController.class);
 	@Value("${sheets.getFeesDetiles}")
 	private String getFeesDetilesRange;
@@ -43,14 +44,14 @@ public class FeesController {
 	public ResponseEntity<String> writeFeesSaveOpration(@RequestBody FeesUiDto dto)
 			throws IOException, IllegalAccessException {
 		log.info("Running save Fees detiles controller ");
-		return ResponseEntity.ok(feesService.writeFeesDetiles(dto));
+		return ResponseEntity.ok(feesService.writeFeesDetiles(dto,feesEmailRange));
 
 
 	}
 
 	@ApiOperation("Update feesDetiles")
 	@PutMapping("/updateFeesDeties")
-	public ResponseEntity<FeesDto> updateFeesFollowUp(@RequestBody FeesDto dto) throws IOException {
+	public ResponseEntity<String> updateFeesFollowUp(@RequestBody FeesDto dto) throws IOException {
 		return ResponseEntity.ok(feesService.updateFeesFollowUp(dto, getFeesDetilesRange, range));
 	}
 

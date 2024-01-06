@@ -110,14 +110,11 @@ public class FeesUtils {
 	public FeesDto feesDtosetValues(FeesUiDto uidto) throws IOException {
 		FeesDto feesDto = new FeesDto();
 		BatchDetails details = getBatchDetiles(uidto.getEmail());
-
-		feesDto = setFeesDetilesDto(uidto, feesDto, details);
-		return feesDto;
+		return setFeesDetilesDto(uidto, feesDto, details);
 	}
 
 	public FeesDto setFeesDetilesDto(FeesUiDto uiDto, FeesDto feesDto, BatchDetails details) {
 		FeesDto feesDtos = new FeesDto(new FeesHistoryDto(), new AuditDto());
-
 		if (uiDto != null && uiDto.getStatus() != null
 				&& uiDto.getStatus().equalsIgnoreCase(Status.Joined.toString())) {
 			if (uiDto.getEmail() != null) {
@@ -130,7 +127,8 @@ public class FeesUtils {
 				feesDtos.getAdmin().setUpdatedBy("NA");
 				feesDtos.getAdmin().setUpdatedOn("NA");
 				feesDtos.setFeesStatus("FREE");
-				feesDtos.setFeeConcession(0L);
+				feesDtos.setLateFees(0L);
+				feesDtos.setFeeConcession(0);
 				feesDtos.getFeesHistoryDto().setFeesfollowupDate("NA");
 				feesDtos.getFeesHistoryDto().setPaidAmount("0");
 				feesDtos.getFeesHistoryDto().setLastFeesPaidDate("NA");
@@ -139,7 +137,7 @@ public class FeesUtils {
 				feesDtos.setMailSendStatus("No");
 				feesDtos.setComments("NA");
 				feesDtos.setReminderDate(LocalDate.parse(details.getStartDate()).plusDays(28).toString());
-				feesDtos.getFeesHistoryDto().setFollowupstatus("NA");
+				feesDtos.getFeesHistoryDto().setPaidTo("NA");
 				feesDtos.getFeesHistoryDto()
 						.setFollowupCallbackDate(LocalDate.parse(details.getStartDate()).plusDays(1).toString());
 			}

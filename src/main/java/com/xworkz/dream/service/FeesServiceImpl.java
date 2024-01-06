@@ -3,11 +3,12 @@ package com.xworkz.dream.service;
 import java.io.IOException;
 import java.util.List;
 import java.util.stream.Collectors;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
+
 import com.xworkz.dream.dto.utils.FeesUtils;
 import com.xworkz.dream.dto.utils.FeesWithHistoryDto;
 import com.xworkz.dream.dto.utils.WrapperUtil;
@@ -32,20 +33,23 @@ public class FeesServiceImpl implements FeesService {
 	private FeesUtils feesUtils;
 
 	@Override
-	public String writeFeesDetiles(FeesUiDto dto) throws IOException, IllegalAccessException {
+	public String writeFeesDetiles(FeesUiDto dto, String feesEmailRange) throws IOException, IllegalAccessException {
 		log.info("Running service writeFeesDiteles " + dto);
+		boolean duplicateEntry = feesRepository.getEmailList(feesEmailRange).values().stream()
+				.anyMatch(items -> items.toString().contains(dto.getEmail()));
+		if (duplicateEntry == false) {
+			boolean write = feesRepository.writeFeesDetiles(util.extractDtoDetails(feesUtils.feesDtosetValues(dto)));
+			if (write == true) {
+				log.info("feesDetiles Saved sucessfully");
+				return "feesDetiles Saved sucessfully"; 
+			}
+ 
+			return "data save failed ";
+		} else {
+			log.warn("data save failed");
 
-		FeesDto feesDto = feesUtils.feesDtosetValues(dto);
-		List<Object> list = util.extractDtoDetails(feesDto);
-		boolean write = feesRepository.writeFeesDetiles(list);
-		if (write == true) {
-			log.info("feesDetiles Saved sucessfully");
-			return "feesDetiles Saved sucessfully";
+			return "Detiles alreaddy  Exists";
 		}
-		System.out.println(feesDto);
-		log.warn("data save failed");
-
-		return "data save failed ";
 	}
 
 	@Override
@@ -82,10 +86,10 @@ public class FeesServiceImpl implements FeesService {
 	}
 
 	@Override
-	public FeesDto updateFeesFollowUp(FeesDto feesDto, String getFeesDetilesRange, String range) throws IOException {
+	public String updateFeesFollowUp(FeesDto feesDto, String getFeesDetilesRange, String range) throws IOException {
 		List<FeesDto> feesDtos = getFeesDetilesByemail(feesDto.getFeesHistoryDto().getEmail(), getFeesDetilesRange);
-		log.info("Enter The update method in fees followup");
-		log.debug("updated Dto is  {}", feesDto);
+		log.info("Enter The update  in fees followup");
+		log.debug("update Dto is  {}", feesDto);
 		if (0L != feesDtos.get(0).getBalance()) {
 			if ((int) Long.parseLong(feesDtos.get(0).getFeesHistoryDto().getPaidAmount())
 					+ (int) Long.parseLong(feesDto.getFeesHistoryDto().getPaidAmount()) <= feesDtos.get(0)
@@ -98,10 +102,10 @@ public class FeesServiceImpl implements FeesService {
 						log.info("Error is there  ");
 					}
 				});
-				return feesDto;
+				return "Data updated successfully";
 			}
 		}
-		return null;
+		return "Update data Error";
 	}
 
 	public List<FeesDto> getFeesDetilesByemail(String email, String getFeesDetilesRange) throws IOException {
@@ -113,8 +117,7 @@ public class FeesServiceImpl implements FeesService {
 						FeesDto dto = feesWrapper.listToFeesDTO(items);
 						return dto;
 					} catch (IOException e) {
-						log.error("List converting error", e);
-
+						log.error("List converting error", e.getMessage());
 						return null;
 					}
 				}).collect(Collectors.toList());

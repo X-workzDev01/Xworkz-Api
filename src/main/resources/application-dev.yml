@@ -19,11 +19,9 @@ logging:
   file:
     name: ../Dream.log
     max-size: 1MB
-    total-size-cap: 10MB
-    max-history: '10'
+    total-size-cap: 2MB
+    max-history: '1'
     clean-history-on-start: 'true'
-
-
   level:
     root: INFO
   pattern:

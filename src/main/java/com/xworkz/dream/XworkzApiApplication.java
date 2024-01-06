@@ -8,7 +8,7 @@ import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.scheduling.annotation.EnableScheduling;
 
 @EnableAsync
-@EnableScheduling
+@EnableScheduling 
 @SpringBootApplication
 @EnableCaching
 @EnableFeignClients("com.xworkz.dream.interfaces")
@@ -17,6 +17,7 @@ public class XworkzApiApplication {
 
 	public static void main(String[] args) {
 		SpringApplication.run(XworkzApiApplication.class, args);
+	
 	}  
 }
    
