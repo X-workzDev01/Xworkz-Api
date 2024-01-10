@@ -55,4 +55,6 @@ public interface FollowUpService {
 	public ResponseEntity<FollowUpDataDto> getFollowStatusByDate(String date, int startIndex, int endIndex,
 			String spreadsheetID, HttpServletRequest request) throws IOException;
 
+	boolean addCsrToFollowUp(TraineeDto traineeDto, String spreadSheetId) throws IOException, IllegalAccessException;
+
 }
