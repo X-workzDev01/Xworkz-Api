@@ -15,6 +15,7 @@ import com.xworkz.dream.dto.AttendanceDto;
 import com.xworkz.dream.dto.AuditDto;
 import com.xworkz.dream.dto.BasicInfoDto;
 import com.xworkz.dream.dto.BatchDetails;
+import com.xworkz.dream.dto.CSR;
 import com.xworkz.dream.dto.CourseDto;
 import com.xworkz.dream.dto.EducationInfoDto;
 import com.xworkz.dream.dto.EnquiryDto;
@@ -203,7 +204,7 @@ public class DreamWrapper {
 
 	public TraineeDto listToDto(List<Object> row) {
 		TraineeDto traineeDto = new TraineeDto(0, new BasicInfoDto(), new EducationInfoDto(), new CourseDto(),
-				new OthersDto(), new AuditDto());
+				new OthersDto(), new AuditDto() , new CSR());
 
 		// Assuming the list follows this order: id ,traineeName, email, contactNumber,
 		// qualification, stream,
@@ -575,6 +576,27 @@ System.err.println("dto : "+dto);
 		followUpDto.setId(traineeDto.getId());
 		followUpDto.setCurrentlyFollowedBy(FollowUp.NONE.toString());
 		followUpDto.setCurrentStatus(FollowUp.ENQUIRY.toString());
+		followUpDto.setAdminDto(traineeDto.getAdminDto());
+		followUpDto.getAdminDto().setUpdatedBy("NA");
+		followUpDto.getAdminDto().setUpdatedOn("NA");
+		followUpDto.setFlag("Active");
+
+		return followUpDto;
+	}
+	
+	public FollowUpDto setFollowUpCSR(TraineeDto traineeDto) {
+		FollowUpDto followUpDto = new FollowUpDto();
+		BasicInfoDto basicInfo = new BasicInfoDto();
+		basicInfo.setTraineeName(traineeDto.getBasicInfo().getTraineeName());
+		basicInfo.setEmail(traineeDto.getBasicInfo().getEmail());
+		basicInfo.setContactNumber(traineeDto.getBasicInfo().getContactNumber());
+		followUpDto.setBasicInfo(basicInfo);
+		followUpDto.setCourseName(traineeDto.getCourseInfo().getCourse());
+		followUpDto.setRegistrationDate(LocalDateTime.now().toString());
+		followUpDto.setJoiningDate(FollowUp.NOT_CONFIRMED.toString());
+		followUpDto.setId(traineeDto.getId());
+		followUpDto.setCurrentlyFollowedBy(FollowUp.NONE.toString());
+		followUpDto.setCurrentStatus(FollowUp.CSR.toString());
 		followUpDto.setAdminDto(traineeDto.getAdminDto());
 		followUpDto.getAdminDto().setUpdatedBy("NA");
 		followUpDto.getAdminDto().setUpdatedOn("NA");

@@ -26,6 +26,8 @@ public class TraineeDto {
 	private OthersDto othersDto ; 
 	@JsonProperty("adminDto")
 	private AuditDto adminDto;
+	@JsonProperty("csrDto")
+	private CSR csrDto;
 
 	public Integer getId() {
 		return id;
