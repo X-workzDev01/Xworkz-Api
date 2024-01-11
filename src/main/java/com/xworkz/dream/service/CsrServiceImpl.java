@@ -1,8 +1,11 @@
 package com.xworkz.dream.service;
 
+import java.io.IOException;
+import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collector;
+import java.util.stream.Collectors;
 
-import javax.mail.MessagingException;
 import javax.servlet.http.HttpServletRequest;
 
 import org.slf4j.Logger;
@@ -15,14 +18,11 @@ import org.springframework.stereotype.Service;
 import com.xworkz.dream.dto.CSR;
 import com.xworkz.dream.dto.CourseDto;
 import com.xworkz.dream.dto.CsrDto;
-import com.xworkz.dream.dto.EnquiryDto;
 import com.xworkz.dream.dto.OthersDto;
 import com.xworkz.dream.dto.TraineeDto;
 import com.xworkz.dream.repository.RegisterRepository;
 import com.xworkz.dream.util.DreamUtil;
 import com.xworkz.dream.wrapper.DreamWrapper;
-
-import freemarker.template.TemplateException;
 @Service
 public class CsrServiceImpl implements CsrService {
 	
@@ -89,10 +89,8 @@ public class CsrServiceImpl implements CsrService {
 	
 
 }
-		
 	
-
-
+	
 @Override
 public boolean registerCsr(CsrDto csrDto, HttpServletRequest request) {
 	TraineeDto traineeDto = new TraineeDto();
@@ -107,5 +105,9 @@ public boolean registerCsr(CsrDto csrDto, HttpServletRequest request) {
 	return true;
 
 }
+
+
+
+
 
 }
