@@ -39,6 +39,7 @@ import com.xworkz.dream.repository.AttendanceRepository;
 import com.xworkz.dream.wrapper.DreamWrapper;
 
 import freemarker.template.TemplateException;
+import lombok.extern.slf4j.Slf4j;
 
 @Service
 public class AttendanceServiceImpl implements AttendanceService {
@@ -68,7 +69,7 @@ public class AttendanceServiceImpl implements AttendanceService {
 	public ResponseEntity<String> writeAttendance(String spreadsheetId, AttendanceDto dto, HttpServletRequest request)
 			throws IOException, MessagingException, TemplateException {
 		ValidatorFactory factory = Validation.buildDefaultValidatorFactory();
-
+	    attendanceRepository.getAttendanceData(spreadsheetId, attendanceInfoRange);
 		Set<ConstraintViolation<AttendanceDto>> violation = factory.getValidator().validate(dto);
 
 		if (violation.isEmpty() && dto != null) {
@@ -76,7 +77,7 @@ public class AttendanceServiceImpl implements AttendanceService {
 				wrapper.setValueAttendaceDto(dto);
 				List<Object> list = wrapper.listOfAttendance(dto);
 				attendanceRepository.writeAttendance(spreadsheetId, list, attendanceInfoRange);
-				cacheService.addAttendancdeToCache("attendanceData", "listOfAttendance", list);
+				cacheService.addAttendancdeToCache("attendanceData", sheetId, list);
 				log.info("Attendance Detiles Added Sucessfully SpreadsheetId: {} , Detiles: {} ", spreadsheetId,
 						dto.toString());
 
@@ -116,16 +117,14 @@ public class AttendanceServiceImpl implements AttendanceService {
 			int rowIndex = findByID(sheetId, attendanceDto.getId());
 			String range = AttandanceInfoSheetName + attendanceStartRange + rowIndex + ":" + attendanceEndRange
 					+ rowIndex;
-			System.err.println("range : " + range);
 			if (attendanceDto.getId() != null) {
 				updateAbsentDatesAndReasons(attendanceDto, dto);
 				updateTotalAbsent(attendanceDto, dto);
 				List<List<Object>> values = Arrays.asList(wrapper.extractDtoDetails(attendanceDto));
 				ValueRange valueRange = new ValueRange();
 				valueRange.setValues(values);
-				System.err.println(" values :" + values);
 				UpdateValuesResponse update = attendanceRepository.update(sheetId, range, valueRange);
-				cacheService.updateCacheAttendancde("attendanceData", "listOfAttendance", attendanceDto.getId(),
+				cacheService.updateCacheAttendancde("attendanceData", sheetId, attendanceDto.getId(),
 						attendanceDto);
 				if (update.isEmpty()) {
 					log.info("Not updated attendance");
@@ -184,10 +183,18 @@ public class AttendanceServiceImpl implements AttendanceService {
 			List<List<Object>> list = attendanceRepository.getAttendanceData(sheetId, attendanceInfoIDRange);
 			List<List<Object>> filteredList = list.stream().filter(entry -> batch.equals(entry.get(3))) // Filter by
 					.collect(Collectors.toList());
-			List<AttendanceTrainee> traineeInfoList = filteredList.stream()
-					.map(entry -> new AttendanceTrainee(Integer.valueOf((String) entry.get(1)),
-							String.valueOf(entry.get(2))))
-					.collect(Collectors.toList());
+			  List<AttendanceTrainee> traineeInfoList = new ArrayList<>();
+
+		        for (List<Object> entry : filteredList) {
+		        	System.err.println("entry in service    :   "+entry);
+		            try {
+		                Integer id = Integer.valueOf(entry.get(1).toString()) ;
+		                String name = (String) entry.get(2);
+		                traineeInfoList.add(new AttendanceTrainee(id, name));
+		            }catch (NumberFormatException e) {
+		            	e.getMessage();
+		            }
+		        }
 			System.err.println(traineeInfoList);
 			return traineeInfoList;
 		} catch (IOException e) {
@@ -241,7 +248,7 @@ public class AttendanceServiceImpl implements AttendanceService {
 		if (attendanceList != null) {
 			log.debug("attendanceList in service: {}", attendanceList);
 			List<AttendanceDto> matchingAttendances = attendanceList.stream().map(wrapper::attendanceListToDto)
-					.filter(dto -> batch.equals(dto.getCourseInfo().getCourse())).collect(Collectors.toList());
+					.filter(dto -> batch.equals(dto.getCourse())).collect(Collectors.toList());
 			if (!matchingAttendances.isEmpty()) {
 				return matchingAttendances;
 			}

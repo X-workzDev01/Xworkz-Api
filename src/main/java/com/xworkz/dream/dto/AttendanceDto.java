@@ -21,10 +21,10 @@ public class AttendanceDto {
 	private Integer attendanceId;
 	@JsonProperty("id")
 	private Integer id;
-	@JsonProperty("basicInfo")
-	private BasicInfoDto basicInfo;
-	@JsonProperty("courseInfo")
-	private CourseDto courseInfo;
+	@JsonProperty("traineeName")
+	private String traineeName;
+	@JsonProperty("course")
+	private String course;
 	@JsonProperty("attemptStatus")
 	private String attemptStatus;
 	@JsonProperty("totalAbsent")

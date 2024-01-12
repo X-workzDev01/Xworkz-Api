@@ -422,8 +422,8 @@ System.err.println("dto : "+dto);
 		List<Object> row = new ArrayList<Object>();
 		row.add(dto.getAttendanceId());
 		row.add(dto.getId());
-		row.add(dto.getBasicInfo().getTraineeName());
-		row.add(dto.getCourseInfo().getCourse());
+		row.add(dto.getTraineeName());
+		row.add(dto.getCourse());
 		row.add(dto.getTotalAbsent());
 		row.add(dto.getAbsentDate());
 		row.add(dto.getReason());
@@ -434,17 +434,17 @@ System.err.println("dto : "+dto);
 	}
 
 	public AttendanceDto attendanceListToDto(List<Object> row) {
-		AttendanceDto attendanceDto = new AttendanceDto(null, null, new BasicInfoDto(), new CourseDto(), null, null,
+		AttendanceDto attendanceDto = new AttendanceDto(null, null, null, null, null, null,
 				null, null, new AuditDto());
 		int rowSize = row.size();
 		if (rowSize > 1 && row.get(1) != null && !row.get(1).toString().isEmpty()) {
 			attendanceDto.setId(Integer.valueOf(row.get(1).toString()));
 		}
 		if (rowSize > 2 && row.get(2) != null && !row.get(2).toString().isEmpty()) {
-			attendanceDto.getBasicInfo().setTraineeName((String) row.get(2));
+			attendanceDto.setTraineeName((String) row.get(2));
 		}
 		if (rowSize > 3 && row.get(3) != null && !row.get(3).toString().isEmpty()) {
-			attendanceDto.getCourseInfo().setCourse((String) row.get(3));
+			attendanceDto.setCourse(((String) row.get(3)));
 		}
 		if (rowSize > 4 && row.get(4) != null && !row.get(4).toString().isEmpty()) {
 			attendanceDto.setTotalAbsent(Integer.valueOf(row.get(4).toString()));
