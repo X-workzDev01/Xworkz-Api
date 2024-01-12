@@ -77,7 +77,7 @@ public class ClientInformationServiceImpl implements ClientInformationService {
 
 		if (listOfData != null) {
 			List<ClientDto> ListOfClientDto = listOfData.stream().map(clientWrapper::listToClientDto)
-					.filter(dto -> !dto.getStatus().equalsIgnoreCase("InActive"))
+					.filter(dto ->dto.getStatus()!=null&&!dto.getStatus().equalsIgnoreCase("InActive"))
 					.sorted(Comparator.comparing(ClientDto::getId, Comparator.reverseOrder()))
 					.collect(Collectors.toList());
 			List<ClientDto> clientData = ListOfClientDto.stream().skip(startingIndex).limit(maxRows)

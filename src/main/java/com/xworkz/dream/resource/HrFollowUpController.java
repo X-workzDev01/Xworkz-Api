@@ -40,5 +40,13 @@ public class HrFollowUpController {
 		log.debug("Read Hr follow up details");
 		return hrFollowUpService.getHrFollowUpDetailsBy(hrId);
 	}	
+	
+	@ApiOperation("To get the Follow up details by Company Id")
+	@GetMapping("/getDetailsById")
+	public List<HrFollowUpDto> getFollowUpDetails(@RequestParam Integer companyId) throws IOException{
+		log.debug("Read follow up details by company id {},",companyId);
+		return hrFollowUpService.getFollowUpDetails(companyId);
+	}	
+	
 
 }

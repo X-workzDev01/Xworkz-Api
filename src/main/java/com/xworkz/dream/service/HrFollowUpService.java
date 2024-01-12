@@ -7,7 +7,8 @@ import com.xworkz.dream.dto.HrFollowUpDto;
 
 public interface HrFollowUpService {
 	
-	abstract String saveHrFollowUpDetails(HrFollowUpDto dto) throws IllegalAccessException, IOException;
+	String saveHrFollowUpDetails(HrFollowUpDto dto) throws IllegalAccessException, IOException;
 	List<HrFollowUpDto> getHrFollowUpDetailsBy(int hrId) throws IOException;
+	List<HrFollowUpDto> getFollowUpDetails(Integer companyId) throws IOException;
 	
 }
