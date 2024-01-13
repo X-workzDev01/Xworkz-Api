@@ -274,16 +274,19 @@ public class CacheServiceImpl implements CacheService {
 	public void addAttendancdeToCache(String cacheName, String key, List<Object> data) {
 		Cache cache = cacheManager.getCache(cacheName);
 		if (cache != null) {
+			
 			ValueWrapper valueWrapper = cache.get(key);
-		
+			
 			if (valueWrapper != null && valueWrapper.get() instanceof List) {
 				int size = (((List<List<Object>>) valueWrapper.get()).size());
 				data.set(0, size + 1);
 				((List<List<Object>>) valueWrapper.get()).add(data);
+				
 				log.info("Updated cache for key: {}", key);
 			}
 		}
 	}
+	
 	@Override
 	public void updateCacheAttendancde(String cacheName, String key, Integer id, AttendanceDto dto)
 			throws IllegalAccessException {
@@ -303,7 +306,6 @@ public class CacheServiceImpl implements CacheService {
 					}
 				}
 				List<Object> list = wrapper.extractDtoDetails(dto);
-				System.err.println("list : "+list);
 				if (matchingIndex >= 0) {
 
 					ListOfItems.set(matchingIndex, list);

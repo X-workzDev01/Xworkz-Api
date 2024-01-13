@@ -69,7 +69,7 @@ public class AttendanceController {
 	}
 
 	@GetMapping("/id/{id}")
-	public ResponseEntity<AbsentDto> getAbsentDetails(@PathVariable Integer id) {
+	public ResponseEntity<AbsentDto> getAbsentDetails(@PathVariable Integer id,@RequestParam String batch) {
 		List<AbsentDaysDto> listOfAbsentDays = attendanceService.getAttendanceById(id);
 		AbsentDto absentDto = new AbsentDto();
 		absentDto.setList(listOfAbsentDays);
