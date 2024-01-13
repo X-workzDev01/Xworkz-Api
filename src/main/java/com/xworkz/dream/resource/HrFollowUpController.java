@@ -31,6 +31,7 @@ public class HrFollowUpController {
 	@PostMapping("/hrfollowup")
     public String saveHrFollowUpDetails(@RequestBody HrFollowUpDto  dto) throws IllegalAccessException, IOException {
 		log.info("Saving hr follow up details {} ",dto);
+		System.err.println(dto);
 		return 	hrFollowUpService.saveHrFollowUpDetails(dto);
 	}
 	
@@ -42,7 +43,7 @@ public class HrFollowUpController {
 	}	
 	
 	@ApiOperation("To get the Follow up details by Company Id")
-	@GetMapping("/getDetailsById")
+	@GetMapping("/getFollowUpDetailsById")
 	public List<HrFollowUpDto> getFollowUpDetails(@RequestParam Integer companyId) throws IOException{
 		log.debug("Read follow up details by company id {},",companyId);
 		return hrFollowUpService.getFollowUpDetails(companyId);
