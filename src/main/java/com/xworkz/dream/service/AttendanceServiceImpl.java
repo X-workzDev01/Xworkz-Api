@@ -35,6 +35,7 @@ import com.xworkz.dream.dto.AbsentDaysDto;
 import com.xworkz.dream.dto.AbsenteesDto;
 import com.xworkz.dream.dto.AttendanceDto;
 import com.xworkz.dream.dto.AttendanceTrainee;
+import com.xworkz.dream.dto.utils.WrapperUtil;
 import com.xworkz.dream.repository.AttendanceRepository;
 import com.xworkz.dream.wrapper.DreamWrapper;
 
@@ -57,7 +58,8 @@ public class AttendanceServiceImpl implements AttendanceService {
 	private String attendanceEndRange;
 	@Value("${sheets.AttandanceInfoSheetName}")
 	private String AttandanceInfoSheetName;
-
+	@Autowired
+private WrapperUtil util;
 	@Autowired
 	private DreamWrapper wrapper;
 	@Autowired
@@ -67,7 +69,7 @@ public class AttendanceServiceImpl implements AttendanceService {
 
 	@Override
 	public ResponseEntity<String> writeAttendance(String spreadsheetId, AttendanceDto dto, HttpServletRequest request)
-			throws IOException, MessagingException, TemplateException {
+			throws IOException, MessagingException, TemplateException, IllegalAccessException {
 		ValidatorFactory factory = Validation.buildDefaultValidatorFactory();
 	    attendanceRepository.getAttendanceData(spreadsheetId, attendanceInfoRange);
 		Set<ConstraintViolation<AttendanceDto>> violation = factory.getValidator().validate(dto);
@@ -75,9 +77,10 @@ public class AttendanceServiceImpl implements AttendanceService {
 		if (violation.isEmpty() && dto != null) {
 			if (dto.getAttemptStatus().equalsIgnoreCase(Status.Joined.toString())) {
 				wrapper.setValueAttendaceDto(dto);
-				List<Object> list = wrapper.listOfAttendance(dto);
+				List<Object> list = util.extractDtoDetails(dto);
+				list.remove(4);
 				attendanceRepository.writeAttendance(spreadsheetId, list, attendanceInfoRange);
-				cacheService.addAttendancdeToCache("attendanceData", sheetId, list);
+				cacheService.addAttendancdeToCache("attendanceData", "listOfAttendance", list);
 				log.info("Attendance Detiles Added Sucessfully SpreadsheetId: {} , Detiles: {} ", spreadsheetId,
 						dto.toString());
 
@@ -99,9 +102,8 @@ public class AttendanceServiceImpl implements AttendanceService {
 		log.info("attendanceList in attendanceinfo sheet: " + attendanceList);
 		List<List<Object>> filteredList = attendanceList.stream().filter(entry -> batch.equals(entry.get(3)))
 				.collect(Collectors.toList());
-		for (List<Object> list : filteredList) {
-			AttendanceDto attendanceDto = wrapper.attendanceListToDto(list);
-			System.err.println("toDto: " + attendanceDto);
+		for (List<Object> values : filteredList) {
+			AttendanceDto attendanceDto = wrapper.attendanceListToDto(values);
 			{
 				for (AbsenteesDto dto : absentDtoList)
 					updateAttendanceDetails(attendanceDto, dto);
@@ -114,21 +116,28 @@ public class AttendanceServiceImpl implements AttendanceService {
 	private void updateAttendanceDetails(AttendanceDto attendanceDto, AbsenteesDto dto)
 			throws IOException, IllegalAccessException {
 		if (dto.getId().equals(attendanceDto.getId())) {
-			int rowIndex = findByID(sheetId, attendanceDto.getId());
-			String range = AttandanceInfoSheetName + attendanceStartRange + rowIndex + ":" + attendanceEndRange
+			int rowIndex = findByID(sheetId, dto.getId());
+			String range = AttandanceInfoSheetName + attendanceStartRange+ rowIndex + ":" + attendanceEndRange
 					+ rowIndex;
 			if (attendanceDto.getId() != null) {
 				updateAbsentDatesAndReasons(attendanceDto, dto);
 				updateTotalAbsent(attendanceDto, dto);
 				List<List<Object>> values = Arrays.asList(wrapper.extractDtoDetails(attendanceDto));
 				ValueRange valueRange = new ValueRange();
+				if (!values.isEmpty()) {
+					List<Object> modifiedValues = new ArrayList<>(values.get(0).subList(0, values.get(0).size()));
+					modifiedValues.remove(0);
+					values.set(0, modifiedValues);
+					log.debug("values {}", values);
+				}
 				valueRange.setValues(values);
 				UpdateValuesResponse update = attendanceRepository.update(sheetId, range, valueRange);
-				cacheService.updateCacheAttendancde("attendanceData", sheetId, attendanceDto.getId(),
+				cacheService.updateCacheAttendancde("attendanceData", "listOfAttendance", attendanceDto.getId(),
 						attendanceDto);
 				if (update.isEmpty()) {
 					log.info("Not updated attendance");
 				} else {
+					attendanceRepository.getAttendanceData(sheetId, attendanceInfoIDRange);
 					log.info("Attendance updated successfully");
 				}
 			}
@@ -150,6 +159,8 @@ public class AttendanceServiceImpl implements AttendanceService {
 		String updatedReasons = !currentReason.equals(null) && currentReason.contains("NA") ? newReason
 				: currentReason + "," + newReason;
 		attendanceDto.setReason(updatedReasons);
+		attendanceDto.getAdminDto().setUpdatedBy(dto.getUpdatedBy());
+		attendanceDto.getAdminDto().setUpdatedOn(LocalDate.now().toString());
 		log.info("Absent dates and reasons updated: " + attendanceDto.getAbsentDate() + ", "
 				+ attendanceDto.getReason());
 	}
@@ -186,7 +197,6 @@ public class AttendanceServiceImpl implements AttendanceService {
 			  List<AttendanceTrainee> traineeInfoList = new ArrayList<>();
 
 		        for (List<Object> entry : filteredList) {
-		        	System.err.println("entry in service    :   "+entry);
 		            try {
 		                Integer id = Integer.valueOf(entry.get(1).toString()) ;
 		                String name = (String) entry.get(2);
@@ -195,7 +205,6 @@ public class AttendanceServiceImpl implements AttendanceService {
 		            	e.getMessage();
 		            }
 		        }
-			System.err.println(traineeInfoList);
 			return traineeInfoList;
 		} catch (IOException e) {
 

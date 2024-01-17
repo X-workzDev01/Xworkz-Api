@@ -221,8 +221,6 @@ public class CacheServiceImpl implements CacheService {
 
 	}
 
-	
-	
 	@SuppressWarnings("unchecked")
 	@Override
 	public void addContactNumberToCache(String cacheName, String spreadSheetId, Long contactNumber) {
@@ -268,25 +266,26 @@ public class CacheServiceImpl implements CacheService {
 			}
 		}
 	}
-	
+
 	@SuppressWarnings("unchecked")
 	@Override
 	public void addAttendancdeToCache(String cacheName, String key, List<Object> data) {
 		Cache cache = cacheManager.getCache(cacheName);
 		if (cache != null) {
-			
+
 			ValueWrapper valueWrapper = cache.get(key);
-			
+
 			if (valueWrapper != null && valueWrapper.get() instanceof List) {
 				int size = (((List<List<Object>>) valueWrapper.get()).size());
 				data.set(0, size + 1);
 				((List<List<Object>>) valueWrapper.get()).add(data);
-				
+				System.err.println(" cache for attendence data :  " + data);
+
 				log.info("Updated cache for key: {}", key);
 			}
 		}
 	}
-	
+
 	@Override
 	public void updateCacheAttendancde(String cacheName, String key, Integer id, AttendanceDto dto)
 			throws IllegalAccessException {
@@ -301,14 +300,18 @@ public class CacheServiceImpl implements CacheService {
 
 				for (int i = 0; i < ListOfItems.size(); i++) {
 					List<Object> items = ListOfItems.get(i);
-					if (items.get(1).equals(id)) {
+					Integer getId=Integer.valueOf(items.get(1).toString());
+					if (getId.equals(id)) {
 						matchingIndex = i;
+						break;
 					}
 				}
 				List<Object> list = wrapper.extractDtoDetails(dto);
+				System.err.println("list in cache : "+list);
 				if (matchingIndex >= 0) {
-
+					list.remove(4);
 					ListOfItems.set(matchingIndex, list);
+
 					log.info("Updated cache data for id: {}", id);
 				}
 

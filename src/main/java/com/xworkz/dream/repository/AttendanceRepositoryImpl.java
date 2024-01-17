@@ -74,7 +74,7 @@ public class AttendanceRepositoryImpl implements AttendanceRepository {
 	
 
 	@Override
-	@Cacheable(value = "attendanceData", key = "#spreadsheetId", unless = "#result == null")
+	@Cacheable(value = "attendanceData", key = "'listOfAttendance'")
 	public List<List<Object>> getAttendanceData(String spreadsheetId, String range) throws IOException {
 		 log.info("Getting data from sheet...");
 		ValueRange response = sheetsService.spreadsheets().values().get(spreadsheetId, range).execute();

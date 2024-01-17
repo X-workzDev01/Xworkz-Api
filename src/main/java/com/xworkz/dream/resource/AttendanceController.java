@@ -43,7 +43,7 @@ public class AttendanceController {
 	@ApiOperation(value = "To register attendance details in the google sheets")
 	@PostMapping("/register")
 	public ResponseEntity<String> registerAttendance(@RequestBody AttendanceDto values, HttpServletRequest request)
-			throws IOException, MessagingException, TemplateException {
+			throws IOException, MessagingException, TemplateException,IllegalAccessException {
 		log.info("Received request to register attendance.");
 		ResponseEntity<String> response = attendanceService.writeAttendance(spreadsheetId, values, request);
 

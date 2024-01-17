@@ -21,7 +21,7 @@ import freemarker.template.TemplateException;
 public interface AttendanceService {
 
 	public ResponseEntity<String> writeAttendance(String spreadsheetId, AttendanceDto dto, HttpServletRequest request)
-			throws IOException, MessagingException, TemplateException;
+			throws IOException, MessagingException, TemplateException,IllegalAccessException;
 	
 	public void markAndSaveAbsentDetails(List<AbsenteesDto> attendanceDtoList ,String batch) throws IOException,IllegalAccessException;
 
