@@ -42,7 +42,6 @@ public class ClientCacheServiceImpl implements ClientCacheService {
 	@SuppressWarnings("unchecked")
 	@Override
 	public void addHRDetailsToCache(String cacheName, String key, List<Object> data) {
-
 		Cache cache = cacheManager.getCache(cacheName);
 		log.info("cache name: {}, cache key: {},", cacheName, key);
 		if (cache != null) {
@@ -86,6 +85,10 @@ public class ClientCacheServiceImpl implements ClientCacheService {
 			}
 		}
 
+	}
+
+	@Override
+	public void updateHrDetails(String cacheName, String key, List<Object> listOfValues) {
 	}
 
 }
