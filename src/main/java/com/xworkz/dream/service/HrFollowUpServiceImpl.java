@@ -1,10 +1,8 @@
 package com.xworkz.dream.service;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
@@ -12,10 +10,10 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.xworkz.dream.cache.ClientCacheService;
 import com.xworkz.dream.dto.ClientHrDto;
 import com.xworkz.dream.dto.HrFollowUpDto;
 import com.xworkz.dream.repository.ClientHrRepository;
-import com.xworkz.dream.repository.ClientRepository;
 import com.xworkz.dream.repository.HrFollowUpRepository;
 import com.xworkz.dream.util.ClientInformationUtil;
 import com.xworkz.dream.wrapper.ClientWrapper;
@@ -33,7 +31,7 @@ public class HrFollowUpServiceImpl implements HrFollowUpService {
 	@Autowired
 	private ClientHrRepository clientHrRepository;
 	@Autowired
-	private ClientRepository clientRepository;
+	private ClientCacheService clientCacheService;
 	@Autowired
 	private ClientWrapper clientWrapper;
 
@@ -46,6 +44,7 @@ public class HrFollowUpServiceImpl implements HrFollowUpService {
 		List<Object> list = dreamWrapper.extractDtoDetails(dto);
 		if (dto != null) {
 			if (hrFollowUpRepository.saveHrFollowUpDetails(list)) {
+				clientCacheService.addHRDetailsToCache("hrFollowUpDetails","hrFollowUp",list);
 				return "Hr Follow up details saved successfully";
 			} else {
 				return "Hr Follow up details not saved";

@@ -93,7 +93,7 @@ public class HrFollowUpRepositoryImpl implements HrFollowUpRepository {
 	}
 
 	@Override
-	//@Cacheable(value = "hrFollowUpDetails", key = "'hrFollowUp'")
+	@Cacheable(value = "hrFollowUpDetails", key = "'hrFollowUp'")
 	public List<List<Object>> readFollowUpDetailsById() throws IOException {
 		List<List<Object>> values = sheetsService.spreadsheets().values().get(sheetId, hrFollowUpInformationReadRange)
 				.execute().getValues();
