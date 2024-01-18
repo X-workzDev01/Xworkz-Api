@@ -41,9 +41,9 @@ public class FeesServiceImpl implements FeesService {
 			boolean write = feesRepository.writeFeesDetiles(util.extractDtoDetails(feesUtils.feesDtosetValues(dto)));
 			if (write == true) {
 				log.info("feesDetiles Saved sucessfully");
-				return "feesDetiles Saved sucessfully"; 
+				return "feesDetiles Saved sucessfully";
 			}
- 
+
 			return "data save failed ";
 		} else {
 			log.warn("data save failed");
@@ -86,6 +86,7 @@ public class FeesServiceImpl implements FeesService {
 	}
 
 	@Override
+
 	public String updateFeesFollowUp(FeesDto feesDto, String getFeesDetilesRange, String range) throws IOException {
 		List<FeesDto> feesDtos = getFeesDetilesByemail(feesDto.getFeesHistoryDto().getEmail(), getFeesDetilesRange);
 		log.info("Enter The update  in fees followup");
