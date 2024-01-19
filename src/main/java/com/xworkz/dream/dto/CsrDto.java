@@ -16,7 +16,7 @@ public class CsrDto {
 	@JsonProperty("educationInfo")
 	private EducationInfoDto educationInfo;
 	@JsonProperty("usnNumber")
-	private Integer usnNumber;
+	private String usnNumber;
 	@JsonProperty("alternateContactNumber")
 	private Long alternateContactNumber;
 	@JsonProperty("adminDto")

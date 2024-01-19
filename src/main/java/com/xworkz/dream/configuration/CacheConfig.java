@@ -37,6 +37,8 @@ public class CacheConfig {
 		caches.add(new ConcurrentMapCache("hrDetails"));
 		caches.add(new ConcurrentMapCache("hrFollowUpDetails"));
 		caches.add(new ConcurrentMapCache("attendanceData"));
+		
+		caches.add(new ConcurrentMapCache("alternativeNumber"));
 		cacheManager.setCaches(caches);
 		return cacheManager;
 	}

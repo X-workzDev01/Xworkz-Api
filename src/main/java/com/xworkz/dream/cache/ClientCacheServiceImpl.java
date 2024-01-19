@@ -71,9 +71,10 @@ public class ClientCacheServiceImpl implements ClientCacheService {
 				log.info("List data to be added {}", list);
 				List<Object> item = list.get(0);
 				item.remove(0);
+				log.info("{}",item);
 				int matchingIndex = -1;
 				for (int i = 0; i < cacheItem.size(); i++) {
-					Integer val = Integer.parseInt((String) cacheItem.get(i).get(0));
+					Integer val = Integer.parseInt(cacheItem.get(i).get(0).toString());
 					if (val.equals(item.get(0))) {
 						matchingIndex = i;
 					}
@@ -86,9 +87,10 @@ public class ClientCacheServiceImpl implements ClientCacheService {
 		}
 
 	}
-
+	
 	@Override
-	public void updateHrDetails(String cacheName, String key, List<Object> listOfValues) {
+	public void updateHrDetailsInCache(String cacheName, String key, List<List<Object>> list)
+			throws IllegalAccessException {
 	}
 
 }
