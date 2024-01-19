@@ -49,6 +49,9 @@ public class RegisterRepositoryImpl implements RegisterRepository {
 	private String contactNumberRange;
 	@Value("${sheets.emailAndNameRange}")
 	private String emailAndNameRange;
+	
+	@Value("${sheets.alternativeNumberRange}")
+	private String alternativeNumberRange;
 	@Autowired
 	private ResourceLoader resourceLoader;
 	private static final Logger log = LoggerFactory.getLogger(RegisterRepositoryImpl.class);
@@ -122,4 +125,11 @@ public class RegisterRepositoryImpl implements RegisterRepository {
 		return response.getValues();
 	}
 
+	@Override
+	@Cacheable(value="alternativeNumber",key = "#spreadsheetId", unless = "#result == null")
+	public List<List<Object>> getAlternativeNumber(String spreadsheetId) throws IOException {
+		log.info("Reading Alternative contact number from sheet");
+		ValueRange response=sheetsService.spreadsheets().values().get(spreadsheetId, alternativeNumberRange).execute();
+		return response.getValues();
+	}
 }

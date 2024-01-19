@@ -12,10 +12,8 @@ import lombok.NoArgsConstructor;
 public class CSR {
 	
 	@JsonProperty("usnNumber")
-	private Integer usnNumber;
+	private String usnNumber;
 	@JsonProperty("alternateContactNumber")
 	private Long alternateContactNumber;
-	
-	
 
 }
