@@ -6,6 +6,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.servlet.http.HttpServletRequest;
@@ -13,6 +14,7 @@ import javax.servlet.http.HttpServletRequest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
@@ -30,6 +32,8 @@ public class BatchServiceImpl implements BatchService {
 	private RegisterRepository repo;
 	@Autowired
 	private BatchRepository repository;
+	@Value("${login.sheetId}")
+	private String sheetId;
 	@Autowired
 	private DreamWrapper wrapper;
 	private BatchDetails batch;
@@ -39,9 +43,6 @@ public class BatchServiceImpl implements BatchService {
 	@Override
 	public ResponseEntity<String> saveDetails(String spreadsheetId, BatchDetailsDto dto, HttpServletRequest request)
 			throws IOException, IllegalAccessException {
-		List<List<Object>> data = repository.getBatchId(spreadsheetId).getValues();
-		int size = data != null ? data.size() : 0;
-		dto.setId(size += 1);
 		List<Object> list = wrapper.extractDtoDetails(dto);
 		boolean save = repository.saveBatchDetails(spreadsheetId, list);
 		// adding to cache
@@ -147,6 +148,15 @@ public class BatchServiceImpl implements BatchService {
 		}
 	}
 	
+	public boolean updateBatchDetails(String courseName,BatchDetailsDto details) throws IOException {
+		List<List<Object>> courseDetails = repository.getCourseDetails(sheetId);
+		  Optional<List<Object>> courseOptional = courseDetails.stream()
+		            .filter(course -> courseName.equals(course.get(0)))  // Assuming course name is at index 0
+		            .findFirst();
+		return true;
+
+		    
+	}
 	
 	
 	

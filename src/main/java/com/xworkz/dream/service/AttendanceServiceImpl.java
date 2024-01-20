@@ -2,14 +2,10 @@ package com.xworkz.dream.service;
 
 import java.io.IOException;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -40,7 +36,6 @@ import com.xworkz.dream.repository.AttendanceRepository;
 import com.xworkz.dream.wrapper.DreamWrapper;
 
 import freemarker.template.TemplateException;
-import lombok.extern.slf4j.Slf4j;
 
 @Service
 public class AttendanceServiceImpl implements AttendanceService {
