@@ -153,9 +153,10 @@ public class ClientHrServiceImpl implements ClientHrService {
 			UpdateValuesResponse updated = clientHrRepository.updateHrDetails(range, valueRange);
 			log.info("update response is :{}", updated);
 			if (updated != null) {
-//				List<List<Object>> listOfItems = Arrays.asList(dreamWrapper.extractDtoDetails(clientHrDto));
-//				log.info("{}",listOfItems);
-//				clientCacheService.updateClientDetailsInCache("hrDetails", "listofHRDetails",listOfItems);
+				List<List<Object>> listOfItems = Arrays.asList(dreamWrapper.extractDtoDetails(clientHrDto));
+			log.info("{}",listOfItems);
+				log.info("values to be added:{}",values);
+		clientCacheService.updateHrDetailsInCache("hrDetails", "listofHRDetails",listOfItems);
 				return "updated Successfully";
 			} else {
 				return "not updated successfully";

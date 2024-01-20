@@ -15,7 +15,6 @@ public class ClientCacheServiceImpl implements ClientCacheService {
 
 	@Autowired
 	private CacheManager cacheManager;
-	
 
 	private static final Logger log = LoggerFactory.getLogger(ClientCacheServiceImpl.class);
 
@@ -71,7 +70,7 @@ public class ClientCacheServiceImpl implements ClientCacheService {
 				log.info("List data to be added {}", list);
 				List<Object> item = list.get(0);
 				item.remove(0);
-				log.info("{}",item);
+				log.info("{}", item);
 				int matchingIndex = -1;
 				for (int i = 0; i < cacheItem.size(); i++) {
 					Integer val = Integer.parseInt(cacheItem.get(i).get(0).toString());
@@ -87,10 +86,38 @@ public class ClientCacheServiceImpl implements ClientCacheService {
 		}
 
 	}
-	
+
 	@Override
 	public void updateHrDetailsInCache(String cacheName, String key, List<List<Object>> list)
 			throws IllegalAccessException {
+		Cache cache = cacheManager.getCache(cacheName);
+		log.info("cache name: {}, cache key: {}", cacheName, key);
+
+		log.info("{}",list);
+		if(cache!=null) {
+			ValueWrapper valueWrapper = cache.get(key);
+			if (valueWrapper != null && valueWrapper.get() instanceof List) {
+				log.info("checking valuewrapper");
+				@SuppressWarnings("unchecked")
+				List<List<Object>> cacheItem = ((List<List<Object>>) valueWrapper.get());
+				List<Object> item = list.get(0);
+				log.info("{}", item);
+				int matchingIndex = -1;
+				for (int i = 0; i < cacheItem.size(); i++) {
+					Integer val = Integer.parseInt(cacheItem.get(i).get(0).toString());
+					if (val.equals(item.get(0))) {
+						matchingIndex = i;
+					}
+				}
+				if (matchingIndex != -1) {
+					cacheItem.set(matchingIndex, item);
+					cache.put(key, cacheItem);
+				}
+			}
+			
+			
+		}
+
 	}
 
 }
