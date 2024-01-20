@@ -96,7 +96,7 @@ public class ClientHrRepositoryImpl implements ClientHrRepository {
 	}
 
 	@Override
-	//@Cacheable(value = "hrDetails", key = "'listofHRDetails'")
+	@Cacheable(value = "hrDetails", key = "'listofHRDetails'")
 	public List<List<Object>> readData() throws IOException {
 		List<List<Object>> values = sheetsService.spreadsheets().values().get(sheetId, clientHrInformationReadRange)
 				.execute().getValues();
