@@ -45,10 +45,9 @@ public class CsrServiceImpl implements CsrService {
 	public ResponseEntity<String> validateAndRegister(TraineeDto dto, HttpServletRequest request) {
 		try {
 			log.info("Writing data for TraineeDto: {}", dto);
-			wrapper.setValuesForTraineeDto(dto);
-
+			wrapper.setValuesForCSRDto(dto);
+			
 			List<Object> list = wrapper.extractDtoDetails(dto);
-
 			repo.writeData(spreadsheetId, list);
 			cacheService.updateCache("sheetsData", spreadsheetId, list);
 
@@ -92,9 +91,9 @@ public class CsrServiceImpl implements CsrService {
 		TraineeDto traineeDto = new TraineeDto();
 		traineeDto.setCourseInfo(new CourseDto("NA"));
 		traineeDto.setOthersDto(new OthersDto("NA"));
-		traineeDto.setAdminDto(csrDto.getAdminDto());
 		traineeDto.setBasicInfo(csrDto.getBasicInfo());
 		traineeDto.setEducationInfo(csrDto.getEducationInfo());
+		traineeDto.getCourseInfo().setOfferedAs(csrDto.getOfferedAs());
 		CSR csr = new CSR(csrDto.getUsnNumber(), csrDto.getAlternateContactNumber());
 		traineeDto.setCsrDto(csr);
 		validateAndRegister(traineeDto, request);
@@ -118,7 +117,7 @@ public class CsrServiceImpl implements CsrService {
 
 					if (list != null && !list.isEmpty() && list.get(0) != null
 							&& list.get(0).toString().equals(String.valueOf(contactNumber))) {
-						System.out.println("Number found");
+						log.info("Contact number found:{}",contactNumber);
 						isExists = true;
 					}
 				}
@@ -127,7 +126,7 @@ public class CsrServiceImpl implements CsrService {
 
 						if (list != null && !list.isEmpty() && list.get(0) != null
 								&& list.get(0).toString().equals(String.valueOf(contactNumber))) {
-							System.out.println("Number found");
+							log.info("Contact number found:{}",contactNumber);
 							isExists = true;
 						}
 					}

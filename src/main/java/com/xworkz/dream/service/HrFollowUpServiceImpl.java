@@ -59,7 +59,7 @@ public class HrFollowUpServiceImpl implements HrFollowUpService {
 		if (listOfData != null) {
 			List<HrFollowUpDto> listOfHrFollowUpDto = listOfData.stream().map(clientWrapper::listToHrFollowUpDto)
 					.filter(HrFollowUpDto -> HrFollowUpDto.getHrId().equals(hrId))
-					.sorted(Comparator.comparing(HrFollowUpDto::getId)).collect(Collectors.toList());
+					.sorted(Comparator.comparing(HrFollowUpDto::getId).reversed()).collect(Collectors.toList());
 			return listOfHrFollowUpDto;
 		} else {
 			return null;
@@ -82,6 +82,7 @@ public class HrFollowUpServiceImpl implements HrFollowUpService {
 		                    .filter(followUpDto ->
 		                            listOfHrDto.stream()
 		                                    .anyMatch(dto -> followUpDto.getHrId().equals(dto.getId())))
+		                    .sorted(Comparator.comparing(HrFollowUpDto::getId).reversed())
 		                    .collect(Collectors.toList());
 		            return hrFollowUpList;
 				}
