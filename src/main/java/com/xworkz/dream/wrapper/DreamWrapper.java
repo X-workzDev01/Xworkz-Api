@@ -658,7 +658,6 @@ public class DreamWrapper {
 		dto.getOthersDto().setPreferredClassType(Status.NA.toString());
 		dto.getOthersDto().setSendWhatsAppLink(Status.NO.toString());
 		dto.getOthersDto().setRegistrationDate(LocalDateTime.now().toString());
-		
 		if (dto.getOthersDto().getReferalName() == null) {
 			dto.getOthersDto().setReferalName("NA");
 		}
@@ -673,15 +672,15 @@ public class DreamWrapper {
 
 			dto.getOthersDto().setReferalContactNumber(0L);
 		}
+		AuditDto admin = new AuditDto();
 		if (dto.getAdminDto()== null) {
-			AuditDto admin = new AuditDto();
-			admin.setCreatedBy("NA");
+			//it is for only csr 
+			admin.setCreatedBy(dto.getBasicInfo().getTraineeName());
 			admin.setCreatedOn(LocalDateTime.now().toString());
 			admin.setUpdatedBy("NA");
 			admin.setUpdatedOn("NA");
 			dto.setAdminDto(admin);
 		}else {
-			AuditDto admin = new AuditDto();
 			admin.setCreatedBy(dto.getAdminDto().getCreatedBy());
 			admin.setCreatedOn(dto.getAdminDto().getCreatedOn());
 			admin.setUpdatedBy("NA");
