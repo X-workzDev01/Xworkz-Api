@@ -4,6 +4,6 @@ import com.xworkz.dream.dto.TraineeDto;
 
 public interface CSRSMSService {
 
-	public boolean csrSMSSent(TraineeDto dto);
+	public boolean csrSMSSent();
 
 }
