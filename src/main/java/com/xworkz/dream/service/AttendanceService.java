@@ -30,5 +30,7 @@ public interface AttendanceService {
     public List<AbsentDaysDto>  getAttendanceById(Integer id);
     
     public List<AttendanceDto> getAbsentListByBatch(String batch) throws IOException;
+    
+    public Boolean markTraineeAttendance(String courseName, Boolean batchAttendanceStatus) throws IOException,IllegalAccessException;
 
 }

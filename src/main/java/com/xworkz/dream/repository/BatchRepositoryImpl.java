@@ -83,10 +83,10 @@ public class BatchRepositoryImpl implements BatchRepository {
 	}
 
 	@Override
-	@Cacheable(value = "batchDetails", key = "#spreadsheetId", unless = "#result == null")
+	@Cacheable(value = "batchDetails", key = "'listOfBatch'")
 	public List<List<Object>> getCourseDetails(String spreadsheetId) throws IOException {
 		ValueRange response = sheetsService.spreadsheets().values().get(spreadsheetId, batchDetailsRange).execute();
-		log.info("Course details retrieved successfully for spreadsheetId: {}", spreadsheetId);
+		log.debug("Course details retrieved successfully for spreadsheetId: {}", spreadsheetId);
 		return response.getValues();
 	}
 
@@ -100,17 +100,10 @@ public class BatchRepositoryImpl implements BatchRepository {
 
 	@Override
 	public ValueRange getCourseNameList(String spreadsheetId) throws IOException {
-		log.info("Course name list retrieved successfully for spreadsheetId: {}", spreadsheetId);
+		log.debug("Course name list retrieved successfully for spreadsheetId: {}", spreadsheetId);
 		ValueRange response = sheetsService.spreadsheets().values().get(spreadsheetId, batchDetailsCourseNameRange)
 				.execute();
 		return response;
 	}
 
-
-
-	@Override
-	public ValueRange getBatchId(String spreadsheetId) throws IOException {
-		// TODO Auto-generated method stub
-		return null;
-	}
 }

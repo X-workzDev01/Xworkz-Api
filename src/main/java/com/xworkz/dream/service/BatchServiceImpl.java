@@ -6,7 +6,6 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.servlet.http.HttpServletRequest;
@@ -18,11 +17,12 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
-import com.xworkz.dream.dto.BatchDetails;
+import com.google.api.services.sheets.v4.model.ValueRange;
 import com.xworkz.dream.dto.BatchDetailsDto;
 import com.xworkz.dream.dto.TraineeDto;
 import com.xworkz.dream.repository.BatchRepository;
 import com.xworkz.dream.repository.RegisterRepository;
+import com.xworkz.dream.wrapper.BatchWrapper;
 import com.xworkz.dream.wrapper.DreamWrapper;
 
 @Service
@@ -36,7 +36,9 @@ public class BatchServiceImpl implements BatchService {
 	private String sheetId;
 	@Autowired
 	private DreamWrapper wrapper;
-	private BatchDetails batch;
+	@Autowired
+	private BatchWrapper batchWrapper;
+	private BatchDetailsDto batch;
 
 	private static final Logger log = LoggerFactory.getLogger(BatchServiceImpl.class);
 
@@ -84,7 +86,7 @@ public class BatchServiceImpl implements BatchService {
 	}
 
 	@Override
-	public BatchDetails getBatchDetailsByCourseName(String spreadsheetId, String courseName) throws IOException {
+	public BatchDetailsDto getBatchDetailsByCourseName(String spreadsheetId, String courseName) throws IOException {
 		List<List<Object>> detailsByCourseName = repository.getCourseDetails(spreadsheetId);
 		batch = null;
 		List<List<Object>> filter = detailsByCourseName.stream()
@@ -101,8 +103,8 @@ public class BatchServiceImpl implements BatchService {
 	}
 
 	@Override
-	public BatchDetails getBatchDetailsListByCourseName(String spreadsheetId, String courseName) throws IOException {
-		BatchDetails batch = new BatchDetails();
+	public BatchDetailsDto getBatchDetailsListByCourseName(String spreadsheetId, String courseName) throws IOException {
+		BatchDetailsDto batch = new BatchDetailsDto();
 		if (courseName != null && !courseName.isEmpty()) {
 			List<List<Object>> detailsByCourseName = repository.getCourseDetails(spreadsheetId);
 			List<List<Object>> data = detailsByCourseName.stream()
@@ -143,21 +145,40 @@ public class BatchServiceImpl implements BatchService {
 				return null;
 			}
 		} catch (IOException e) {
-			log.error("An IOException occurred: {}", e.getMessage(), e);
+			log.error("An IOException occurred: {}", e.getMessage());
 			return null;
 		}
 	}
-	
-	public boolean updateBatchDetails(String courseName,BatchDetailsDto details) throws IOException {
-		List<List<Object>> courseDetails = repository.getCourseDetails(sheetId);
-		  Optional<List<Object>> courseOptional = courseDetails.stream()
-		            .filter(course -> courseName.equals(course.get(0)))  // Assuming course name is at index 0
-		            .findFirst();
-		return true;
 
-		    
+	@Override
+	public void updateBatchDetails(String courseName, BatchDetailsDto details)
+			throws IOException, IllegalAccessException {
+
+		List<List<Object>> courseDetails = repository.getCourseDetails(sheetId);
+
+	    courseDetails.stream()
+	            .map(wrapper::batchDetailsToDto)
+	            .filter(dto -> dto.getCourseName().equalsIgnoreCase(courseName))
+	            .findFirst()
+	            .ifPresent(dto -> {
+	                try {
+	                    batchWrapper.updateBatchValueSet(details, dto);
+	                } catch (Exception e) {
+	                    log.error(e.getMessage());
+	                }
+	            });
 	}
-	
-	
-	
+
+	@Override
+	public Integer gettotalClassByCourseName(String courseName) throws IOException {
+		List<List<Object>> courseDetails = repository.getCourseDetails(sheetId);
+		int totalClass = courseDetails.stream().filter(courseDetail -> courseName.equals(courseDetail.get(1)))
+				.map(courseDetail -> {
+					Object totalClassObj = courseDetail.get(10);
+					return Integer.valueOf(String.valueOf(totalClassObj));
+				}).reduce(0, Integer::sum);
+
+		return totalClass;
+	}
+
 }

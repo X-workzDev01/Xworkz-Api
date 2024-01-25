@@ -16,6 +16,7 @@ import org.springframework.stereotype.Service;
 import com.xworkz.dream.constants.Status;
 import com.xworkz.dream.dto.AuditDto;
 import com.xworkz.dream.dto.BatchDetails;
+import com.xworkz.dream.dto.BatchDetailsDto;
 import com.xworkz.dream.dto.TraineeDto;
 import com.xworkz.dream.feesDtos.FeesDto;
 import com.xworkz.dream.feesDtos.FeesHistoryDto;
@@ -35,17 +36,17 @@ public class FeesUtils {
 
 	private Logger log = LoggerFactory.getLogger(FeesUtils.class);
 
-	public BatchDetails getBatchDetiles(String email) throws IOException {
+	public BatchDetailsDto getBatchDetiles(String email) throws IOException {
 		TraineeDto traineeDto = registrationService.getDetailsByEmail(spreadSheetId, email);
-		log.info("Finding Trainee detiles by course ");
-		BatchDetails details = batchService.getBatchDetailsByCourseName(spreadSheetId,
+		//log.info("Finding Trainee detiles by course ");
+		BatchDetailsDto details = batchService.getBatchDetailsByCourseName(spreadSheetId,
 				traineeDto.getCourseInfo().getCourse());
-		log.info("Finding Batch detiles by course ");
+		//log.info("Finding Batch detiles by course ");
 		return details;
 	}
 
 	public String getTraineeDetiles(String email) throws IOException {
-		log.info("Finding Trainee detiles  ");
+		//log.info("Finding Trainee detiles  ");
 		TraineeDto traineeDto = registrationService.getDetailsByEmail(spreadSheetId, email);
 		if (traineeDto.getCourseInfo().getOfferedAs().equalsIgnoreCase("CSR Offered")) {
 			return traineeDto.getBasicInfo().getEmail();
@@ -109,11 +110,11 @@ public class FeesUtils {
 
 	public FeesDto feesDtosetValues(FeesUiDto uidto) throws IOException {
 		FeesDto feesDto = new FeesDto();
-		BatchDetails details = getBatchDetiles(uidto.getEmail());
+		BatchDetailsDto details = getBatchDetiles(uidto.getEmail());
 		return setFeesDetilesDto(uidto, feesDto, details);
 	}
 
-	public FeesDto setFeesDetilesDto(FeesUiDto uiDto, FeesDto feesDto, BatchDetails details) {
+	public FeesDto setFeesDetilesDto(FeesUiDto uiDto, FeesDto feesDto, BatchDetailsDto details) {
 		FeesDto feesDtos = new FeesDto(new FeesHistoryDto(), new AuditDto());
 		if (uiDto != null && uiDto.getStatus() != null
 				&& uiDto.getStatus().equalsIgnoreCase(Status.Joined.toString())) {

@@ -27,7 +27,7 @@ sheets:
   followUpRowCurrentEndRange: H
   emailAndNameRange: xworkzApi!A2:J
   batchDetailsSheetName: batchDetails!
-  batchDetailsStartRange: A2
+  batchDetailsStartRange: B
   batchDetailsEndRange: K
   batchDetails: batchDetails!A2:I
   batchDetailsRange: batchDetails!A2:K

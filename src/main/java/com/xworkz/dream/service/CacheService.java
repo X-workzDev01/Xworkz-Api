@@ -3,6 +3,7 @@ package com.xworkz.dream.service;
 import java.util.List;
 
 import com.xworkz.dream.dto.AttendanceDto;
+import com.xworkz.dream.dto.BatchDetailsDto;
 import com.xworkz.dream.dto.FollowUpDto;
 import com.xworkz.dream.dto.StatusDto;
 import com.xworkz.dream.dto.TraineeDto;
@@ -34,6 +35,9 @@ public interface CacheService {
 	public void addAttendancdeToCache(String cacheName, String key, List<Object> data);
 
 	public void updateCacheAttendancde(String cacheName, String key, Integer id, AttendanceDto dto)
+			throws IllegalAccessException;
+	
+	public void updateCacheBatch(String cacheName, String key, String courseNAME, BatchDetailsDto dto)
 			throws IllegalAccessException;
 
 }

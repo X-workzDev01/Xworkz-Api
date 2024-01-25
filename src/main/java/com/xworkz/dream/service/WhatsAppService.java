@@ -13,6 +13,8 @@ public interface WhatsAppService {
 	public List<String> getEmailByCourseName(String spreadsheetId, String cousreName)
 			throws IOException;
 
-	public boolean sendWhatsAppLink(String spreadsheetId, String courseName)throws IOException;
+	public Boolean sendWhatsAppLink(String spreadsheetId, String courseName)throws IOException;
+	
+	public Boolean updateWhatsAppLinkByBatchName(String courseName,String whatsAppLink) throws IllegalAccessException, IOException ;
 	
 }

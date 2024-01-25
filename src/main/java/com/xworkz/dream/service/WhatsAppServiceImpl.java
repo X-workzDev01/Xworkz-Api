@@ -14,7 +14,7 @@ import org.springframework.stereotype.Service;
 
 import com.google.api.services.sheets.v4.model.UpdateValuesResponse;
 import com.google.api.services.sheets.v4.model.ValueRange;
-import com.xworkz.dream.dto.BatchDetails;
+import com.xworkz.dream.dto.BatchDetailsDto;
 import com.xworkz.dream.dto.TraineeDto;
 import com.xworkz.dream.repository.BatchRepository;
 import com.xworkz.dream.repository.RegisterRepository;
@@ -64,7 +64,7 @@ public class WhatsAppServiceImpl implements WhatsAppService {
 	@Override
 	public boolean updateWhatsAppLinkByCourseName(String spreadsheetId, String courseName, String whatsAppLink)
 			throws IOException, IllegalAccessException {
-		BatchDetails batchDetails =service.getBatchDetailsListByCourseName(spreadsheetId, courseName);
+		BatchDetailsDto batchDetails =service.getBatchDetailsListByCourseName(spreadsheetId, courseName);
 		log.info("loading batch details using sheetId : {}, course name :{} : batchdetails : {}", spreadsheetId,
 				courseName, batchDetails);
 		int rowIndex = findByCourseNameForUpdate(spreadsheetId, courseName);
@@ -127,11 +127,11 @@ public class WhatsAppServiceImpl implements WhatsAppService {
 	}
 
 	@Override
-	public boolean sendWhatsAppLink(String spreadsheetId, String courseName) throws IOException {
+	public Boolean sendWhatsAppLink(String spreadsheetId, String courseName) throws IOException {
 
 		List<String> emailByCourseName = this.getEmailByCourseName(spreadsheetId, courseName);
 		String subject = "WhatsApp Link";
-		BatchDetails batchDetailsByCourseName = service.getBatchDetailsByCourseName(spreadsheetId,
+		BatchDetailsDto batchDetailsByCourseName = service.getBatchDetailsByCourseName(spreadsheetId,
 				courseName);
 		if (!emailByCourseName.isEmpty()) {
 
@@ -150,6 +150,16 @@ public class WhatsAppServiceImpl implements WhatsAppService {
 		return false;
 	}
 
-	
-	
+	@Override
+	public Boolean updateWhatsAppLinkByBatchName(String courseName,String whatsAppLink) throws IllegalAccessException, IOException {
+		if(courseName !=null && whatsAppLink !=null) {
+			BatchDetailsDto dto=new BatchDetailsDto();
+			dto.setCourseName(courseName);
+			dto.setWhatsAppLink(whatsAppLink);
+			service.updateBatchDetails(courseName, dto);
+			return true;
+		}else {
+			return false;
+		}
+	}
 }
