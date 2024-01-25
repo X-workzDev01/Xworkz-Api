@@ -46,7 +46,7 @@ public class CsrServiceImpl implements CsrService {
 		try {
 			log.info("Writing data for TraineeDto: {}", dto);
 			wrapper.setValuesForCSRDto(dto);
-			
+
 			List<Object> list = wrapper.extractDtoDetails(dto);
 			repo.writeData(spreadsheetId, list);
 			cacheService.updateCache("sheetsData", spreadsheetId, list);
@@ -97,8 +97,8 @@ public class CsrServiceImpl implements CsrService {
 		CSR csr = new CSR(csrDto.getUsnNumber(), csrDto.getAlternateContactNumber());
 		traineeDto.setCsrDto(csr);
 		validateAndRegister(traineeDto, request);
-		//adding alternative number to the cache
-		cacheService.addContactNumberToCache("alternativeNumber",spreadsheetId,csrDto.getAlternateContactNumber());
+		// adding alternative number to the cache
+		cacheService.addContactNumberToCache("alternativeNumber", spreadsheetId, csrDto.getAlternateContactNumber());
 		return true;
 
 	}
@@ -109,33 +109,18 @@ public class CsrServiceImpl implements CsrService {
 		if (contactNumber != null) {
 			List<List<Object>> listOfC_number = repo.getContactNumbers(spreadsheetId);
 			List<List<Object>> listOfA_number = repo.getAlternativeNumber(spreadsheetId);
-			log.info("null check for list");
-
-			if (listOfC_number != null || listOfA_number != null) {
-				log.info("find the contact number");
-				for (List<Object> list : listOfC_number) {
-
-					if (list != null && !list.isEmpty() && list.get(0) != null
-							&& list.get(0).toString().equals(String.valueOf(contactNumber))) {
-						log.info("Contact number found:{}",contactNumber);
-						isExists = true;
-					}
-				}
-				if (!isExists) {
-					for (List<Object> list : listOfA_number) {
-
-						if (list != null && !list.isEmpty() && list.get(0) != null
-								&& list.get(0).toString().equals(String.valueOf(contactNumber))) {
-							log.info("Contact number found:{}",contactNumber);
-							isExists = true;
-						}
-					}
-
-				}
-			}
+			log.info("checking contact number is sheet {}", contactNumber);
+			isExists = containsContactNumber(listOfC_number, contactNumber)
+					|| containsContactNumber(listOfA_number, contactNumber);
 		}
 		return isExists;
+	}
 
+	private boolean containsContactNumber(List<List<Object>> listOfNumbers, Long contactNumber) {
+		log.info("checking contact number existence in sheet,{}", contactNumber);
+		return listOfNumbers != null
+				&& listOfNumbers.stream().filter(list -> list != null && !list.isEmpty() && list.get(0) != null)
+						.anyMatch(list -> list.get(0).toString().equals(String.valueOf(contactNumber)));
 	}
 
 }
