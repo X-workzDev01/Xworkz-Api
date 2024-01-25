@@ -9,7 +9,7 @@ import org.springframework.util.StringUtils;
 
 import com.xworkz.dream.constants.SheetConstant;
 import com.xworkz.dream.dto.AuditDto;
-import com.xworkz.dream.dto.BatchDetails;
+import com.xworkz.dream.dto.BatchDetailsDto;
 import com.xworkz.dream.dto.utils.FeesUtils;
 import com.xworkz.dream.feesDtos.FeesDto;
 import com.xworkz.dream.feesDtos.FeesHistoryDto;
@@ -103,7 +103,7 @@ public class FeesDetilesWrapperImpl implements FeesDetilesWrapper {
 			feesDto.setLateFees(Long.valueOf(row.get(SheetConstant.LATE_FEES.getIndex()).toString()));
 		}
 		if (validateCell(SheetConstant.COLUMN_EMAIL)) {
-			BatchDetails details = feesUtiles
+			BatchDetailsDto details = feesUtiles
 					.getBatchDetiles(row.get(SheetConstant.COLUMN_EMAIL.getIndex()).toString());
 			feesDto.setCourseName((String) details.getCourseName());
 

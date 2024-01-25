@@ -15,6 +15,7 @@ import org.springframework.cache.CacheManager;
 import org.springframework.stereotype.Component;
 
 import com.xworkz.dream.dto.AttendanceDto;
+import com.xworkz.dream.dto.BatchDetailsDto;
 import com.xworkz.dream.dto.FollowUpDto;
 import com.xworkz.dream.dto.StatusDto;
 import com.xworkz.dream.dto.TraineeDto;
@@ -317,6 +318,40 @@ public class CacheServiceImpl implements CacheService {
 
 			} else {
 				log.debug("Data not found in the cache for the specified id: {}", id);
+			}
+		}
+	}
+	
+	@Override
+	public void updateCacheBatch(String cacheName, String key, String courseName, BatchDetailsDto dto)
+			throws IllegalAccessException {
+		Cache cache = cacheManager.getCache(cacheName);
+		if (cache != null) {
+			ValueWrapper valueWrapper = cache.get(key);
+			if (valueWrapper != null && valueWrapper.get() instanceof List) {
+
+				@SuppressWarnings("unchecked")
+				List<List<Object>> ListOfItems = (List<List<Object>>) valueWrapper.get();
+				int matchingIndex = -1; // Initialize to -1, indicating not found initially
+
+				for (int i = 0; i < ListOfItems.size(); i++) {
+					List<Object> items = ListOfItems.get(i);
+					String getCourseName=String.valueOf(items.get(1).toString());
+					if (getCourseName.equalsIgnoreCase(courseName)) {
+						matchingIndex = i;
+						break;
+					}
+				}
+				List<Object> list = wrapper.extractDtoDetails(dto);
+				if (matchingIndex >= 0) {
+//					list.remove(4);
+					ListOfItems.set(matchingIndex, list);
+
+					log.info("Updated cache data for courseNmae: {}", courseName);
+				}
+
+			} else {
+				log.debug("Data not found in the cache for the specified id: {}", courseName);
 			}
 		}
 	}

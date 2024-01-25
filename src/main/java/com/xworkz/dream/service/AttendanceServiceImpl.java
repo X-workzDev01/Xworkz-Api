@@ -2,14 +2,10 @@ package com.xworkz.dream.service;
 
 import java.io.IOException;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -35,12 +31,13 @@ import com.xworkz.dream.dto.AbsentDaysDto;
 import com.xworkz.dream.dto.AbsenteesDto;
 import com.xworkz.dream.dto.AttendanceDto;
 import com.xworkz.dream.dto.AttendanceTrainee;
+import com.xworkz.dream.dto.BatchDetailsDto;
 import com.xworkz.dream.dto.utils.WrapperUtil;
 import com.xworkz.dream.repository.AttendanceRepository;
+import com.xworkz.dream.wrapper.BatchWrapper;
 import com.xworkz.dream.wrapper.DreamWrapper;
 
 import freemarker.template.TemplateException;
-import lombok.extern.slf4j.Slf4j;
 
 @Service
 public class AttendanceServiceImpl implements AttendanceService {
@@ -59,11 +56,13 @@ public class AttendanceServiceImpl implements AttendanceService {
 	@Value("${sheets.AttandanceInfoSheetName}")
 	private String AttandanceInfoSheetName;
 	@Autowired
-private WrapperUtil util;
+	private WrapperUtil util;
 	@Autowired
 	private DreamWrapper wrapper;
 	@Autowired
 	private CacheService cacheService;
+	@Autowired
+	private BatchService batchService;
 
 	private static Logger log = LoggerFactory.getLogger(AttendanceServiceImpl.class);
 
@@ -71,7 +70,7 @@ private WrapperUtil util;
 	public ResponseEntity<String> writeAttendance(String spreadsheetId, AttendanceDto dto, HttpServletRequest request)
 			throws IOException, MessagingException, TemplateException, IllegalAccessException {
 		ValidatorFactory factory = Validation.buildDefaultValidatorFactory();
-	    attendanceRepository.getAttendanceData(spreadsheetId, attendanceInfoRange);
+		attendanceRepository.getAttendanceData(spreadsheetId, attendanceInfoRange);
 		Set<ConstraintViolation<AttendanceDto>> violation = factory.getValidator().validate(dto);
 
 		if (violation.isEmpty() && dto != null) {
@@ -117,7 +116,7 @@ private WrapperUtil util;
 			throws IOException, IllegalAccessException {
 		if (dto.getId().equals(attendanceDto.getId())) {
 			int rowIndex = findByID(sheetId, dto.getId());
-			String range = AttandanceInfoSheetName + attendanceStartRange+ rowIndex + ":" + attendanceEndRange
+			String range = AttandanceInfoSheetName + attendanceStartRange + rowIndex + ":" + attendanceEndRange
 					+ rowIndex;
 			if (attendanceDto.getId() != null) {
 				updateAbsentDatesAndReasons(attendanceDto, dto);
@@ -194,17 +193,17 @@ private WrapperUtil util;
 			List<List<Object>> list = attendanceRepository.getAttendanceData(sheetId, attendanceInfoIDRange);
 			List<List<Object>> filteredList = list.stream().filter(entry -> batch.equals(entry.get(3))) // Filter by
 					.collect(Collectors.toList());
-			  List<AttendanceTrainee> traineeInfoList = new ArrayList<>();
+			List<AttendanceTrainee> traineeInfoList = new ArrayList<>();
 
-		        for (List<Object> entry : filteredList) {
-		            try {
-		                Integer id = Integer.valueOf(entry.get(1).toString()) ;
-		                String name = (String) entry.get(2);
-		                traineeInfoList.add(new AttendanceTrainee(id, name));
-		            }catch (NumberFormatException e) {
-		            	e.getMessage();
-		            }
-		        }
+			for (List<Object> entry : filteredList) {
+				try {
+					Integer id = Integer.valueOf(entry.get(1).toString());
+					String name = (String) entry.get(2);
+					traineeInfoList.add(new AttendanceTrainee(id, name));
+				} catch (NumberFormatException e) {
+					e.getMessage();
+				}
+			}
 			return traineeInfoList;
 		} catch (IOException e) {
 
@@ -217,8 +216,8 @@ private WrapperUtil util;
 	public List<AbsentDaysDto> getAttendanceById(Integer id) {
 		log.info("Searching for attendance with ID: {}", id);
 		List<List<Object>> list;
-	
-		List<AbsentDaysDto> absentDaysList=new ArrayList<AbsentDaysDto>();
+
+		List<AbsentDaysDto> absentDaysList = new ArrayList<AbsentDaysDto>();
 		try {
 			list = attendanceRepository.getAttendanceData(sheetId, attendanceInfoIDRange);
 			if (list != null) {
@@ -231,15 +230,14 @@ private WrapperUtil util;
 					String[] splitAbsentDate = attendanceListToDto.getAbsentDate().split(",");
 					String[] splitReason = attendanceListToDto.getReason().split(",");
 					for (int i = 0; i < splitAbsentDate.length; i++) {
-						AbsentDaysDto daysDto=new AbsentDaysDto();
+						AbsentDaysDto daysDto = new AbsentDaysDto();
 						String date = splitAbsentDate[i].trim();
 						String reason = splitReason[i].trim();
 						daysDto.setDate(date);
 						daysDto.setReason(reason);
 						absentDaysList.add(daysDto);
 					}
-					
-					
+
 					return absentDaysList;
 				}
 			}
@@ -265,6 +263,21 @@ private WrapperUtil util;
 
 		return null;
 
+	}
+
+	@Override
+	public Boolean markTraineeAttendance(String courseName, Boolean batchAttendanceStatus) throws IOException, IllegalAccessException {
+		if (courseName != null && !batchAttendanceStatus.equals(false)){
+			BatchDetailsDto detailsDto = new BatchDetailsDto();
+			Integer totalclass = batchService.gettotalClassByCourseName(courseName);
+			Integer batchAttendance=totalclass+1;
+			detailsDto.setTotalClass(batchAttendance);
+			detailsDto.setCourseName(courseName);
+			batchService.updateBatchDetails(courseName, detailsDto);
+			return true;
+		}else {
+			return false;
+		}
 	}
 
 }

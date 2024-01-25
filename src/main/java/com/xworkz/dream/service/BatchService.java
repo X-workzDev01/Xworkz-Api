@@ -18,9 +18,14 @@ public interface BatchService {
 
 	public List<TraineeDto> getTraineeDetailsByCourse(String spreadsheetId, String courseName) throws IOException;
 
-	public BatchDetails getBatchDetailsByCourseName(String spreadsheetId, String courseName) throws IOException;
+	public BatchDetailsDto getBatchDetailsByCourseName(String spreadsheetId, String courseName) throws IOException;
 
-	public BatchDetails getBatchDetailsListByCourseName(String spreadsheetId, String courseName) throws IOException;
+	public BatchDetailsDto getBatchDetailsListByCourseName(String spreadsheetId, String courseName) throws IOException;
 
 	public ResponseEntity<List<Object>> getCourseNameByStatus(String spreadsheetId, String status);
+	
+	public void updateBatchDetails(String courseName,BatchDetailsDto details) throws IOException,IllegalAccessException;
+	
+	public Integer gettotalClassByCourseName(String courseName) throws IOException;
 }
+
