@@ -11,6 +11,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
 import com.xworkz.dream.constants.Status;
@@ -53,7 +54,6 @@ public class FeesUtils {
 		}
 		return null;
 	}
-
 	public SheetFeesDetiles getDataByselectedItems(String minIndex, String maxIndex, String date, String courseName,
 			String paymentMode, List<FeesDto> convertingListToDto) {
 		if (!courseName.equals("null") && date.equals("null") && paymentMode.equals("null")) {

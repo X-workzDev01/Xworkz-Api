@@ -6,9 +6,6 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLEncoder;
-import java.util.Objects;
-
-import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -109,44 +106,6 @@ public class ChimpmailServiceImpl implements ChimpMailService {
 
 	}
 
-	public boolean sms() {
-		String response = null;
-		String status = null;
-		try {
-			String mobileNumber = "9900775088";
-
-			if (Objects.nonNull(mobileNumber)) {
-
-				String smsMessage = "Hi " + "Akshara" + "," + "\n" + "Thanks for enquiring with X-workZ for "
-						+ "Java Enterpirse Course" + " at " + "Rajajinagara" + "\n" + " For Queries, contact "
-						+ "9886971483/9886971480" + "." + "\n" + " Check Mail for Course content (Spam Folder)" + ".";
-				;
-
-				log.debug("smsType is :{} mobileNumber is :{} message is: {}", mobileNumber, smsMessage);
-
-				response = this.sendSMS("25C45-0AE7A", "xworkzodc", "XWORKZ", mobileNumber, smsMessage, "Text", "Scrub",
-						"1607100000000285908");
-
-				log.info("SingleSMS Result is {}", response);
-				JSONObject json = new JSONObject(response);
-				status = json.getString("message");
-				if (status.equals("SMS Sent Successfully")) {
-					return true;
-				} else {
-					log.info("SingleSMS Result is {}", response);
-					return false;
-				}
-
-			} else {
-				log.info("SingleSMS Result is {}", response);
-				return false;
-			}
-
-		} catch (Exception e) {
-			log.error("\n\nMessage is {} and exception is {}\n\n\n\n\n", e.getMessage(), e);
-			return false;
-		}
-	}
 
 	@Override
 	public String sendSMS(String apiKey, String username, String sender, String phone, String message, String smsType,

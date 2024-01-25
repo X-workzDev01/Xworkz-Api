@@ -25,6 +25,7 @@ public interface RegisterRepository {
 	
 	public List<List<Object>> getEmailsAndNames(String spreadsheetId, String value) throws IOException;
 
+	List<List<Object>> getAlternativeNumber(String spreadsheetId) throws IOException;
 
 
 }

@@ -3,7 +3,6 @@ package com.xworkz.dream.wrapper;
 import java.lang.reflect.Field;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -205,7 +204,7 @@ public class DreamWrapper {
 
 	public TraineeDto listToDto(List<Object> row) {
 		TraineeDto traineeDto = new TraineeDto(0, new BasicInfoDto(), new EducationInfoDto(), new CourseDto(),
-				new OthersDto(), new AuditDto() , new CSR());
+				new OthersDto(), new AuditDto(), new CSR());
 
 		// Assuming the list follows this order: id ,traineeName, email, contactNumber,
 		// qualification, stream,
@@ -420,10 +419,8 @@ public class DreamWrapper {
 		return details;
 	}
 
-
 	public AttendanceDto attendanceListToDto(List<Object> row) {
-		AttendanceDto attendanceDto = new AttendanceDto(null, null, null, null, null, null,
-				null, null, new AuditDto());
+		AttendanceDto attendanceDto = new AttendanceDto(null, null, null, null, null, null, null, null, new AuditDto());
 		int rowSize = row.size();
 		if (rowSize > 0 && row.get(0) != null && !row.get(0).toString().isEmpty()) {
 			attendanceDto.setAttendanceId(Integer.valueOf(row.get(0).toString()));
@@ -475,7 +472,7 @@ public class DreamWrapper {
 		if (dto.getReason() == null) {
 			dto.setReason("NA");
 		}
-		if(dto.getAdminDto().getCreatedOn()==null) {
+		if (dto.getAdminDto().getCreatedOn() == null) {
 			dto.getAdminDto().setCreatedOn(LocalDate.now().toString());
 		}
 
@@ -555,7 +552,7 @@ public class DreamWrapper {
 
 		return followUpDto;
 	}
-	
+
 	public FollowUpDto setFollowUpCSR(TraineeDto traineeDto) {
 		FollowUpDto followUpDto = new FollowUpDto();
 		BasicInfoDto basicInfo = new BasicInfoDto();
@@ -655,6 +652,45 @@ public class DreamWrapper {
 
 			dto.getOthersDto().setReferalContactNumber(0L);
 		}
+	}
+
+	public void setValuesForCSRDto(TraineeDto dto) {
+		dto.getBasicInfo().setDateOfBirth("NA");
+		dto.getOthersDto().setXworkzEmail(Status.NA.toString());
+		dto.getOthersDto().setPreferredLocation(Status.NA.toString());
+		dto.getOthersDto().setPreferredClassType(Status.NA.toString());
+		dto.getOthersDto().setSendWhatsAppLink(Status.NO.toString());
+		dto.getOthersDto().setRegistrationDate(LocalDateTime.now().toString());
+		if (dto.getOthersDto().getReferalName() == null) {
+			dto.getOthersDto().setReferalName("NA");
+		}
+		if (dto.getOthersDto().getComments() == null) {
+			dto.getOthersDto().setComments("NA");
+		}
+		if (dto.getOthersDto().getWorking() == null) {
+
+			dto.getOthersDto().setWorking("No");
+		}
+		if (dto.getOthersDto().getReferalContactNumber() == null) {
+
+			dto.getOthersDto().setReferalContactNumber(0L);
+		}
+		AuditDto admin = new AuditDto();
+		if (dto.getAdminDto()== null) {
+			//it is for only csr 
+			admin.setCreatedBy(dto.getBasicInfo().getTraineeName());
+			admin.setCreatedOn(LocalDateTime.now().toString());
+			admin.setUpdatedBy("NA");
+			admin.setUpdatedOn("NA");
+			dto.setAdminDto(admin);
+		}else {
+			admin.setCreatedBy(dto.getAdminDto().getCreatedBy());
+			admin.setCreatedOn(dto.getAdminDto().getCreatedOn());
+			admin.setUpdatedBy("NA");
+			admin.setUpdatedOn("NA");
+			dto.setAdminDto(admin);
+		}
+
 	}
 
 }

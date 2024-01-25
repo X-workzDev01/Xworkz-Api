@@ -49,6 +49,7 @@ sheets:
   getFeesDetiles: FeesDetiles!A2:X
   getFeesDetilesfollowupRange : FeesFollowup!A2:J
   feesEmailRange: FeesDetiles!C2:C
+  alternativeNumberRange: xworkzApi!AE3:AE
   
   clientInformationRange: clientDetails!B2:O
   clientInformationReadRange: clientDetails!A2:O

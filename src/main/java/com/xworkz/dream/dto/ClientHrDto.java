@@ -13,7 +13,6 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 @ToString
 public class ClientHrDto {
 
-	@JsonProperty("id")
 	private Integer id;
 	@JsonProperty("companyId")
 	private Integer companyId;

@@ -93,7 +93,7 @@ public class ClientRepositoryImpl implements ClientRepository {
 	}
 
 
-//	@Cacheable(value = "clientInformation", key = "'ListOfClientDto'")
+	@Cacheable(value = "clientInformation", key = "'ListOfClientDto'")
 	public List<List<Object>> readData() throws IOException {
 		log.info(" client repository, reading client information ");
 		ValueRange valueRange = sheetsService.spreadsheets().values().get(sheetId, clientInformationReadRange)

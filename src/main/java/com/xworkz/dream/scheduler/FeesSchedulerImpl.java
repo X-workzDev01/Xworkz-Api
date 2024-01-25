@@ -67,39 +67,42 @@ public class FeesSchedulerImpl implements FeesScheduler {
 		return null;
 	}
 
+
 	private FeesDto afterAMonthChangeStatusAutometically(FeesDto dto, BatchDetailsDto detiles)
 			throws IOException, IllegalAccessException {
-		if (dto.getFeesStatus().equalsIgnoreCase("FREE") && LocalDate.parse(detiles.getStartDate()).plusDays(29)
-				.isAfter(LocalDate.parse(detiles.getStartDate()))) {
+		if (dto.getFeesStatus().equalsIgnoreCase("FREE") && LocalDate.parse(detils.getStartDate()).plusDays(29)
+				.isAfter(LocalDate.parse(detils.getStartDate()))) {
 			dto.setFeesStatus("FEES_DUE");
 			int index = util.findIndex(dto.getFeesHistoryDto().getEmail());
 			String followupRanges = "FeesDetiles!B" + index + ":AB" + index;
 			System.out.println(followupRanges + "    " + dto);
-			List<Object> last = util.extractDtoDetails(dto);
-			last.remove(2);
-			last.remove(11);
-			last.remove(11);
-			last.remove(20);
-			feesRepository.updateFeesDetiles(followupRanges, last);
+			List<Object> list = util.extractDtoDetails(dto);
+			list.remove(2);
+			list.remove(11);
+			list.remove(11);
+			list.remove(20);
+			list.remove(20);
+			list.add("Active");
+			feesRepository.updateFeesDetiles(followupRanges, list);
 			return dto;
 		}
 		return dto;
 	}
 
+
 	private FeesDto updateCSRofferedAfterFreeTraining(FeesDto dto, BatchDetailsDto detiles)
 			throws IOException, IllegalAccessException {
-		if (dto.getFeesStatus().equalsIgnoreCase("FREE") && LocalDate.parse(detiles.getStartDate()).plusDays(59)
-				.isAfter(LocalDate.parse(detiles.getStartDate()))) {
+		if (dto.getFeesStatus().equalsIgnoreCase("FREE") && LocalDate.parse(detils.getStartDate()).plusDays(59)
+				.isAfter(LocalDate.parse(detils.getStartDate()))) {
 			dto.setFeesStatus("FEES_DUE");
 			int index = util.findIndex(dto.getFeesHistoryDto().getEmail());
 			String followupRanges = "FeesDetiles!B" + index + ":U" + index;
-			System.out.println(followupRanges + "    " + dto);
-			List<Object> last = util.extractDtoDetails(dto);
-			last.remove(2);
-			last.remove(11);
-			last.remove(11);
-			last.remove(20);
-			feesRepository.updateFeesDetiles(followupRanges, last);
+			List<Object> list = util.extractDtoDetails(dto);
+			list.remove(2);
+			list.remove(11);
+			list.remove(11);
+			list.remove(20);
+			feesRepository.updateFeesDetiles(followupRanges, list);
 			return dto;
 		}
 		return dto;
