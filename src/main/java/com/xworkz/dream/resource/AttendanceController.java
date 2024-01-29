@@ -96,7 +96,7 @@ public class AttendanceController {
 		if(markTraineeAttendance==true) {
 			return "Batch Attendance Update successfully";
 		}else {
-			return "Batch Attendance Not Update";
+			return "Batch Attendance Already Update";
 		}
 	}
 

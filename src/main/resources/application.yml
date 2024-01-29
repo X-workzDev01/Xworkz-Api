@@ -42,10 +42,14 @@ sheets:
   attendanceInfoByName: attendanceInfo!A2:K
   attendanceInfoStartRange : B
   attendanceInfoEndRange : K
-  AttandanceInfoSheetName: attendanceInfo!
+  attandanceInfoSheetName: attendanceInfo!
   attendanceListDefaultRange: attendanceInfo!J2:j
   attendanceInfoMarkAs:  J
-  feesRegister: FeesDetiles!B2:X
+  batchAttendanceInfoSheetName: batchAttendanceInfo!
+  batchAttendanceInfoRange: batchAttendanceInfo!A2:D
+  batchAttendanceInfoStartRange: B
+  batchAttendanceInfoEndRange: D
+  feesRegister: FeesDetiles!A2:X
   getFeesDetiles: FeesDetiles!A2:X
   getFeesDetilesfollowupRange : FeesFollowup!A2:J
   feesEmailRange: FeesDetiles!C2:C
