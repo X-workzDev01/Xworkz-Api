@@ -12,7 +12,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
-import com.xworkz.dream.dto.BatchDetails;
 import com.xworkz.dream.dto.BatchDetailsDto;
 import com.xworkz.dream.dto.utils.FeesUtils;
 import com.xworkz.dream.dto.utils.WrapperUtil;
@@ -75,7 +74,6 @@ public class FeesSchedulerImpl implements FeesScheduler {
 			dto.setFeesStatus("FEES_DUE");
 			int index = util.findIndex(dto.getFeesHistoryDto().getEmail());
 			String followupRanges = "FeesDetiles!B" + index + ":AB" + index;
-			System.out.println(followupRanges + "    " + dto);
 			List<Object> list = util.extractDtoDetails(dto);
 			list.remove(2);
 			list.remove(11);

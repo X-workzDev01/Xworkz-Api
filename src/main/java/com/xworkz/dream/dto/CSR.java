@@ -15,5 +15,7 @@ public class CSR {
 	private String usnNumber;
 	@JsonProperty("alternateContactNumber")
 	private Long alternateContactNumber;
-
+	@JsonProperty("uniqueId")
+	private String uniqueId;
+	
 }

@@ -1,7 +1,11 @@
 package com.xworkz.dream.service;
 
 import java.io.IOException;
+import java.time.LocalDate;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Random;
+import java.util.Set;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -38,6 +42,8 @@ public class CsrServiceImpl implements CsrService {
 	private CacheService cacheService;
 	@Value("${login.sheetId}")
 	private String spreadsheetId;
+	private static final int MAX_ATTEMPTS = 99999;
+	private static Set<Integer> generatedIDs = new HashSet<>();
 
 	private static final Logger log = LoggerFactory.getLogger(DreamServiceImpl.class);
 
@@ -46,23 +52,9 @@ public class CsrServiceImpl implements CsrService {
 		try {
 			log.info("Writing data for TraineeDto: {}", dto);
 			wrapper.setValuesForCSRDto(dto);
-
 			List<Object> list = wrapper.extractDtoDetails(dto);
 			repo.writeData(spreadsheetId, list);
-			cacheService.updateCache("sheetsData", spreadsheetId, list);
-
-			if (dto.getBasicInfo().getEmail() != null) {
-				cacheService.addEmailToCache("emailData", spreadsheetId, dto.getBasicInfo().getEmail());
-
-			}
-			if (dto.getBasicInfo().getContactNumber() != null) {
-				cacheService.addContactNumberToCache("contactData", spreadsheetId,
-						dto.getBasicInfo().getContactNumber());
-
-			}
-			log.info("Saving birth details: {}", dto);
-			service.saveBirthDayInfo(spreadsheetId, dto, request);
-
+			AddToCache(dto, request, list);
 			boolean status = followUpService.addCsrToFollowUp(dto, spreadsheetId);
 
 			if (status) {
@@ -86,21 +78,46 @@ public class CsrServiceImpl implements CsrService {
 
 	}
 
+	private void AddToCache(TraineeDto dto, HttpServletRequest request, List<Object> list)
+			throws IllegalAccessException, IOException {
+		cacheService.updateCache("sheetsData", spreadsheetId, list);
+		if (dto.getBasicInfo().getEmail() != null) {
+			cacheService.addEmailToCache("emailData", spreadsheetId, dto.getBasicInfo().getEmail());
+		}
+		if (dto.getBasicInfo().getContactNumber() != null) {
+			cacheService.addContactNumberToCache("contactData", spreadsheetId, dto.getBasicInfo().getContactNumber());
+		}
+		log.info("Saving birth details: {}", dto);
+		service.saveBirthDayInfo(spreadsheetId, dto, request);
+		// adding alternative number to cache
+		cacheService.addContactNumberToCache("alternativeNumber", "listOfAlternativeContactNumbers",
+				dto.getCsrDto().getAlternateContactNumber());
+		// adding USN number to cache
+		cacheService.addEmailToCache("usnNumber", "listOfUsnNumbers", dto.getCsrDto().getUsnNumber());
+		// adding Unique Number to caches
+		cacheService.addEmailToCache("uniqueNumber", "listofUniqueNumbers", dto.getCsrDto().getUniqueId());
+	}
+
 	@Override
-	public boolean registerCsr(CsrDto csrDto, HttpServletRequest request) {
+	public boolean registerCsr(CsrDto csrDto, HttpServletRequest request) throws IOException {
 		TraineeDto traineeDto = new TraineeDto();
 		traineeDto.setCourseInfo(new CourseDto("NA"));
 		traineeDto.setOthersDto(new OthersDto("NA"));
 		traineeDto.setBasicInfo(csrDto.getBasicInfo());
 		traineeDto.setEducationInfo(csrDto.getEducationInfo());
 		traineeDto.getCourseInfo().setOfferedAs(csrDto.getOfferedAs());
-		CSR csr = new CSR(csrDto.getUsnNumber(), csrDto.getAlternateContactNumber());
-		traineeDto.setCsrDto(csr);
-		validateAndRegister(traineeDto, request);
-		// adding alternative number to the cache
-		cacheService.addContactNumberToCache("alternativeNumber", spreadsheetId, csrDto.getAlternateContactNumber());
-		return true;
-
+		String uniqueId = generateUniqueID();
+		if (checkUniqueNumber(uniqueId)) {
+			log.info("Unique Number Exists");
+			uniqueId = generateUniqueID();
+		} else {
+			log.debug("Unique Number not Exists ");
+			CSR csr = new CSR(csrDto.getUsnNumber(), csrDto.getAlternateContactNumber(), uniqueId);
+			traineeDto.setCsrDto(csr);
+			validateAndRegister(traineeDto, request);
+			return true;
+		}
+		return false;
 	}
 
 	@Override
@@ -121,6 +138,51 @@ public class CsrServiceImpl implements CsrService {
 		return listOfNumbers != null
 				&& listOfNumbers.stream().filter(list -> list != null && !list.isEmpty() && list.get(0) != null)
 						.anyMatch(list -> list.get(0).toString().equals(String.valueOf(contactNumber)));
+	}
+
+	@Override
+	public boolean checkUsnNumber(String usnNumber) throws IOException {
+		log.info("check Usn Number ");
+		if (usnNumber != null) {
+			List<List<Object>> listOfUsn = repo.getUsnNumber(spreadsheetId);
+			return listOfUsn != null
+					&& listOfUsn.stream().filter(list -> list != null && !list.isEmpty() && list.get(0) != null)
+							.anyMatch(list -> list.get(0).toString().equals(usnNumber));
+		}
+		return false;
+	}
+
+	public static String generateUniqueID() {
+		int minValue = 1;
+		int maxValue = 99999;
+		Random random = new Random();
+		int attempts = 0;
+		String year = LocalDate.now().toString().substring(2, 4);
+		while (attempts < MAX_ATTEMPTS) {
+			Integer uniqueID = minValue + random.nextInt(maxValue - minValue + 1);
+			if (generatedIDs.add(uniqueID)) {
+				if (uniqueID.toString().length() == 4) {
+					return "XBR" + year + "0" + uniqueID.toString();
+				} else {
+					return "XBR" + year + uniqueID.toString();
+				}
+			}
+			attempts++;
+		}
+		log.error("Max attempts has been completed, it may Generate duplicate number");
+		throw new IllegalStateException("Unable to generate a unique ID after " + MAX_ATTEMPTS + " attempts.");
+	}
+
+	@Override
+	public boolean checkUniqueNumber(String uniqueNumber) throws IOException {
+		if (uniqueNumber != null) {
+			log.info("checking unique number");
+			List<List<Object>> listOfUniqueNumber = repo.getUniqueNumbers(spreadsheetId);
+			return listOfUniqueNumber != null && listOfUniqueNumber.stream()
+					.filter(list -> list != null && !list.isEmpty() && list.get(0) != null)
+					.anyMatch(list -> list.get(0).toString().equals(uniqueNumber));
+		}
+		return false;
 	}
 
 }
