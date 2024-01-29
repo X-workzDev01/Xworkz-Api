@@ -13,6 +13,7 @@ import com.xworkz.dream.constants.Status;
 import com.xworkz.dream.dto.AttendanceDto;
 import com.xworkz.dream.dto.AuditDto;
 import com.xworkz.dream.dto.BasicInfoDto;
+import com.xworkz.dream.dto.BatchAttendanceDto;
 import com.xworkz.dream.dto.BatchDetails;
 import com.xworkz.dream.dto.BatchDetailsDto;
 import com.xworkz.dream.dto.CSR;
@@ -380,7 +381,6 @@ public class DreamWrapper {
 
 		BatchDetailsDto details = new BatchDetailsDto(0, null, null, null, null, null, null, null, null, null, null);
 		int rowSize = row.size();
-		System.err.println("rrrrrrrrrrrrrrrr         "+row);
 		if (rowSize > 0 && row.get(0) != null && !row.get(0).toString().isEmpty()) {
 			details.setId(Integer.valueOf(row.get(0).toString()));
 		}
@@ -409,7 +409,7 @@ public class DreamWrapper {
 			details.setWhatsAppLink(String.valueOf(row.get(8).toString()));
 		}
 		if (rowSize > 9 && row.get(9) != null && !row.get(9).toString().isEmpty()) {
-			Long totalAmount=Long.parseLong(row.get(9).toString());
+			Long totalAmount = Long.parseLong(row.get(9).toString());
 			details.setTotalAmount(totalAmount);
 		}
 		if (rowSize > 10 && row.get(10) != null && !row.get(10).toString().isEmpty()) {
@@ -676,20 +676,45 @@ public class DreamWrapper {
 			dto.getOthersDto().setReferalContactNumber(0L);
 		}
 		AuditDto admin = new AuditDto();
-		if (dto.getAdminDto()== null) {
-			//it is for only csr 
+		if (dto.getAdminDto() == null) {
+			// it is for only csr
 			admin.setCreatedBy(dto.getBasicInfo().getTraineeName());
 			admin.setCreatedOn(LocalDateTime.now().toString());
 			admin.setUpdatedBy("NA");
 			admin.setUpdatedOn("NA");
 			dto.setAdminDto(admin);
-		}else {
+		} else {
 			admin.setCreatedBy(dto.getAdminDto().getCreatedBy());
 			admin.setCreatedOn(dto.getAdminDto().getCreatedOn());
 			admin.setUpdatedBy("NA");
 			admin.setUpdatedOn("NA");
 			dto.setAdminDto(admin);
 		}
+
+	}
+
+	public AttendanceDto saveAttendance(FollowUpDto dto) {
+		AttendanceDto attendanceDto = new AttendanceDto();
+		attendanceDto.setId(dto.getId());
+		attendanceDto.setCourse(dto.getCourseName());
+		attendanceDto.setTraineeName(dto.getBasicInfo().getTraineeName());
+		if (attendanceDto.getTotalAbsent() == null) {
+			attendanceDto.setTotalAbsent(0);
+		}
+		if (attendanceDto.getAbsentDate() == null) {
+			attendanceDto.setAbsentDate("NA");
+		}
+		if (attendanceDto.getReason() == null) {
+			attendanceDto.setReason("NA");
+		}
+		AuditDto admin = new AuditDto();
+		admin.setCreatedBy(dto.getAdminDto().getUpdatedBy());
+		admin.setCreatedOn(dto.getAdminDto().getUpdatedOn());
+		admin.setUpdatedBy("NA");
+		admin.setUpdatedOn("NA");
+		attendanceDto.setAdminDto(admin);
+		
+		return attendanceDto;
 
 	}
 

@@ -70,8 +70,8 @@ public class FeesSchedulerImpl implements FeesScheduler {
 
 	private FeesDto afterAMonthChangeStatusAutometically(FeesDto dto, BatchDetailsDto detiles)
 			throws IOException, IllegalAccessException {
-		if (dto.getFeesStatus().equalsIgnoreCase("FREE") && LocalDate.parse(detils.getStartDate()).plusDays(29)
-				.isAfter(LocalDate.parse(detils.getStartDate()))) {
+		if (dto.getFeesStatus().equalsIgnoreCase("FREE") && LocalDate.parse(detiles.getStartDate()).plusDays(29)
+				.isAfter(LocalDate.parse(detiles.getStartDate()))) {
 			dto.setFeesStatus("FEES_DUE");
 			int index = util.findIndex(dto.getFeesHistoryDto().getEmail());
 			String followupRanges = "FeesDetiles!B" + index + ":AB" + index;
@@ -92,8 +92,8 @@ public class FeesSchedulerImpl implements FeesScheduler {
 
 	private FeesDto updateCSRofferedAfterFreeTraining(FeesDto dto, BatchDetailsDto detiles)
 			throws IOException, IllegalAccessException {
-		if (dto.getFeesStatus().equalsIgnoreCase("FREE") && LocalDate.parse(detils.getStartDate()).plusDays(59)
-				.isAfter(LocalDate.parse(detils.getStartDate()))) {
+		if (dto.getFeesStatus().equalsIgnoreCase("FREE") && LocalDate.parse(detiles.getStartDate()).plusDays(59)
+				.isAfter(LocalDate.parse(detiles.getStartDate()))) {
 			dto.setFeesStatus("FEES_DUE");
 			int index = util.findIndex(dto.getFeesHistoryDto().getEmail());
 			String followupRanges = "FeesDetiles!B" + index + ":U" + index;

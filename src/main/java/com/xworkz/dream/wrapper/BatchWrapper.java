@@ -1,6 +1,7 @@
 package com.xworkz.dream.wrapper;
 
 import java.io.IOException;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -11,11 +12,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
-import com.google.api.services.sheets.v4.model.UpdateValuesResponse;
 import com.google.api.services.sheets.v4.model.ValueRange;
+import com.xworkz.dream.dto.BatchAttendanceDto;
 import com.xworkz.dream.dto.BatchDetailsDto;
 import com.xworkz.dream.repository.BatchRepository;
-import com.xworkz.dream.service.BatchServiceImpl;
 import com.xworkz.dream.service.CacheService;
 
 @Component
@@ -117,6 +117,7 @@ public class BatchWrapper {
 		return "Batch Details updated successfully";
 		
 	}
+	
 
 	private int findIndex(String courseName) throws IOException {
 		List<List<Object>> data = repository.getCourseDetails(sheetId);
@@ -131,6 +132,15 @@ public class BatchWrapper {
 			}
 		}
 		return -1;
+	}
+	
+	public BatchAttendanceDto setBatchValues(BatchDetailsDto batchDetailsDto) {
+		BatchAttendanceDto dto=new BatchAttendanceDto();
+		dto.setBatchName(batchDetailsDto.getCourseName());
+		dto.setTrainerName(batchDetailsDto.getTrainerName());
+		dto.setPresentDate(LocalDate.now().toString());
+		return dto;
+		
 	}
 
 }
