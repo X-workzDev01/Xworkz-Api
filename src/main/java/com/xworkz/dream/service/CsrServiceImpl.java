@@ -68,13 +68,14 @@ public class CsrServiceImpl implements CsrService {
 
 			if (status) {
 				log.info("Data written successfully to spreadsheetId and Added to Follow Up: {}", spreadsheetId);
-				util.sms(dto);
 
-				boolean sent = util.sendCourseContent(dto.getBasicInfo().getEmail(),
-						dto.getBasicInfo().getTraineeName());
+				if (dto.getCourseInfo().getOfferedAs().equals("CSR")) {
+					boolean sent = util.csrEmailSent(dto);
+					if (sent) {
+						util.csrSmsSent(dto.getBasicInfo().getTraineeName(), dto.getBasicInfo().getContactNumber().toString());
+						return ResponseEntity.ok("Data written successfully, Added to follow Up, sent course content");
+					}
 
-				if (sent) {
-					return ResponseEntity.ok("Data written successfully, Added to follow Up, sent course content");
 				}
 			} else {
 				return ResponseEntity.ok("Email not sent, Data written successfully, Added to follow Up");
@@ -98,8 +99,7 @@ public class CsrServiceImpl implements CsrService {
 		CSR csr = new CSR(csrDto.getUsnNumber(), csrDto.getAlternateContactNumber());
 		traineeDto.setCsrDto(csr);
 		validateAndRegister(traineeDto, request);
-		//adding alternative number to the cache
-		cacheService.addContactNumberToCache("alternativeNumber",spreadsheetId,csrDto.getAlternateContactNumber());
+		cacheService.addContactNumberToCache("alternativeNumber", spreadsheetId, csrDto.getAlternateContactNumber());
 		return true;
 
 	}

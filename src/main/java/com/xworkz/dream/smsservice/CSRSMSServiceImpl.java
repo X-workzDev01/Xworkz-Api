@@ -11,8 +11,11 @@ import org.springframework.stereotype.Service;
 
 import com.xworkz.dream.service.ChimpMailService;
 import com.xworkz.dream.util.EncryptionHelper;
+
+@Service
 public class CSRSMSServiceImpl implements CSRSMSService {
-	private String templateId="1607100000000295612";
+	@Value("${mailChimp.templateIdCSRDrive}")
+	private String templateId;
 	@Value("${mailChimp.apiKey}")
 	private String apiKey;
 	@Value("${mailChimp.SMSusername}")
@@ -32,24 +35,21 @@ public class CSRSMSServiceImpl implements CSRSMSService {
 	private Logger log = LoggerFactory.getLogger(CSRSMSService.class);
 
 	@Override
-	public boolean csrSMSSent() {
+	public boolean csrSMSSent(String name,String contactNo) {
 		String response = null;
 		String status = null;
-		System.out.println("Running sms service");
 
 		try {
-			String mobileNumber = "9900775088";
-			if (Objects.nonNull(mobileNumber)) {
-
-				String smsMessage = "Hi " + "Hareesha" + "," + "\n" + "Thanks for registering with X-workZ "
-						+ " CSR Drive " + ". " + " Check  email for more details" + "." + "\n"
+			if (Objects.nonNull(contactNo)) {
+				String smsMessage = "Hi " + name + "," + "\n" + "Thanks for registering with X-workZ " + " CSR Drive "
+						+ ".\n" + "Check  email for more details" + "." + "\n"
 						+ "For queries, contact 9886971483/9886971480";
 				;
 
-				log.debug("smsType is :{} mobileNumber is :{} message is: {}", mobileNumber, smsMessage);
+				log.debug("smsType is :{} mobileNumber is :{} message is: {}", contactNo, smsMessage);
 
 				response = chimpMailService.sendSMS(helper.decrypt(apiKey), helper.decrypt(smsUserName),
-						helper.decrypt(sender), mobileNumber, smsMessage, helper.decrypt(smsType),
+						helper.decrypt(sender), contactNo, smsMessage, helper.decrypt(smsType),
 						helper.decrypt(route), helper.decrypt(templateId));
 
 				log.info("SingleSMS Result is {}", response);

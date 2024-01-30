@@ -57,7 +57,7 @@ public class FeesSchedulerImpl implements FeesScheduler {
 								return null;
 							}
 						} catch (IOException | IllegalAccessException e) {
-							log.error("Fetching Detiles is not Found");
+		                    log.error("Error processing fee details", e);
 							return null;
 						}
 					}).collect(Collectors.toList());
@@ -73,7 +73,7 @@ public class FeesSchedulerImpl implements FeesScheduler {
 			dto.setFeesStatus("FEES_DUE");
 			int index = util.findIndex(dto.getFeesHistoryDto().getEmail());
 			String followupRanges = "FeesDetiles!B" + index + ":AB" + index;
-			System.out.println(followupRanges + "    " + dto);
+			log.debug("Updating fees status. Range: {}, FeesDto: {}", followupRanges, dto);
 			List<Object> list = util.extractDtoDetails(dto);
 			list.remove(2);
 			list.remove(11);
@@ -82,6 +82,8 @@ public class FeesSchedulerImpl implements FeesScheduler {
 			list.remove(20);
 			list.add("Active");
 			feesRepository.updateFeesDetiles(followupRanges, list);
+			log.info("Fees status updated successfully for email: {}", dto.getFeesHistoryDto().getEmail());
+
 			return dto;
 		}
 		return dto;
@@ -100,6 +102,7 @@ public class FeesSchedulerImpl implements FeesScheduler {
 			list.remove(11);
 			list.remove(20);
 			feesRepository.updateFeesDetiles(followupRanges, list);
+			log.info("Fees status updated successfully for email: {}", dto.getFeesHistoryDto().getEmail());
 			return dto;
 		}
 		return dto;
