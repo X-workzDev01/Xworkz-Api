@@ -11,6 +11,7 @@ import org.springframework.cache.Cache;
 import org.springframework.cache.Cache.ValueWrapper;
 import org.springframework.cache.CacheManager;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -68,6 +69,17 @@ public class DreamApiController {
 			}
 		}
 		return null;
+	}
+	
+	@PostMapping("/addTrainee")
+	public String addTraineeToJoind(@RequestParam String status, @RequestParam String courseName) throws IOException, IllegalAccessException {
+		Boolean addJoined = service.addJoined(status, courseName);
+		if(addJoined==true) {
+			return "Trainee Add to Joind";
+		}else {
+			return "Trainee Already Joind";
+		}
+		
 	}
 
 }

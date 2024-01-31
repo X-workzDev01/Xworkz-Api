@@ -13,14 +13,15 @@ import javax.servlet.http.HttpServletRequest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
-import com.xworkz.dream.dto.BatchDetails;
 import com.xworkz.dream.dto.BatchDetailsDto;
 import com.xworkz.dream.dto.TraineeDto;
 import com.xworkz.dream.repository.BatchRepository;
 import com.xworkz.dream.repository.RegisterRepository;
+import com.xworkz.dream.wrapper.BatchWrapper;
 import com.xworkz.dream.wrapper.DreamWrapper;
 
 @Service
@@ -30,18 +31,19 @@ public class BatchServiceImpl implements BatchService {
 	private RegisterRepository repo;
 	@Autowired
 	private BatchRepository repository;
+	@Value("${login.sheetId}")
+	private String sheetId;
 	@Autowired
 	private DreamWrapper wrapper;
-	private BatchDetails batch;
+	@Autowired
+	private BatchWrapper batchWrapper;
+	private BatchDetailsDto batch;
 
 	private static final Logger log = LoggerFactory.getLogger(BatchServiceImpl.class);
 
 	@Override
 	public ResponseEntity<String> saveDetails(String spreadsheetId, BatchDetailsDto dto, HttpServletRequest request)
 			throws IOException, IllegalAccessException {
-		List<List<Object>> data = repository.getBatchId(spreadsheetId).getValues();
-		int size = data != null ? data.size() : 0;
-		dto.setId(size += 1);
 		List<Object> list = wrapper.extractDtoDetails(dto);
 		boolean save = repository.saveBatchDetails(spreadsheetId, list);
 		// adding to cache
@@ -83,7 +85,7 @@ public class BatchServiceImpl implements BatchService {
 	}
 
 	@Override
-	public BatchDetails getBatchDetailsByCourseName(String spreadsheetId, String courseName) throws IOException {
+	public BatchDetailsDto getBatchDetailsByCourseName(String spreadsheetId, String courseName) throws IOException {
 		List<List<Object>> detailsByCourseName = repository.getCourseDetails(spreadsheetId);
 		batch = null;
 		List<List<Object>> filter = detailsByCourseName.stream()
@@ -100,8 +102,8 @@ public class BatchServiceImpl implements BatchService {
 	}
 
 	@Override
-	public BatchDetails getBatchDetailsListByCourseName(String spreadsheetId, String courseName) throws IOException {
-		BatchDetails batch = new BatchDetails();
+	public BatchDetailsDto getBatchDetailsListByCourseName(String spreadsheetId, String courseName) throws IOException {
+		BatchDetailsDto batch = new BatchDetailsDto();
 		if (courseName != null && !courseName.isEmpty()) {
 			List<List<Object>> detailsByCourseName = repository.getCourseDetails(spreadsheetId);
 			List<List<Object>> data = detailsByCourseName.stream()
@@ -142,12 +144,40 @@ public class BatchServiceImpl implements BatchService {
 				return null;
 			}
 		} catch (IOException e) {
-			log.error("An IOException occurred: {}", e.getMessage(), e);
+			log.error("An IOException occurred: {}", e.getMessage());
 			return null;
 		}
 	}
-	
-	
-	
-	
+
+	@Override
+	public void updateBatchDetails(String courseName, BatchDetailsDto details)
+			throws IOException, IllegalAccessException {
+
+		List<List<Object>> courseDetails = repository.getCourseDetails(sheetId);
+
+	    courseDetails.stream()
+	            .map(wrapper::batchDetailsToDto)
+	            .filter(dto -> dto.getCourseName().equalsIgnoreCase(courseName))
+	            .findFirst()
+	            .ifPresent(dto -> {
+	                try {
+	                    batchWrapper.updateBatchValueSet(details, dto);
+	                } catch (Exception e) {
+	                    log.error(e.getMessage());
+	                }
+	            });
+	}
+
+	@Override
+	public Integer gettotalClassByCourseName(String courseName) throws IOException {
+		List<List<Object>> courseDetails = repository.getCourseDetails(sheetId);
+		int totalClass = courseDetails.stream().filter(courseDetail -> courseName.equals(courseDetail.get(1)))
+				.map(courseDetail -> {
+					Object totalClassObj = courseDetail.get(10);
+					return Integer.valueOf(String.valueOf(totalClassObj));
+				}).reduce(0, Integer::sum);
+
+		return totalClass;
+	}
+
 }

@@ -3,7 +3,6 @@ package com.xworkz.dream.wrapper;
 import java.lang.reflect.Field;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -14,7 +13,9 @@ import com.xworkz.dream.constants.Status;
 import com.xworkz.dream.dto.AttendanceDto;
 import com.xworkz.dream.dto.AuditDto;
 import com.xworkz.dream.dto.BasicInfoDto;
+import com.xworkz.dream.dto.BatchAttendanceDto;
 import com.xworkz.dream.dto.BatchDetails;
+import com.xworkz.dream.dto.BatchDetailsDto;
 import com.xworkz.dream.dto.CSR;
 import com.xworkz.dream.dto.CourseDto;
 import com.xworkz.dream.dto.EducationInfoDto;
@@ -204,7 +205,7 @@ public class DreamWrapper {
 
 	public TraineeDto listToDto(List<Object> row) {
 		TraineeDto traineeDto = new TraineeDto(0, new BasicInfoDto(), new EducationInfoDto(), new CourseDto(),
-				new OthersDto(), new AuditDto() , new CSR());
+				new OthersDto(), new AuditDto(), new CSR());
 
 		// Assuming the list follows this order: id ,traineeName, email, contactNumber,
 		// qualification, stream,
@@ -361,24 +362,24 @@ public class DreamWrapper {
 		return detailsList;
 	}
 
-	public List<Object> listOfBatchDetails(BatchDetails dto) {
+	public List<Object> listOfBatchDetails(BatchDetailsDto dto) {
 		List<Object> row = new ArrayList<Object>();
 		row.add(dto.getId());
 		row.add(dto.getCourseName());
 		row.add(dto.getTrainerName());
 		row.add(dto.getStartDate());
 		row.add(dto.getBatchType());
-		row.add(dto.getTiming());
-		row.add(dto.getBranch());
-		row.add(dto.getStatus());
+		row.add(dto.getStartTime());
+		row.add(dto.getBranchName());
+		row.add(dto.getBatchStatus());
 		row.add(dto.getWhatsAppLink());
 
 		return row;
 	}
 
-	public BatchDetails batchDetailsToDto(List<Object> row) {
+	public BatchDetailsDto batchDetailsToDto(List<Object> row) {
 
-		BatchDetails details = new BatchDetails(null, null, null, null, null, null, null, null, null, null, null);
+		BatchDetailsDto details = new BatchDetailsDto(0, null, null, null, null, null, null, null, null, null, null);
 		int rowSize = row.size();
 		if (rowSize > 0 && row.get(0) != null && !row.get(0).toString().isEmpty()) {
 			details.setId(Integer.valueOf(row.get(0).toString()));
@@ -396,19 +397,20 @@ public class DreamWrapper {
 			details.setBatchType(String.valueOf(row.get(4).toString()));
 		}
 		if (rowSize > 5 && row.get(5) != null && !row.get(5).toString().isEmpty()) {
-			details.setTiming(String.valueOf(row.get(5).toString()));
+			details.setStartTime(String.valueOf(row.get(5).toString()));
 		}
 		if (rowSize > 6 && row.get(6) != null && !row.get(6).toString().isEmpty()) {
-			details.setBranch(String.valueOf(row.get(6).toString()));
+			details.setBranchName(String.valueOf(row.get(6).toString()));
 		}
 		if (rowSize > 7 && row.get(7) != null && !row.get(7).toString().isEmpty()) {
-			details.setStatus(String.valueOf(row.get(7).toString()));
+			details.setBatchStatus(String.valueOf(row.get(7).toString()));
 		}
 		if (rowSize > 8 && row.get(8) != null && !row.get(8).toString().isEmpty()) {
 			details.setWhatsAppLink(String.valueOf(row.get(8).toString()));
 		}
 		if (rowSize > 9 && row.get(9) != null && !row.get(9).toString().isEmpty()) {
-			details.setTotalAmount(Long.valueOf(row.get(9).toString()));
+			Long totalAmount = Long.parseLong(row.get(9).toString());
+			details.setTotalAmount(totalAmount);
 		}
 		if (rowSize > 10 && row.get(10) != null && !row.get(10).toString().isEmpty()) {
 			details.setTotalClass(Integer.valueOf(row.get(10).toString()));
@@ -417,10 +419,8 @@ public class DreamWrapper {
 		return details;
 	}
 
-
 	public AttendanceDto attendanceListToDto(List<Object> row) {
-		AttendanceDto attendanceDto = new AttendanceDto(null, null, null, null, null, null,
-				null, null, new AuditDto());
+		AttendanceDto attendanceDto = new AttendanceDto(null, null, null, null, null, null, null, null, new AuditDto());
 		int rowSize = row.size();
 		if (rowSize > 0 && row.get(0) != null && !row.get(0).toString().isEmpty()) {
 			attendanceDto.setAttendanceId(Integer.valueOf(row.get(0).toString()));
@@ -472,7 +472,7 @@ public class DreamWrapper {
 		if (dto.getReason() == null) {
 			dto.setReason("NA");
 		}
-		if(dto.getAdminDto().getCreatedOn()==null) {
+		if (dto.getAdminDto().getCreatedOn() == null) {
 			dto.getAdminDto().setCreatedOn(LocalDate.now().toString());
 		}
 
@@ -552,7 +552,7 @@ public class DreamWrapper {
 
 		return followUpDto;
 	}
-	
+
 	public FollowUpDto setFollowUpCSR(TraineeDto traineeDto) {
 		FollowUpDto followUpDto = new FollowUpDto();
 		BasicInfoDto basicInfo = new BasicInfoDto();
@@ -652,6 +652,70 @@ public class DreamWrapper {
 
 			dto.getOthersDto().setReferalContactNumber(0L);
 		}
+	}
+
+	public void setValuesForCSRDto(TraineeDto dto) {
+		dto.getBasicInfo().setDateOfBirth("NA");
+		dto.getOthersDto().setXworkzEmail(Status.NA.toString());
+		dto.getOthersDto().setPreferredLocation(Status.NA.toString());
+		dto.getOthersDto().setPreferredClassType(Status.NA.toString());
+		dto.getOthersDto().setSendWhatsAppLink(Status.NO.toString());
+		dto.getOthersDto().setRegistrationDate(LocalDateTime.now().toString());
+		if (dto.getOthersDto().getReferalName() == null) {
+			dto.getOthersDto().setReferalName("NA");
+		}
+		if (dto.getOthersDto().getComments() == null) {
+			dto.getOthersDto().setComments("NA");
+		}
+		if (dto.getOthersDto().getWorking() == null) {
+
+			dto.getOthersDto().setWorking("No");
+		}
+		if (dto.getOthersDto().getReferalContactNumber() == null) {
+
+			dto.getOthersDto().setReferalContactNumber(0L);
+		}
+		AuditDto admin = new AuditDto();
+		if (dto.getAdminDto() == null) {
+			// it is for only csr
+			admin.setCreatedBy(dto.getBasicInfo().getTraineeName());
+			admin.setCreatedOn(LocalDateTime.now().toString());
+			admin.setUpdatedBy("NA");
+			admin.setUpdatedOn("NA");
+			dto.setAdminDto(admin);
+		} else {
+			admin.setCreatedBy(dto.getAdminDto().getCreatedBy());
+			admin.setCreatedOn(dto.getAdminDto().getCreatedOn());
+			admin.setUpdatedBy("NA");
+			admin.setUpdatedOn("NA");
+			dto.setAdminDto(admin);
+		}
+
+	}
+
+	public AttendanceDto saveAttendance(FollowUpDto dto) {
+		AttendanceDto attendanceDto = new AttendanceDto();
+		attendanceDto.setId(dto.getId());
+		attendanceDto.setCourse(dto.getCourseName());
+		attendanceDto.setTraineeName(dto.getBasicInfo().getTraineeName());
+		if (attendanceDto.getTotalAbsent() == null) {
+			attendanceDto.setTotalAbsent(0);
+		}
+		if (attendanceDto.getAbsentDate() == null) {
+			attendanceDto.setAbsentDate("NA");
+		}
+		if (attendanceDto.getReason() == null) {
+			attendanceDto.setReason("NA");
+		}
+		AuditDto admin = new AuditDto();
+		admin.setCreatedBy(dto.getAdminDto().getUpdatedBy());
+		admin.setCreatedOn(dto.getAdminDto().getUpdatedOn());
+		admin.setUpdatedBy("NA");
+		admin.setUpdatedOn("NA");
+		attendanceDto.setAdminDto(admin);
+		
+		return attendanceDto;
+
 	}
 
 }

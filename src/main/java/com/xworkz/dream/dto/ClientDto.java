@@ -18,7 +18,7 @@ import lombok.Setter;
 public class ClientDto implements Serializable {
 
 	private static final long serialVersionUID = 1L;
-	@JsonProperty("id")
+
 	private Integer id;
 	@JsonProperty("companyName")
 	private String companyName;

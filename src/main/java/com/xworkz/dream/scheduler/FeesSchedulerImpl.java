@@ -12,7 +12,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
-import com.xworkz.dream.dto.BatchDetails;
+import com.xworkz.dream.dto.BatchDetailsDto;
 import com.xworkz.dream.dto.utils.FeesUtils;
 import com.xworkz.dream.dto.utils.WrapperUtil;
 import com.xworkz.dream.feesDtos.FeesDto;
@@ -47,11 +47,11 @@ public class FeesSchedulerImpl implements FeesScheduler {
 							FeesDto dto = feesWrapper.listToFeesDTO(items);
 							if (dto.getFeesHistoryDto().getEmail()
 									.equalsIgnoreCase(feesUtil.getTraineeDetiles(dto.getFeesHistoryDto().getEmail()))) {
-								BatchDetails detiles = feesUtil.getBatchDetiles(dto.getFeesHistoryDto().getEmail());
+								BatchDetailsDto detiles = feesUtil.getBatchDetiles(dto.getFeesHistoryDto().getEmail());
 								updateCSRofferedAfterFreeTraining(dto, detiles);
 								return null;
 							} else {
-								BatchDetails detiles = feesUtil.getBatchDetiles(dto.getFeesHistoryDto().getEmail());
+								BatchDetailsDto detiles = feesUtil.getBatchDetiles(dto.getFeesHistoryDto().getEmail());
 								afterAMonthChangeStatusAutometically(dto, detiles);
 
 								return null;
@@ -65,15 +65,16 @@ public class FeesSchedulerImpl implements FeesScheduler {
 		}
 		return null;
 	}
-
-	private FeesDto afterAMonthChangeStatusAutometically(FeesDto dto, BatchDetails detils)
+  
+	private FeesDto afterAMonthChangeStatusAutometically(FeesDto dto, BatchDetailsDto detiles)
 			throws IOException, IllegalAccessException {
-		if (dto.getFeesStatus().equalsIgnoreCase("FREE") && LocalDate.parse(detils.getStartDate()).plusDays(29)
-				.isAfter(LocalDate.parse(detils.getStartDate()))) {
+		if (dto.getFeesStatus().equalsIgnoreCase("FREE") && LocalDate.parse(detiles.getStartDate()).plusDays(29)
+				.isAfter(LocalDate.parse(detiles.getStartDate()))) {
 			dto.setFeesStatus("FEES_DUE");
 			int index = util.findIndex(dto.getFeesHistoryDto().getEmail());
 			String followupRanges = "FeesDetiles!B" + index + ":AB" + index;
 			log.debug("Updating fees status. Range: {}, FeesDto: {}", followupRanges, dto);
+
 			List<Object> list = util.extractDtoDetails(dto);
 			list.remove(2);
 			list.remove(11);
@@ -89,10 +90,11 @@ public class FeesSchedulerImpl implements FeesScheduler {
 		return dto;
 	}
 
-	private FeesDto updateCSRofferedAfterFreeTraining(FeesDto dto, BatchDetails detils)
+
+	private FeesDto updateCSRofferedAfterFreeTraining(FeesDto dto, BatchDetailsDto detiles)
 			throws IOException, IllegalAccessException {
-		if (dto.getFeesStatus().equalsIgnoreCase("FREE") && LocalDate.parse(detils.getStartDate()).plusDays(59)
-				.isAfter(LocalDate.parse(detils.getStartDate()))) {
+		if (dto.getFeesStatus().equalsIgnoreCase("FREE") && LocalDate.parse(detiles.getStartDate()).plusDays(59)
+				.isAfter(LocalDate.parse(detiles.getStartDate()))) {
 			dto.setFeesStatus("FEES_DUE");
 			int index = util.findIndex(dto.getFeesHistoryDto().getEmail());
 			String followupRanges = "FeesDetiles!B" + index + ":U" + index;

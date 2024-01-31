@@ -19,7 +19,9 @@ public class CsrDto {
 	private String usnNumber;
 	@JsonProperty("alternateContactNumber")
 	private Long alternateContactNumber;
-	@JsonProperty("adminDto")
-	private AuditDto adminDto;
+	@JsonProperty("offeredAs")
+	private String offeredAs;
+//	@JsonProperty("adminDto")
+//	private AuditDto adminDto;
 
 }

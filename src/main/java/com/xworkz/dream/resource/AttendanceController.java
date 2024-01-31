@@ -27,6 +27,7 @@ import com.xworkz.dream.dto.AbsenteesDto;
 import com.xworkz.dream.dto.AttendanceDto;
 import com.xworkz.dream.dto.AttendanceTrainee;
 import com.xworkz.dream.service.AttendanceService;
+import com.xworkz.dream.service.BatchService;
 
 import freemarker.template.TemplateException;
 import io.swagger.annotations.ApiOperation;
@@ -36,6 +37,8 @@ import io.swagger.annotations.ApiOperation;
 public class AttendanceController {
 	@Autowired
 	private AttendanceService attendanceService;
+	@Autowired
+	private BatchService batchService;
 	@Value("${login.sheetId}")
 	private String spreadsheetId;
 	private static final Logger log = LoggerFactory.getLogger(AttendanceController.class);
@@ -69,11 +72,12 @@ public class AttendanceController {
 	}
 
 	@GetMapping("/id/{id}")
-	public ResponseEntity<AbsentDto> getAbsentDetails(@PathVariable Integer id,@RequestParam String batch) {
+	public ResponseEntity<AbsentDto> getAbsentDetails(@PathVariable Integer id,@RequestParam String batch) throws IOException {
 		List<AbsentDaysDto> listOfAbsentDays = attendanceService.getAttendanceById(id);
+		Integer gettotalClassByCourseName = batchService.gettotalClassByCourseName(batch);
 		AbsentDto absentDto = new AbsentDto();
 		absentDto.setList(listOfAbsentDays);
-		absentDto.setTotalClass(30);
+		absentDto.setTotalClass(gettotalClassByCourseName);
 		ResponseEntity<AbsentDto> responseEntity = new ResponseEntity<AbsentDto>(absentDto, HttpStatus.OK);
 		return responseEntity;
 	}
@@ -84,6 +88,16 @@ public class AttendanceController {
 		ResponseEntity<List<AttendanceDto>> attendanceList = new ResponseEntity<List<AttendanceDto>>(attendanceByBatch,
 				HttpStatus.OK);
 		return attendanceList;
+	}
+	
+	@PostMapping("/batchAttendance")
+	public String markBatchAttendance(@RequestParam String courseName,@RequestParam Boolean batchAttendanceStatus) throws IOException, IllegalAccessException {
+		Boolean markTraineeAttendance = attendanceService.markTraineeAttendance(courseName, batchAttendanceStatus);
+		if(markTraineeAttendance==true) {
+			return "Batch Attendance Update successfully";
+		}else {
+			return "Batch Attendance Already Update";
+		}
 	}
 
 }

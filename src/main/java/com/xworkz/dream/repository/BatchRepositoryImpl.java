@@ -66,17 +66,15 @@ public class BatchRepositoryImpl implements BatchRepository {
 				requestInitializer).setApplicationName(applicationName).build();
 	}
 
-	@Override
-	public ValueRange getBatchId(String spreadsheetId) throws IOException {
-		ValueRange response = sheetsService.spreadsheets().values().get(spreadsheetId, batchIdRange).execute();
-		log.info("Batch ID retrieved successfully for spreadsheetId: {}", spreadsheetId);
-		return response;
-	}
+	
 
 	@Override
 	public boolean saveBatchDetails(String spreadsheetId, List<Object> row) throws IOException {
 		List<List<Object>> values = new ArrayList<>();
-		values.add(row);
+		List<Object> rowData = new ArrayList<>();
+		rowData.add(""); // Placeholder for A column
+		rowData.addAll(row.subList(1, row.size())); // Start from the second element (B column)
+		values.add(rowData);
 		ValueRange body = new ValueRange().setValues(values);
 		sheetsService.spreadsheets().values().append(spreadsheetId, batchDetailsRange, body)
 				.setValueInputOption("USER_ENTERED").execute();
@@ -85,15 +83,14 @@ public class BatchRepositoryImpl implements BatchRepository {
 	}
 
 	@Override
-	@Cacheable(value = "batchDetails", key = "#spreadsheetId", unless = "#result == null")
+	@Cacheable(value = "batchDetails", key = "'listOfBatch'")
 	public List<List<Object>> getCourseDetails(String spreadsheetId) throws IOException {
 		ValueRange response = sheetsService.spreadsheets().values().get(spreadsheetId, batchDetailsRange).execute();
-		log.info("Course details retrieved successfully for spreadsheetId: {}", spreadsheetId);
+		log.debug("Course details retrieved successfully for spreadsheetId: {}", spreadsheetId);
 		return response.getValues();
 	}
 
 	@Override
-	@Cacheable(value = "batchDetails", key = "#spreadsheetId", unless = "#result == null")
 	public UpdateValuesResponse updateBatchDetails(String spreadsheetId, String range2, ValueRange valueRange)
 			throws IOException {
 		log.info("Batch details updated successfully for spreadsheetId: {}", spreadsheetId);
@@ -103,9 +100,10 @@ public class BatchRepositoryImpl implements BatchRepository {
 
 	@Override
 	public ValueRange getCourseNameList(String spreadsheetId) throws IOException {
-		log.info("Course name list retrieved successfully for spreadsheetId: {}", spreadsheetId);
+		log.debug("Course name list retrieved successfully for spreadsheetId: {}", spreadsheetId);
 		ValueRange response = sheetsService.spreadsheets().values().get(spreadsheetId, batchDetailsCourseNameRange)
 				.execute();
 		return response;
 	}
+
 }
