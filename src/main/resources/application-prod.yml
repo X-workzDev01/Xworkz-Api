@@ -38,7 +38,7 @@ login:
 logging:
   logback:
     rollingpolicy:
-      max-file-size: 0
+      max-file-size: 10MB
   file:
     name: ../opt/tomcat1/logs/Dream-Prod-Logs/Dream.log
     max-size: 10MB

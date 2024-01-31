@@ -79,7 +79,7 @@ public class UtilProd implements DreamUtil {
 		int otpMinValue = 100000;
 		int otpMaxValue = 999999;
 		Random random = new Random();
-		System.out.println("dev Otp");
+		logger.info("dev Otp");
 		return otpMinValue + random.nextInt(otpMaxValue - otpMinValue + 1);
 	}
 

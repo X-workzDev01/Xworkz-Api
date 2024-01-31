@@ -316,7 +316,7 @@ public class RegistrationServiceImpl implements RegistrationService {
 		List<TraineeDto> suggestion = new ArrayList<>();
 		if (value != null) {
 			try {
-				System.err.println(courseName);
+				log.error(courseName);
 				if (!courseName.equalsIgnoreCase("null")) {
 					List<List<Object>> dataList = repo.getEmailsAndNames(spreadsheetId, value).stream()
 							.filter(list -> list.get(9) != null && list.get(9).toString().equalsIgnoreCase(courseName))

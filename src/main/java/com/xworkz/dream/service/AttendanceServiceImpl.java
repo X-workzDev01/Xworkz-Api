@@ -100,7 +100,7 @@ public class AttendanceServiceImpl implements AttendanceService {
 				.collect(Collectors.toList());
 		for (List<Object> list : filteredList) {
 			AttendanceDto attendanceDto = wrapper.attendanceListToDto(list);
-			System.err.println("toDto: " + attendanceDto);
+			log.error("toDto: " + attendanceDto);
 			{
 				for (AbsenteesDto dto : absentDtoList)
 					updateAttendanceDetails(attendanceDto, dto);
@@ -116,14 +116,14 @@ public class AttendanceServiceImpl implements AttendanceService {
 			int rowIndex = findByID(sheetId, attendanceDto.getId());
 			String range = AttandanceInfoSheetName + attendanceStartRange + rowIndex + ":" + attendanceEndRange
 					+ rowIndex;
-			System.err.println("range : " + range);
+			log.error("range : " + range);
 			if (attendanceDto.getId() != null) {
 				updateAbsentDatesAndReasons(attendanceDto, dto);
 				updateTotalAbsent(attendanceDto, dto);
 				List<List<Object>> values = Arrays.asList(wrapper.extractDtoDetails(attendanceDto));
 				ValueRange valueRange = new ValueRange();
 				valueRange.setValues(values);
-				System.err.println(" values :" + values);
+				log.error(" values :" + values);
 				UpdateValuesResponse update = attendanceRepository.update(sheetId, range, valueRange);
 				cacheService.updateCacheAttendancde("attendanceData", "listOfAttendance", attendanceDto.getId(),
 						attendanceDto);
@@ -188,7 +188,7 @@ public class AttendanceServiceImpl implements AttendanceService {
 					.map(entry -> new AttendanceTrainee(Integer.valueOf((String) entry.get(1)),
 							String.valueOf(entry.get(2))))
 					.collect(Collectors.toList());
-			System.err.println(traineeInfoList);
+			log.error(""+traineeInfoList);
 			return traineeInfoList;
 		} catch (IOException e) {
 

@@ -417,7 +417,6 @@ public class DreamWrapper {
 	}
 
 	public List<Object> listOfAttendance(AttendanceDto dto) {
-System.err.println("dto : "+dto);
 		List<Object> row = new ArrayList<Object>();
 		row.add(dto.getAttendanceId());
 		row.add(dto.getId());

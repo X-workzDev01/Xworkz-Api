@@ -141,7 +141,7 @@ public class ClientHrServiceImpl implements ClientHrService {
 			AuditDto auditDto = new AuditDto();
 			auditDto.setUpdatedOn(LocalDateTime.now().toString());
 			clientHrDto.getAdminDto().setUpdatedOn(LocalDateTime.now().toString());
-			System.out.println("updated values:" + clientHrDto);
+			log.info("updated values:" + clientHrDto);
 			List<List<Object>> values = Arrays.asList(dreamWrapper.extractDtoDetails(clientHrDto));
 
 			if (!values.isEmpty()) {

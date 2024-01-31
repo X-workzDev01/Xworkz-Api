@@ -85,7 +85,7 @@ public class AttendanceRepositoryImpl implements AttendanceRepository {
 	@Override
 	public UpdateValuesResponse update(String spreadsheetId, String range, ValueRange valueRange) throws IOException {
 		 log.info("Updating sheet data...");
-		 System.err.println("valueRange : "+valueRange);
+		 log.error("valueRange : "+valueRange);
 		return sheetsService.spreadsheets().values().update(spreadsheetId, range, valueRange).setValueInputOption("RAW")
 				.execute();
 	}

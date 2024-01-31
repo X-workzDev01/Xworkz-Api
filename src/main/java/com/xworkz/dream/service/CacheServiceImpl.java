@@ -303,7 +303,7 @@ public class CacheServiceImpl implements CacheService {
 					}
 				}
 				List<Object> list = wrapper.extractDtoDetails(dto);
-				System.err.println("list : "+list);
+				log.error("list : "+list);
 				if (matchingIndex >= 0) {
 
 					ListOfItems.set(matchingIndex, list);

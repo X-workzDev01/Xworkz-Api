@@ -40,27 +40,30 @@ public class FeesSchedulerImpl implements FeesScheduler {
 		log.info("Scheduler running After free Course");
 
 		try {
-			feesRepository.getAllFeesDetiles(getFeesDetilesRange).stream().filter(
-					items -> items != null && items.size() > 2 && items.get(2) != null && items.contains("Active"))
-					.map(items -> {
-						try {
-							FeesDto dto = feesWrapper.listToFeesDTO(items);
-							if (dto.getFeesHistoryDto().getEmail()
-									.equalsIgnoreCase(feesUtil.getTraineeDetiles(dto.getFeesHistoryDto().getEmail()))) {
-								BatchDetails detiles = feesUtil.getBatchDetiles(dto.getFeesHistoryDto().getEmail());
-								updateCSRofferedAfterFreeTraining(dto, detiles);
-								return null;
-							} else {
-								BatchDetails detiles = feesUtil.getBatchDetiles(dto.getFeesHistoryDto().getEmail());
-								afterAMonthChangeStatusAutometically(dto, detiles);
+			List<List<Object>> getAllFeesDetiles = feesRepository.getAllFeesDetiles(getFeesDetilesRange);
+			if (getAllFeesDetiles != null) {
+				getAllFeesDetiles.stream().filter(
+						items -> items != null && items.size() > 2 && items.get(2) != null && items.contains("Active"))
+						.map(items -> {
+							try {
+								FeesDto dto = feesWrapper.listToFeesDTO(items);
+								if (dto.getFeesHistoryDto().getEmail().equalsIgnoreCase(
+										feesUtil.getTraineeDetiles(dto.getFeesHistoryDto().getEmail()))) {
+									BatchDetails detiles = feesUtil.getBatchDetiles(dto.getFeesHistoryDto().getEmail());
+									updateCSRofferedAfterFreeTraining(dto, detiles);
+									return null;
+								} else {
+									BatchDetails detiles = feesUtil.getBatchDetiles(dto.getFeesHistoryDto().getEmail());
+									afterAMonthChangeStatusAutometically(dto, detiles);
 
+									return null;
+								}
+							} catch (IOException | IllegalAccessException e) {
+								log.error("Fetching Detiles is not Found");
 								return null;
 							}
-						} catch (IOException | IllegalAccessException e) {
-							log.error("Fetching Detiles is not Found");
-							return null;
-						}
-					}).collect(Collectors.toList());
+						}).collect(Collectors.toList());
+			}
 		} catch (IOException e) {
 		}
 		return null;
@@ -73,7 +76,7 @@ public class FeesSchedulerImpl implements FeesScheduler {
 			dto.setFeesStatus("FEES_DUE");
 			int index = util.findIndex(dto.getFeesHistoryDto().getEmail());
 			String followupRanges = "FeesDetiles!B" + index + ":AB" + index;
-			System.out.println(followupRanges + "    " + dto);
+			log.info(followupRanges + "    " + dto);
 			List<Object> last = util.extractDtoDetails(dto);
 			last.remove(2);
 			last.remove(11);
@@ -92,7 +95,7 @@ public class FeesSchedulerImpl implements FeesScheduler {
 			dto.setFeesStatus("FEES_DUE");
 			int index = util.findIndex(dto.getFeesHistoryDto().getEmail());
 			String followupRanges = "FeesDetiles!B" + index + ":U" + index;
-			System.out.println(followupRanges + "    " + dto);
+			log.info(followupRanges + "    " + dto);
 			List<Object> last = util.extractDtoDetails(dto);
 			last.remove(2);
 			last.remove(11);

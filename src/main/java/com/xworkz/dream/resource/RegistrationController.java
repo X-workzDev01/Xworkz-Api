@@ -90,7 +90,7 @@ public class RegistrationController {
 	@GetMapping("/filterData/{courseName}")
 	public List<TraineeDto> filterData(@RequestHeader String spreadsheetId, @PathVariable String courseName,
 			@RequestParam String searchValue) {
-		System.err.println("eeeeeeeee  " + courseName);
+		log.error("eeeeeeeee  " + courseName);
 		try {
 			log.info("Filtering data with parameters - SpreadsheetId: {}, Search Value: {}", spreadsheetId,
 					searchValue);
