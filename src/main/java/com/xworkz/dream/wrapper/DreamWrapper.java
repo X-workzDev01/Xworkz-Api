@@ -13,8 +13,6 @@ import com.xworkz.dream.constants.Status;
 import com.xworkz.dream.dto.AttendanceDto;
 import com.xworkz.dream.dto.AuditDto;
 import com.xworkz.dream.dto.BasicInfoDto;
-import com.xworkz.dream.dto.BatchAttendanceDto;
-import com.xworkz.dream.dto.BatchDetails;
 import com.xworkz.dream.dto.BatchDetailsDto;
 import com.xworkz.dream.dto.CSR;
 import com.xworkz.dream.dto.CourseDto;
@@ -638,38 +636,44 @@ public class DreamWrapper {
 		dto.getOthersDto().setRegistrationDate(LocalDateTime.now().toString());
 		dto.getAdminDto().setCreatedOn(LocalDateTime.now().toString());
 		if (dto.getOthersDto().getReferalName() == null) {
-			dto.getOthersDto().setReferalName("NA");
+			dto.getOthersDto().setReferalName(Status.NA.toString());
 
 		}
 		if (dto.getOthersDto().getComments() == null) {
-			dto.getOthersDto().setComments("NA");
+			dto.getOthersDto().setComments(Status.NA.toString());
 		}
 		if (dto.getOthersDto().getWorking() == null) {
 
-			dto.getOthersDto().setWorking("No");
+			dto.getOthersDto().setWorking(Status.NA.toString());
 		}
 		if (dto.getOthersDto().getReferalContactNumber() == null) {
 
 			dto.getOthersDto().setReferalContactNumber(0L);
 		}
+		dto.getCsrDto().setActiveFlag("Active");
+		dto.getCsrDto().setAlternateContactNumber(0l);
+		dto.getCsrDto().setUsnNumber(Status.NA.toString());
+		dto.getCsrDto().setCsrFlag(dto.getCourseInfo().getOfferedAs());
+		dto.getCsrDto().setUniqueId(Status.NA.toString());
+
 	}
 
 	public void setValuesForCSRDto(TraineeDto dto) {
-		dto.getBasicInfo().setDateOfBirth("NA");
+		dto.getBasicInfo().setDateOfBirth(Status.NA.toString());
 		dto.getOthersDto().setXworkzEmail(Status.NA.toString());
 		dto.getOthersDto().setPreferredLocation(Status.NA.toString());
 		dto.getOthersDto().setPreferredClassType(Status.NA.toString());
 		dto.getOthersDto().setSendWhatsAppLink(Status.NO.toString());
 		dto.getOthersDto().setRegistrationDate(LocalDateTime.now().toString());
 		if (dto.getOthersDto().getReferalName() == null) {
-			dto.getOthersDto().setReferalName("NA");
+			dto.getOthersDto().setReferalName(Status.NA.toString());
 		}
 		if (dto.getOthersDto().getComments() == null) {
-			dto.getOthersDto().setComments("NA");
+			dto.getOthersDto().setComments(Status.NA.toString());
 		}
 		if (dto.getOthersDto().getWorking() == null) {
 
-			dto.getOthersDto().setWorking("No");
+			dto.getOthersDto().setWorking(Status.NA.toString());
 		}
 		if (dto.getOthersDto().getReferalContactNumber() == null) {
 
@@ -680,8 +684,8 @@ public class DreamWrapper {
 			// it is for only csr
 			admin.setCreatedBy(dto.getBasicInfo().getTraineeName());
 			admin.setCreatedOn(LocalDateTime.now().toString());
-			admin.setUpdatedBy("NA");
-			admin.setUpdatedOn("NA");
+			admin.setUpdatedBy(Status.NA.toString());
+			admin.setUpdatedOn(Status.NA.toString());
 			dto.setAdminDto(admin);
 		} else {
 			admin.setCreatedBy(dto.getAdminDto().getCreatedBy());
@@ -713,7 +717,7 @@ public class DreamWrapper {
 		admin.setUpdatedBy("NA");
 		admin.setUpdatedOn("NA");
 		attendanceDto.setAdminDto(admin);
-		
+
 		return attendanceDto;
 
 	}

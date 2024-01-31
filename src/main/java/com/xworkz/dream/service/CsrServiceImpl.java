@@ -98,7 +98,6 @@ public class CsrServiceImpl implements CsrService {
 		cacheService.addEmailToCache("uniqueNumber", "listofUniqueNumbers", dto.getCsrDto().getUniqueId());
 	}
 
-	@Override
 	public boolean registerCsr(CsrDto csrDto, HttpServletRequest request) throws IOException {
 		TraineeDto traineeDto = new TraineeDto();
 		traineeDto.setCourseInfo(new CourseDto("NA"));
@@ -107,17 +106,16 @@ public class CsrServiceImpl implements CsrService {
 		traineeDto.setEducationInfo(csrDto.getEducationInfo());
 		traineeDto.getCourseInfo().setOfferedAs(csrDto.getOfferedAs());
 		String uniqueId = generateUniqueID();
-		if (checkUniqueNumber(uniqueId)) {
+		if (traineeDto.getCourseInfo().getOfferedAs().equalsIgnoreCase("CSR") && checkUniqueNumber(uniqueId)) {
 			log.info("Unique Number Exists");
 			uniqueId = generateUniqueID();
-		} else {
-			log.debug("Unique Number not Exists ");
-			CSR csr = new CSR(csrDto.getUsnNumber(), csrDto.getAlternateContactNumber(), uniqueId);
-			traineeDto.setCsrDto(csr);
-			validateAndRegister(traineeDto, request);
-			return true;
 		}
-		return false;
+		CSR csr = new CSR(csrDto.getUsnNumber(), csrDto.getAlternateContactNumber(),
+				traineeDto.getCourseInfo().getOfferedAs().equalsIgnoreCase("CSR") ? uniqueId : "NA",
+				traineeDto.getCourseInfo().getOfferedAs(), "Active");
+		traineeDto.setCsrDto(csr);
+		validateAndRegister(traineeDto, request);
+		return true;
 	}
 
 	@Override
