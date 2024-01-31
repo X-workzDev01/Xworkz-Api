@@ -16,13 +16,19 @@ mailChimp:
   password: +mgZp4MIPWMTkaJ/pwphDw==
   smtpHostChimp: yj/mpkyGHCjMIsVaHCMyxQZ4EBNjg/Ep6CbXhjKA7v0=
   templateIdEnquiry: 1607100000000111863
+  apiKey: q5s7n+mgA+RWaBxOgO6nHQ==
+  SMSusername: SL+xd2DS2FEsed/8nyHejg==
+  route: FDOqdLkJyWT+cko+myahVg==
+  sender: Qe3VMrqYDSZt78Y3g87Rew==
+  smsType: 9FNdD2Wl6OAroiJUgYK5+Q==
+  smsSuccess: sCGjjgUOM6/wvTXAUlLQ62PDqM+G+jmJW8AZLKyacf4=
 
-  
 mail:
    smtpHost: smtp.office365.com
    smtpPort: 587
    userName: xworkzdev@outlook.com
    password: KeepIT@Temp789 
+
 login: 
   teamFile: classpath:team.yml
   userFile: classpath:users.yml
