@@ -20,6 +20,7 @@ public interface CsrService {
 	boolean checkUsnNumber(String usnNumber) throws IOException;
 
 	boolean checkUniqueNumber(String uniqueNumber) throws IOException;
+
 	String generateUniqueID();
 
 }
