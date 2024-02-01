@@ -21,7 +21,6 @@ import org.springframework.stereotype.Service;
 
 import com.google.api.services.sheets.v4.model.UpdateValuesResponse;
 import com.google.api.services.sheets.v4.model.ValueRange;
-import com.xworkz.dream.dto.CSR;
 import com.xworkz.dream.dto.SheetsDto;
 import com.xworkz.dream.dto.TraineeDto;
 import com.xworkz.dream.repository.RegisterRepository;
@@ -51,9 +50,6 @@ public class RegistrationServiceImpl implements RegistrationService {
 	@Autowired
 	private CacheService cacheService;
 
-	@Autowired
-	private CsrService csrService;
-
 	private static final Logger log = LoggerFactory.getLogger(DreamServiceImpl.class);
 
 	@Override
@@ -61,16 +57,7 @@ public class RegistrationServiceImpl implements RegistrationService {
 
 			throws MessagingException, TemplateException {
 		try {
-			String uniqueId = csrService.generateUniqueID();
-			CSR csr = new CSR();
-			log.info("set {} if offeredAs a CSR",
-					dto.getCourseInfo().getOfferedAs().equalsIgnoreCase("csr") ? "1" : "0");
-			csr.setCsrFlag(dto.getCourseInfo().getOfferedAs().equalsIgnoreCase("csr") ? "1" : "0");
-			csr.setActiveFlag("Active");
-			csr.setAlternateContactNumber(0l);
-			csr.setUniqueId(dto.getCourseInfo().getOfferedAs().equalsIgnoreCase("csr") ? uniqueId : "NA");
-			csr.setUsnNumber("NA");
-			dto.setCsrDto(csr);
+
 			wrapper.setValuesForTraineeDto(dto);
 			List<Object> list = wrapper.extractDtoDetails(dto);
 			repo.writeData(spreadsheetId, list);
@@ -312,9 +299,10 @@ public class RegistrationServiceImpl implements RegistrationService {
 	@Override
 	public TraineeDto getDetailsByEmail(String spreadsheetId, String email) throws IOException {
 		List<List<Object>> data = repo.readData(spreadsheetId);
-		TraineeDto trainee = data.stream().filter(list -> list.contains(email)).findFirst().map(wrapper::listToDto)
-				.orElse(null);
-
+		TraineeDto trainee = data.stream()
+				.filter(list -> list.get(14).toString().equalsIgnoreCase("Active")
+						&& list.get(2).toString().contentEquals(email))
+				.findFirst().map(wrapper::listToDto).orElse(null);
 		if (trainee != null) {
 			return trainee;
 		} else {
@@ -328,7 +316,7 @@ public class RegistrationServiceImpl implements RegistrationService {
 		List<TraineeDto> suggestion = new ArrayList<>();
 		if (value != null) {
 			try {
-				log.error(courseName);
+				System.err.println(courseName);
 				if (!courseName.equalsIgnoreCase("null")) {
 					List<List<Object>> dataList = repo.getEmailsAndNames(spreadsheetId, value).stream()
 							.filter(list -> list.get(9) != null && list.get(9).toString().equalsIgnoreCase(courseName))

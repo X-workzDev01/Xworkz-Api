@@ -121,8 +121,7 @@ public class FollowUpServiceImpl implements FollowUpService {
 		return save;
 
 	}
-	
-	
+
 	@Override
 	public boolean addCsrToFollowUp(TraineeDto traineeDto, String spreadSheetId)
 			throws IOException, IllegalAccessException {
@@ -321,12 +320,11 @@ public class FollowUpServiceImpl implements FollowUpService {
 			HttpServletRequest request) throws IOException {
 		log.info("Get follow-up by email service start. SpreadsheetId: {}, Email: {}", spreadsheetId, email);
 		List<List<Object>> data = repo.getFollowUpDetails(spreadsheetId);
-		FollowUpDto followUp = data.stream().filter(list -> list.size() > 2 && list.get(2) instanceof String)
-				.filter(list -> ((String) list.get(2)).equalsIgnoreCase(email)
-						&& list.get(14).toString().equalsIgnoreCase("Active"))
-				.findFirst().map(wrapper::listToFollowUpDTO).orElse(null);
+		FollowUpDto followUp = data.stream()
+				.filter(list -> list.size() > 2 && list.get(2).toString().equalsIgnoreCase(email)).findFirst()
+				.map(wrapper::listToFollowUpDTO).orElse(null);
 
-		if (followUp != null) {
+		if (followUp != null) { 
 			log.info("Follow-up details found for email: {}", email);
 			return ResponseEntity.ok(followUp);
 		} else {
@@ -765,14 +763,19 @@ public class FollowUpServiceImpl implements FollowUpService {
 	public FollowUpDto getFollowUpDetailsByEmail(String spreadsheetId, String email) throws IOException {
 		log.info("Get Follow-up Details by Email service start. SpreadsheetId: {}, Email: {}", spreadsheetId, email);
 		FollowUpDto followUpDto = new FollowUpDto();
+
 		if (email != null && !email.isEmpty()) {
 			List<List<Object>> lists = repo.getFollowUpDetails(spreadsheetId);
+
 			if (!lists.isEmpty()) {
+//				List<List<Object>> data = lists.stream()
+//						.filter(list -> list.stream()
+//								.anyMatch(value -> value.toString().equalsIgnoreCase(email)
+//										&& list.get(14).toString().equalsIgnoreCase("Active")))
+//						.collect(Collectors.toList());
 				List<List<Object>> data = lists.stream()
-						.filter(list -> list.stream()
-								.anyMatch(value -> value.toString().equalsIgnoreCase(email)
-										&& list.get(14).toString().equalsIgnoreCase("Active")))
-						.collect(Collectors.toList());
+						.filter(items -> items.get(2).toString().equalsIgnoreCase(email)).collect(Collectors.toList());
+
 				for (List<Object> list : data) {
 					followUpDto = wrapper.listToFollowUpDTO(list);
 				}

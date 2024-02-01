@@ -41,7 +41,7 @@ public class FeesUtils {
 		//log.info("Finding Trainee detiles by course ");
 		BatchDetailsDto details = batchService.getBatchDetailsByCourseName(spreadSheetId,
 				traineeDto.getCourseInfo().getCourse());
-		//log.info("Finding Batch detiles by course ");
+		//log.info("Finding Batch detiles by course "); 
 		return details;
 	}
 
