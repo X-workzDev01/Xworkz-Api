@@ -63,7 +63,8 @@ public class CsrServiceImpl implements CsrService {
 				if (dto.getCourseInfo().getOfferedAs().equals("CSR")) {
 					boolean sent = util.csrEmailSent(dto);
 					if (sent) {
-						util.csrSmsSent(dto.getBasicInfo().getTraineeName(), dto.getBasicInfo().getContactNumber().toString());
+						util.csrSmsSent(dto.getBasicInfo().getTraineeName(),
+								dto.getBasicInfo().getContactNumber().toString());
 						return ResponseEntity.ok("Data written successfully, Added to follow Up, sent course content");
 					}
 
@@ -101,21 +102,23 @@ public class CsrServiceImpl implements CsrService {
 
 	public boolean registerCsr(CsrDto csrDto, HttpServletRequest request) throws IOException {
 		TraineeDto traineeDto = new TraineeDto();
+		CSR csr = new CSR();
 		traineeDto.setCourseInfo(new CourseDto("NA"));
 		traineeDto.setOthersDto(new OthersDto("NA"));
 		traineeDto.setBasicInfo(csrDto.getBasicInfo());
 		traineeDto.setEducationInfo(csrDto.getEducationInfo());
 		traineeDto.getCourseInfo().setOfferedAs(csrDto.getOfferedAs());
 		String uniqueId = generateUniqueID();
-		if (traineeDto.getCourseInfo().getOfferedAs().equalsIgnoreCase("CSR") && checkUniqueNumber(uniqueId)) {
-			log.info("Unique Number Exists");
-			uniqueId = generateUniqueID();
-		}
-		CSR csr = new CSR(csrDto.getUsnNumber(), csrDto.getAlternateContactNumber(),
-				traineeDto.getCourseInfo().getOfferedAs().equalsIgnoreCase("CSR") ? uniqueId : "NA",
-				traineeDto.getCourseInfo().getOfferedAs(), "Active");
+		log.info("set {} if offeredAs a CSR",
+				traineeDto.getCourseInfo().getOfferedAs().equalsIgnoreCase("csr") ? "1" : "0");
+		csr.setCsrFlag(traineeDto.getCourseInfo().getOfferedAs().equalsIgnoreCase("csr") ? "1" : "0");
+		csr.setActiveFlag("Active");
+		csr.setAlternateContactNumber(csrDto.getAlternateContactNumber());
+		csr.setUniqueId(traineeDto.getCourseInfo().getOfferedAs().equalsIgnoreCase("csr") ? uniqueId : "NA");
+		csr.setUsnNumber(csrDto.getUsnNumber());
 		traineeDto.setCsrDto(csr);
 		validateAndRegister(traineeDto, request);
+
 		return true;
 	}
 
@@ -151,7 +154,8 @@ public class CsrServiceImpl implements CsrService {
 		return false;
 	}
 
-	public static String generateUniqueID() {
+	@Override
+	public String generateUniqueID() {
 		int minValue = 1;
 		int maxValue = 99999;
 		Random random = new Random();

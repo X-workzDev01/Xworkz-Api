@@ -650,11 +650,6 @@ public class DreamWrapper {
 
 			dto.getOthersDto().setReferalContactNumber(0L);
 		}
-		dto.getCsrDto().setActiveFlag("Active");
-		dto.getCsrDto().setAlternateContactNumber(0l);
-		dto.getCsrDto().setUsnNumber(Status.NA.toString());
-		dto.getCsrDto().setCsrFlag(dto.getCourseInfo().getOfferedAs());
-		dto.getCsrDto().setUniqueId(Status.NA.toString());
 
 	}
 

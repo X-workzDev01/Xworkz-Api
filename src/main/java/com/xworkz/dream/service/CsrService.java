@@ -21,4 +21,6 @@ public interface CsrService {
 
 	boolean checkUniqueNumber(String uniqueNumber) throws IOException;
 
+	String generateUniqueID();
+
 }
