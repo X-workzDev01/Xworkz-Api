@@ -18,17 +18,15 @@ import com.xworkz.dream.configuration.MailConfig;
 
 @Service
 public class ChimpmailServiceImpl implements ChimpMailService {
-
 	@Autowired
 	private MailConfig config;
-
 	private static final Logger log = LoggerFactory.getLogger(ChimpmailServiceImpl.class);
 
 	@Override
 	@Async
 	public boolean validateAndSendMailByMailIdDev(MimeMessagePreparator messagePreparator) {
 		log.info("invoked validateAndSendMailByMailId of SpringMailServiceImpl...");
-
+ 
 		try {
 			config.getMailSenderDev().send(messagePreparator);
 			log.info("Mail sent successfully");
@@ -105,7 +103,6 @@ public class ChimpmailServiceImpl implements ChimpMailService {
 		}
 
 	}
-
 
 	@Override
 	public String sendSMS(String apiKey, String username, String sender, String phone, String message, String smsType,

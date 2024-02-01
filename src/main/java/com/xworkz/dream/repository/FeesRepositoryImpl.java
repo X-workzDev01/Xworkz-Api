@@ -11,6 +11,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.cache.annotation.CachePut;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Repository;
 
 import com.google.api.services.sheets.v4.Sheets;
@@ -50,13 +52,13 @@ public class FeesRepositoryImpl implements FeesRepository {
 	}
 
 	@Override
+
 	public List<List<Object>> getAllFeesDetiles(String getFeesDetilesRange) throws IOException {
 		log.info("get fees detiles form the sheet");
 		return sheetsRepository.spreadsheets().values().get(spreadSheetId, getFeesDetilesRange).execute().getValues();
 	}
 
 	@Override
-
 	public List<List<Object>> getFeesDetilesByemailInFollowup(String getFeesDetilesfollowupRange) throws IOException {
 		log.info("get fees followUp detiles form the sheet");
 		return sheetsRepository.spreadsheets().values().get(spreadSheetId, getFeesDetilesfollowupRange).execute()
@@ -66,8 +68,8 @@ public class FeesRepositoryImpl implements FeesRepository {
 	@Override
 	public String updateFeesDetiles(String getFeesDetilesfollowupRange, List<Object> list) throws IOException {
 		log.info("update Fees Detiles is Running");
-		System.err.println(getFeesDetilesfollowupRange); 
-		System.err.println(list);
+		log.error(getFeesDetilesfollowupRange); 
+		log.error(""+list);
 		ValueRange body = saveOpration.updateDetilesToSheet(list);
 		return sheetsRepository.spreadsheets().values().update(spreadSheetId, getFeesDetilesfollowupRange, body)
 				.setValueInputOption("RAW").execute().setSpreadsheetId(spreadSheetId).getUpdatedRange();

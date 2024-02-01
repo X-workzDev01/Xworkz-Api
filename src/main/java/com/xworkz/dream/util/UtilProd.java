@@ -34,6 +34,8 @@ import com.xworkz.dream.dto.FollowUpDto;
 import com.xworkz.dream.dto.TraineeDto;
 import com.xworkz.dream.dto.utils.Team;
 import com.xworkz.dream.service.ChimpMailService;
+import com.xworkz.dream.smsservice.CSRSMSService;
+import com.xworkz.dream.smsservice.CsrMailService;
 
 import freemarker.template.TemplateException;
 
@@ -69,6 +71,10 @@ public class UtilProd implements DreamUtil {
 	private String smsType;
 	@Value("${mailChimp.smsSuccess}")
 	private String smsSuccess;
+	@Autowired
+	private CSRSMSService csrSmsService;
+	@Autowired
+	private CsrMailService csrMailService;
 
 	@Autowired
 	private EncryptionHelper helper;
@@ -328,6 +334,47 @@ public class UtilProd implements DreamUtil {
 			messageHelper.setText(content, true);
 		};
 		chimpMailService.validateAndSendBirthdayMail(messagePreparator);
+	}
+
+	@Override
+	public boolean csrEmailSent(TraineeDto dto) {
+		Context context = new Context();
+		if (dto.getCourseInfo().getOfferedAs().equalsIgnoreCase("CSR")) {
+			context.setVariable("name", dto.getBasicInfo().getTraineeName());
+			context.setVariable("usnNumber", dto.getCsrDto().getUsnNumber());
+			context.setVariable("collegeName", dto.getEducationInfo().getCollegeName());
+			context.setVariable("uniqueID", dto.getCsrDto().getUniqueId());
+			String content = templateEngine.process("CSRMailTemplate", context);
+
+			MimeMessagePreparator messagePreparator = mailSentCSRDrive(dto, content);
+			return csrMailService.sentCsrMail(messagePreparator);
+
+		} else {
+			context.setVariable("recipientName", dto.getBasicInfo().getTraineeName());
+			String content = templateEngine.process("CourseContentTemplate", context);
+			MimeMessagePreparator messagePreparator = mailSentCSRDrive(dto, content);
+			return csrMailService.sentCsrMail(messagePreparator);
+		}
+	}
+
+	private MimeMessagePreparator mailSentCSRDrive(TraineeDto dto, String content) {
+		MimeMessagePreparator messagePreparator = mimeMessage -> {
+
+			MimeMessageHelper messageHelper = new MimeMessageHelper(mimeMessage, true);
+
+			messageHelper.setFrom(helper.decrypt(chimpUserName));
+			messageHelper.setTo(dto.getBasicInfo().getEmail());
+			messageHelper.setSubject("Hello csr drive");
+			messageHelper.setText(content, true);
+		};
+		return messagePreparator;
+	}
+
+	@Override
+	public boolean csrSmsSent(String name, String contactNo) {
+		logger.info("SMS sent to {} with contact number {}", name, contactNo);
+		csrSmsService.csrSMSSent(name, contactNo);
+		return false;
 	}
 
 }

@@ -92,7 +92,7 @@ public class BirthadayServiceImpl implements BirthadayService {
 				return false; // Skip rows with invalid date format
 			}
 		}).map(row -> (String) row.get(2)).collect(Collectors.toList());
-		System.err.println("emailsToSend : "+emailsToSend);
+		log.error("emailsToSend : "+emailsToSend);
 		for (String email : emailsToSend) {
 			String nameByEmail = findNameByEmail(email);
 			log.info("Sent birthday email to '{}' with name '{}'", email, nameByEmail);

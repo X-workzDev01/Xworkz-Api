@@ -49,7 +49,6 @@ public class FeesController {
 	}
 
 	@ApiOperation("Update feesDetiles")
-	@Cacheable(cacheNames = "feesStore", key = "#dto.feesHistory.email")
 
 	@PutMapping("/updateFeesDeties")
 	public ResponseEntity<String> updateFeesFollowUp(@RequestBody FeesDto dto) throws IOException {

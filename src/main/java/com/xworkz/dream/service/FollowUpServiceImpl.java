@@ -282,7 +282,7 @@ public class FollowUpServiceImpl implements FollowUpService {
 		}
 		ValueRange valueRange = new ValueRange();
 		valueRange.setValues(values);
-		System.err.println(values + "                                " + range);
+		log.error(values + "                                " + range);
 		UpdateValuesResponse updated = repo.updateFollow(spreadsheetId, range, valueRange);
 		cacheService.updateCacheFollowUp("followUpDetails", spreadsheetId, followUpDto.getBasicInfo().getEmail(),
 				followUpDto);
@@ -341,9 +341,9 @@ public class FollowUpServiceImpl implements FollowUpService {
 		log.info("Get Follow-up Details service start. SpreadsheetId: {}, StartingIndex: {}, MaxRows: {}, Status: {}, "
 				+ "CourseName: {}, Date: {}", spreadsheetId, startingIndex, maxRows, status, courseName, date);
 		List<FollowUpDto> followUpDto = new ArrayList<FollowUpDto>();
-		List<List<Object>> lists = repo.getFollowUpDetails(spreadsheetId);
+		List<List<Object>> lists = repo.getFollowUpDetails(spreadsheetId).stream()
+				.filter(items -> items.get(14).toString().equalsIgnoreCase("Active")).collect(Collectors.toList());
 		List<List<Object>> traineeData = repository.readData(spreadsheetId);
-		System.out.println(traineeData + "              " + status);
 
 		if (status != null && !status.isEmpty() && lists != null) {
 			if (status.toString().equalsIgnoreCase(Status.ENQUIRY.toString())) {
@@ -369,15 +369,15 @@ public class FollowUpServiceImpl implements FollowUpService {
 								.filter(item -> item.getCourseName().equalsIgnoreCase(courseName))
 								.collect(Collectors.toList());
 						List<FollowUpDto> finalList = filterData.stream()
-								.sorted(Comparator.comparing(FollowUpDto::getId).reversed()).skip(startingIndex)
-								.limit(maxRows).collect(Collectors.toList());
+								.sorted(Comparator.comparing(FollowUpDto::getRegistrationDate).reversed())
+								.skip(startingIndex).limit(maxRows).collect(Collectors.toList());
 						FollowUpDataDto followUpDataDto = new FollowUpDataDto(finalList, filterData.size());
 						return ResponseEntity.ok(followUpDataDto);
 
 					} else {
 						List<FollowUpDto> finalData = dtos.stream()
-								.sorted(Comparator.comparing(FollowUpDto::getId).reversed()).skip(startingIndex)
-								.limit(maxRows).collect(Collectors.toList());
+								.sorted(Comparator.comparing(FollowUpDto::getRegistrationDate).reversed())
+								.skip(startingIndex).limit(maxRows).collect(Collectors.toList());
 						FollowUpDataDto followUpDataDto = new FollowUpDataDto(finalData, dtos.size());
 						return ResponseEntity.ok(followUpDataDto);
 					}
@@ -405,21 +405,21 @@ public class FollowUpServiceImpl implements FollowUpService {
 								.filter(item -> item.getCourseName().equalsIgnoreCase(courseName))
 								.collect(Collectors.toList());
 						List<FollowUpDto> finalList = filterData.stream()
-								.sorted(Comparator.comparing(FollowUpDto::getId).reversed()).skip(startingIndex)
-								.limit(maxRows).collect(Collectors.toList());
+								.sorted(Comparator.comparing(FollowUpDto::getRegistrationDate).reversed())
+								.skip(startingIndex).limit(maxRows).collect(Collectors.toList());
 						FollowUpDataDto followUpDataDto = new FollowUpDataDto(finalList, filterData.size());
 						return ResponseEntity.ok(followUpDataDto);
 
 					} else {
 						List<FollowUpDto> finalData = dtos.stream()
-								.sorted(Comparator.comparing(FollowUpDto::getId).reversed()).skip(startingIndex)
-								.limit(maxRows).collect(Collectors.toList());
+								.sorted(Comparator.comparing(FollowUpDto::getRegistrationDate).reversed())
+								.skip(startingIndex).limit(maxRows).collect(Collectors.toList());
 						FollowUpDataDto followUpDataDto = new FollowUpDataDto(finalData, dtos.size());
 						return ResponseEntity.ok(followUpDataDto);
 					}
 				}
-			}
-			else if (status.toString().equalsIgnoreCase(Status.Past_followup.toString().replace('_', ' ').toString())) {
+			} else if (status.toString()
+					.equalsIgnoreCase(Status.Past_followup.toString().replace('_', ' ').toString())) {
 				List<FollowUpDto> followUpDtos = new ArrayList<FollowUpDto>();
 				StatusList statusList = new StatusList();
 				DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
@@ -443,7 +443,8 @@ public class FollowUpServiceImpl implements FollowUpService {
 
 				});
 				if (followUpDto != null) {
-					followUpDto = followUpDtos.stream().sorted(Comparator.comparing(FollowUpDto::getId).reversed())
+					followUpDto = followUpDtos.stream()
+							.sorted(Comparator.comparing(FollowUpDto::getRegistrationDate).reversed())
 							.skip(startingIndex).limit(maxRows).collect(Collectors.toList());
 					followUpDtos.stream().forEach(dto -> {
 						TraineeDto traineedto = getTraineeDtoByEmail(traineeData, dto.getBasicInfo().getEmail());
@@ -483,7 +484,8 @@ public class FollowUpServiceImpl implements FollowUpService {
 					}
 				});
 				if (followUpDtos != null) {
-					followUpDto = followUpDtos.stream().sorted(Comparator.comparing(FollowUpDto::getId).reversed())
+					followUpDto = followUpDtos.stream()
+							.sorted(Comparator.comparing(FollowUpDto::getRegistrationDate).reversed())
 							.skip(startingIndex).limit(maxRows).collect(Collectors.toList());
 					followUpDtos.stream().forEach(dto -> {
 						TraineeDto traineedto = getTraineeDtoByEmail(traineeData, dto.getBasicInfo().getEmail());
@@ -531,15 +533,15 @@ public class FollowUpServiceImpl implements FollowUpService {
 								.filter(item -> item.getCourseName().equalsIgnoreCase(courseName))
 								.collect(Collectors.toList());
 						List<FollowUpDto> finalList = filterData.stream()
-								.sorted(Comparator.comparing(FollowUpDto::getId).reversed()).skip(startingIndex)
-								.limit(maxRows).collect(Collectors.toList());
+								.sorted(Comparator.comparing(FollowUpDto::getRegistrationDate).reversed())
+								.skip(startingIndex).limit(maxRows).collect(Collectors.toList());
 						FollowUpDataDto followUpDataDto = new FollowUpDataDto(finalList, filterData.size());
 						return ResponseEntity.ok(followUpDataDto);
 
 					} else {
 						List<FollowUpDto> finalData = dtos.stream()
-								.sorted(Comparator.comparing(FollowUpDto::getId).reversed()).skip(startingIndex)
-								.limit(maxRows).collect(Collectors.toList());
+								.sorted(Comparator.comparing(FollowUpDto::getRegistrationDate).reversed())
+								.skip(startingIndex).limit(maxRows).collect(Collectors.toList());
 						FollowUpDataDto followUpDataDto = new FollowUpDataDto(finalData, dtos.size());
 						return ResponseEntity.ok(followUpDataDto);
 					}
@@ -571,15 +573,15 @@ public class FollowUpServiceImpl implements FollowUpService {
 								.filter(item -> item.getCourseName().equalsIgnoreCase(courseName))
 								.collect(Collectors.toList());
 						List<FollowUpDto> finalList = filterData.stream()
-								.sorted(Comparator.comparing(FollowUpDto::getId).reversed()).skip(startingIndex)
-								.limit(maxRows).collect(Collectors.toList());
+								.sorted(Comparator.comparing(FollowUpDto::getRegistrationDate).reversed())
+								.skip(startingIndex).limit(maxRows).collect(Collectors.toList());
 						FollowUpDataDto followUpDataDto = new FollowUpDataDto(finalList, filterData.size());
 						return ResponseEntity.ok(followUpDataDto);
 
 					} else {
 						List<FollowUpDto> finalData = dtos.stream()
-								.sorted(Comparator.comparing(FollowUpDto::getId).reversed()).skip(startingIndex)
-								.limit(maxRows).collect(Collectors.toList());
+								.sorted(Comparator.comparing(FollowUpDto::getRegistrationDate).reversed())
+								.skip(startingIndex).limit(maxRows).collect(Collectors.toList());
 						FollowUpDataDto followUpDataDto = new FollowUpDataDto(finalData, dtos.size());
 						return ResponseEntity.ok(followUpDataDto);
 					}
@@ -612,15 +614,15 @@ public class FollowUpServiceImpl implements FollowUpService {
 								.filter(item -> item.getCourseName().equalsIgnoreCase(courseName))
 								.collect(Collectors.toList());
 						List<FollowUpDto> finalList = filterData.stream()
-								.sorted(Comparator.comparing(FollowUpDto::getId).reversed()).skip(startingIndex)
-								.limit(maxRows).collect(Collectors.toList());
+								.sorted(Comparator.comparing(FollowUpDto::getRegistrationDate).reversed())
+								.skip(startingIndex).limit(maxRows).collect(Collectors.toList());
 						FollowUpDataDto followUpDataDto = new FollowUpDataDto(finalList, filterData.size());
 						return ResponseEntity.ok(followUpDataDto);
 
 					} else {
 						List<FollowUpDto> finalData = dtos.stream()
-								.sorted(Comparator.comparing(FollowUpDto::getId).reversed()).skip(startingIndex)
-								.limit(maxRows).collect(Collectors.toList());
+								.sorted(Comparator.comparing(FollowUpDto::getRegistrationDate).reversed())
+								.skip(startingIndex).limit(maxRows).collect(Collectors.toList());
 						FollowUpDataDto followUpDataDto = new FollowUpDataDto(finalData, dtos.size());
 						return ResponseEntity.ok(followUpDataDto);
 					}
@@ -651,14 +653,14 @@ public class FollowUpServiceImpl implements FollowUpService {
 								.filter(item -> item.getCourseName().equalsIgnoreCase(courseName))
 								.collect(Collectors.toList());
 						List<FollowUpDto> finalList = filterData.stream()
-								.sorted(Comparator.comparing(FollowUpDto::getId).reversed()).skip(startingIndex)
-								.limit(maxRows).collect(Collectors.toList());
+								.sorted(Comparator.comparing(FollowUpDto::getRegistrationDate).reversed())
+								.skip(startingIndex).limit(maxRows).collect(Collectors.toList());
 						FollowUpDataDto followUpDataDto = new FollowUpDataDto(finalList, filterData.size());
 						return ResponseEntity.ok(followUpDataDto);
 
 					} else {
-						dtos.stream().sorted(Comparator.comparing(FollowUpDto::getId).reversed()).skip(startingIndex)
-								.limit(maxRows).collect(Collectors.toList());
+						dtos.stream().sorted(Comparator.comparing(FollowUpDto::getRegistrationDate).reversed())
+								.skip(startingIndex).limit(maxRows).collect(Collectors.toList());
 						FollowUpDataDto followUpDataDto = new FollowUpDataDto(dtos, data.size());
 						return ResponseEntity.ok(followUpDataDto);
 					}

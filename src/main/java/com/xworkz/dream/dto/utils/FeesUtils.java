@@ -11,7 +11,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
 import com.xworkz.dream.constants.Status;
@@ -54,6 +53,7 @@ public class FeesUtils {
 		}
 		return null;
 	}
+
 	public SheetFeesDetiles getDataByselectedItems(String minIndex, String maxIndex, String date, String courseName,
 			String paymentMode, List<FeesDto> convertingListToDto) {
 		if (!courseName.equals("null") && date.equals("null") && paymentMode.equals("null")) {
@@ -66,16 +66,41 @@ public class FeesUtils {
 		} else if (!courseName.equals("null") && !date.equals("null") && paymentMode.equals("null")) {
 			log.info("Running filter By CourseName and Date");
 			List<FeesDto> listDtos = convertingListToDto.stream()
-					.filter(items -> items.getCourseName().equalsIgnoreCase(courseName) && LocalDate
-							.parse(items.getFeesHistoryDto().getFeesfollowupDate()).isEqual(LocalDate.parse(date)))
+					.filter(items -> !items.getFeesHistoryDto().getFeesfollowupDate().toString().equalsIgnoreCase("NA")
+							&& items.getCourseName().equalsIgnoreCase(courseName)
+							&& LocalDate.parse(items.getFeesHistoryDto().getFeesfollowupDate())
+									.isEqual(LocalDate.parse(date)))
 					.collect(Collectors.toList());
 			List<FeesDto> listDto = listDtos.stream().skip(Integer.parseInt(minIndex)).limit(Integer.parseInt(maxIndex))
 					.sorted(Comparator.comparing(FeesDto::getId).reversed()).collect(Collectors.toList());
 			return new SheetFeesDetiles(listDto, listDtos.size());
 		} else if (courseName.equals("null") && !date.equals("null") && paymentMode.equals("null")) {
 			log.info("Running filter By CourseName and Date");
-			List<FeesDto> listDtos = convertingListToDto.stream().filter(items -> LocalDate
-					.parse(items.getFeesHistoryDto().getFeesfollowupDate()).isEqual(LocalDate.parse(date)))
+			List<FeesDto> listDtos = convertingListToDto.stream()
+					.filter(items -> !items.getFeesHistoryDto().getFeesfollowupDate().toString().equalsIgnoreCase("NA")
+							&& LocalDate.parse(items.getFeesHistoryDto().getFeesfollowupDate())
+									.isEqual(LocalDate.parse(date)))
+					.collect(Collectors.toList());
+			List<FeesDto> listDto = listDtos.stream().skip(Integer.parseInt(minIndex)).limit(Integer.parseInt(maxIndex))
+					.sorted(Comparator.comparing(FeesDto::getId).reversed()).collect(Collectors.toList());
+			return new SheetFeesDetiles(listDto, listDtos.size());
+		} else if (courseName.equals("null") && !date.equals("null") && !paymentMode.equals("null")) {
+			log.info("Running filter By CourseName and Date");
+			List<FeesDto> listDtos = convertingListToDto.stream()
+					.filter(items -> !items.getFeesHistoryDto().getFeesfollowupDate().toString().equalsIgnoreCase("NA")
+							&& LocalDate.parse(items.getFeesHistoryDto().getFeesfollowupDate())
+									.isEqual(LocalDate.parse(date))
+							&& items.getFeesHistoryDto().getPaymentMode().equalsIgnoreCase(paymentMode))
+					.collect(Collectors.toList());
+			List<FeesDto> listDto = listDtos.stream().skip(Integer.parseInt(minIndex)).limit(Integer.parseInt(maxIndex))
+					.sorted(Comparator.comparing(FeesDto::getId).reversed()).collect(Collectors.toList());
+			return new SheetFeesDetiles(listDto, listDtos.size());
+		} else if (!courseName.equals("null") && date.equals("null") && !paymentMode.equals("null")) {
+			log.info("Running filter By CourseName and paymentDate");
+			List<FeesDto> listDtos = convertingListToDto.stream()
+					.filter(items -> !items.getFeesHistoryDto().getFeesfollowupDate().toString().equalsIgnoreCase("NA")
+							&& items.getFeesHistoryDto().getPaymentMode().equalsIgnoreCase(paymentMode)
+							&& items.getCourseName().equalsIgnoreCase(courseName))
 					.collect(Collectors.toList());
 			List<FeesDto> listDto = listDtos.stream().skip(Integer.parseInt(minIndex)).limit(Integer.parseInt(maxIndex))
 					.sorted(Comparator.comparing(FeesDto::getId).reversed()).collect(Collectors.toList());
@@ -91,8 +116,10 @@ public class FeesUtils {
 		} else if (!courseName.equals("null") && !date.equals("null") && !paymentMode.equals("null")) {
 			log.info("Running filter By CourseName and Date and status");
 			List<FeesDto> listDtos = convertingListToDto.stream()
-					.filter(items -> LocalDate.parse(items.getFeesHistoryDto().getFeesfollowupDate())
-							.isEqual(LocalDate.parse(date)) && items.getCourseName().equalsIgnoreCase(courseName)
+					.filter(items -> !items.getFeesHistoryDto().getFeesfollowupDate().toString().equalsIgnoreCase("NA")
+							&& LocalDate.parse(items.getFeesHistoryDto().getFeesfollowupDate()).isEqual(
+									LocalDate.parse(date))
+							&& items.getCourseName().equalsIgnoreCase(courseName)
 							&& items.getFeesHistoryDto().getPaymentMode().equalsIgnoreCase(paymentMode))
 					.collect(Collectors.toList());
 			List<FeesDto> listDto = listDtos.stream().sorted(Comparator.comparing(FeesDto::getId).reversed())

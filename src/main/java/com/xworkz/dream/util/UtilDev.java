@@ -33,6 +33,8 @@ import com.xworkz.dream.dto.FollowUpDto;
 import com.xworkz.dream.dto.TraineeDto;
 import com.xworkz.dream.dto.utils.Team;
 import com.xworkz.dream.service.ChimpMailService;
+import com.xworkz.dream.smsservice.CSRSMSService;
+import com.xworkz.dream.smsservice.CsrMailService;
 
 import freemarker.template.TemplateException;
 
@@ -54,9 +56,12 @@ public class UtilDev implements DreamUtil {
 	private String chimpUserName;
 	@Autowired
 	private ChimpMailService chimpMailService;
-
 	@Autowired
 	private EncryptionHelper helper;
+	@Autowired
+	private CsrMailService csrMailService;
+	@Autowired
+	private CSRSMSService csrSmsService;
 
 	private static final Logger logger = LoggerFactory.getLogger(UtilDev.class);
 
@@ -64,7 +69,7 @@ public class UtilDev implements DreamUtil {
 		int otpMinValue = 100000;
 		int otpMaxValue = 999999;
 		Random random = new Random();
-		System.out.println("dev Otp");
+		logger.info("dev Otp");
 		return otpMinValue + random.nextInt(otpMaxValue - otpMinValue + 1);
 	}
 
@@ -166,11 +171,11 @@ public class UtilDev implements DreamUtil {
 
 	public void sendBirthadyEmail(String traineeEmail, String subject, String name) {
 
-		if(traineeEmail ==null || name ==null) {
+		if (traineeEmail == null || name == null) {
 			logger.warn("Email or name is null");
-			
+
 		}
-		 sendBirthadyEmailChimp(traineeEmail, subject, name);
+		sendBirthadyEmailChimp(traineeEmail, subject, name);
 	}
 
 	// ================================================================================================
@@ -273,7 +278,46 @@ public class UtilDev implements DreamUtil {
 			messageHelper.setSubject(subject);
 			messageHelper.setText(content, true);
 		};
-		 chimpMailService.validateAndSendMail(messagePreparator);
+		chimpMailService.validateAndSendMail(messagePreparator);
 	}
 
+	@Override
+	public boolean csrEmailSent(TraineeDto dto) {
+		Context context = new Context();
+		if (dto.getCourseInfo().getOfferedAs().equalsIgnoreCase("CSR")) {
+			context.setVariable("name", dto.getBasicInfo().getTraineeName());
+			context.setVariable("usnNumber", dto.getCsrDto().getUsnNumber());
+			context.setVariable("collegeName", dto.getEducationInfo().getCollegeName());
+			context.setVariable("uniqueID", dto.getCsrDto().getUniqueId());
+			String content = templateEngine.process("CSRMailTemplate", context);
+
+			MimeMessagePreparator messagePreparator = mailSentCSRDrive(dto, content);
+			return csrMailService.sentCsrMail(messagePreparator);
+
+		} else {
+			context.setVariable("recipientName", dto.getBasicInfo().getTraineeName());
+			String content = templateEngine.process("CourseContentTemplate", context);
+			MimeMessagePreparator messagePreparator = mailSentCSRDrive(dto, content);
+			return csrMailService.sentCsrMail(messagePreparator);
+		}
+	}
+
+	private MimeMessagePreparator mailSentCSRDrive(TraineeDto dto, String content) {
+		MimeMessagePreparator messagePreparator = mimeMessage -> {
+
+			MimeMessageHelper messageHelper = new MimeMessageHelper(mimeMessage, true);
+
+			messageHelper.setFrom(helper.decrypt(chimpUserName));
+			messageHelper.setTo(dto.getBasicInfo().getEmail());
+			messageHelper.setSubject("Hello csr drive");
+			messageHelper.setText(content, true);
+		};
+		return messagePreparator;
+	}
+
+	@Override
+	public boolean csrSmsSent(String name, String contactNo) {
+		logger.info("SMS sent to {} with contact number {}", name, contactNo);
+		return false;
+	}
 }

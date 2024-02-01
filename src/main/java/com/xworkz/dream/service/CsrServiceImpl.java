@@ -59,13 +59,15 @@ public class CsrServiceImpl implements CsrService {
 
 			if (status) {
 				log.info("Data written successfully to spreadsheetId and Added to Follow Up: {}", spreadsheetId);
-				util.sms(dto);
 
-				boolean sent = util.sendCourseContent(dto.getBasicInfo().getEmail(),
-						dto.getBasicInfo().getTraineeName());
+				if (dto.getCourseInfo().getOfferedAs().equals("CSR")) {
+					boolean sent = util.csrEmailSent(dto);
+					if (sent) {
+						util.csrSmsSent(dto.getBasicInfo().getTraineeName(),
+								dto.getBasicInfo().getContactNumber().toString());
+						return ResponseEntity.ok("Data written successfully, Added to follow Up, sent course content");
+					}
 
-				if (sent) {
-					return ResponseEntity.ok("Data written successfully, Added to follow Up, sent course content");
 				}
 			} else {
 				return ResponseEntity.ok("Email not sent, Data written successfully, Added to follow Up");
@@ -98,26 +100,26 @@ public class CsrServiceImpl implements CsrService {
 		cacheService.addEmailToCache("uniqueNumber", "listofUniqueNumbers", dto.getCsrDto().getUniqueId());
 	}
 
-	@Override
 	public boolean registerCsr(CsrDto csrDto, HttpServletRequest request) throws IOException {
 		TraineeDto traineeDto = new TraineeDto();
+		CSR csr = new CSR();
 		traineeDto.setCourseInfo(new CourseDto("NA"));
 		traineeDto.setOthersDto(new OthersDto("NA"));
 		traineeDto.setBasicInfo(csrDto.getBasicInfo());
 		traineeDto.setEducationInfo(csrDto.getEducationInfo());
 		traineeDto.getCourseInfo().setOfferedAs(csrDto.getOfferedAs());
 		String uniqueId = generateUniqueID();
-		if (checkUniqueNumber(uniqueId)) {
-			log.info("Unique Number Exists");
-			uniqueId = generateUniqueID();
-		} else {
-			log.debug("Unique Number not Exists ");
-			CSR csr = new CSR(csrDto.getUsnNumber(), csrDto.getAlternateContactNumber(), uniqueId);
-			traineeDto.setCsrDto(csr);
-			validateAndRegister(traineeDto, request);
-			return true;
-		}
-		return false;
+		log.info("set {} if offeredAs a CSR",
+				traineeDto.getCourseInfo().getOfferedAs().equalsIgnoreCase("csr") ? "1" : "0");
+		csr.setCsrFlag(traineeDto.getCourseInfo().getOfferedAs().equalsIgnoreCase("csr") ? "1" : "0");
+		csr.setActiveFlag("Active");
+		csr.setAlternateContactNumber(csrDto.getAlternateContactNumber());
+		csr.setUniqueId(traineeDto.getCourseInfo().getOfferedAs().equalsIgnoreCase("csr") ? uniqueId : "NA");
+		csr.setUsnNumber(csrDto.getUsnNumber());
+		traineeDto.setCsrDto(csr);
+		validateAndRegister(traineeDto, request);
+
+		return true;
 	}
 
 	@Override
@@ -152,7 +154,8 @@ public class CsrServiceImpl implements CsrService {
 		return false;
 	}
 
-	public static String generateUniqueID() {
+	@Override
+	public String generateUniqueID() {
 		int minValue = 1;
 		int maxValue = 99999;
 		Random random = new Random();
