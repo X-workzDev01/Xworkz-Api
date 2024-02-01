@@ -85,7 +85,7 @@ public class UtilProd implements DreamUtil {
 		int otpMinValue = 100000;
 		int otpMaxValue = 999999;
 		Random random = new Random();
-		logger.info("dev Otp");
+		System.out.println("dev Otp");
 		return otpMinValue + random.nextInt(otpMaxValue - otpMinValue + 1);
 	}
 
@@ -343,16 +343,15 @@ public class UtilProd implements DreamUtil {
 			context.setVariable("name", dto.getBasicInfo().getTraineeName());
 			context.setVariable("usnNumber", dto.getCsrDto().getUsnNumber());
 			context.setVariable("collegeName", dto.getEducationInfo().getCollegeName());
+			context.setVariable("uniqueID", dto.getCsrDto().getUniqueId());
 			String content = templateEngine.process("CSRMailTemplate", context);
 
 			MimeMessagePreparator messagePreparator = mailSentCSRDrive(dto, content);
 			return csrMailService.sentCsrMail(messagePreparator);
 
 		} else {
-			context.setVariable("name", dto.getBasicInfo().getTraineeName());
-			context.setVariable("usnNumber", dto.getCsrDto().getUsnNumber());
-			context.setVariable("collegeName", dto.getEducationInfo().getCollegeName());
-			String content = templateEngine.process("CSRMailTemplate", context);
+			context.setVariable("recipientName", dto.getBasicInfo().getTraineeName());
+			String content = templateEngine.process("CourseContentTemplate", context);
 			MimeMessagePreparator messagePreparator = mailSentCSRDrive(dto, content);
 			return csrMailService.sentCsrMail(messagePreparator);
 		}

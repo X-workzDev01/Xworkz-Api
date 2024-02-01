@@ -421,8 +421,8 @@ public class DreamWrapper {
 		List<Object> row = new ArrayList<Object>();
 		row.add(dto.getAttendanceId());
 		row.add(dto.getId());
-		row.add(dto.getBasicInfo().getTraineeName());
-		row.add(dto.getCourseInfo().getCourse());
+		row.add(dto.getTraineeName());
+		row.add(dto.getCourse());
 		row.add(dto.getTotalAbsent());
 		row.add(dto.getAbsentDate());
 		row.add(dto.getReason());
