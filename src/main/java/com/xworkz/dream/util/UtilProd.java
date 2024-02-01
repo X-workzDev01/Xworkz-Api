@@ -339,13 +339,26 @@ public class UtilProd implements DreamUtil {
 	@Override
 	public boolean csrEmailSent(TraineeDto dto) {
 		Context context = new Context();
+		if (dto.getCourseInfo().getOfferedAs().equalsIgnoreCase("CSR")) {
+			context.setVariable("name", dto.getBasicInfo().getTraineeName());
+			context.setVariable("usnNumber", dto.getCsrDto().getUsnNumber());
+			context.setVariable("collegeName", dto.getEducationInfo().getCollegeName());
+			String content = templateEngine.process("CSRMailTemplate", context);
 
-		context.setVariable("name", dto.getBasicInfo().getTraineeName());
-		context.setVariable("usnNumber", dto.getCsrDto().getUsnNumber());
-		context.setVariable("collegeName", dto.getEducationInfo().getCollegeName());
+			MimeMessagePreparator messagePreparator = mailSentCSRDrive(dto, content);
+			return csrMailService.sentCsrMail(messagePreparator);
 
-		String content = templateEngine.process("CSRMailTemplate", context);
+		} else {
+			context.setVariable("name", dto.getBasicInfo().getTraineeName());
+			context.setVariable("usnNumber", dto.getCsrDto().getUsnNumber());
+			context.setVariable("collegeName", dto.getEducationInfo().getCollegeName());
+			String content = templateEngine.process("CSRMailTemplate", context);
+			MimeMessagePreparator messagePreparator = mailSentCSRDrive(dto, content);
+			return csrMailService.sentCsrMail(messagePreparator);
+		}
+	}
 
+	private MimeMessagePreparator mailSentCSRDrive(TraineeDto dto, String content) {
 		MimeMessagePreparator messagePreparator = mimeMessage -> {
 
 			MimeMessageHelper messageHelper = new MimeMessageHelper(mimeMessage, true);
@@ -355,8 +368,7 @@ public class UtilProd implements DreamUtil {
 			messageHelper.setSubject("Hello csr drive");
 			messageHelper.setText(content, true);
 		};
-
-		return csrMailService.sentCsrMail(messagePreparator);
+		return messagePreparator;
 	}
 
 	@Override

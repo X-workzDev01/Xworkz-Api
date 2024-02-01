@@ -21,7 +21,7 @@ public class EmailController {
 	@PostMapping("/sentmail")
 	public ResponseEntity<String> sentmail() {
 //		System.out.println(util.csrEmailSent("hareesha", "xworkzdev4@gmail.com", "4GEHarshi"));
-		service.csrSMSSent("Hareesha","9900775088");
+		service.csrSMSSent("Suhas","8050319217");
 
 		return ResponseEntity.ok("mail sent sucessfully");
 	}
