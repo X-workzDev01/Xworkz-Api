@@ -36,33 +36,30 @@ public class FeesSchedulerImpl implements FeesScheduler {
 
 	@Override
 	@Scheduled(fixedRate = 12 * 60 * 60 * 1000)
-	public String afterFreeCourseCompletedChengeFeesStatus() {
+	public String afterFreeCourseCompletedChengeFeesStatus() throws IOException {
 		log.info("Scheduler running After free Course");
+		List<List<Object>> getAllFeesDetiles = feesRepository.getAllFeesDetiles(getFeesDetilesRange);
+		getAllFeesDetiles.stream().filter(
+				items -> items != null && items.size() > 2 && items.get(2) != null && items.contains("Active"))
+				.map(items -> {
+					try {
+						FeesDto dto = feesWrapper.listToFeesDTO(items);
+						if (dto.getFeesHistoryDto().getEmail()
+								.equalsIgnoreCase(feesUtil.getTraineeDetiles(dto.getFeesHistoryDto().getEmail()))) {
+							BatchDetails detiles = feesUtil.getBatchDetiles(dto.getFeesHistoryDto().getEmail());
+							updateCSRofferedAfterFreeTraining(dto, detiles);
+							return null;
+						} else {
+							BatchDetails detiles = feesUtil.getBatchDetiles(dto.getFeesHistoryDto().getEmail());
+							afterAMonthChangeStatusAutometically(dto, detiles);
 
-		try {
-			feesRepository.getAllFeesDetiles(getFeesDetilesRange).stream().filter(
-					items -> items != null && items.size() > 2 && items.get(2) != null && items.contains("Active"))
-					.map(items -> {
-						try {
-							FeesDto dto = feesWrapper.listToFeesDTO(items);
-							if (dto.getFeesHistoryDto().getEmail()
-									.equalsIgnoreCase(feesUtil.getTraineeDetiles(dto.getFeesHistoryDto().getEmail()))) {
-								BatchDetails detiles = feesUtil.getBatchDetiles(dto.getFeesHistoryDto().getEmail());
-								updateCSRofferedAfterFreeTraining(dto, detiles);
-								return null;
-							} else {
-								BatchDetails detiles = feesUtil.getBatchDetiles(dto.getFeesHistoryDto().getEmail());
-								afterAMonthChangeStatusAutometically(dto, detiles);
-
-								return null;
-							}
-						} catch (IOException | IllegalAccessException e) {
-		                    log.error("Error processing fee details", e);
 							return null;
 						}
-					}).collect(Collectors.toList());
-		} catch (IOException e) {
-		}
+					} catch (IOException | IllegalAccessException e) {
+						log.error("Error processing fee details", e);
+						return null;
+					}
+				}).collect(Collectors.toList());
 		return null;
 	}
 
