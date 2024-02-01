@@ -52,7 +52,7 @@ public class ClientHrRepositoryImpl implements ClientHrRepository {
 	private String clientHrInformationReadRange;
 	@Value("${login.sheetId}")
 	public String sheetId;
-	
+
 	@Autowired
 	private ResourceLoader resourceLoader;
 	private static final Logger log = LoggerFactory.getLogger(ClientHrRepositoryImpl.class);
@@ -96,7 +96,7 @@ public class ClientHrRepositoryImpl implements ClientHrRepository {
 	}
 
 	@Override
-	//@Cacheable(value = "hrDetails", key = "'listofHRDetails'")
+	@Cacheable(value = "hrDetails", key = "'listofHRDetails'")
 	public List<List<Object>> readData() throws IOException {
 		List<List<Object>> values = sheetsService.spreadsheets().values().get(sheetId, clientHrInformationReadRange)
 				.execute().getValues();
@@ -105,12 +105,10 @@ public class ClientHrRepositoryImpl implements ClientHrRepository {
 
 	@Override
 	public UpdateValuesResponse updateHrDetails(String range, ValueRange valueRange) throws IOException {
-		log.info("updating the HR details ,{}",range);
+		log.info("updating the HR details ,{}", range);
 		UpdateValuesResponse response = sheetsService.spreadsheets().values().update(sheetId, range, valueRange)
 				.setValueInputOption("RAW").execute();
 		return response;
 	}
-
-	
 
 }

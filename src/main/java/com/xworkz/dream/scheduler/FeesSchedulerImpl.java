@@ -12,7 +12,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
-import com.xworkz.dream.dto.BatchDetails;
+import com.xworkz.dream.dto.BatchDetailsDto;
 import com.xworkz.dream.dto.utils.FeesUtils;
 import com.xworkz.dream.dto.utils.WrapperUtil;
 import com.xworkz.dream.feesDtos.FeesDto;
@@ -36,8 +36,22 @@ public class FeesSchedulerImpl implements FeesScheduler {
 
 	@Override
 	@Scheduled(fixedRate = 12 * 60 * 60 * 1000)
-	public String afterFreeCourseCompletedChengeFeesStatus() {
+	public String afterFreeCourseCompletedChengeFeesStatus() throws IOException {
 		log.info("Scheduler running After free Course");
+		List<List<Object>> getAllFeesDetiles = feesRepository.getAllFeesDetiles(getFeesDetilesRange);
+		getAllFeesDetiles.stream().filter(
+				items -> items != null && items.size() > 2 && items.get(2) != null && items.contains("Active"))
+				.map(items -> {
+					try {
+						FeesDto dto = feesWrapper.listToFeesDTO(items);
+						if (dto.getFeesHistoryDto().getEmail()
+								.equalsIgnoreCase(feesUtil.getTraineeDetiles(dto.getFeesHistoryDto().getEmail()))) {
+							BatchDetails detiles = feesUtil.getBatchDetiles(dto.getFeesHistoryDto().getEmail());
+							updateCSRofferedAfterFreeTraining(dto, detiles);
+							return null;
+						} else {
+							BatchDetails detiles = feesUtil.getBatchDetiles(dto.getFeesHistoryDto().getEmail());
+							afterAMonthChangeStatusAutometically(dto, detiles);
 
 		try {
 			List<List<Object>> getAllFeesDetiles = feesRepository.getAllFeesDetiles(getFeesDetilesRange);
@@ -56,6 +70,7 @@ public class FeesSchedulerImpl implements FeesScheduler {
 									BatchDetails detiles = feesUtil.getBatchDetiles(dto.getFeesHistoryDto().getEmail());
 									afterAMonthChangeStatusAutometically(dto, detiles);
 
+
 									return null;
 								}
 							} catch (IOException | IllegalAccessException e) {
@@ -66,42 +81,48 @@ public class FeesSchedulerImpl implements FeesScheduler {
 			}
 		} catch (IOException e) {
 		}
+
 		return null;
 	}
-
-	private FeesDto afterAMonthChangeStatusAutometically(FeesDto dto, BatchDetails detiles)
+  
+	private FeesDto afterAMonthChangeStatusAutometically(FeesDto dto, BatchDetailsDto detiles)
 			throws IOException, IllegalAccessException {
 		if (dto.getFeesStatus().equalsIgnoreCase("FREE") && LocalDate.parse(detiles.getStartDate()).plusDays(29)
 				.isAfter(LocalDate.parse(detiles.getStartDate()))) {
 			dto.setFeesStatus("FEES_DUE");
 			int index = util.findIndex(dto.getFeesHistoryDto().getEmail());
 			String followupRanges = "FeesDetiles!B" + index + ":AB" + index;
-			log.info(followupRanges + "    " + dto);
-			List<Object> last = util.extractDtoDetails(dto);
-			last.remove(2);
-			last.remove(11);
-			last.remove(11);
-			last.remove(20);
-			feesRepository.updateFeesDetiles(followupRanges, last);
+
+			log.debug("Updating fees status. Range: {}, FeesDto: {}", followupRanges, dto);
+
+			List<Object> list = util.extractDtoDetails(dto);
+			list.remove(2);
+			list.remove(11);
+			list.remove(11);
+			list.remove(20);
+			list.remove(20);
+			list.add("Active");
+			feesRepository.updateFeesDetiles(followupRanges, list);
+			log.info("Fees status updated successfully for email: {}", dto.getFeesHistoryDto().getEmail());
+
 			return dto;
 		}
 		return dto;
 	}
-
-	private FeesDto updateCSRofferedAfterFreeTraining(FeesDto dto, BatchDetails detiles)
+	private FeesDto updateCSRofferedAfterFreeTraining(FeesDto dto, BatchDetailsDto detiles)
 			throws IOException, IllegalAccessException {
 		if (dto.getFeesStatus().equalsIgnoreCase("FREE") && LocalDate.parse(detiles.getStartDate()).plusDays(59)
 				.isAfter(LocalDate.parse(detiles.getStartDate()))) {
 			dto.setFeesStatus("FEES_DUE");
 			int index = util.findIndex(dto.getFeesHistoryDto().getEmail());
 			String followupRanges = "FeesDetiles!B" + index + ":U" + index;
-			log.info(followupRanges + "    " + dto);
-			List<Object> last = util.extractDtoDetails(dto);
-			last.remove(2);
-			last.remove(11);
-			last.remove(11);
-			last.remove(20);
-			feesRepository.updateFeesDetiles(followupRanges, last);
+			List<Object> list = util.extractDtoDetails(dto);
+			list.remove(2);
+			list.remove(11);
+			list.remove(11);
+			list.remove(20);
+			feesRepository.updateFeesDetiles(followupRanges, list);
+			log.info("Fees status updated successfully for email: {}", dto.getFeesHistoryDto().getEmail());
 			return dto;
 		}
 		return dto;

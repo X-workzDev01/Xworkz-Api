@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.xworkz.dream.dto.BatchDetails;
+import com.xworkz.dream.dto.BatchDetailsDto;
 import com.xworkz.dream.dto.TraineeDto;
 import com.xworkz.dream.service.BatchService;
 
@@ -37,13 +37,11 @@ public class BatchController {
 		return service.getTraineeDetailsByCourse(spreadsheetId, courseName);
 	}
 
-
 	@GetMapping("/getCourseDetails")
-	public BatchDetails getBatchDetails(@RequestHeader String spreadsheetId,
-			@RequestParam String courseName) throws IOException {
+	public BatchDetailsDto getBatchDetails(@RequestHeader String spreadsheetId, @RequestParam String courseName)
+			throws IOException {
 		log.info("Request received for getBatchDetails. SpreadsheetId: {}, CourseName: {}", spreadsheetId, courseName);
 		return service.getBatchDetailsByCourseName(spreadsheetId, courseName);
-
 	}
 
 	@GetMapping("/getCourseName")
@@ -52,4 +50,11 @@ public class BatchController {
 		log.info("Request received for getCourseName. SpreadsheetId: {}, Status: {}", spreadsheetId, status);
 		return service.getCourseNameByStatus(spreadsheetId, status);
 	}
+
+	@GetMapping("/getTotalClass")
+	public Integer getTotalClass(@RequestParam String courseName) throws IOException {
+		Integer gettotalClassByCourseName = service.gettotalClassByCourseName(courseName);
+		return gettotalClassByCourseName;
+	}
+
 }

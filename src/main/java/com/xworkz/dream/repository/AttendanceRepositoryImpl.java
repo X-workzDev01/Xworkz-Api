@@ -71,7 +71,7 @@ public class AttendanceRepositoryImpl implements AttendanceRepository {
 		 log.info("Attendance written successfully.");
 		return true;
 	}
-
+	
 
 	@Override
 	@Cacheable(value = "attendanceData", key = "'listOfAttendance'")

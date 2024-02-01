@@ -49,6 +49,12 @@ public class RegisterRepositoryImpl implements RegisterRepository {
 	private String contactNumberRange;
 	@Value("${sheets.emailAndNameRange}")
 	private String emailAndNameRange;
+	@Value("${sheets.alternativeNumberRange}")
+	private String alternativeNumberRange;
+	@Value("${sheets.usnNumberRange}")
+	private String usnNumberRange;
+	@Value("${sheets.uniqueNumberRange}")
+	private String uniqueNumberRange;
 	@Autowired
 	private ResourceLoader resourceLoader;
 	private static final Logger log = LoggerFactory.getLogger(RegisterRepositoryImpl.class);
@@ -122,4 +128,29 @@ public class RegisterRepositoryImpl implements RegisterRepository {
 		return response.getValues();
 	}
 
+	@Override
+	@Cacheable(value = "alternativeNumber", key = "'listOfAlternativeContactNumbers'", unless = "#result == null")
+	public List<List<Object>> getAlternativeNumber(String spreadsheetId) throws IOException {
+		log.info("Reading Alternative contact number from sheet");
+		ValueRange response = sheetsService.spreadsheets().values().get(spreadsheetId, alternativeNumberRange)
+				.execute();
+		return response.getValues();
+	}
+
+	@Override
+	@Cacheable(value = "usnNumber", key = "'listOfUsnNumbers'", unless = "#result == null")
+	public List<List<Object>> getUsnNumber(String spreadsheetId) throws IOException {
+		log.info("Reading Usn Number from sheet");
+		ValueRange response = sheetsService.spreadsheets().values().get(spreadsheetId, usnNumberRange).execute();
+		return response.getValues();
+	}
+
+	@Override
+	@Cacheable(value="uniqueNumber",key="'listofUniqueNumbers'")
+	public List<List<Object>> getUniqueNumbers(String spreadsheetId) throws IOException {
+		log.info("Reading Unique numbers from sheet");
+		ValueRange response = sheetsService.spreadsheets().values().get(spreadsheetId, uniqueNumberRange).execute();
+		return response.getValues();
+
+	}
 }

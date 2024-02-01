@@ -59,7 +59,7 @@ public class ClientInformationServiceImpl implements ClientInformationService {
 			if (clientRepository.writeClientInformation(list)) {
 				log.debug("adding newly added data to the cache, clientInformation :{}", list);
 
-				//clientCacheService.addNewDtoToCache("clientInformation", "ListOfClientDto", list);
+				clientCacheService.addNewDtoToCache("clientInformation", "ListOfClientDto", list);
 				return "Client Information saved successfully";
 			} else {
 				return "Client Information not saved";
@@ -77,7 +77,7 @@ public class ClientInformationServiceImpl implements ClientInformationService {
 
 		if (listOfData != null) {
 			List<ClientDto> ListOfClientDto = listOfData.stream().map(clientWrapper::listToClientDto)
-					.filter(dto -> !dto.getStatus().equalsIgnoreCase("InActive"))
+					.filter(dto ->dto.getStatus()!=null&&!dto.getStatus().equalsIgnoreCase("InActive"))
 					.sorted(Comparator.comparing(ClientDto::getId, Comparator.reverseOrder()))
 					.collect(Collectors.toList());
 			List<ClientDto> clientData = ListOfClientDto.stream().skip(startingIndex).limit(maxRows)
@@ -217,8 +217,8 @@ public class ClientInformationServiceImpl implements ClientInformationService {
 			UpdateValuesResponse updated = clientRepository.updateclientInfo(range, valueRange);
 			log.info("update response is :{}", updated);
 			if (updated != null) {
-				//List<List<Object>> listOfItems = Arrays.asList(dreamWrapper.extractDtoDetails(clientDto));
-				//clientCacheService.updateClientDetailsInCache("clientInformation", "ListOfClientDto", listOfItems);
+				List<List<Object>> listOfItems = Arrays.asList(dreamWrapper.extractDtoDetails(clientDto));
+				clientCacheService.updateClientDetailsInCache("clientInformation", "ListOfClientDto", listOfItems);
 				return "updated Successfully";
 			} else {
 				return "not updated successfully";

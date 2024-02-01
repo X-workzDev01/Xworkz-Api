@@ -10,11 +10,15 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.xworkz.dream.cache.ClientCacheService;
+import com.xworkz.dream.dto.ClientHrDto;
 import com.xworkz.dream.dto.HrFollowUpDto;
+import com.xworkz.dream.repository.ClientHrRepository;
 import com.xworkz.dream.repository.HrFollowUpRepository;
 import com.xworkz.dream.util.ClientInformationUtil;
 import com.xworkz.dream.wrapper.ClientWrapper;
 import com.xworkz.dream.wrapper.DreamWrapper;
+
 @Service
 public class HrFollowUpServiceImpl implements HrFollowUpService {
 
@@ -22,10 +26,12 @@ public class HrFollowUpServiceImpl implements HrFollowUpService {
 	private HrFollowUpRepository hrFollowUpRepository;
 	@Autowired
 	private ClientInformationUtil clientInformationUtil;
-
 	@Autowired
 	private DreamWrapper dreamWrapper;
-
+	@Autowired
+	private ClientHrRepository clientHrRepository;
+	@Autowired
+	private ClientCacheService clientCacheService;
 	@Autowired
 	private ClientWrapper clientWrapper;
 
@@ -38,6 +44,7 @@ public class HrFollowUpServiceImpl implements HrFollowUpService {
 		List<Object> list = dreamWrapper.extractDtoDetails(dto);
 		if (dto != null) {
 			if (hrFollowUpRepository.saveHrFollowUpDetails(list)) {
+				clientCacheService.addHRDetailsToCache("hrFollowUpDetails","hrFollowUp",list);
 				return "Hr Follow up details saved successfully";
 			} else {
 				return "Hr Follow up details not saved";
@@ -52,11 +59,35 @@ public class HrFollowUpServiceImpl implements HrFollowUpService {
 		if (listOfData != null) {
 			List<HrFollowUpDto> listOfHrFollowUpDto = listOfData.stream().map(clientWrapper::listToHrFollowUpDto)
 					.filter(HrFollowUpDto -> HrFollowUpDto.getHrId().equals(hrId))
-					.sorted(Comparator.comparing(HrFollowUpDto::getId)).collect(Collectors.toList());
+					.sorted(Comparator.comparing(HrFollowUpDto::getId).reversed()).collect(Collectors.toList());
 			return listOfHrFollowUpDto;
 		} else {
 			return null;
 		}
+	}
+
+	@Override
+	public List<HrFollowUpDto> getFollowUpDetails(Integer companyId) throws IOException {
+		log.info("get follow up details in service");
+		if (companyId != null) {
+			List<List<Object>> listOfHr = clientHrRepository.readData();
+			List<List<Object>> listOfFollowUpData = hrFollowUpRepository.readFollowUpDetailsById();
+
+			if (listOfHr != null && listOfFollowUpData != null) {
+				List<ClientHrDto> listOfHrDto = listOfHr.stream().map(clientWrapper::listToClientHrDto)
+						.filter(hrDetails -> hrDetails.getCompanyId().equals(companyId)).collect(Collectors.toList());
+
+				  List<HrFollowUpDto> hrFollowUpList = listOfFollowUpData.stream()
+		                    .map(clientWrapper::listToHrFollowUpDto)
+		                    .filter(followUpDto ->
+		                            listOfHrDto.stream()
+		                                    .anyMatch(dto -> followUpDto.getHrId().equals(dto.getId())))
+		                    .sorted(Comparator.comparing(HrFollowUpDto::getId).reversed())
+		                    .collect(Collectors.toList());
+		            return hrFollowUpList;
+				}
+		}
+		return null;
 	}
 
 }

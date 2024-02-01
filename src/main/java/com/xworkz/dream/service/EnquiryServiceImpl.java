@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import com.xworkz.dream.dto.CSR;
 import com.xworkz.dream.dto.CourseDto;
 import com.xworkz.dream.dto.EnquiryDto;
 import com.xworkz.dream.dto.OthersDto;
@@ -37,6 +38,8 @@ public class EnquiryServiceImpl implements EnquiryService {
 	@Autowired
 	private CacheService cacheService;
 
+	@Autowired
+	private CsrService csrService;
 	private static final Logger log = LoggerFactory.getLogger(DreamServiceImpl.class);
 
 	@Override
@@ -44,6 +47,16 @@ public class EnquiryServiceImpl implements EnquiryService {
 			throws MessagingException, TemplateException {
 		try {
 			log.info("Writing data for TraineeDto: {}", dto);
+			String uniqueId = csrService.generateUniqueID();
+			CSR csr = new CSR();
+			log.info("set {} if offeredAs a CSR",
+					dto.getCourseInfo().getOfferedAs().equalsIgnoreCase("csr") ? "1" : "0");
+			csr.setCsrFlag(dto.getCourseInfo().getOfferedAs().equalsIgnoreCase("csr") ? "1" : "0");
+			csr.setActiveFlag("Active");
+			csr.setAlternateContactNumber(0l);
+			csr.setUniqueId(dto.getCourseInfo().getOfferedAs().equalsIgnoreCase("csr") ? uniqueId : "NA");
+			csr.setUsnNumber("NA");
+			dto.setCsrDto(csr);
 			wrapper.setValuesForTraineeDto(dto);
 
 			List<Object> list = wrapper.extractDtoDetails(dto);

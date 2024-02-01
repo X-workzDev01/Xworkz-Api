@@ -8,7 +8,6 @@ import com.google.api.services.sheets.v4.model.ValueRange;
 
 public interface BatchRepository {
 
-	public ValueRange getBatchId(String spreadsheetId) throws IOException;
 
 	public boolean saveBatchDetails(String spreadsheetId, List<Object> row) throws IOException;
 

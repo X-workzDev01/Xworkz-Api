@@ -11,9 +11,6 @@ public interface AttendanceRepository {
 
 	List<List<Object>> getAttendanceData(String spreadsheetId, String attendanceInfoRange) throws IOException;
 
-
 	public UpdateValuesResponse update(String spreadsheetId, String range2, ValueRange valueRange) throws IOException;
-
-
 
 }

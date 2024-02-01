@@ -16,6 +16,7 @@ import org.springframework.stereotype.Service;
 import com.xworkz.dream.constants.Status;
 import com.xworkz.dream.dto.AuditDto;
 import com.xworkz.dream.dto.BatchDetails;
+import com.xworkz.dream.dto.BatchDetailsDto;
 import com.xworkz.dream.dto.TraineeDto;
 import com.xworkz.dream.feesDtos.FeesDto;
 import com.xworkz.dream.feesDtos.FeesHistoryDto;
@@ -35,17 +36,17 @@ public class FeesUtils {
 
 	private Logger log = LoggerFactory.getLogger(FeesUtils.class);
 
-	public BatchDetails getBatchDetiles(String email) throws IOException {
+	public BatchDetailsDto getBatchDetiles(String email) throws IOException {
 		TraineeDto traineeDto = registrationService.getDetailsByEmail(spreadSheetId, email);
-		log.info("Finding Trainee detiles by course ");
-		BatchDetails details = batchService.getBatchDetailsByCourseName(spreadSheetId,
+		//log.info("Finding Trainee detiles by course ");
+		BatchDetailsDto details = batchService.getBatchDetailsByCourseName(spreadSheetId,
 				traineeDto.getCourseInfo().getCourse());
-		log.info("Finding Batch detiles by course ");
+		//log.info("Finding Batch detiles by course ");
 		return details;
 	}
 
 	public String getTraineeDetiles(String email) throws IOException {
-		log.info("Finding Trainee detiles  ");
+		//log.info("Finding Trainee detiles  ");
 		TraineeDto traineeDto = registrationService.getDetailsByEmail(spreadSheetId, email);
 		if (traineeDto.getCourseInfo().getOfferedAs().equalsIgnoreCase("CSR Offered")) {
 			return traineeDto.getBasicInfo().getEmail();
@@ -65,16 +66,41 @@ public class FeesUtils {
 		} else if (!courseName.equals("null") && !date.equals("null") && paymentMode.equals("null")) {
 			log.info("Running filter By CourseName and Date");
 			List<FeesDto> listDtos = convertingListToDto.stream()
-					.filter(items -> items.getCourseName().equalsIgnoreCase(courseName) && LocalDate
-							.parse(items.getFeesHistoryDto().getFeesfollowupDate()).isEqual(LocalDate.parse(date)))
+					.filter(items -> !items.getFeesHistoryDto().getFeesfollowupDate().toString().equalsIgnoreCase("NA")
+							&& items.getCourseName().equalsIgnoreCase(courseName)
+							&& LocalDate.parse(items.getFeesHistoryDto().getFeesfollowupDate())
+									.isEqual(LocalDate.parse(date)))
 					.collect(Collectors.toList());
 			List<FeesDto> listDto = listDtos.stream().skip(Integer.parseInt(minIndex)).limit(Integer.parseInt(maxIndex))
 					.sorted(Comparator.comparing(FeesDto::getId).reversed()).collect(Collectors.toList());
 			return new SheetFeesDetiles(listDto, listDtos.size());
 		} else if (courseName.equals("null") && !date.equals("null") && paymentMode.equals("null")) {
 			log.info("Running filter By CourseName and Date");
-			List<FeesDto> listDtos = convertingListToDto.stream().filter(items -> LocalDate
-					.parse(items.getFeesHistoryDto().getFeesfollowupDate()).isEqual(LocalDate.parse(date)))
+			List<FeesDto> listDtos = convertingListToDto.stream()
+					.filter(items -> !items.getFeesHistoryDto().getFeesfollowupDate().toString().equalsIgnoreCase("NA")
+							&& LocalDate.parse(items.getFeesHistoryDto().getFeesfollowupDate())
+									.isEqual(LocalDate.parse(date)))
+					.collect(Collectors.toList());
+			List<FeesDto> listDto = listDtos.stream().skip(Integer.parseInt(minIndex)).limit(Integer.parseInt(maxIndex))
+					.sorted(Comparator.comparing(FeesDto::getId).reversed()).collect(Collectors.toList());
+			return new SheetFeesDetiles(listDto, listDtos.size());
+		} else if (courseName.equals("null") && !date.equals("null") && !paymentMode.equals("null")) {
+			log.info("Running filter By CourseName and Date");
+			List<FeesDto> listDtos = convertingListToDto.stream()
+					.filter(items -> !items.getFeesHistoryDto().getFeesfollowupDate().toString().equalsIgnoreCase("NA")
+							&& LocalDate.parse(items.getFeesHistoryDto().getFeesfollowupDate())
+									.isEqual(LocalDate.parse(date))
+							&& items.getFeesHistoryDto().getPaymentMode().equalsIgnoreCase(paymentMode))
+					.collect(Collectors.toList());
+			List<FeesDto> listDto = listDtos.stream().skip(Integer.parseInt(minIndex)).limit(Integer.parseInt(maxIndex))
+					.sorted(Comparator.comparing(FeesDto::getId).reversed()).collect(Collectors.toList());
+			return new SheetFeesDetiles(listDto, listDtos.size());
+		} else if (!courseName.equals("null") && date.equals("null") && !paymentMode.equals("null")) {
+			log.info("Running filter By CourseName and paymentDate");
+			List<FeesDto> listDtos = convertingListToDto.stream()
+					.filter(items -> !items.getFeesHistoryDto().getFeesfollowupDate().toString().equalsIgnoreCase("NA")
+							&& items.getFeesHistoryDto().getPaymentMode().equalsIgnoreCase(paymentMode)
+							&& items.getCourseName().equalsIgnoreCase(courseName))
 					.collect(Collectors.toList());
 			List<FeesDto> listDto = listDtos.stream().skip(Integer.parseInt(minIndex)).limit(Integer.parseInt(maxIndex))
 					.sorted(Comparator.comparing(FeesDto::getId).reversed()).collect(Collectors.toList());
@@ -90,8 +116,10 @@ public class FeesUtils {
 		} else if (!courseName.equals("null") && !date.equals("null") && !paymentMode.equals("null")) {
 			log.info("Running filter By CourseName and Date and status");
 			List<FeesDto> listDtos = convertingListToDto.stream()
-					.filter(items -> LocalDate.parse(items.getFeesHistoryDto().getFeesfollowupDate())
-							.isEqual(LocalDate.parse(date)) && items.getCourseName().equalsIgnoreCase(courseName)
+					.filter(items -> !items.getFeesHistoryDto().getFeesfollowupDate().toString().equalsIgnoreCase("NA")
+							&& LocalDate.parse(items.getFeesHistoryDto().getFeesfollowupDate()).isEqual(
+									LocalDate.parse(date))
+							&& items.getCourseName().equalsIgnoreCase(courseName)
 							&& items.getFeesHistoryDto().getPaymentMode().equalsIgnoreCase(paymentMode))
 					.collect(Collectors.toList());
 			List<FeesDto> listDto = listDtos.stream().sorted(Comparator.comparing(FeesDto::getId).reversed())
@@ -109,11 +137,11 @@ public class FeesUtils {
 
 	public FeesDto feesDtosetValues(FeesUiDto uidto) throws IOException {
 		FeesDto feesDto = new FeesDto();
-		BatchDetails details = getBatchDetiles(uidto.getEmail());
+		BatchDetailsDto details = getBatchDetiles(uidto.getEmail());
 		return setFeesDetilesDto(uidto, feesDto, details);
 	}
 
-	public FeesDto setFeesDetilesDto(FeesUiDto uiDto, FeesDto feesDto, BatchDetails details) {
+	public FeesDto setFeesDetilesDto(FeesUiDto uiDto, FeesDto feesDto, BatchDetailsDto details) {
 		FeesDto feesDtos = new FeesDto(new FeesHistoryDto(), new AuditDto());
 		if (uiDto != null && uiDto.getStatus() != null
 				&& uiDto.getStatus().equalsIgnoreCase(Status.Joined.toString())) {

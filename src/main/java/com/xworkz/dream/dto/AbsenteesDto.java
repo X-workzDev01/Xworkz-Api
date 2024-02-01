@@ -21,6 +21,9 @@ public class AbsenteesDto {
 	private String name;
 	@JsonProperty("reason")
 	private String reason;
+	@JsonProperty("updatedBy")
+	private String updatedBy;
+	
 	
 	
 	

@@ -2,14 +2,10 @@ package com.xworkz.dream.service;
 
 import java.io.IOException;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -35,7 +31,11 @@ import com.xworkz.dream.dto.AbsentDaysDto;
 import com.xworkz.dream.dto.AbsenteesDto;
 import com.xworkz.dream.dto.AttendanceDto;
 import com.xworkz.dream.dto.AttendanceTrainee;
+import com.xworkz.dream.dto.BatchAttendanceDto;
+import com.xworkz.dream.dto.BatchDetailsDto;
+import com.xworkz.dream.dto.utils.WrapperUtil;
 import com.xworkz.dream.repository.AttendanceRepository;
+import com.xworkz.dream.wrapper.BatchWrapper;
 import com.xworkz.dream.wrapper.DreamWrapper;
 
 import freemarker.template.TemplateException;
@@ -54,40 +54,69 @@ public class AttendanceServiceImpl implements AttendanceService {
 	private String attendanceStartRange;
 	@Value("${sheets.attendanceInfoEndRange}")
 	private String attendanceEndRange;
-	@Value("${sheets.AttandanceInfoSheetName}")
-	private String AttandanceInfoSheetName;
-
+	@Value("${sheets.attandanceInfoSheetName}")
+	private String attandanceInfoSheetName;
+	@Value("${sheets.batchAttendanceInfoRange}")
+	private String batchAttendanceInfoRange;
+	@Autowired
+	private WrapperUtil util;
 	@Autowired
 	private DreamWrapper wrapper;
 	@Autowired
+	private BatchWrapper batchWrapper;
+	@Autowired
 	private CacheService cacheService;
+	@Autowired
+	private BatchService batchService;
+	@Autowired
+	private BatchAttendanceService batchAttendanceService;
 
 	private static Logger log = LoggerFactory.getLogger(AttendanceServiceImpl.class);
 
 	@Override
 	public ResponseEntity<String> writeAttendance(String spreadsheetId, AttendanceDto dto, HttpServletRequest request)
-			throws IOException, MessagingException, TemplateException {
+			throws IOException, MessagingException, TemplateException, IllegalAccessException {
 		ValidatorFactory factory = Validation.buildDefaultValidatorFactory();
-
 		Set<ConstraintViolation<AttendanceDto>> violation = factory.getValidator().validate(dto);
+		Boolean traineeAlreadyAdded = this.traineeAlreadyAdded(dto.getCourse(), dto.getId());
+		if (traineeAlreadyAdded == false) {
+			if (violation.isEmpty() && dto != null) {
+				if (dto.getAttemptStatus().equalsIgnoreCase(Status.Joined.toString())) {
+					wrapper.setValueAttendaceDto(dto);
+					List<Object> list = util.extractDtoDetails(dto);
+					list.remove(4);
+					attendanceRepository.writeAttendance(spreadsheetId, list, attendanceInfoRange);
+					cacheService.addAttendancdeToCache("attendanceData", "listOfAttendance", list);
+					log.info("Attendance Detiles Added Sucessfully SpreadsheetId: {} , Detiles: {} ", spreadsheetId,
+							dto.toString());
 
-		if (violation.isEmpty() && dto != null) {
-			if (dto.getAttemptStatus().equalsIgnoreCase(Status.Joined.toString())) {
-				wrapper.setValueAttendaceDto(dto);
-				List<Object> list = wrapper.listOfAttendance(dto);
-				attendanceRepository.writeAttendance(spreadsheetId, list, attendanceInfoRange);
-				cacheService.addAttendancdeToCache("attendanceData", "listOfAttendance", list);
-				log.info("Attendance Detiles Added Sucessfully SpreadsheetId: {} , Detiles: {} ", spreadsheetId,
-						dto.toString());
+					return ResponseEntity.ok("Attendance Detiles Added Sucessfully");
 
-				return ResponseEntity.ok("Attendance Detiles Added Sucessfully");
+				}
 
 			}
-
+		} else {
+			return ResponseEntity.ok("Trainee Already Added To Attendance");
 		}
 
 		return ResponseEntity.ok("Attendance detiles does not added ");
 
+	}
+
+	@Override
+	public Boolean traineeAlreadyAdded(String courseName, Integer id) throws IOException {
+		List<AttendanceDto> absentListByBatch = this.getAbsentListByBatch(courseName);
+		if(absentListByBatch !=null) {
+		boolean anyMatch = absentListByBatch.stream().anyMatch(dto -> {
+			if(dto.getId() !=null) {
+			Integer dtoId = dto.getId();
+			return dtoId != null && dtoId.equals(id);
+			}
+			return false;
+		});
+		return anyMatch;
+		}
+		return false;
 	}
 
 	@Override
@@ -98,9 +127,9 @@ public class AttendanceServiceImpl implements AttendanceService {
 		log.info("attendanceList in attendanceinfo sheet: " + attendanceList);
 		List<List<Object>> filteredList = attendanceList.stream().filter(entry -> batch.equals(entry.get(3)))
 				.collect(Collectors.toList());
-		for (List<Object> list : filteredList) {
-			AttendanceDto attendanceDto = wrapper.attendanceListToDto(list);
-			log.error("toDto: " + attendanceDto);
+
+		for (List<Object> values : filteredList) {
+			AttendanceDto attendanceDto = wrapper.attendanceListToDto(values);
 			{
 				for (AbsenteesDto dto : absentDtoList)
 					updateAttendanceDetails(attendanceDto, dto);
@@ -113,23 +142,30 @@ public class AttendanceServiceImpl implements AttendanceService {
 	private void updateAttendanceDetails(AttendanceDto attendanceDto, AbsenteesDto dto)
 			throws IOException, IllegalAccessException {
 		if (dto.getId().equals(attendanceDto.getId())) {
-			int rowIndex = findByID(sheetId, attendanceDto.getId());
-			String range = AttandanceInfoSheetName + attendanceStartRange + rowIndex + ":" + attendanceEndRange
+			int rowIndex = findByID(sheetId, dto.getId());
+			String range = attandanceInfoSheetName + attendanceStartRange + rowIndex + ":" + attendanceEndRange
 					+ rowIndex;
-			log.error("range : " + range);
+
 			if (attendanceDto.getId() != null) {
 				updateAbsentDatesAndReasons(attendanceDto, dto);
 				updateTotalAbsent(attendanceDto, dto);
 				List<List<Object>> values = Arrays.asList(wrapper.extractDtoDetails(attendanceDto));
 				ValueRange valueRange = new ValueRange();
+				if (!values.isEmpty()) {
+					List<Object> modifiedValues = new ArrayList<>(values.get(0).subList(0, values.get(0).size()));
+					modifiedValues.remove(0);
+					values.set(0, modifiedValues);
+					log.debug("values {}", values);
+				}
 				valueRange.setValues(values);
-				log.error(" values :" + values);
+
 				UpdateValuesResponse update = attendanceRepository.update(sheetId, range, valueRange);
 				cacheService.updateCacheAttendancde("attendanceData", "listOfAttendance", attendanceDto.getId(),
 						attendanceDto);
 				if (update.isEmpty()) {
 					log.info("Not updated attendance");
 				} else {
+					attendanceRepository.getAttendanceData(sheetId, attendanceInfoIDRange);
 					log.info("Attendance updated successfully");
 				}
 			}
@@ -151,6 +187,8 @@ public class AttendanceServiceImpl implements AttendanceService {
 		String updatedReasons = !currentReason.equals(null) && currentReason.contains("NA") ? newReason
 				: currentReason + "," + newReason;
 		attendanceDto.setReason(updatedReasons);
+		attendanceDto.getAdminDto().setUpdatedBy(dto.getUpdatedBy());
+		attendanceDto.getAdminDto().setUpdatedOn(LocalDate.now().toString());
 		log.info("Absent dates and reasons updated: " + attendanceDto.getAbsentDate() + ", "
 				+ attendanceDto.getReason());
 	}
@@ -184,11 +222,18 @@ public class AttendanceServiceImpl implements AttendanceService {
 			List<List<Object>> list = attendanceRepository.getAttendanceData(sheetId, attendanceInfoIDRange);
 			List<List<Object>> filteredList = list.stream().filter(entry -> batch.equals(entry.get(3))) // Filter by
 					.collect(Collectors.toList());
-			List<AttendanceTrainee> traineeInfoList = filteredList.stream()
-					.map(entry -> new AttendanceTrainee(Integer.valueOf((String) entry.get(1)),
-							String.valueOf(entry.get(2))))
-					.collect(Collectors.toList());
-			log.error(""+traineeInfoList);
+
+			List<AttendanceTrainee> traineeInfoList = new ArrayList<>();
+
+			for (List<Object> entry : filteredList) {
+				try {
+					Integer id = Integer.valueOf(entry.get(1).toString());
+					String name = (String) entry.get(2);
+					traineeInfoList.add(new AttendanceTrainee(id, name));
+				} catch (NumberFormatException e) {
+					e.getMessage();
+				}
+			}
 			return traineeInfoList;
 		} catch (IOException e) {
 
@@ -201,8 +246,8 @@ public class AttendanceServiceImpl implements AttendanceService {
 	public List<AbsentDaysDto> getAttendanceById(Integer id) {
 		log.info("Searching for attendance with ID: {}", id);
 		List<List<Object>> list;
-	
-		List<AbsentDaysDto> absentDaysList=new ArrayList<AbsentDaysDto>();
+
+		List<AbsentDaysDto> absentDaysList = new ArrayList<AbsentDaysDto>();
 		try {
 			list = attendanceRepository.getAttendanceData(sheetId, attendanceInfoIDRange);
 			if (list != null) {
@@ -215,15 +260,14 @@ public class AttendanceServiceImpl implements AttendanceService {
 					String[] splitAbsentDate = attendanceListToDto.getAbsentDate().split(",");
 					String[] splitReason = attendanceListToDto.getReason().split(",");
 					for (int i = 0; i < splitAbsentDate.length; i++) {
-						AbsentDaysDto daysDto=new AbsentDaysDto();
+						AbsentDaysDto daysDto = new AbsentDaysDto();
 						String date = splitAbsentDate[i].trim();
 						String reason = splitReason[i].trim();
 						daysDto.setDate(date);
 						daysDto.setReason(reason);
 						absentDaysList.add(daysDto);
 					}
-					
-					
+
 					return absentDaysList;
 				}
 			}
@@ -241,7 +285,7 @@ public class AttendanceServiceImpl implements AttendanceService {
 		if (attendanceList != null) {
 			log.debug("attendanceList in service: {}", attendanceList);
 			List<AttendanceDto> matchingAttendances = attendanceList.stream().map(wrapper::attendanceListToDto)
-					.filter(dto -> batch.equals(dto.getCourseInfo().getCourse())).collect(Collectors.toList());
+					.filter(dto -> batch.equals(dto.getCourse())).collect(Collectors.toList());
 			if (!matchingAttendances.isEmpty()) {
 				return matchingAttendances;
 			}
@@ -249,6 +293,32 @@ public class AttendanceServiceImpl implements AttendanceService {
 
 		return null;
 
+	}
+
+	@Override
+	public Boolean markTraineeAttendance(String courseName, Boolean batchAttendanceStatus)
+			throws IOException, IllegalAccessException {
+		if (courseName != null && !batchAttendanceStatus.equals(false)) {
+			BatchDetailsDto batchDetailsByCourseName = batchService.getBatchDetailsByCourseName(sheetId, courseName);
+			if (batchDetailsByCourseName != null) {
+				Boolean presentDate = batchAttendanceService.getPresentDate(courseName);
+				if (presentDate == false) {
+					BatchAttendanceDto setBatchValues = batchWrapper.setBatchValues(batchDetailsByCourseName);
+					batchAttendanceService.writeBatchAttendance(setBatchValues);
+					BatchDetailsDto detailsDto = new BatchDetailsDto();
+					Integer totalclass = batchService.gettotalClassByCourseName(courseName);
+					Integer batchAttendance = totalclass + 1;
+					detailsDto.setTotalClass(batchAttendance);
+					detailsDto.setCourseName(courseName);
+					batchService.updateBatchDetails(courseName, detailsDto);
+					return true;
+				}
+
+			}
+		} else {
+			return false;
+		}
+		return false;
 	}
 
 }

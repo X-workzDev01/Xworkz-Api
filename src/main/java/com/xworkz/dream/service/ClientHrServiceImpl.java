@@ -58,8 +58,7 @@ public class ClientHrServiceImpl implements ClientHrService {
 			List<Object> listItem = dreamWrapper.extractDtoDetails(clientHrDto);
 
 			if (clientHrRepository.saveClientHrInformation(listItem)) {
-				// clientCacheService.addHRDetailsToCache("hrDetails", "listofHRDetails",
-				// listItem);
+				clientCacheService.addHRDetailsToCache("hrDetails", "listofHRDetails", listItem);
 				log.info("Client HR information saved successfully");
 				return "Client HR information saved successfully";
 			} else {
@@ -141,7 +140,6 @@ public class ClientHrServiceImpl implements ClientHrService {
 			AuditDto auditDto = new AuditDto();
 			auditDto.setUpdatedOn(LocalDateTime.now().toString());
 			clientHrDto.getAdminDto().setUpdatedOn(LocalDateTime.now().toString());
-			log.info("updated values:" + clientHrDto);
 			List<List<Object>> values = Arrays.asList(dreamWrapper.extractDtoDetails(clientHrDto));
 
 			if (!values.isEmpty()) {
@@ -154,6 +152,10 @@ public class ClientHrServiceImpl implements ClientHrService {
 			UpdateValuesResponse updated = clientHrRepository.updateHrDetails(range, valueRange);
 			log.info("update response is :{}", updated);
 			if (updated != null) {
+				List<List<Object>> listOfItems = Arrays.asList(dreamWrapper.extractDtoDetails(clientHrDto));
+			log.info("{}",listOfItems);
+				log.info("values to be added:{}",values);
+		clientCacheService.updateHrDetailsInCache("hrDetails", "listofHRDetails",listOfItems);
 				return "updated Successfully";
 			} else {
 				return "not updated successfully";

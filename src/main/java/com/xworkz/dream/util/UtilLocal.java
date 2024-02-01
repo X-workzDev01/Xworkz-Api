@@ -9,6 +9,7 @@ import javax.mail.MessagingException;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
@@ -16,6 +17,7 @@ import org.springframework.stereotype.Component;
 import com.xworkz.dream.dto.FollowUpDto;
 import com.xworkz.dream.dto.TraineeDto;
 import com.xworkz.dream.dto.utils.Team;
+import com.xworkz.dream.smsservice.CsrMailService;
 
 import freemarker.template.TemplateException;
 
@@ -31,6 +33,9 @@ public class UtilLocal implements DreamUtil {
 	private String userName;
 	@Value("${mail.password}")
 	private String password;
+	@Value("${mailChimp.userName}")
+	private String chimpUserName;
+
 
 	private static final Logger logger = LoggerFactory.getLogger(UtilLocal.class);
 
@@ -84,7 +89,19 @@ public class UtilLocal implements DreamUtil {
 	@Override
 	public void sendBirthadyEmail(String traineeEmail, String subject, String name) {
 		// TODO Auto-generated method stub
-		
+
+	}
+
+	@Override
+	public boolean csrEmailSent(TraineeDto dto) {
+        logger.info("CSR Email sent successfully to {} with uniqueId {}", dto.getBasicInfo().getTraineeName());
+		return true;
+	}
+
+	@Override
+	public boolean csrSmsSent(String name, String contactNo) {
+		logger.info("SMS sent to {} with contact number {}", name, contactNo);
+		return false;
 	}
 
 }

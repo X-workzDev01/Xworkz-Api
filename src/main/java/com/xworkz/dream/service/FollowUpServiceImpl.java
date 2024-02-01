@@ -121,6 +121,35 @@ public class FollowUpServiceImpl implements FollowUpService {
 		return save;
 
 	}
+	
+	
+	@Override
+	public boolean addCsrToFollowUp(TraineeDto traineeDto, String spreadSheetId)
+			throws IOException, IllegalAccessException {
+		log.info("CSR Follow-up service running for traineeDto: {}", traineeDto);
+		if (traineeDto == null) {
+			return false;
+		}
+
+		FollowUpDto followUpDto = wrapper.setFollowUpCSR(traineeDto);
+		if (followUpDto == null) {
+			log.info("CSR Follow-up Enquiry service running for traineeDto: {}", traineeDto);
+			return false;
+		}
+		if (followUpDto.getCallback() == null) {
+			followUpDto.setCallback(LocalDate.now().plusDays(1).toString());
+		}
+		List<Object> data = wrapper.extractDtoDetails(followUpDto);
+		if (data == null) {
+			log.warn("Data is null. CSR Follow-up  service aborted.");
+			return false;
+		}
+		boolean save = repo.saveToFollowUp(spreadSheetId, data);
+		cacheService.addFollowUpToCache("followUpDetails", spreadSheetId, data);
+		log.info("CSR Follow-up  service completed successfully");
+		return save;
+
+	}
 
 	private int findByEmailForUpdate(String spreadsheetId, String email) throws IOException {
 

@@ -1,11 +1,8 @@
 spring:
    profiles:
-
-      active: local
-
+      active: dev
    freemarker:
     template-loader-path: classpath:/templates/
-
 sheets:
   appName: Dream Api
   range: A3:AC
@@ -27,7 +24,7 @@ sheets:
   followUpRowCurrentEndRange: H
   emailAndNameRange: xworkzApi!A2:J
   batchDetailsSheetName: batchDetails!
-  batchDetailsStartRange: A2
+  batchDetailsStartRange: B
   batchDetailsEndRange: K
   batchDetails: batchDetails!A2:I
   batchDetailsRange: batchDetails!A2:K
@@ -42,34 +39,45 @@ sheets:
   attendanceInfoByName: attendanceInfo!A2:K
   attendanceInfoStartRange : B
   attendanceInfoEndRange : K
-  AttandanceInfoSheetName: attendanceInfo!
+  attandanceInfoSheetName: attendanceInfo!
   attendanceListDefaultRange: attendanceInfo!J2:j
   attendanceInfoMarkAs:  J
-  feesRegister: FeesDetiles!B2:X
+  batchAttendanceInfoSheetName: batchAttendanceInfo!
+  batchAttendanceInfoRange: batchAttendanceInfo!A2:D
+  batchAttendanceInfoStartRange: B
+  batchAttendanceInfoEndRange: D
+  feesRegister: FeesDetiles!A2:X
   getFeesDetiles: FeesDetiles!A2:X
   getFeesDetilesfollowupRange : FeesFollowup!A2:J
   feesEmailRange: FeesDetiles!C2:C
-  
+  alternativeNumberRange: xworkzApi!AE3:AE
+  usnNumberRange: xworkzApi!AD3:AD
+  uniqueNumberRange: xworkzApi!AF3:AF
   clientInformationRange: clientDetails!B2:O
   clientInformationReadRange: clientDetails!A2:O
   clientStartRow: B
   clientEndRow: O
   clientSheetName: clientDetails!
-
   clientHrInformationRange: clientHRdetails!B2:K
   clientHrInformationReadRange: clientHRdetails!A2:K
   hrStartRow: B
   hrEndRow: K
   hrSheetName: clientHRdetails!
-
-
   hrFollowUpInformationRange: ClientHRFollowUpStatus!B2:I
   hrFollowUpInformationReadRange: ClientHRFollowUpStatus!A2:I
-
+  
 mailChimp:
   userName: 7FzbzzHIVQSVJVz5r4n/bGa/lhNWJCXUq6oqBxBCTYQ=
   password: +mgZp4MIPWMTkaJ/pwphDw==
   smtpHostChimp: yj/mpkyGHCjMIsVaHCMyxQZ4EBNjg/Ep6CbXhjKA7v0=
+  apiKey: q5s7n+mgA+RWaBxOgO6nHQ==
+  SMSusername: SL+xd2DS2FEsed/8nyHejg==
+  route: FDOqdLkJyWT+cko+myahVg==
+  templateIdEnquiry: 6HKBdaSKQYMlftb4kMWF0VTxBWbD67Do+B0r/IfRpi0=
+  sender: Qe3VMrqYDSZt78Y3g87Rew==
+  smsType: 9FNdD2Wl6OAroiJUgYK5+Q==
+  smsSuccess: sCGjjgUOM6/wvTXAUlLQ62PDqM+G+jmJW8AZLKyacf4=
+  templateIdCSRDrive: yZtoKQat7O9npjh2pzI0V20wLmn9iUpR6/J1L+bZ61c=
 
 mail:
    smtpHost: smtp.office365.com
@@ -78,7 +86,6 @@ mail:
    password: KeepIT@Temp789 
 
 
-    
 login:
   userFile: classpath:users.yml
   teamFile: classpath:team.yml

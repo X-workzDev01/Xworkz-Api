@@ -6,6 +6,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -38,18 +39,17 @@ public class FeesController {
 	@Value("${sheets.getFeesDetilesfollowupRange}")
 	private String getFeesDetilesfollowupRange;
 
-
 	@ApiOperation("Saving feesDetiles")
 	@PostMapping("/saveFees")
 	public ResponseEntity<String> writeFeesSaveOpration(@RequestBody FeesUiDto dto)
 			throws IOException, IllegalAccessException {
 		log.info("Running save Fees detiles controller ");
-		return ResponseEntity.ok(feesService.writeFeesDetiles(dto,feesEmailRange));
-
+		return ResponseEntity.ok(feesService.writeFeesDetiles(dto, feesEmailRange));
 
 	}
 
 	@ApiOperation("Update feesDetiles")
+
 	@PutMapping("/updateFeesDeties")
 	public ResponseEntity<String> updateFeesFollowUp(@RequestBody FeesDto dto) throws IOException {
 		return ResponseEntity.ok(feesService.updateFeesFollowUp(dto, getFeesDetilesRange, range));
@@ -61,7 +61,6 @@ public class FeesController {
 		return ResponseEntity
 				.ok(feesService.getDetilesByEmail(email, getFeesDetilesRange, getFeesDetilesfollowupRange));
 	}
-
 
 	@ApiOperation("Get All feesDetiles By Selected Option")
 	@GetMapping("/getFeesDetilesBySelectedOption/{minIndex}/{maxIndex}/{date}/{batch}/{paymentMode}")

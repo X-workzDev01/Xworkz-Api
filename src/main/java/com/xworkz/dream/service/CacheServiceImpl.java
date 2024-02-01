@@ -15,6 +15,7 @@ import org.springframework.cache.CacheManager;
 import org.springframework.stereotype.Component;
 
 import com.xworkz.dream.dto.AttendanceDto;
+import com.xworkz.dream.dto.BatchDetailsDto;
 import com.xworkz.dream.dto.FollowUpDto;
 import com.xworkz.dream.dto.StatusDto;
 import com.xworkz.dream.dto.TraineeDto;
@@ -221,8 +222,6 @@ public class CacheServiceImpl implements CacheService {
 
 	}
 
-	
-	
 	@SuppressWarnings("unchecked")
 	@Override
 	public void addContactNumberToCache(String cacheName, String spreadSheetId, Long contactNumber) {
@@ -248,13 +247,12 @@ public class CacheServiceImpl implements CacheService {
 			if (valueWrapper != null && valueWrapper.get() instanceof List) {
 
 				List<List<Object>> listOfItems = (List<List<Object>>) valueWrapper.get();
-				int matchingIndex = -1; // Initialize to -1, indicating not found initially
-
+				int matchingIndex = -1; 
 				for (int i = 0; i < listOfItems.size(); i++) {
 					List<Object> items = listOfItems.get(i);
 					if (items.get(0).equals(oldEmail)) {
-						matchingIndex = i; // Set the index when a match is found
-						break; // Exit the loop once a match is found
+						matchingIndex = i; 
+						break; 
 					}
 				}
 
@@ -268,22 +266,25 @@ public class CacheServiceImpl implements CacheService {
 			}
 		}
 	}
-	
+
 	@SuppressWarnings("unchecked")
 	@Override
 	public void addAttendancdeToCache(String cacheName, String key, List<Object> data) {
 		Cache cache = cacheManager.getCache(cacheName);
 		if (cache != null) {
+
 			ValueWrapper valueWrapper = cache.get(key);
-		
+
 			if (valueWrapper != null && valueWrapper.get() instanceof List) {
 				int size = (((List<List<Object>>) valueWrapper.get()).size());
 				data.set(0, size + 1);
 				((List<List<Object>>) valueWrapper.get()).add(data);
+
 				log.info("Updated cache for key: {}", key);
 			}
 		}
 	}
+
 	@Override
 	public void updateCacheAttendancde(String cacheName, String key, Integer id, AttendanceDto dto)
 			throws IllegalAccessException {
@@ -294,24 +295,59 @@ public class CacheServiceImpl implements CacheService {
 
 				@SuppressWarnings("unchecked")
 				List<List<Object>> ListOfItems = (List<List<Object>>) valueWrapper.get();
-				int matchingIndex = -1; // Initialize to -1, indicating not found initially
+				int matchingIndex = -1; 
 
 				for (int i = 0; i < ListOfItems.size(); i++) {
 					List<Object> items = ListOfItems.get(i);
-					if (items.get(1).equals(id)) {
+					Integer getId=Integer.valueOf(items.get(1).toString());
+					if (getId.equals(id)) {
 						matchingIndex = i;
+						break;
 					}
 				}
 				List<Object> list = wrapper.extractDtoDetails(dto);
-				log.error("list : "+list);
 				if (matchingIndex >= 0) {
-
+					list.remove(4);
 					ListOfItems.set(matchingIndex, list);
+
 					log.info("Updated cache data for id: {}", id);
 				}
 
 			} else {
 				log.debug("Data not found in the cache for the specified id: {}", id);
+			}
+		}
+	}
+	
+	@Override
+	public void updateCacheBatch(String cacheName, String key, String courseName, BatchDetailsDto dto)
+			throws IllegalAccessException {
+		Cache cache = cacheManager.getCache(cacheName);
+		if (cache != null) {
+			ValueWrapper valueWrapper = cache.get(key);
+			if (valueWrapper != null && valueWrapper.get() instanceof List) {
+
+				@SuppressWarnings("unchecked")
+				List<List<Object>> ListOfItems = (List<List<Object>>) valueWrapper.get();
+				int matchingIndex = -1; 
+
+				for (int i = 0; i < ListOfItems.size(); i++) {
+					List<Object> items = ListOfItems.get(i);
+					String getCourseName=String.valueOf(items.get(1).toString());
+					if (getCourseName.equalsIgnoreCase(courseName)) {
+						matchingIndex = i;
+						break;
+					}
+				}
+				List<Object> list = wrapper.extractDtoDetails(dto);
+				if (matchingIndex >= 0) {
+					ListOfItems.set(matchingIndex, list);
+
+					log.info("Updated cache data for courseNmae: {}", courseName);
+				}
+
+			} else {
+				log.debug("Data not found in the cache for the specified id: {}", courseName);
 			}
 		}
 	}
