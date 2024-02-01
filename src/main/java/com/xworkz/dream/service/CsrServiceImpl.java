@@ -51,13 +51,6 @@ public class CsrServiceImpl implements CsrService {
 	public ResponseEntity<String> validateAndRegister(TraineeDto dto, HttpServletRequest request) {
 		try {
 			log.info("Writing data for TraineeDto: {}", dto);
-			CSR csr = new CSR();
-
-			if (dto.getCourseInfo().getOfferedAs().equalsIgnoreCase("CSR")) {
-				csr.setCsrFlag("1");
-				csr.setAlternateContactNumber(0l);
-				csr.setUniqueId(spreadsheetId);
-			}
 			wrapper.setValuesForCSRDto(dto);
 			List<Object> list = wrapper.extractDtoDetails(dto);
 			repo.writeData(spreadsheetId, list);
