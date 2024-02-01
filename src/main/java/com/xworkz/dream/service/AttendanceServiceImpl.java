@@ -5,9 +5,12 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import javax.mail.MessagingException;
 import javax.servlet.http.HttpServletRequest;
@@ -33,8 +36,12 @@ import com.xworkz.dream.dto.AttendanceDto;
 import com.xworkz.dream.dto.AttendanceTrainee;
 import com.xworkz.dream.dto.BatchAttendanceDto;
 import com.xworkz.dream.dto.BatchDetailsDto;
+import com.xworkz.dream.dto.FollowUpDto;
+import com.xworkz.dream.dto.TraineeDto;
 import com.xworkz.dream.dto.utils.WrapperUtil;
 import com.xworkz.dream.repository.AttendanceRepository;
+import com.xworkz.dream.repository.FollowUpRepository;
+import com.xworkz.dream.repository.RegisterRepository;
 import com.xworkz.dream.wrapper.BatchWrapper;
 import com.xworkz.dream.wrapper.DreamWrapper;
 
@@ -42,8 +49,6 @@ import freemarker.template.TemplateException;
 
 @Service
 public class AttendanceServiceImpl implements AttendanceService {
-	@Autowired
-	private AttendanceRepository attendanceRepository;
 	@Value("${login.sheetId}")
 	private String sheetId;
 	@Value("${sheets.attendanceInfoRange}")
@@ -70,6 +75,12 @@ public class AttendanceServiceImpl implements AttendanceService {
 	private BatchService batchService;
 	@Autowired
 	private BatchAttendanceService batchAttendanceService;
+	@Autowired
+	private FollowUpRepository repository;
+	@Autowired
+	private AttendanceRepository attendanceRepository;
+	@Autowired
+	private RegisterRepository registerRepository;
 
 	private static Logger log = LoggerFactory.getLogger(AttendanceServiceImpl.class);
 
@@ -106,15 +117,15 @@ public class AttendanceServiceImpl implements AttendanceService {
 	@Override
 	public Boolean traineeAlreadyAdded(String courseName, Integer id) throws IOException {
 		List<AttendanceDto> absentListByBatch = this.getAbsentListByBatch(courseName);
-		if(absentListByBatch !=null) {
-		boolean anyMatch = absentListByBatch.stream().anyMatch(dto -> {
-			if(dto.getId() !=null) {
-			Integer dtoId = dto.getId();
-			return dtoId != null && dtoId.equals(id);
-			}
-			return false;
-		});
-		return anyMatch;
+		if (absentListByBatch != null) {
+			boolean anyMatch = absentListByBatch.stream().anyMatch(dto -> {
+				if (dto.getId() != null) {
+					Integer dtoId = dto.getId();
+					return dtoId != null && dtoId.equals(id);
+				}
+				return false;
+			});
+			return anyMatch;
 		}
 		return false;
 	}
@@ -127,12 +138,16 @@ public class AttendanceServiceImpl implements AttendanceService {
 		log.info("attendanceList in attendanceinfo sheet: " + attendanceList);
 		List<List<Object>> filteredList = attendanceList.stream().filter(entry -> batch.equals(entry.get(3)))
 				.collect(Collectors.toList());
-
+		Boolean markTraineeAttendance = this.markTraineeAttendance(batch, true);
 		for (List<Object> values : filteredList) {
 			AttendanceDto attendanceDto = wrapper.attendanceListToDto(values);
 			{
 				for (AbsenteesDto dto : absentDtoList)
-					updateAttendanceDetails(attendanceDto, dto);
+					if (markTraineeAttendance == true) {
+						updateAttendanceDetails(attendanceDto, dto);
+					} else {
+						updateAttendanceDetails(attendanceDto, dto);
+					}
 
 			}
 
@@ -319,6 +334,76 @@ public class AttendanceServiceImpl implements AttendanceService {
 			return false;
 		}
 		return false;
+	}
+
+	@Override
+	public List<AttendanceDto> addJoined(String courseName) throws IOException, IllegalAccessException {
+		List<List<Object>> followUpDetails = repository.getFollowUpDetails(sheetId);
+		List<List<Object>> readData = registerRepository.readData(sheetId);
+		List<AttendanceDto> attendanceDto = new ArrayList<AttendanceDto>();
+
+		if (followUpDetails != null && !followUpDetails.isEmpty()) {
+			List<String> optionalFollowupDto = filterFollowUpDetails(followUpDetails);
+			List<TraineeDto> filterTraineDetails = filterTraineDetails(courseName, readData);
+			if (!optionalFollowupDto.isEmpty()) {
+				optionalFollowupDto.stream().forEach(email -> {
+					filterTraineDetails.stream().filter(dto -> dto.getBasicInfo().getEmail().equalsIgnoreCase(email))
+							.forEach(dto -> {
+								try {
+									AttendanceDto saveAttendance = wrapper.saveAttendance(dto);
+									log.info("Created AttendanceDto: {}", saveAttendance);
+
+									if (!this.traineeAlreadyAdded(courseName, saveAttendance.getId())) {
+										processAttendance(saveAttendance, courseName);
+										attendanceDto.add(saveAttendance);
+									}
+
+								} catch (IllegalAccessException | IOException e) {
+									log.error(e.getMessage());
+								}
+
+							});
+				});
+				return attendanceDto;
+			}
+			return Collections.emptyList();
+		}
+		return null;
+
+	}
+
+	private List<String> filterFollowUpDetails(List<List<Object>> followUpDetails) {
+		return followUpDetails.stream().filter(row -> "Joined".equals(row.get(8)))
+				.map(this::createFollowupDtoFromDetails).collect(Collectors.toList());
+	}
+
+	private List<TraineeDto> filterTraineDetails(String courseName, List<List<Object>> traineDetails) {
+		return traineDetails.stream().filter(row -> courseName.equals(row.get(9)))
+				.map(this::createTraineeDtoFormDetails).collect(Collectors.toList());
+	}
+
+	private TraineeDto createTraineeDtoFormDetails(List<Object> details) {
+		TraineeDto listToDto = wrapper.listToDto(details);
+		return listToDto;
+	}
+
+	private void processAttendance(AttendanceDto saveAttendance, String courseName)
+			throws IOException, IllegalAccessException {
+		List<Object> extractDtoDetails = wrapper.extractDtoDetails(saveAttendance);
+		extractDtoDetails.remove(4);
+		System.err.println("extractDtoDetails : " + extractDtoDetails);
+		boolean writeAttendance = attendanceRepository.writeAttendance(sheetId, extractDtoDetails, attendanceInfoRange);
+		if (writeAttendance == true) {
+			cacheService.addAttendancdeToCache("attendanceData", "listOfAttendance", extractDtoDetails);
+		} else {
+			log.debug("Attendance Details is not Added");
+		}
+
+	}
+
+	private String createFollowupDtoFromDetails(List<Object> details) {
+		FollowUpDto listToFollowUpDTO = wrapper.listToFollowUpDTO(details);
+		return listToFollowUpDTO.getBasicInfo().getEmail();
 	}
 
 }

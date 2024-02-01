@@ -60,16 +60,16 @@ public class AttendanceRepositoryImpl implements AttendanceRepository {
 	@Override
 	public boolean writeAttendance(String spreadsheetId, List<Object> row, String range) throws IOException {
 		  log.info("Writing attendance to sheet...");
-		List<List<Object>> values = new ArrayList<>();
-		List<Object> rowData = new ArrayList<>();
-		rowData.add(""); // Placeholder for A column
-		rowData.addAll(row.subList(1, row.size())); // Start from the second element (B column)
-		values.add(rowData);
-		ValueRange body = new ValueRange().setValues(values);
-		sheetsService.spreadsheets().values().append(spreadsheetId, range, body).setValueInputOption("USER_ENTERED")
-				.execute();
-		 log.info("Attendance written successfully.");
-		return true;
+
+			ValueRange value = sheetsService.spreadsheets().values().get(sheetId, range).execute();
+			if (value.getValues() != null && value.getValues().size() >= 1) {
+				log.info("Attendance register sucessfully");
+				return this.saveDetilesWithDataSize(row, range);
+
+			} else {
+				log.info("Attendance register sucessfully");
+				return this.saveDetilesWithoutSize(row, range);
+			}
 	}
 	
 
@@ -89,5 +89,41 @@ public class AttendanceRepositoryImpl implements AttendanceRepository {
 		return sheetsService.spreadsheets().values().update(spreadsheetId, range, valueRange).setValueInputOption("RAW")
 				.execute();
 	}
+	
+	
+	@Override
+	public boolean saveDetilesWithDataSize(List<Object> list, String attendanceRange) throws IOException {
+		List<List<Object>> values = new ArrayList<>();
+		List<Object> rowData = new ArrayList<>();
+		rowData.add("");
+		rowData.addAll(list.subList(1, list.size()));
+		values.add(rowData);
+
+		ValueRange body = new ValueRange().setValues(values);
+		sheetsService.spreadsheets().values().append( sheetId , attendanceRange, body)
+				.setValueInputOption("USER_ENTERED").execute();
+		log.debug("registering fees repository data list is : {}", body);
+
+		return true;
+
+	}
+	
+	@Override
+	public boolean saveDetilesWithoutSize(List<Object> list, String attendanceRange) throws IOException {
+
+		List<List<Object>> values = new ArrayList<>();
+		List<Object> rowData = new ArrayList<>();
+		rowData.add("");
+		rowData.addAll(list.subList(1, list.size()));
+		values.add(rowData);
+
+		ValueRange body = new ValueRange().setValues(values);
+		sheetsService.spreadsheets().values().append( sheetId , attendanceRange, body)
+				.setValueInputOption("USER_ENTERED").execute();
+		log.debug("registering fees repository data list is : {}", body);
+		return true;
+
+	}
+
 
 }
