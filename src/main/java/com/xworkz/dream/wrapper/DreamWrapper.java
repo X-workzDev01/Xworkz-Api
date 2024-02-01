@@ -13,8 +13,6 @@ import com.xworkz.dream.constants.Status;
 import com.xworkz.dream.dto.AttendanceDto;
 import com.xworkz.dream.dto.AuditDto;
 import com.xworkz.dream.dto.BasicInfoDto;
-import com.xworkz.dream.dto.BatchAttendanceDto;
-import com.xworkz.dream.dto.BatchDetails;
 import com.xworkz.dream.dto.BatchDetailsDto;
 import com.xworkz.dream.dto.CSR;
 import com.xworkz.dream.dto.CourseDto;
@@ -693,10 +691,11 @@ public class DreamWrapper {
 
 	}
 
-	public AttendanceDto saveAttendance(FollowUpDto dto) {
+	public AttendanceDto saveAttendance(TraineeDto dto) {
+		System.err.println("Dto in wrapper attendance wrapper : "+dto);
 		AttendanceDto attendanceDto = new AttendanceDto();
 		attendanceDto.setId(dto.getId());
-		attendanceDto.setCourse(dto.getCourseName());
+		attendanceDto.setCourse(dto.getCourseInfo().getCourse());
 		attendanceDto.setTraineeName(dto.getBasicInfo().getTraineeName());
 		if (attendanceDto.getTotalAbsent() == null) {
 			attendanceDto.setTotalAbsent(0);
@@ -708,8 +707,8 @@ public class DreamWrapper {
 			attendanceDto.setReason("NA");
 		}
 		AuditDto admin = new AuditDto();
-		admin.setCreatedBy(dto.getAdminDto().getUpdatedBy());
-		admin.setCreatedOn(dto.getAdminDto().getUpdatedOn());
+		admin.setCreatedBy("Swagger");
+		admin.setCreatedOn(LocalDate.now().toString());
 		admin.setUpdatedBy("NA");
 		admin.setUpdatedOn("NA");
 		attendanceDto.setAdminDto(admin);

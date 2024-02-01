@@ -1,6 +1,7 @@
 package com.xworkz.dream.resource;
 
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -46,7 +47,7 @@ public class AttendanceController {
 	@ApiOperation(value = "To register attendance details in the google sheets")
 	@PostMapping("/register")
 	public ResponseEntity<String> registerAttendance(@RequestBody AttendanceDto values, HttpServletRequest request)
-			throws IOException, MessagingException, TemplateException,IllegalAccessException {
+			throws IOException, MessagingException, TemplateException, IllegalAccessException {
 		log.info("Received request to register attendance.");
 		ResponseEntity<String> response = attendanceService.writeAttendance(spreadsheetId, values, request);
 
@@ -72,7 +73,8 @@ public class AttendanceController {
 	}
 
 	@GetMapping("/id/{id}")
-	public ResponseEntity<AbsentDto> getAbsentDetails(@PathVariable Integer id,@RequestParam String batch) throws IOException {
+	public ResponseEntity<AbsentDto> getAbsentDetails(@PathVariable Integer id, @RequestParam String batch)
+			throws IOException {
 		List<AbsentDaysDto> listOfAbsentDays = attendanceService.getAttendanceById(id);
 		Integer gettotalClassByCourseName = batchService.gettotalClassByCourseName(batch);
 		AbsentDto absentDto = new AbsentDto();
@@ -89,15 +91,29 @@ public class AttendanceController {
 				HttpStatus.OK);
 		return attendanceList;
 	}
-	
+
 	@PostMapping("/batchAttendance")
-	public String markBatchAttendance(@RequestParam String courseName,@RequestParam Boolean batchAttendanceStatus) throws IOException, IllegalAccessException {
+	public String markBatchAttendance(@RequestParam String courseName, @RequestParam Boolean batchAttendanceStatus)
+			throws IOException, IllegalAccessException {
 		Boolean markTraineeAttendance = attendanceService.markTraineeAttendance(courseName, batchAttendanceStatus);
-		if(markTraineeAttendance==true) {
+		if (markTraineeAttendance == true) {
 			return "Batch Attendance Update successfully";
-		}else {
+		} else {
 			return "Batch Attendance Already Update";
 		}
+	}
+
+	@PostMapping("/addTrainee")
+	public ResponseEntity<Map<Integer, String>> addTraineeToJoind(@RequestParam String courseName)
+			throws IOException, IllegalAccessException {
+		List<AttendanceDto> addJoined = attendanceService.addJoined(courseName);
+		Map<Integer, String> traineeNameAndCourseNameMap = new HashMap<>();
+
+		for (AttendanceDto attendanceDto : addJoined) {
+			traineeNameAndCourseNameMap.put(attendanceDto.getId(), attendanceDto.getTraineeName());
+		}
+
+		return new ResponseEntity<>(traineeNameAndCourseNameMap, HttpStatus.OK);
 	}
 
 }

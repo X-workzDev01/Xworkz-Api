@@ -27,7 +27,7 @@ public class DreamApiController {
 	@Value("${login.sheetId}")
 	private String id;
 	private static final Logger log = LoggerFactory.getLogger(DreamApiController.class);
-
+	@Autowired
 	private DreamService service;
 
 	@Autowired
@@ -69,17 +69,6 @@ public class DreamApiController {
 			}
 		}
 		return null;
-	}
-	
-	@PostMapping("/addTrainee")
-	public String addTraineeToJoind(@RequestParam String status, @RequestParam String courseName) throws IOException, IllegalAccessException {
-		Boolean addJoined = service.addJoined(status, courseName);
-		if(addJoined==true) {
-			return "Trainee Add to Joind";
-		}else {
-			return "Trainee Already Joind";
-		}
-		
 	}
 
 }

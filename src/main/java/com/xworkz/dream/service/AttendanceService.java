@@ -36,5 +36,7 @@ public interface AttendanceService {
 
 	public Boolean markTraineeAttendance(String courseName, Boolean batchAttendanceStatus)
 			throws IOException, IllegalAccessException;
+	
+	public List<AttendanceDto> addJoined(String courseName) throws IOException,IllegalAccessException;
 
 }

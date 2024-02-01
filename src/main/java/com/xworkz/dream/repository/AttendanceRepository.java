@@ -12,5 +12,9 @@ public interface AttendanceRepository {
 	List<List<Object>> getAttendanceData(String spreadsheetId, String attendanceInfoRange) throws IOException;
 
 	public UpdateValuesResponse update(String spreadsheetId, String range2, ValueRange valueRange) throws IOException;
+	
+	public boolean saveDetilesWithDataSize(List<Object> list, String attendanceRange) throws IOException;
+	
+	public boolean saveDetilesWithoutSize(List<Object> list, String attendanceRange) throws IOException ;
 
 }

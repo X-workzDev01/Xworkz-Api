@@ -38,7 +38,6 @@ public class BatchAttendanceServiceImpl implements BatchAttendanceService {
 			throws IOException, IllegalAccessException {
 		ValidatorFactory factory = Validation.buildDefaultValidatorFactory();
 		Set<ConstraintViolation<BatchAttendanceDto>> violation = factory.getValidator().validate(batchAttendanceDto);
-
 		if (violation.isEmpty() && batchAttendanceDto != null) {
 			List<Object> extractDtoDetails = util.extractDtoDetails(batchAttendanceDto);
 			repository.batchAttendance(extractDtoDetails, batchAttendanceInfoRange);
@@ -53,13 +52,16 @@ public class BatchAttendanceServiceImpl implements BatchAttendanceService {
 	@Override
 	public Boolean getPresentDate(String courseName) throws IOException {
 		List<List<Object>> batchAttendanceData = repository.getBatchAttendanceData(batchAttendanceInfoRange);
-		List<String> presentDates = batchAttendanceData.stream()
-				.filter(batchAttendance -> courseName.equals(batchAttendance.get(1)))
-				.map(batchAttendance -> (String) batchAttendance.get(3)).collect(Collectors.toList());
-		for (String date : presentDates) {
-			if (date.equals(LocalDate.now().toString())) {
-				return true;
+		if (batchAttendanceData != null) {
+			List<String> presentDates = batchAttendanceData.stream()
+					.filter(batchAttendance -> courseName.equals(batchAttendance.get(1)))
+					.map(batchAttendance -> (String) batchAttendance.get(3)).collect(Collectors.toList());
+			for (String date : presentDates) {
+				if (date != null && date.equals(LocalDate.now().toString())) {
+					return true;
+				}
 			}
+
 		}
 		return false;
 	}
