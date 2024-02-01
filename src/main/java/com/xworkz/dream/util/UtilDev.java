@@ -288,17 +288,15 @@ public class UtilDev implements DreamUtil {
 			context.setVariable("name", dto.getBasicInfo().getTraineeName());
 			context.setVariable("usnNumber", dto.getCsrDto().getUsnNumber());
 			context.setVariable("collegeName", dto.getEducationInfo().getCollegeName());
+			context.setVariable("uniqueID", dto.getCsrDto().getUniqueId());
 			String content = templateEngine.process("CSRMailTemplate", context);
 
 			MimeMessagePreparator messagePreparator = mailSentCSRDrive(dto, content);
 			return csrMailService.sentCsrMail(messagePreparator);
 
 		} else {
-			context.setVariable("name", dto.getBasicInfo().getTraineeName());
-			context.setVariable("usnNumber", dto.getCsrDto().getUsnNumber());
-			context.setVariable("collegeName", dto.getEducationInfo().getCollegeName());
-			context.setVariable("uniqueID", "NILL");
-			String content = templateEngine.process("CSRMailTemplate", context);
+			context.setVariable("recipientName", dto.getBasicInfo().getTraineeName());
+			String content = templateEngine.process("CourseContentTemplate", context);
 			MimeMessagePreparator messagePreparator = mailSentCSRDrive(dto, content);
 			return csrMailService.sentCsrMail(messagePreparator);
 		}
@@ -320,7 +318,6 @@ public class UtilDev implements DreamUtil {
 	@Override
 	public boolean csrSmsSent(String name, String contactNo) {
 		logger.info("SMS sent to {} with contact number {}", name, contactNo);
-		csrSmsService.csrSMSSent(name, contactNo);
 		return false;
 	}
 }
