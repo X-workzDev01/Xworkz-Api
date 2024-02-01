@@ -21,6 +21,7 @@ import org.springframework.stereotype.Service;
 
 import com.google.api.services.sheets.v4.model.UpdateValuesResponse;
 import com.google.api.services.sheets.v4.model.ValueRange;
+import com.xworkz.dream.dto.CSR;
 import com.xworkz.dream.dto.SheetsDto;
 import com.xworkz.dream.dto.TraineeDto;
 import com.xworkz.dream.repository.RegisterRepository;
@@ -50,6 +51,9 @@ public class RegistrationServiceImpl implements RegistrationService {
 	@Autowired
 	private CacheService cacheService;
 
+	@Autowired
+	private CsrService csrService;
+
 	private static final Logger log = LoggerFactory.getLogger(DreamServiceImpl.class);
 
 	@Override
@@ -57,7 +61,16 @@ public class RegistrationServiceImpl implements RegistrationService {
 
 			throws MessagingException, TemplateException {
 		try {
-
+			String uniqueId = csrService.generateUniqueID();
+			CSR csr = new CSR();
+			log.info("set {} if offeredAs a CSR",
+					dto.getCourseInfo().getOfferedAs().equalsIgnoreCase("csr") ? "1" : "0");
+			csr.setCsrFlag(dto.getCourseInfo().getOfferedAs().equalsIgnoreCase("csr") ? "1" : "0");
+			csr.setActiveFlag("Active");
+			csr.setAlternateContactNumber(0l);
+			csr.setUniqueId(dto.getCourseInfo().getOfferedAs().equalsIgnoreCase("csr") ? uniqueId : "NA");
+			csr.setUsnNumber("NA");
+			dto.setCsrDto(csr);
 			wrapper.setValuesForTraineeDto(dto);
 			List<Object> list = wrapper.extractDtoDetails(dto);
 			repo.writeData(spreadsheetId, list);

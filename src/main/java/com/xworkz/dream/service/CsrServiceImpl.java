@@ -1,7 +1,11 @@
 package com.xworkz.dream.service;
 
 import java.io.IOException;
+import java.time.LocalDate;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Random;
+import java.util.Set;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -38,6 +42,8 @@ public class CsrServiceImpl implements CsrService {
 	private CacheService cacheService;
 	@Value("${login.sheetId}")
 	private String spreadsheetId;
+	private static final int MAX_ATTEMPTS = 99999;
+	private static Set<Integer> generatedIDs = new HashSet<>();
 
 	private static final Logger log = LoggerFactory.getLogger(DreamServiceImpl.class);
 
@@ -45,25 +51,10 @@ public class CsrServiceImpl implements CsrService {
 	public ResponseEntity<String> validateAndRegister(TraineeDto dto, HttpServletRequest request) {
 		try {
 			log.info("Writing data for TraineeDto: {}", dto);
-			wrapper.setValuesForTraineeDto(dto);
-
+			wrapper.setValuesForCSRDto(dto);
 			List<Object> list = wrapper.extractDtoDetails(dto);
-
 			repo.writeData(spreadsheetId, list);
-			cacheService.updateCache("sheetsData", spreadsheetId, list);
-
-			if (dto.getBasicInfo().getEmail() != null) {
-				cacheService.addEmailToCache("emailData", spreadsheetId, dto.getBasicInfo().getEmail());
-
-			}
-			if (dto.getBasicInfo().getContactNumber() != null) {
-				cacheService.addContactNumberToCache("contactData", spreadsheetId,
-						dto.getBasicInfo().getContactNumber());
-
-			}
-			log.info("Saving birth details: {}", dto);
-			service.saveBirthDayInfo(spreadsheetId, dto, request);
-
+			AddToCache(dto, request, list);
 			boolean status = followUpService.addCsrToFollowUp(dto, spreadsheetId);
 
 			if (status) {
@@ -72,7 +63,8 @@ public class CsrServiceImpl implements CsrService {
 				if (dto.getCourseInfo().getOfferedAs().equals("CSR")) {
 					boolean sent = util.csrEmailSent(dto);
 					if (sent) {
-						util.csrSmsSent(dto.getBasicInfo().getTraineeName(), dto.getBasicInfo().getContactNumber().toString());
+						util.csrSmsSent(dto.getBasicInfo().getTraineeName(),
+								dto.getBasicInfo().getContactNumber().toString());
 						return ResponseEntity.ok("Data written successfully, Added to follow Up, sent course content");
 					}
 
@@ -88,20 +80,46 @@ public class CsrServiceImpl implements CsrService {
 
 	}
 
-	@Override
-	public boolean registerCsr(CsrDto csrDto, HttpServletRequest request) {
+	private void AddToCache(TraineeDto dto, HttpServletRequest request, List<Object> list)
+			throws IllegalAccessException, IOException {
+		cacheService.updateCache("sheetsData", spreadsheetId, list);
+		if (dto.getBasicInfo().getEmail() != null) {
+			cacheService.addEmailToCache("emailData", spreadsheetId, dto.getBasicInfo().getEmail());
+		}
+		if (dto.getBasicInfo().getContactNumber() != null) {
+			cacheService.addContactNumberToCache("contactData", spreadsheetId, dto.getBasicInfo().getContactNumber());
+		}
+		log.info("Saving birth details: {}", dto);
+		service.saveBirthDayInfo(spreadsheetId, dto, request);
+		// adding alternative number to cache
+		cacheService.addContactNumberToCache("alternativeNumber", "listOfAlternativeContactNumbers",
+				dto.getCsrDto().getAlternateContactNumber());
+		// adding USN number to cache
+		cacheService.addEmailToCache("usnNumber", "listOfUsnNumbers", dto.getCsrDto().getUsnNumber());
+		// adding Unique Number to caches
+		cacheService.addEmailToCache("uniqueNumber", "listofUniqueNumbers", dto.getCsrDto().getUniqueId());
+	}
+
+	public boolean registerCsr(CsrDto csrDto, HttpServletRequest request) throws IOException {
 		TraineeDto traineeDto = new TraineeDto();
+		CSR csr = new CSR();
 		traineeDto.setCourseInfo(new CourseDto("NA"));
 		traineeDto.setOthersDto(new OthersDto("NA"));
-		traineeDto.setAdminDto(csrDto.getAdminDto());
 		traineeDto.setBasicInfo(csrDto.getBasicInfo());
 		traineeDto.setEducationInfo(csrDto.getEducationInfo());
-		CSR csr = new CSR(csrDto.getUsnNumber(), csrDto.getAlternateContactNumber());
+		traineeDto.getCourseInfo().setOfferedAs(csrDto.getOfferedAs());
+		String uniqueId = generateUniqueID();
+		log.info("set {} if offeredAs a CSR",
+				traineeDto.getCourseInfo().getOfferedAs().equalsIgnoreCase("csr") ? "1" : "0");
+		csr.setCsrFlag(traineeDto.getCourseInfo().getOfferedAs().equalsIgnoreCase("csr") ? "1" : "0");
+		csr.setActiveFlag("Active");
+		csr.setAlternateContactNumber(csrDto.getAlternateContactNumber());
+		csr.setUniqueId(traineeDto.getCourseInfo().getOfferedAs().equalsIgnoreCase("csr") ? uniqueId : "NA");
+		csr.setUsnNumber(csrDto.getUsnNumber());
 		traineeDto.setCsrDto(csr);
 		validateAndRegister(traineeDto, request);
-		cacheService.addContactNumberToCache("alternativeNumber", spreadsheetId, csrDto.getAlternateContactNumber());
-		return true;
 
+		return true;
 	}
 
 	@Override
@@ -110,33 +128,64 @@ public class CsrServiceImpl implements CsrService {
 		if (contactNumber != null) {
 			List<List<Object>> listOfC_number = repo.getContactNumbers(spreadsheetId);
 			List<List<Object>> listOfA_number = repo.getAlternativeNumber(spreadsheetId);
-			log.info("null check for list");
-
-			if (listOfC_number != null || listOfA_number != null) {
-				log.info("find the contact number");
-				for (List<Object> list : listOfC_number) {
-
-					if (list != null && !list.isEmpty() && list.get(0) != null
-							&& list.get(0).toString().equals(String.valueOf(contactNumber))) {
-						System.out.println("Number found");
-						isExists = true;
-					}
-				}
-				if (!isExists) {
-					for (List<Object> list : listOfA_number) {
-
-						if (list != null && !list.isEmpty() && list.get(0) != null
-								&& list.get(0).toString().equals(String.valueOf(contactNumber))) {
-							System.out.println("Number found");
-							isExists = true;
-						}
-					}
-
-				}
-			}
+			log.info("checking contact number is sheet {}", contactNumber);
+			isExists = containsContactNumber(listOfC_number, contactNumber)
+					|| containsContactNumber(listOfA_number, contactNumber);
 		}
 		return isExists;
+	}
 
+	private boolean containsContactNumber(List<List<Object>> listOfNumbers, Long contactNumber) {
+		log.info("checking contact number existence in sheet,{}", contactNumber);
+		return listOfNumbers != null
+				&& listOfNumbers.stream().filter(list -> list != null && !list.isEmpty() && list.get(0) != null)
+						.anyMatch(list -> list.get(0).toString().equals(String.valueOf(contactNumber)));
+	}
+
+	@Override
+	public boolean checkUsnNumber(String usnNumber) throws IOException {
+		log.info("check Usn Number ");
+		if (usnNumber != null) {
+			List<List<Object>> listOfUsn = repo.getUsnNumber(spreadsheetId);
+			return listOfUsn != null
+					&& listOfUsn.stream().filter(list -> list != null && !list.isEmpty() && list.get(0) != null)
+							.anyMatch(list -> list.get(0).toString().equals(usnNumber));
+		}
+		return false;
+	}
+
+	@Override
+	public String generateUniqueID() {
+		int minValue = 1;
+		int maxValue = 99999;
+		Random random = new Random();
+		int attempts = 0;
+		String year = LocalDate.now().toString().substring(2, 4);
+		while (attempts < MAX_ATTEMPTS) {
+			Integer uniqueID = minValue + random.nextInt(maxValue - minValue + 1);
+			if (generatedIDs.add(uniqueID)) {
+				if (uniqueID.toString().length() == 4) {
+					return "XBR" + year + "0" + uniqueID.toString();
+				} else {
+					return "XBR" + year + uniqueID.toString();
+				}
+			}
+			attempts++;
+		}
+		log.error("Max attempts has been completed, it may Generate duplicate number");
+		throw new IllegalStateException("Unable to generate a unique ID after " + MAX_ATTEMPTS + " attempts.");
+	}
+
+	@Override
+	public boolean checkUniqueNumber(String uniqueNumber) throws IOException {
+		if (uniqueNumber != null) {
+			log.info("checking unique number");
+			List<List<Object>> listOfUniqueNumber = repo.getUniqueNumbers(spreadsheetId);
+			return listOfUniqueNumber != null && listOfUniqueNumber.stream()
+					.filter(list -> list != null && !list.isEmpty() && list.get(0) != null)
+					.anyMatch(list -> list.get(0).toString().equals(uniqueNumber));
+		}
+		return false;
 	}
 
 }

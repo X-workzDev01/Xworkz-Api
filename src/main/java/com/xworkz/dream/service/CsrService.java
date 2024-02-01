@@ -13,8 +13,14 @@ public interface CsrService {
 
 	ResponseEntity<String> validateAndRegister(TraineeDto csrDto, HttpServletRequest request);
 
-	boolean registerCsr(CsrDto csrDto, HttpServletRequest request);
+	boolean registerCsr(CsrDto csrDto, HttpServletRequest request) throws IOException;
 
 	boolean checkContactNumber(Long contactNumber) throws IOException;
+
+	boolean checkUsnNumber(String usnNumber) throws IOException;
+
+	boolean checkUniqueNumber(String uniqueNumber) throws IOException;
+
+	String generateUniqueID();
 
 }

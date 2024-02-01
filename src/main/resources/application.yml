@@ -1,11 +1,8 @@
 spring:
    profiles:
-
       active: dev
-
    freemarker:
     template-loader-path: classpath:/templates/
-
 sheets:
   appName: Dream Api
   range: A3:AC
@@ -27,7 +24,7 @@ sheets:
   followUpRowCurrentEndRange: H
   emailAndNameRange: xworkzApi!A2:J
   batchDetailsSheetName: batchDetails!
-  batchDetailsStartRange: A2
+  batchDetailsStartRange: B
   batchDetailsEndRange: K
   batchDetails: batchDetails!A2:I
   batchDetailsRange: batchDetails!A2:K
@@ -42,14 +39,20 @@ sheets:
   attendanceInfoByName: attendanceInfo!A2:K
   attendanceInfoStartRange : B
   attendanceInfoEndRange : K
-  AttandanceInfoSheetName: attendanceInfo!
+  attandanceInfoSheetName: attendanceInfo!
   attendanceListDefaultRange: attendanceInfo!J2:j
   attendanceInfoMarkAs:  J
-  feesRegister: FeesDetiles!B2:X
+  batchAttendanceInfoSheetName: batchAttendanceInfo!
+  batchAttendanceInfoRange: batchAttendanceInfo!A2:D
+  batchAttendanceInfoStartRange: B
+  batchAttendanceInfoEndRange: D
+  feesRegister: FeesDetiles!A2:X
   getFeesDetiles: FeesDetiles!A2:X
   getFeesDetilesfollowupRange : FeesFollowup!A2:J
   feesEmailRange: FeesDetiles!C2:C
   alternativeNumberRange: xworkzApi!AE3:AE
+  usnNumberRange: xworkzApi!AD3:AD
+  uniqueNumberRange: xworkzApi!AF3:AF
   clientInformationRange: clientDetails!B2:O
   clientInformationReadRange: clientDetails!A2:O
   clientStartRow: B
@@ -60,11 +63,9 @@ sheets:
   hrStartRow: B
   hrEndRow: K
   hrSheetName: clientHRdetails!
-
-
   hrFollowUpInformationRange: ClientHRFollowUpStatus!B2:I
   hrFollowUpInformationReadRange: ClientHRFollowUpStatus!A2:I
-
+  
 mailChimp:
   userName: 7FzbzzHIVQSVJVz5r4n/bGa/lhNWJCXUq6oqBxBCTYQ=
   password: +mgZp4MIPWMTkaJ/pwphDw==
