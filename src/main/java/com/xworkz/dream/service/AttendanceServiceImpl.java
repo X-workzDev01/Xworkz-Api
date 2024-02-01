@@ -127,6 +127,7 @@ public class AttendanceServiceImpl implements AttendanceService {
 		log.info("attendanceList in attendanceinfo sheet: " + attendanceList);
 		List<List<Object>> filteredList = attendanceList.stream().filter(entry -> batch.equals(entry.get(3)))
 				.collect(Collectors.toList());
+
 		for (List<Object> values : filteredList) {
 			AttendanceDto attendanceDto = wrapper.attendanceListToDto(values);
 			{
@@ -144,6 +145,7 @@ public class AttendanceServiceImpl implements AttendanceService {
 			int rowIndex = findByID(sheetId, dto.getId());
 			String range = attandanceInfoSheetName + attendanceStartRange + rowIndex + ":" + attendanceEndRange
 					+ rowIndex;
+
 			if (attendanceDto.getId() != null) {
 				updateAbsentDatesAndReasons(attendanceDto, dto);
 				updateTotalAbsent(attendanceDto, dto);
@@ -156,6 +158,7 @@ public class AttendanceServiceImpl implements AttendanceService {
 					log.debug("values {}", values);
 				}
 				valueRange.setValues(values);
+
 				UpdateValuesResponse update = attendanceRepository.update(sheetId, range, valueRange);
 				cacheService.updateCacheAttendancde("attendanceData", "listOfAttendance", attendanceDto.getId(),
 						attendanceDto);
@@ -219,6 +222,7 @@ public class AttendanceServiceImpl implements AttendanceService {
 			List<List<Object>> list = attendanceRepository.getAttendanceData(sheetId, attendanceInfoIDRange);
 			List<List<Object>> filteredList = list.stream().filter(entry -> batch.equals(entry.get(3))) // Filter by
 					.collect(Collectors.toList());
+
 			List<AttendanceTrainee> traineeInfoList = new ArrayList<>();
 
 			for (List<Object> entry : filteredList) {

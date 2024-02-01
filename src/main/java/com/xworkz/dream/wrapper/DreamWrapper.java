@@ -417,6 +417,21 @@ public class DreamWrapper {
 		return details;
 	}
 
+	public List<Object> listOfAttendance(AttendanceDto dto) {
+		List<Object> row = new ArrayList<Object>();
+		row.add(dto.getAttendanceId());
+		row.add(dto.getId());
+		row.add(dto.getBasicInfo().getTraineeName());
+		row.add(dto.getCourseInfo().getCourse());
+		row.add(dto.getTotalAbsent());
+		row.add(dto.getAbsentDate());
+		row.add(dto.getReason());
+		row.add(dto.getAdminDto().getCreatedBy());
+		row.add(dto.getAdminDto().getCreatedOn());
+		return row;
+
+	}
+
 	public AttendanceDto attendanceListToDto(List<Object> row) {
 		AttendanceDto attendanceDto = new AttendanceDto(null, null, null, null, null, null, null, null, new AuditDto());
 		int rowSize = row.size();

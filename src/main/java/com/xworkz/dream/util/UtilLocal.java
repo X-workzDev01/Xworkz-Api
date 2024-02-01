@@ -49,7 +49,7 @@ public class UtilLocal implements DreamUtil {
 	@Profile("local")
 	@Override
 	public int generateOTP() {
-		System.out.println("Local Otp");
+		logger.info("Local Otp");
 		return 123456;
 	}
 
@@ -76,7 +76,7 @@ public class UtilLocal implements DreamUtil {
 
 	@Override
 	public boolean sendWhatsAppLink(List<String> recipients, String subject, String whatsAppLink) {
-		System.out.println("send mail");
+		logger.info("send mail");
 		return true;
 	}
 

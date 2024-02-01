@@ -54,31 +54,34 @@ public class FeesSchedulerImpl implements FeesScheduler {
 							afterAMonthChangeStatusAutometically(dto, detiles);
 
 		try {
-			feesRepository.getAllFeesDetiles(getFeesDetilesRange).stream().filter(
-					items -> items != null && items.size() > 2 && items.get(2) != null && items.contains("Active"))
-					.map(items -> {
-						try {
-							FeesDto dto = feesWrapper.listToFeesDTO(items);
-							if (dto.getFeesHistoryDto().getEmail()
-									.equalsIgnoreCase(feesUtil.getTraineeDetiles(dto.getFeesHistoryDto().getEmail()))) {
-								BatchDetailsDto detiles = feesUtil.getBatchDetiles(dto.getFeesHistoryDto().getEmail());
-								updateCSRofferedAfterFreeTraining(dto, detiles);
-								return null;
-							} else {
-								BatchDetailsDto detiles = feesUtil.getBatchDetiles(dto.getFeesHistoryDto().getEmail());
-								afterAMonthChangeStatusAutometically(dto, detiles);
+			List<List<Object>> getAllFeesDetiles = feesRepository.getAllFeesDetiles(getFeesDetilesRange);
+			if (getAllFeesDetiles != null) {
+				getAllFeesDetiles.stream().filter(
+						items -> items != null && items.size() > 2 && items.get(2) != null && items.contains("Active"))
+						.map(items -> {
+							try {
+								FeesDto dto = feesWrapper.listToFeesDTO(items);
+								if (dto.getFeesHistoryDto().getEmail().equalsIgnoreCase(
+										feesUtil.getTraineeDetiles(dto.getFeesHistoryDto().getEmail()))) {
+									BatchDetails detiles = feesUtil.getBatchDetiles(dto.getFeesHistoryDto().getEmail());
+									updateCSRofferedAfterFreeTraining(dto, detiles);
+									return null;
+								} else {
+									BatchDetails detiles = feesUtil.getBatchDetiles(dto.getFeesHistoryDto().getEmail());
+									afterAMonthChangeStatusAutometically(dto, detiles);
 
+
+									return null;
+								}
+							} catch (IOException | IllegalAccessException e) {
+								log.error("Fetching Detiles is not Found");
 								return null;
 							}
-						} catch (IOException | IllegalAccessException e) {
-		                    log.error("Error processing fee details", e);
-							return null;
-						}
-					} catch (IOException | IllegalAccessException e) {
-						log.error("Error processing fee details", e);
-						return null;
-					}
-				}).collect(Collectors.toList());
+						}).collect(Collectors.toList());
+			}
+		} catch (IOException e) {
+		}
+
 		return null;
 	}
   
@@ -89,6 +92,7 @@ public class FeesSchedulerImpl implements FeesScheduler {
 			dto.setFeesStatus("FEES_DUE");
 			int index = util.findIndex(dto.getFeesHistoryDto().getEmail());
 			String followupRanges = "FeesDetiles!B" + index + ":AB" + index;
+
 			log.debug("Updating fees status. Range: {}, FeesDto: {}", followupRanges, dto);
 
 			List<Object> list = util.extractDtoDetails(dto);
@@ -105,8 +109,6 @@ public class FeesSchedulerImpl implements FeesScheduler {
 		}
 		return dto;
 	}
-
-
 	private FeesDto updateCSRofferedAfterFreeTraining(FeesDto dto, BatchDetailsDto detiles)
 			throws IOException, IllegalAccessException {
 		if (dto.getFeesStatus().equalsIgnoreCase("FREE") && LocalDate.parse(detiles.getStartDate()).plusDays(59)
