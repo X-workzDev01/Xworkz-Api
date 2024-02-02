@@ -204,7 +204,6 @@ public class DreamWrapper {
 	public TraineeDto listToDto(List<Object> row) {
 		TraineeDto traineeDto = new TraineeDto(0, new BasicInfoDto(), new EducationInfoDto(), new CourseDto(),
 				new OthersDto(), new AuditDto(), new CSR());
-
 		// Assuming the list follows this order: id ,traineeName, email, contactNumber,
 		// qualification, stream,
 		// yearOfPassout, collegeName, batch, branch, course, referalName,
@@ -319,6 +318,22 @@ public class DreamWrapper {
 
 		if (rowSize > 28 && row.get(28) != null && !row.get(28).toString().isEmpty()) {
 			traineeDto.getAdminDto().setUpdatedOn(row.get(28).toString());
+		}
+		if (rowSize > 29 && row.get(29) != null && !row.get(29).toString().isEmpty()) {
+			traineeDto.getCsrDto().setUsnNumber(row.get(29).toString());
+		}
+		if (rowSize > 30 && row.get(30) != null && !row.get(30).toString().isEmpty()) {
+			Long alternativeContactNumber = Long.parseLong(row.get(30).toString());
+			traineeDto.getCsrDto().setAlternateContactNumber(alternativeContactNumber);
+		}
+		if (rowSize > 31 && row.get(31) != null && !row.get(31).toString().isEmpty()) {
+			traineeDto.getCsrDto().setUniqueId(row.get(31).toString());
+		}
+		if (rowSize > 32 && row.get(32) != null && !row.get(32).toString().isEmpty()) {
+			traineeDto.getCsrDto().setCsrFlag(row.get(32).toString());
+		}
+		if (rowSize > 33 && row.get(33) != null && !row.get(33).toString().isEmpty()) {
+			traineeDto.getCsrDto().setActiveFlag(row.get(33).toString());
 		}
 
 		return traineeDto;
@@ -708,7 +723,7 @@ public class DreamWrapper {
 	}
 
 	public AttendanceDto saveAttendance(TraineeDto dto) {
-		System.err.println("Dto in wrapper attendance wrapper : "+dto);
+		System.err.println("Dto in wrapper attendance wrapper : " + dto);
 		AttendanceDto attendanceDto = new AttendanceDto();
 		attendanceDto.setId(dto.getId());
 		attendanceDto.setCourse(dto.getCourseInfo().getCourse());
