@@ -59,14 +59,12 @@ public class CsrServiceImpl implements CsrService {
 
 			if (status) {
 				log.info("Data written successfully to spreadsheetId and Added to Follow Up: {}", spreadsheetId);
+				util.csrSmsSent(dto.getBasicInfo().getTraineeName(), dto.getBasicInfo().getContactNumber().toString());
+				boolean sent = util.csrEmailSent(dto);
 
-				if (dto.getCourseInfo().getOfferedAs().equals("CSR")) {
-					boolean sent = util.csrEmailSent(dto);
-					if (sent) {
-						util.csrSmsSent(dto.getBasicInfo().getTraineeName(),
-								dto.getBasicInfo().getContactNumber().toString());
-						return ResponseEntity.ok("Data written successfully, Added to follow Up, sent course content");
-					}
+				if (sent) {
+					log.info(dto.getBasicInfo().getEmail());
+					return ResponseEntity.ok("Data written successfully, Added to follow Up, sent course content");
 
 				}
 			} else {

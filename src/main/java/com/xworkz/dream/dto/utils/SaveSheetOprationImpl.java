@@ -49,7 +49,6 @@ public class SaveSheetOprationImpl implements SheetSaveOpration {
 		List<Object> rowData = new ArrayList<>();
 		rowData.addAll(list.subList(1, list.size()));
 		values.add(rowData);
-
 		ValueRange body = new ValueRange().setValues(values);
 		sheetsService.spreadsheets().values().append(spreadSheetId, feesRegisterRange, body)
 				.setValueInputOption("USER_ENTERED").execute();
@@ -78,14 +77,13 @@ public class SaveSheetOprationImpl implements SheetSaveOpration {
 		rowData.add("");
 		rowData.addAll(list.subList(1, list.size()));
 		values.add(rowData);
-
 		ValueRange body = new ValueRange().setValues(values);
 		sheetsService.spreadsheets().values().append(spreadSheetId, feesRegisterRange, body)
 				.setValueInputOption("USER_ENTERED").execute();
 		log.debug("registering fees repository data list is : {}", body);
 
 		return true;
-
+ 
 	}
 
 	@Override
