@@ -1,5 +1,6 @@
 package com.xworkz.dream.dto;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -11,10 +12,9 @@ import lombok.ToString;
 @Getter
 @Setter
 @NoArgsConstructor
-@AllArgsConstructor 
+@AllArgsConstructor
 
 public class AuditDto {
-
 	private String createdBy;
 	private String createdOn;
 	private String updatedBy;

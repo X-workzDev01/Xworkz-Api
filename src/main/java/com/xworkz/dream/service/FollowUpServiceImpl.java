@@ -102,7 +102,7 @@ public class FollowUpServiceImpl implements FollowUpService {
 			return false;
 		}
 
-		FollowUpDto followUpDto = wrapper.setFollowUpEnwuiry(traineeDto);
+		FollowUpDto followUpDto = wrapper.setFollowUpEnquiry(traineeDto);
 		if (followUpDto == null) {
 			log.info("Follow-up Enquiry service running for traineeDto: {}", traineeDto);
 			return false;
@@ -121,8 +121,7 @@ public class FollowUpServiceImpl implements FollowUpService {
 		return save;
 
 	}
-	
-	
+
 	@Override
 	public boolean addCsrToFollowUp(TraineeDto traineeDto, String spreadSheetId)
 			throws IOException, IllegalAccessException {
@@ -314,18 +313,17 @@ public class FollowUpServiceImpl implements FollowUpService {
 			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
 					.body("An error occurred with credentials file ");
 		}
-	}
+	} 
 
 	@Override
 	public ResponseEntity<FollowUpDto> getFollowUpByEmail(String spreadsheetId, String email,
 			HttpServletRequest request) throws IOException {
 		log.info("Get follow-up by email service start. SpreadsheetId: {}, Email: {}", spreadsheetId, email);
 		List<List<Object>> data = repo.getFollowUpDetails(spreadsheetId);
-		FollowUpDto followUp = data.stream().filter(list -> list.size() > 2 && list.get(2) instanceof String)
-				.filter(list -> ((String) list.get(2)).equalsIgnoreCase(email)
-						&& list.get(14).toString().equalsIgnoreCase("Active"))
-				.findFirst().map(wrapper::listToFollowUpDTO).orElse(null);
-
+		FollowUpDto followUp = data.stream()
+				.filter(list -> list.get(2).toString().equalsIgnoreCase(email)).findFirst()
+				.map(wrapper::listToFollowUpDTO).orElse(null);
+ 
 		if (followUp != null) {
 			log.info("Follow-up details found for email: {}", email);
 			return ResponseEntity.ok(followUp);
@@ -342,7 +340,7 @@ public class FollowUpServiceImpl implements FollowUpService {
 				+ "CourseName: {}, Date: {}", spreadsheetId, startingIndex, maxRows, status, courseName, date);
 		List<FollowUpDto> followUpDto = new ArrayList<FollowUpDto>();
 		List<List<Object>> lists = repo.getFollowUpDetails(spreadsheetId).stream()
-				.filter(items -> items.get(14).toString().equalsIgnoreCase("Active")).collect(Collectors.toList());
+				.filter(items -> items.get(15).toString().equalsIgnoreCase("Active")).collect(Collectors.toList());
 		List<List<Object>> traineeData = repository.readData(spreadsheetId);
 
 		if (status != null && !status.isEmpty() && lists != null) {
@@ -765,14 +763,16 @@ public class FollowUpServiceImpl implements FollowUpService {
 	public FollowUpDto getFollowUpDetailsByEmail(String spreadsheetId, String email) throws IOException {
 		log.info("Get Follow-up Details by Email service start. SpreadsheetId: {}, Email: {}", spreadsheetId, email);
 		FollowUpDto followUpDto = new FollowUpDto();
+
 		if (email != null && !email.isEmpty()) {
 			List<List<Object>> lists = repo.getFollowUpDetails(spreadsheetId);
+
 			if (!lists.isEmpty()) {
 				List<List<Object>> data = lists.stream()
-						.filter(list -> list.stream()
-								.anyMatch(value -> value.toString().equalsIgnoreCase(email)
-										&& list.get(14).toString().equalsIgnoreCase("Active")))
+						.filter(items -> items.get(15).toString().equalsIgnoreCase("Active")
+								&& items.get(2).toString().equalsIgnoreCase(email))
 						.collect(Collectors.toList());
+
 				for (List<Object> list : data) {
 					followUpDto = wrapper.listToFollowUpDTO(list);
 				}
@@ -800,7 +800,7 @@ public class FollowUpServiceImpl implements FollowUpService {
 		} else {
 			log.info("Follow-up updated successfully. SpreadsheetId: {}, Email: {}", spreadsheetId, email);
 			return ResponseEntity.ok("Updated Successfully");
-		}
+		}  
 	}
 
 	private List<FollowUpDto> getLimitedRowsBatchAndDate(List<List<Object>> values, String date, int startingIndex,
@@ -836,7 +836,7 @@ public class FollowUpServiceImpl implements FollowUpService {
 
 		if (dataList != null && date != null) {
 			List<List<Object>> list = dataList.stream()
-					.filter(item -> item.get(9).equals(date) && item.get(14).toString().equalsIgnoreCase("Active")
+					.filter(item -> item.get(9).equals(date) && item.get(15).toString().equalsIgnoreCase("Active")
 							&& !item.get(8).toString().equalsIgnoreCase(Status.Joined.toString())
 							&& !item.get(8).toString()
 									.equalsIgnoreCase(Status.Not_interested.toString().replace("_", " ")))

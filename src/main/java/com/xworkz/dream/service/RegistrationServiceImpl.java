@@ -50,7 +50,6 @@ public class RegistrationServiceImpl implements RegistrationService {
 	private String traineeSheetName;
 	@Autowired
 	private CacheService cacheService;
-
 	@Autowired
 	private CsrService csrService;
 
@@ -61,6 +60,7 @@ public class RegistrationServiceImpl implements RegistrationService {
 
 			throws MessagingException, TemplateException {
 		try {
+			log.info("Writing data for TraineeDto: {}", dto);
 			String uniqueId = csrService.generateUniqueID();
 			CSR csr = new CSR();
 			log.info("set {} if offeredAs a CSR",
@@ -71,6 +71,7 @@ public class RegistrationServiceImpl implements RegistrationService {
 			csr.setUniqueId(dto.getCourseInfo().getOfferedAs().equalsIgnoreCase("CSR Offered") ? uniqueId : "NA");
 			csr.setUsnNumber("NA");
 			dto.setCsrDto(csr);
+
 			wrapper.setValuesForTraineeDto(dto);
 			List<Object> list = wrapper.extractDtoDetails(dto);
 			repo.writeData(spreadsheetId, list);
@@ -312,12 +313,12 @@ public class RegistrationServiceImpl implements RegistrationService {
 	@Override
 	public TraineeDto getDetailsByEmail(String spreadsheetId, String email) throws IOException {
 		List<List<Object>> data = repo.readData(spreadsheetId);
-		TraineeDto trainee = data.stream().filter(list -> list.contains(email)).findFirst().map(wrapper::listToDto)
-				.orElse(null);
-
+		TraineeDto trainee = data.stream()
+				.filter(list -> list.get(2).toString().contentEquals(email))
+				.findFirst().map(wrapper::listToDto).orElse(null);
 		if (trainee != null) {
 			return trainee;
-		} else {
+		} else { 
 			return null;
 
 		}
@@ -328,7 +329,6 @@ public class RegistrationServiceImpl implements RegistrationService {
 		List<TraineeDto> suggestion = new ArrayList<>();
 		if (value != null) {
 			try {
-				log.error(courseName);
 				if (!courseName.equalsIgnoreCase("null")) {
 					List<List<Object>> dataList = repo.getEmailsAndNames(spreadsheetId, value).stream()
 							.filter(list -> list.get(9) != null && list.get(9).toString().equalsIgnoreCase(courseName))

@@ -2,7 +2,6 @@ package com.xworkz.dream.service;
 
 import java.io.IOException;
 import java.util.List;
-import com.xworkz.dream.dto.BatchDetails;
 
 public interface WhatsAppService {
 

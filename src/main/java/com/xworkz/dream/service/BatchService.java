@@ -7,7 +7,6 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.http.ResponseEntity;
 
-import com.xworkz.dream.dto.BatchDetails;
 import com.xworkz.dream.dto.BatchDetailsDto;
 import com.xworkz.dream.dto.TraineeDto;
 
