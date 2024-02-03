@@ -320,11 +320,9 @@ public class FollowUpServiceImpl implements FollowUpService {
 			HttpServletRequest request) throws IOException {
 		log.info("Get follow-up by email service start. SpreadsheetId: {}, Email: {}", spreadsheetId, email);
 		List<List<Object>> data = repo.getFollowUpDetails(spreadsheetId);
-		System.out.println(data);
 		FollowUpDto followUp = data.stream()
 				.filter(list -> list.get(2).toString().equalsIgnoreCase(email)).findFirst()
 				.map(wrapper::listToFollowUpDTO).orElse(null);
-		System.err.println(followUp);
  
 		if (followUp != null) {
 			log.info("Follow-up details found for email: {}", email);
@@ -770,11 +768,6 @@ public class FollowUpServiceImpl implements FollowUpService {
 			List<List<Object>> lists = repo.getFollowUpDetails(spreadsheetId);
 
 			if (!lists.isEmpty()) {
-//				List<List<Object>> data = lists.stream()
-//						.filter(list -> list.stream()
-//								.anyMatch(value -> value.toString().equalsIgnoreCase(email)
-//										&& list.get(14).toString().equalsIgnoreCase("Active")))
-//						.collect(Collectors.toList());
 				List<List<Object>> data = lists.stream()
 						.filter(items -> items.get(15).toString().equalsIgnoreCase("Active")
 								&& items.get(2).toString().equalsIgnoreCase(email))

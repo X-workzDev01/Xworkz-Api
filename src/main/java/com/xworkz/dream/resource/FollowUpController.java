@@ -74,7 +74,6 @@ public class FollowUpController {
 	@GetMapping("/getFollowUpEmail/{email}")
 	public ResponseEntity<FollowUpDto> getFollowUpEmail(@RequestHeader String spreadsheetId, @PathVariable String email,
 			HttpServletRequest request) throws IOException {
-		System.out.println("vinoda      ");
 		log.info("Fetching follow-up details by email: spreadsheetId={}, email={}", spreadsheetId, email);
 		return service.getFollowUpByEmail(spreadsheetId, email, request);
 	}

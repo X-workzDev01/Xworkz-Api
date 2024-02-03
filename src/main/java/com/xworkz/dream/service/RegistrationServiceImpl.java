@@ -73,9 +73,7 @@ public class RegistrationServiceImpl implements RegistrationService {
 			dto.setCsrDto(csr);
 
 			wrapper.setValuesForTraineeDto(dto);
-			System.out.println(dto);
 			List<Object> list = wrapper.extractDtoDetails(dto);
-			System.err.println(list);
 			repo.writeData(spreadsheetId, list);
 
 			if (dto.getBasicInfo().getEmail() != null) {
@@ -331,7 +329,6 @@ public class RegistrationServiceImpl implements RegistrationService {
 		List<TraineeDto> suggestion = new ArrayList<>();
 		if (value != null) {
 			try {
-				System.err.println(courseName);
 				if (!courseName.equalsIgnoreCase("null")) {
 					List<List<Object>> dataList = repo.getEmailsAndNames(spreadsheetId, value).stream()
 							.filter(list -> list.get(9) != null && list.get(9).toString().equalsIgnoreCase(courseName))

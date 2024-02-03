@@ -15,7 +15,6 @@ import lombok.ToString;
 @AllArgsConstructor
 
 public class AuditDto {
-	@JsonProperty
 	private String createdBy;
 	private String createdOn;
 	private String updatedBy;
