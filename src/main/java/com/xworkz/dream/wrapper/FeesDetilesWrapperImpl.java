@@ -28,9 +28,7 @@ public class FeesDetilesWrapperImpl implements FeesDetilesWrapper {
 		FeesDto feesDto = new FeesDto(0, null, new FeesHistoryDto(), null, null, null, 0, null, null, null, null,
 				new AuditDto(), null, null);
 
-		if (validateCell(SheetConstant.COLUMN_SL_NO)) {
-			feesDto.setId(Integer.valueOf(row.get(SheetConstant.COLUMN_SL_NO.getIndex()).toString()));
-		}
+
 		if (validateCell(SheetConstant.COLUMN_SL_NO)) {
 			feesDto.getFeesHistoryDto()
 					.setId(Integer.valueOf(row.get(SheetConstant.COLUMN_SL_NO.getIndex()).toString()));
@@ -153,8 +151,8 @@ public class FeesDetilesWrapperImpl implements FeesDetilesWrapper {
 					(String) row.get(SheetConstant.COLUMN_FOLLOWIUP_CALBACK_DATE.getIndex() - 1));
 
 		}
-
-		return feesHistoryDto;
-	}
+ 
+		return feesHistoryDto; 
+	} 
 
 }

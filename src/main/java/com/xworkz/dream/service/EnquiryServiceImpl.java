@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import com.xworkz.dream.dto.AuditDto;
 import com.xworkz.dream.dto.CSR;
 import com.xworkz.dream.dto.CourseDto;
 import com.xworkz.dream.dto.EnquiryDto;
@@ -102,15 +103,14 @@ public class EnquiryServiceImpl implements EnquiryService {
 
 	@Override
 	public boolean addEnquiry(EnquiryDto enquiryDto, String spreadsheetId, HttpServletRequest request) {
+		wrapper.validateEnquiry(enquiryDto);
 		TraineeDto traineeDto = new TraineeDto();
-		EnquiryDto validatedEnquiryDto = wrapper.validateEnquiry(enquiryDto);
-
 		traineeDto.setCourseInfo(new CourseDto("NA"));
 		traineeDto.setOthersDto(new OthersDto("NA"));
-		traineeDto.setAdminDto(enquiryDto.getAdminDto());
 		traineeDto.setBasicInfo(enquiryDto.getBasicInfo());
 		traineeDto.setEducationInfo(enquiryDto.getEducationInfo());
-
+		traineeDto.setAdminDto(enquiryDto.getAdminDto());
+		
 		try {
 			writeDataEnquiry(spreadsheetId, traineeDto, request);
 		} catch (MessagingException | TemplateException e) {

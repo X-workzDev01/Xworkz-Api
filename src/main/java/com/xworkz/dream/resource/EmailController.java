@@ -7,14 +7,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.xworkz.dream.smsservice.CSRSMSService;
-import com.xworkz.dream.util.DreamUtil;
-import com.xworkz.dream.util.EncryptionHelper;
 
 @RestController
 @RequestMapping("/")
 public class EmailController {
-	@Autowired
-	private EncryptionHelper helper;
+
 	@Autowired
 	private CSRSMSService service;
 
@@ -25,5 +22,7 @@ public class EmailController {
 
 		return ResponseEntity.ok("mail sent sucessfully");
 	}
+	
+	
 
 }
