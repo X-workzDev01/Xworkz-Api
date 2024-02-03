@@ -309,7 +309,7 @@ public class UtilDev implements DreamUtil {
 
 			messageHelper.setFrom(helper.decrypt(chimpUserName));
 			messageHelper.setTo(dto.getBasicInfo().getEmail());
-			messageHelper.setSubject("Hello csr drive");
+			messageHelper.setSubject("X-workz");
 			messageHelper.setText(content, true);
 		};
 		return messagePreparator;
@@ -317,7 +317,9 @@ public class UtilDev implements DreamUtil {
 
 	@Override
 	public boolean csrSmsSent(String name, String contactNo) {
+		
 		logger.info("SMS sent to {} with contact number {}", name, contactNo);
+		csrSmsService.csrSMSSent(name, contactNo);
 		return false;
 	}
 }

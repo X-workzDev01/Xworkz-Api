@@ -15,7 +15,6 @@ import org.springframework.stereotype.Service;
 
 import com.xworkz.dream.constants.Status;
 import com.xworkz.dream.dto.AuditDto;
-import com.xworkz.dream.dto.BatchDetails;
 import com.xworkz.dream.dto.BatchDetailsDto;
 import com.xworkz.dream.dto.TraineeDto;
 import com.xworkz.dream.feesDtos.FeesDto;
@@ -30,7 +29,7 @@ public class FeesUtils {
 	@Value("${login.sheetId}")
 	private String spreadSheetId;
 	@Autowired
-	private RegistrationService registrationService;
+	private RegistrationService registrationService; 
 	@Autowired
 	private BatchService batchService;
 

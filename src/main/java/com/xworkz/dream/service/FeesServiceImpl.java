@@ -7,9 +7,6 @@ import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.cache.annotation.CacheConfig;
-import org.springframework.cache.annotation.CachePut;
-import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
 import com.xworkz.dream.dto.utils.FeesUtils;
@@ -118,7 +115,7 @@ public class FeesServiceImpl implements FeesService {
 
 	public List<FeesDto> getFeesDetilesByemail(String email, String getFeesDetilesRange) throws IOException {
 		List<FeesDto> filteredDtos = feesRepository.getAllFeesDetiles(getFeesDetilesRange).stream()
-				.filter(items -> items != null && items.size() > 2 && items.get(2) != null && items.contains("Active")
+				.filter(items -> items != null && items.size() > 2 && items.get(2) != null 
 						&& items.get(2).toString().equalsIgnoreCase(email))
 				.map(items -> {
 					try {

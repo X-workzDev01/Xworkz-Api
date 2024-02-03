@@ -5,21 +5,21 @@ spring:
     template-loader-path: classpath:/templates/
 sheets:
   appName: Dream Api
-  range: A3:AC
+  range: A3:AH 
   emailRange: C3:C
   contactNumberRange: D3:D
   dropdownRange: dropDowns!A2:I
   loginInfoRange: loginInfo!A2:B
-  followUpRange: followUp!A2:O
+  followUpRange: followUp!A2:Q
   followUpStatus: followUpStatus!A2:L
   rowStartRange: B
-  rowEndRange: AC    
+  rowEndRange: AH  
   traineeSheetName: xworkzApi!
   followUpSheetName: followUp!
   followUprowStartRange: B2
-  followUprowEndRange: O
+  followUprowEndRange: Q
   followUpEmailRange: followUp!C2:C
-  idRange: xworkzApi!A3:A   
+  idRange: xworkzApi!A3:A    
   followUpRowCurrentStartRange: G
   followUpRowCurrentEndRange: H
   emailAndNameRange: xworkzApi!A2:J
