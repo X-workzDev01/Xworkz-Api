@@ -29,7 +29,7 @@ public class FeesUtils {
 	@Value("${login.sheetId}")
 	private String spreadSheetId;
 	@Autowired
-	private RegistrationService registrationService; 
+	private RegistrationService registrationService;  
 	@Autowired
 	private BatchService batchService;
 
@@ -42,7 +42,7 @@ public class FeesUtils {
 				traineeDto.getCourseInfo().getCourse());
 		//log.info("Finding Batch detiles by course "); 
 		return details;
-	}
+	} 
 
 	public String getTraineeDetiles(String email) throws IOException {
 		//log.info("Finding Trainee detiles  ");
