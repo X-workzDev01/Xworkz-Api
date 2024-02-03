@@ -7,8 +7,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.stereotype.Component;
+import org.springframework.util.StringUtils;
 
 import com.xworkz.dream.constants.FollowUp;
+import com.xworkz.dream.constants.RegistrationConstant;
 import com.xworkz.dream.constants.Status;
 import com.xworkz.dream.dto.AttendanceDto;
 import com.xworkz.dream.dto.AuditDto;
@@ -27,6 +29,10 @@ import com.xworkz.dream.dto.utils.User;
 
 @Component
 public class DreamWrapper {
+
+	public static boolean validateCell(RegistrationConstant registrationConstant) {
+		return StringUtils.hasLength(String.valueOf(registrationConstant.getIndex()));
+	}
 
 	public List<Object> dtoToList(TraineeDto dto) {
 		List<Object> row = new ArrayList<>();
@@ -210,130 +216,152 @@ public class DreamWrapper {
 		// referalContactNumber, comments
 		// if there any changes in the table, please make sure the right changes are
 		// done here also
-
-		int rowSize = row.size();
-
-		if (rowSize > 0 && row.get(0) != null && !row.get(0).toString().isEmpty()) {
-			traineeDto.setId(Integer.valueOf(row.get(0).toString()));
+		if (validateCell(RegistrationConstant.COLUMN_ID)) {
+			traineeDto.setId(Integer.valueOf(row.get(RegistrationConstant.COLUMN_ID.getIndex()).toString()));
 		}
 
-		if (rowSize > 1 && row.get(1) != null && !row.get(1).toString().isEmpty()) {
-			traineeDto.getBasicInfo().setTraineeName((String) row.get(1));
+		if (validateCell(RegistrationConstant.COLUMN_TRAINEE_NAME)) {
+			traineeDto.getBasicInfo()
+					.setTraineeName(row.get(RegistrationConstant.COLUMN_TRAINEE_NAME.getIndex()).toString());
 		}
 
-		if (rowSize > 2 && row.get(2) != null && !row.get(2).toString().isEmpty()) {
-			traineeDto.getBasicInfo().setEmail((String) row.get(2));
+		if (validateCell(RegistrationConstant.COLUMN_EMAIL)) {
+			traineeDto.getBasicInfo()
+					.setEmail((String) row.get(RegistrationConstant.COLUMN_EMAIL.getIndex()).toString());
 		}
 
-		if (rowSize > 3 && row.get(3) != null && !row.get(3).toString().isEmpty()) {
-			traineeDto.getBasicInfo().setContactNumber(Long.parseLong(row.get(3).toString()));
+		
+		if (validateCell(RegistrationConstant.COLUMN_CONTACT_NUMBER)) {
+			traineeDto.getBasicInfo().setContactNumber(
+					Long.parseLong(row.get(RegistrationConstant.COLUMN_CONTACT_NUMBER.getIndex()).toString()));
 		}
 
-		if (rowSize > 4 && row.get(4) != null && !row.get(4).toString().isEmpty()) {
-			traineeDto.getBasicInfo().setDateOfBirth((String) row.get(4));
+		if (validateCell(RegistrationConstant.COLUMN_DATE_OF_BIRTH)) {
+			traineeDto.getBasicInfo()
+					.setDateOfBirth(row.get(RegistrationConstant.COLUMN_DATE_OF_BIRTH.getIndex()).toString());
 		}
 
-		if (rowSize > 5 && row.get(5) != null && !row.get(5).toString().isEmpty()) {
-			traineeDto.getEducationInfo().setQualification((String) row.get(5));
+		if (validateCell(RegistrationConstant.COLUMN_QUALIFICATION)) {
+			traineeDto.getEducationInfo()
+					.setQualification(row.get(RegistrationConstant.COLUMN_QUALIFICATION.getIndex()).toString());
 		}
 
-		if (rowSize > 6 && row.get(6) != null && !row.get(6).toString().isEmpty()) {
-			traineeDto.getEducationInfo().setStream((String) row.get(6));
+		if (validateCell(RegistrationConstant.COLUMN_STREAM)) {
+			traineeDto.getEducationInfo().setStream((String) row.get(RegistrationConstant.COLUMN_STREAM.getIndex()));
 		}
 
-		if (rowSize > 7 && row.get(7) != null && !row.get(7).toString().isEmpty()) {
-			traineeDto.getEducationInfo().setYearOfPassout((String) row.get(7));
+		if (validateCell(RegistrationConstant.COLUMN_YEAR_OF_PASSOUT)) {
+			traineeDto.getEducationInfo()
+					.setYearOfPassout((String) row.get(RegistrationConstant.COLUMN_YEAR_OF_PASSOUT.getIndex()));
 		}
 
-		if (rowSize > 8 && row.get(8) != null && !row.get(8).toString().isEmpty()) {
-			traineeDto.getEducationInfo().setCollegeName((String) row.get(8));
+		if (validateCell(RegistrationConstant.COLUMN_COLLEGE_NAME)) {
+			traineeDto.getEducationInfo()
+					.setCollegeName((String) row.get(RegistrationConstant.COLUMN_COLLEGE_NAME.getIndex()));
 		}
 
-		if (rowSize > 9 && row.get(9) != null && !row.get(9).toString().isEmpty()) {
-			traineeDto.getCourseInfo().setCourse((String) row.get(9));
+		if (validateCell(RegistrationConstant.COLUMN_COURSE)) {
+			traineeDto.getCourseInfo().setCourse((String) row.get(RegistrationConstant.COLUMN_COURSE.getIndex()));
 		}
 
-		if (rowSize > 10 && row.get(10) != null && !row.get(10).toString().isEmpty()) {
-			traineeDto.getCourseInfo().setBranch((String) row.get(10));
+		if (validateCell(RegistrationConstant.COLUMN_BRANCH)) {
+			traineeDto.getCourseInfo().setBranch((String) row.get(RegistrationConstant.COLUMN_BRANCH.getIndex()));
 		}
 
-		if (rowSize > 11 && row.get(11) != null && !row.get(11).toString().isEmpty()) {
-			traineeDto.getCourseInfo().setTrainerName((String) row.get(11));
+		if (validateCell(RegistrationConstant.COLUMN_TRAINER_NAME)) {
+			traineeDto.getCourseInfo()
+					.setTrainerName((String) row.get(RegistrationConstant.COLUMN_TRAINER_NAME.getIndex()));
 		}
-		if (rowSize > 12 && row.get(12) != null && !row.get(12).toString().isEmpty()) {
-			traineeDto.getCourseInfo().setBatchType((String) row.get(12));
+		if (validateCell(RegistrationConstant.COLUMN_BATCH_TYPE)) {
+			traineeDto.getCourseInfo()
+					.setBatchType((String) row.get(RegistrationConstant.COLUMN_BATCH_TYPE.getIndex()));
 		}
-		if (rowSize > 13 && row.get(13) != null && !row.get(13).toString().isEmpty()) {
-			traineeDto.getCourseInfo().setBatchTiming((String) row.get(13));
+		if (validateCell(RegistrationConstant.COLUMN_BATCH_TIMING)) {
+			traineeDto.getCourseInfo()
+					.setBatchTiming((String) row.get(RegistrationConstant.COLUMN_BATCH_TIMING.getIndex()));
 		}
-		if (rowSize > 14 && row.get(14) != null && !row.get(14).toString().isEmpty()) {
-			traineeDto.getCourseInfo().setStartDate((String) row.get(14));
+		if (validateCell(RegistrationConstant.COLUMN_START_DATE)) {
+			traineeDto.getCourseInfo()
+					.setStartDate((String) row.get(RegistrationConstant.COLUMN_START_DATE.getIndex()));
 		}
 
-		if (rowSize > 15 && row.get(15) != null && !row.get(15).toString().isEmpty()) {
-			traineeDto.getCourseInfo().setOfferedAs((String) (row.get(15).toString()));
+		if (validateCell(RegistrationConstant.COLUMN_OFFERED_AS)) {
+			traineeDto.getCourseInfo()
+					.setOfferedAs((String) (row.get(RegistrationConstant.COLUMN_OFFERED_AS.getIndex())));
 		}
 
-		if (rowSize > 16 && row.get(16) != null && !row.get(16).toString().isEmpty()) {
-			traineeDto.getOthersDto().setReferalName((String) row.get(16));
+		if (validateCell(RegistrationConstant.COLUMN_REFERRAL_NAME)) {
+			traineeDto.getOthersDto()
+					.setReferalName((String) row.get(RegistrationConstant.COLUMN_REFERRAL_NAME.getIndex()));
 		}
-		if (rowSize > 17 && row.get(17) != null && !row.get(17).toString().isEmpty()) {
-			Long referalContactNumber = Long.parseLong(row.get(17).toString());
+		if (validateCell(RegistrationConstant.COLUMN_REFERRAL_CONTACT_NUMBER)) {
+			Long referalContactNumber = Long
+					.parseLong(row.get(RegistrationConstant.COLUMN_REFERRAL_CONTACT_NUMBER.getIndex()).toString());
 			traineeDto.getOthersDto().setReferalContactNumber(referalContactNumber);
 		}
-		if (rowSize > 18 && row.get(18) != null && !row.get(18).toString().isEmpty()) {
-			traineeDto.getOthersDto().setComments((String) row.get(18).toString());
+		if (validateCell(RegistrationConstant.COLUMN_COMMENTS)) {
+			traineeDto.getOthersDto().setComments((String) row.get(RegistrationConstant.COLUMN_COMMENTS.getIndex()));
 		}
-		if (rowSize > 19 && row.get(19) != null && !row.get(19).toString().isEmpty()) {
-			traineeDto.getOthersDto().setXworkzEmail((String) row.get(19).toString());
+		if (validateCell(RegistrationConstant.COLUMN_XWORKZ_EMAIL)) {
+			traineeDto.getOthersDto()
+					.setXworkzEmail((String) row.get(RegistrationConstant.COLUMN_XWORKZ_EMAIL.getIndex()));
 		}
-		if (rowSize > 20 && row.get(20) != null && !row.get(20).toString().isEmpty()) {
-			traineeDto.getOthersDto().setWorking((String) row.get(20).toString());
+		if (validateCell(RegistrationConstant.COLUMN_WORKING)) {
+			traineeDto.getOthersDto().setWorking((String) row.get(RegistrationConstant.COLUMN_WORKING.getIndex()));
 		}
-		if (rowSize > 21 && row.get(21) != null && !row.get(21).toString().isEmpty()) {
-			traineeDto.getOthersDto().setPreferredLocation((String) row.get(21).toString());
+		if (validateCell(RegistrationConstant.COLUMN_PREFERRED_LOCATION)) {
+			traineeDto.getOthersDto()
+					.setPreferredLocation((String) row.get(RegistrationConstant.COLUMN_PREFERRED_LOCATION.getIndex()));
 		}
-		if (rowSize > 22 && row.get(22) != null && !row.get(22).toString().isEmpty()) {
-			traineeDto.getOthersDto().setPreferredClassType((String) row.get(22).toString());
+		if (validateCell(RegistrationConstant.COLUMN_PREFERRED_CLASS_TYPE)) {
+			traineeDto.getOthersDto().setPreferredClassType(
+					(String) row.get(RegistrationConstant.COLUMN_PREFERRED_CLASS_TYPE.getIndex()));
 		}
-		if (rowSize > 23 && row.get(23) != null && !row.get(23).toString().isEmpty()) {
-			traineeDto.getOthersDto().setSendWhatsAppLink((String) row.get(23).toString());
+		if (validateCell(RegistrationConstant.COLUMN_SEND_WHATSAPP_LINK)) {
+			traineeDto.getOthersDto()
+					.setSendWhatsAppLink((String) row.get(RegistrationConstant.COLUMN_SEND_WHATSAPP_LINK.getIndex()));
 
 		}
-		if (rowSize > 24 && row.get(24) != null && !row.get(24).toString().isEmpty()) {
-			traineeDto.getOthersDto().setRegistrationDate((String) row.get(24).toString());
+		if (validateCell(RegistrationConstant.COLUMN_REGISTRATION_DATE)) {
+			traineeDto.getOthersDto()
+					.setRegistrationDate((String) row.get(RegistrationConstant.COLUMN_REGISTRATION_DATE.getIndex()));
 		}
-		if (rowSize > 25 && row.get(25) != null && !row.get(25).toString().isEmpty()) {
-			traineeDto.getAdminDto().setCreatedBy(row.get(25).toString());
+		if (validateCell(RegistrationConstant.COLUMN_CREATED_BY)) {
+			traineeDto.getAdminDto()
+					.setCreatedBy(row.get(RegistrationConstant.COLUMN_CREATED_BY.getIndex()).toString());
 		}
 
-		if (rowSize > 26 && row.get(26) != null && !row.get(26).toString().isEmpty()) {
-			String createdOnValue = row.get(26).toString();
+		if (validateCell(RegistrationConstant.COLUMN_CREATED_ON)) {
+			String createdOnValue = row.get(RegistrationConstant.COLUMN_CREATED_ON.getIndex()).toString();
 			traineeDto.getAdminDto().setCreatedOn(createdOnValue);
 		}
 
-		if (rowSize > 27 && row.get(27) != null && !row.get(27).toString().isEmpty()) {
-			traineeDto.getAdminDto().setUpdatedBy(row.get(27).toString());
+		if (validateCell(RegistrationConstant.COLUMN_UPDATED_BY)) {
+			traineeDto.getAdminDto()
+					.setUpdatedBy(row.get(RegistrationConstant.COLUMN_UPDATED_BY.getIndex()).toString());
 		}
 
-		if (rowSize > 28 && row.get(28) != null && !row.get(28).toString().isEmpty()) {
-			traineeDto.getAdminDto().setUpdatedOn(row.get(28).toString());
+		if (validateCell(RegistrationConstant.COLUMN_UPDATED_ON)) {
+			traineeDto.getAdminDto()
+					.setUpdatedOn(row.get(RegistrationConstant.COLUMN_UPDATED_ON.getIndex()).toString());
 		}
-		if (rowSize > 29 && row.get(29) != null && !row.get(29).toString().isEmpty()) {
-			traineeDto.getCsrDto().setUsnNumber(row.get(29).toString());
+		if (validateCell(RegistrationConstant.COLUMN_USN_NUMBER)) {
+			traineeDto.getCsrDto().setUsnNumber(row.get(RegistrationConstant.COLUMN_USN_NUMBER.getIndex()).toString());
 		}
-		if (rowSize > 30 && row.get(30) != null && !row.get(30).toString().isEmpty()) {
-			Long alternativeContactNumber = Long.parseLong(row.get(30).toString());
+		if (validateCell(RegistrationConstant.COLUMN_ALTERNATIVE_CONTACT_NUMBER)) {
+			Long alternativeContactNumber = Long
+					.parseLong(row.get(RegistrationConstant.COLUMN_ALTERNATIVE_CONTACT_NUMBER.getIndex()).toString());
 			traineeDto.getCsrDto().setAlternateContactNumber(alternativeContactNumber);
 		}
-		if (rowSize > 31 && row.get(31) != null && !row.get(31).toString().isEmpty()) {
-			traineeDto.getCsrDto().setUniqueId(row.get(31).toString());
+		if (validateCell(RegistrationConstant.COLUMN_UNIQUE_ID)) {
+			traineeDto.getCsrDto().setUniqueId(row.get(RegistrationConstant.COLUMN_UNIQUE_ID.getIndex()).toString());
 		}
-		if (rowSize > 32 && row.get(32) != null && !row.get(32).toString().isEmpty()) {
-			traineeDto.getCsrDto().setCsrFlag(row.get(32).toString());
+		if (validateCell(RegistrationConstant.COLUMN_CSR_FLAG)) {
+			traineeDto.getCsrDto().setCsrFlag(row.get(RegistrationConstant.COLUMN_CSR_FLAG.getIndex()).toString());
 		}
-		if (rowSize > 33 && row.get(33) != null && !row.get(33).toString().isEmpty()) {
-			traineeDto.getCsrDto().setActiveFlag(row.get(33).toString());
+		if (validateCell(RegistrationConstant.COLUMN_ACTIVE_FLAG)) {
+			traineeDto.getCsrDto()
+					.setActiveFlag(row.get(RegistrationConstant.COLUMN_ACTIVE_FLAG.getIndex()).toString());
 		}
 
 		return traineeDto;
