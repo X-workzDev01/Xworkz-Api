@@ -751,7 +751,6 @@ public class DreamWrapper {
 	}
 
 	public AttendanceDto saveAttendance(TraineeDto dto) {
-		System.err.println("Dto in wrapper attendance wrapper : " + dto);
 		AttendanceDto attendanceDto = new AttendanceDto();
 		attendanceDto.setId(dto.getId());
 		attendanceDto.setCourse(dto.getCourseInfo().getCourse());
