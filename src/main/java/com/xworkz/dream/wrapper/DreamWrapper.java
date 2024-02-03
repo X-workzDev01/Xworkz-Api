@@ -63,7 +63,7 @@ public class DreamWrapper {
 	}
 
 	public FollowUpDto listToFollowUpDTO(List<Object> row) {
-		FollowUpDto followUpDto = new FollowUpDto(0, new BasicInfoDto(), null, null, null, null, null, null, null,
+		FollowUpDto followUpDto = new FollowUpDto(0, new BasicInfoDto(), null, null, null, null, null, null, null, null,
 				null);
 		int rowSize = row.size();
 
@@ -153,7 +153,9 @@ public class DreamWrapper {
 		if (rowSize > 14 && row.get(14) != null && !row.get(14).toString().isEmpty()) {
 			followUpDto.setFlag((String) row.get(14));
 		}
-
+		if (rowSize > 15 && row.get(15) != null && !row.get(15).toString().isEmpty()) {
+			followUpDto.setFlagSheet((String) row.get(15));
+		}
 		return followUpDto;
 	}
 
@@ -541,11 +543,13 @@ public class DreamWrapper {
 		followUpDto.setAdminDto(traineeDto.getAdminDto());
 		followUpDto.getAdminDto().setUpdatedBy("NA");
 		followUpDto.getAdminDto().setUpdatedOn("NA");
+		followUpDto.setFlagSheet("Active");
 		followUpDto.setFlag("Active");
+
 		return followUpDto;
 	}
 
-	public FollowUpDto setFollowUpEnwuiry(TraineeDto traineeDto) {
+	public FollowUpDto setFollowUpEnquiry(TraineeDto traineeDto) {
 		FollowUpDto followUpDto = new FollowUpDto();
 		BasicInfoDto basicInfo = new BasicInfoDto();
 		basicInfo.setTraineeName(traineeDto.getBasicInfo().getTraineeName());
@@ -562,6 +566,8 @@ public class DreamWrapper {
 		followUpDto.getAdminDto().setUpdatedBy("NA");
 		followUpDto.getAdminDto().setUpdatedOn("NA");
 		followUpDto.setFlag("Active");
+		followUpDto.setFlagSheet("Active");
+
 
 		return followUpDto;
 	}
@@ -578,11 +584,13 @@ public class DreamWrapper {
 		followUpDto.setJoiningDate(FollowUp.NOT_CONFIRMED.toString());
 		followUpDto.setId(traineeDto.getId());
 		followUpDto.setCurrentlyFollowedBy(FollowUp.NONE.toString());
-		followUpDto.setCurrentStatus(FollowUp.CSR.toString());
+		followUpDto.setCurrentStatus(traineeDto.getCourseInfo().getOfferedAs());
 		followUpDto.setAdminDto(traineeDto.getAdminDto());
 		followUpDto.getAdminDto().setUpdatedBy("NA");
 		followUpDto.getAdminDto().setUpdatedOn("NA");
 		followUpDto.setFlag("Active");
+		followUpDto.setFlagSheet("Active");
+
 
 		return followUpDto;
 	}
@@ -650,6 +658,9 @@ public class DreamWrapper {
 		dto.getOthersDto().setSendWhatsAppLink(Status.NO.toString());
 		dto.getOthersDto().setRegistrationDate(LocalDateTime.now().toString());
 		dto.getAdminDto().setCreatedOn(LocalDateTime.now().toString());
+		dto.getAdminDto().setUpdatedBy("NA");
+		dto.getAdminDto().setUpdatedOn("NA");
+
 		if (dto.getOthersDto().getReferalName() == null) {
 			dto.getOthersDto().setReferalName(Status.NA.toString());
 
@@ -691,7 +702,6 @@ public class DreamWrapper {
 		}
 		AuditDto admin = new AuditDto();
 		if (dto.getAdminDto() == null) {
-			// it is for only csr
 			admin.setCreatedBy(dto.getBasicInfo().getTraineeName());
 			admin.setCreatedOn(LocalDateTime.now().toString());
 			admin.setUpdatedBy(Status.NA.toString());

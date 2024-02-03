@@ -35,5 +35,7 @@ public class FollowUpDto {
 	@JsonProperty("adminDto")
 	private AuditDto adminDto;
 	private String flag;
+	private String flagSheet;
+
 
 }

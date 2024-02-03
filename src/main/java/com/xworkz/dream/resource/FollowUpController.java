@@ -77,7 +77,7 @@ public class FollowUpController {
 		log.info("Fetching follow-up details by email: spreadsheetId={}, email={}", spreadsheetId, email);
 		return service.getFollowUpByEmail(spreadsheetId, email, request);
 	}
-
+ 
 	@ApiOperation(value = "To get Registration details by email")
 	@GetMapping("/getFollowUpStatusByEmail/{email}")
 	public ResponseEntity<List<StatusDto>> getFollowUpStatusByEmail(@RequestHeader String spreadsheetId,
