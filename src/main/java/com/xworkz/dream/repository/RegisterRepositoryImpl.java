@@ -41,7 +41,7 @@ public class RegisterRepositoryImpl implements RegisterRepository {
 	private static final JsonFactory JSON_FACTORY = GsonFactory.getDefaultInstance();
 	private static final List<String> SCOPES = Collections.singletonList(SheetsScopes.SPREADSHEETS);
 	private Sheets sheetsService;
-	@Value("${sheets.writeRange}")
+	@Value("${sheets.range}")
 	private String range;
 	@Value("${sheets.emailRange}")
 	private String emailRange;

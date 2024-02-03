@@ -6,7 +6,6 @@ spring:
 sheets:
   appName: Dream Api
   range: A3:AH
-  writeRange: xworkzApi!A3:AH
   emailRange: C3:C
   contactNumberRange: D3:D
   dropdownRange: dropDowns!A2:I
