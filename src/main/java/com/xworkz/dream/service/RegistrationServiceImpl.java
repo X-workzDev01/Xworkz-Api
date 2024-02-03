@@ -65,10 +65,10 @@ public class RegistrationServiceImpl implements RegistrationService {
 			CSR csr = new CSR();
 			log.info("set {} if offeredAs a CSR",
 					dto.getCourseInfo().getOfferedAs().equalsIgnoreCase("csr") ? "1" : "0");
-			csr.setCsrFlag(dto.getCourseInfo().getOfferedAs().equalsIgnoreCase("csr") ? "1" : "0");
+			csr.setCsrFlag(dto.getCourseInfo().getOfferedAs().equalsIgnoreCase("CSR Offered") ? "1" : "0");
 			csr.setActiveFlag("Active");
 			csr.setAlternateContactNumber(0l);
-			csr.setUniqueId(dto.getCourseInfo().getOfferedAs().equalsIgnoreCase("csr") ? uniqueId : "NA");
+			csr.setUniqueId(dto.getCourseInfo().getOfferedAs().equalsIgnoreCase("CSR Offered") ? uniqueId : "NA");
 			csr.setUsnNumber("NA");
 			dto.setCsrDto(csr);
 			wrapper.setValuesForTraineeDto(dto);

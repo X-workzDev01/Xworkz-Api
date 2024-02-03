@@ -216,6 +216,7 @@ public class DreamWrapper {
 		// referalContactNumber, comments
 		// if there any changes in the table, please make sure the right changes are
 		// done here also
+		
 		if (validateCell(RegistrationConstant.COLUMN_ID)) {
 			traineeDto.setId(Integer.valueOf(row.get(RegistrationConstant.COLUMN_ID.getIndex()).toString()));
 		}
@@ -363,7 +364,6 @@ public class DreamWrapper {
 			traineeDto.getCsrDto()
 					.setActiveFlag(row.get(RegistrationConstant.COLUMN_ACTIVE_FLAG.getIndex()).toString());
 		}
-
 		return traineeDto;
 	}
 
