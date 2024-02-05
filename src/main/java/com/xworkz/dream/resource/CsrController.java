@@ -37,8 +37,8 @@ public class CsrController {
 		boolean saved = service.registerCsr(csrDto, request);
 
 		if (saved) {
-			log.info("Resgitered Sucessfully");
-			return ResponseEntity.ok().body(" Resgitered Sucessfully");
+			log.info("Registered Sucessfully");
+			return ResponseEntity.ok().body(" Registered Sucessfully");
 		} else {
 			log.error("Failed to Register");
 			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to Register");

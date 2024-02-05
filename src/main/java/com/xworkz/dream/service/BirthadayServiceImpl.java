@@ -4,6 +4,8 @@ import java.io.IOException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -17,6 +19,8 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import com.google.api.services.sheets.v4.model.UpdateValuesResponse;
+import com.google.api.services.sheets.v4.model.ValueRange;
 import com.xworkz.dream.dto.BirthDayInfoDto;
 import com.xworkz.dream.dto.TraineeDto;
 import com.xworkz.dream.repository.BirthadayRepository;
@@ -35,17 +39,19 @@ public class BirthadayServiceImpl implements BirthadayService {
 	private DreamWrapper wrapper;
 	@Value("${login.sheetId}")
 	private String spreadsheetId;
+	@Value("${sheets.birthDayStartRow}")
+	private String birthDayStartRow;
+	@Value("${sheets.birthDayEndRow}")
+	private String birthDayEndRow;
+	@Value("${sheets.dateOfBirthDetailsSheetName}")
+	private String dobSheetName;
 
 	private static final Logger log = LoggerFactory.getLogger(BirthadayServiceImpl.class);
 
 	@Override
 	public ResponseEntity<String> saveBirthDayInfo(String spreadsheetId, TraineeDto dto, HttpServletRequest request)
 			throws IllegalAccessException, IOException {
-		BirthDayInfoDto birthday = new BirthDayInfoDto();
-		List<List<Object>> data = repository.getBirthDayId(spreadsheetId).getValues();
-		int size = data != null ? data.size() : 0;
-		birthday.setDto(dto.getBasicInfo());
-		birthday.setId(size += 1);
+		BirthDayInfoDto birthday = AssignToBirthDayDto(dto);
 		List<Object> list = wrapper.extractDtoDetails(birthday);
 
 		boolean save = repository.saveBirthDayDetails(spreadsheetId, list);
@@ -55,6 +61,14 @@ public class BirthadayServiceImpl implements BirthadayService {
 		}
 		log.info("Birth day information not added");
 		return ResponseEntity.ok("Birth day information Not added");
+	}
+
+	private BirthDayInfoDto AssignToBirthDayDto(TraineeDto dto) {
+		BirthDayInfoDto birthday = new BirthDayInfoDto();
+		birthday.setDto(dto.getBasicInfo());
+		birthday.setBirthDayMailSent("NO");
+		birthday.setAuditDto(dto.getAdminDto());
+		return birthday;
 	}
 
 	private String findNameByEmail(String email) throws IOException {
@@ -92,13 +106,40 @@ public class BirthadayServiceImpl implements BirthadayService {
 				return false; // Skip rows with invalid date format
 			}
 		}).map(row -> (String) row.get(2)).collect(Collectors.toList());
-		log.error("emailsToSend : "+emailsToSend);
+		log.error("emailsToSend : " + emailsToSend);
 		for (String email : emailsToSend) {
 			String nameByEmail = findNameByEmail(email);
 			log.info("Sent birthday email to '{}' with name '{}'", email, nameByEmail);
 			util.sendBirthadyEmail(email, subject, nameByEmail);
-			
+
 		}
 	}
 
-} 
+	@Override
+	public boolean updateDob(TraineeDto dto) throws IllegalAccessException, IOException {
+
+		int rowNumber = dto.getId() + 1;
+		log.debug("Row Number to update,{}", rowNumber);
+		String rowRange = dobSheetName+birthDayStartRow + rowNumber + ":" + birthDayEndRow+rowNumber;
+		log.debug("Row Range ,{}", rowRange);
+		BirthDayInfoDto birthday = AssignToBirthDayDto(dto);
+		log.info("Updating BOD details of students,{}", birthday);
+		List<List<Object>> values = Arrays.asList(wrapper.extractDtoDetails(birthday));
+		if (!values.isEmpty()) {
+			List<Object> modifiedValues = new ArrayList<>(values.get(0).subList(1, values.get(0).size()));
+			values.set(0, modifiedValues);
+			log.debug("values {}", values);
+		}
+		ValueRange valueRange = new ValueRange();
+		valueRange.setValues(values);
+		UpdateValuesResponse updated = repository.updateDob(rowRange, valueRange);
+		log.info("update response is :{}", updated);
+		if (updated != null) {
+			return true;
+		} else {
+			return false;
+		}
+	}
+	
+
+}

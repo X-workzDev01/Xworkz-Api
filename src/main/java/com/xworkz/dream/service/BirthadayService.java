@@ -10,9 +10,11 @@ import com.xworkz.dream.dto.TraineeDto;
 
 public interface BirthadayService {
 
-	public void sendBirthdayEmails() throws IOException;
+	void sendBirthdayEmails() throws IOException;
 
-	public ResponseEntity<String> saveBirthDayInfo(String spreadsheetId, TraineeDto dto, HttpServletRequest request)
+	ResponseEntity<String> saveBirthDayInfo(String spreadsheetId, TraineeDto dto, HttpServletRequest request)
 			throws IllegalAccessException, IOException;
+
+	boolean updateDob(TraineeDto dto) throws IllegalAccessException, IOException;
 
 }
