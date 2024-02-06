@@ -86,10 +86,14 @@ public class BirthadayRepositoryImpl implements BirthadayRepository {
 		return response.getValues();
 	}
 	@Override
-	public UpdateValuesResponse updateDob(String rowRange, ValueRange valueRange) throws IOException {
-		log.info("updating the HR details ,{}", rowRange);
-		UpdateValuesResponse response = sheetsService.spreadsheets().values().update(sheetId, rowRange, valueRange)
-				.setValueInputOption("RAW").execute();
+	public UpdateValuesResponse updateDob(String rowRange, ValueRange valueRange){
+		UpdateValuesResponse response = null;
+		try {
+			response = sheetsService.spreadsheets().values().update(sheetId, rowRange, valueRange)
+					.setValueInputOption("RAW").execute();
+		} catch (IOException e) {
+			log.error("Exception in UpdateDOB Repo,{}"+e);
+		}
 		return response;
 	}
 

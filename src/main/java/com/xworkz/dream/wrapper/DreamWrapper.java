@@ -75,13 +75,11 @@ public class DreamWrapper {
 
 		if (rowSize > 0 && row.get(0) != null && !row.get(0).toString().isEmpty()) {
 			followUpDto.setId(Integer.valueOf(row.get(0).toString()));
-		}
-
-		if (rowSize > 1 && row.get(1) != null && !row.get(1).toString().isEmpty()) {
+		} else if (rowSize > 1 && row.get(1) != null && !row.get(1).toString().isEmpty()) {
 			followUpDto.getBasicInfo().setTraineeName((String) row.get(1));
 		}
 
-		if (rowSize > 2 && row.get(2) != null && !row.get(2).toString().isEmpty()) {
+		else if (rowSize > 2 && row.get(2) != null && !row.get(2).toString().isEmpty()) {
 			followUpDto.getBasicInfo().setEmail((String) row.get(2));
 		}
 
@@ -218,151 +216,184 @@ public class DreamWrapper {
 		// referalContactNumber, comments
 		// if there any changes in the table, please make sure the right changes are
 		// done here also
-		if (row.size()>RegistrationConstant.COLUMN_ID.getIndex()&& validateCell(RegistrationConstant.COLUMN_ID)) {
+		
+		if (row.size() > RegistrationConstant.COLUMN_ID.getIndex() && validateCell(RegistrationConstant.COLUMN_ID)) {
 			traineeDto.setId(Integer.valueOf(row.get(RegistrationConstant.COLUMN_ID.getIndex()).toString()));
+			
 		}
-
-		if (row.size()>RegistrationConstant.COLUMN_TRAINEE_NAME.getIndex()&&validateCell(RegistrationConstant.COLUMN_TRAINEE_NAME)) {
+		if (row.size() > RegistrationConstant.COLUMN_TRAINEE_NAME.getIndex()
+				&& validateCell(RegistrationConstant.COLUMN_TRAINEE_NAME)) {
 			traineeDto.getBasicInfo()
 					.setTraineeName(row.get(RegistrationConstant.COLUMN_TRAINEE_NAME.getIndex()).toString());
 		}
 
-		if (row.size()>RegistrationConstant.COLUMN_EMAIL.getIndex()&&validateCell(RegistrationConstant.COLUMN_EMAIL)) {
+		if (row.size() > RegistrationConstant.COLUMN_EMAIL.getIndex()
+				&& validateCell(RegistrationConstant.COLUMN_EMAIL)) {
 			traineeDto.getBasicInfo()
 					.setEmail((String) row.get(RegistrationConstant.COLUMN_EMAIL.getIndex()).toString());
 		}
 
-		
-		if (row.size()>RegistrationConstant.COLUMN_CONTACT_NUMBER.getIndex()&&validateCell(RegistrationConstant.COLUMN_CONTACT_NUMBER)) {
+		if (row.size() > RegistrationConstant.COLUMN_CONTACT_NUMBER.getIndex()
+				&& validateCell(RegistrationConstant.COLUMN_CONTACT_NUMBER)) {
 			traineeDto.getBasicInfo().setContactNumber(
 					Long.parseLong(row.get(RegistrationConstant.COLUMN_CONTACT_NUMBER.getIndex()).toString()));
 		}
 
-		if (row.size()>RegistrationConstant.COLUMN_DATE_OF_BIRTH.getIndex()&&validateCell(RegistrationConstant.COLUMN_DATE_OF_BIRTH)) {
+		if (row.size() > RegistrationConstant.COLUMN_DATE_OF_BIRTH.getIndex()
+				&& validateCell(RegistrationConstant.COLUMN_DATE_OF_BIRTH)) {
 			traineeDto.getBasicInfo()
 					.setDateOfBirth(row.get(RegistrationConstant.COLUMN_DATE_OF_BIRTH.getIndex()).toString());
 		}
 
-		if (row.size()>RegistrationConstant.COLUMN_QUALIFICATION.getIndex()&&validateCell(RegistrationConstant.COLUMN_QUALIFICATION)) {
+		if (row.size() > RegistrationConstant.COLUMN_QUALIFICATION.getIndex()
+				&& validateCell(RegistrationConstant.COLUMN_QUALIFICATION)) {
 			traineeDto.getEducationInfo()
 					.setQualification(row.get(RegistrationConstant.COLUMN_QUALIFICATION.getIndex()).toString());
 		}
 
-		if (row.size()>RegistrationConstant.COLUMN_STREAM.getIndex()&&validateCell(RegistrationConstant.COLUMN_STREAM)) {
+		if (row.size() > RegistrationConstant.COLUMN_STREAM.getIndex()
+				&& validateCell(RegistrationConstant.COLUMN_STREAM)) {
 			traineeDto.getEducationInfo().setStream((String) row.get(RegistrationConstant.COLUMN_STREAM.getIndex()));
 		}
 
-		if (row.size()>RegistrationConstant.COLUMN_YEAR_OF_PASSOUT.getIndex()&&validateCell(RegistrationConstant.COLUMN_YEAR_OF_PASSOUT)) {
+		if (row.size() > RegistrationConstant.COLUMN_YEAR_OF_PASSOUT.getIndex()
+				&& validateCell(RegistrationConstant.COLUMN_YEAR_OF_PASSOUT)) {
 			traineeDto.getEducationInfo()
 					.setYearOfPassout((String) row.get(RegistrationConstant.COLUMN_YEAR_OF_PASSOUT.getIndex()));
 		}
 
-		if (row.size()>RegistrationConstant.COLUMN_COLLEGE_NAME.getIndex()&&validateCell(RegistrationConstant.COLUMN_COLLEGE_NAME)) {
+		if (row.size() > RegistrationConstant.COLUMN_COLLEGE_NAME.getIndex()
+				&& validateCell(RegistrationConstant.COLUMN_COLLEGE_NAME)) {
 			traineeDto.getEducationInfo()
 					.setCollegeName((String) row.get(RegistrationConstant.COLUMN_COLLEGE_NAME.getIndex()));
 		}
 
-		if (row.size()>RegistrationConstant.COLUMN_COURSE.getIndex()&&validateCell(RegistrationConstant.COLUMN_COURSE)) {
+		if (row.size() > RegistrationConstant.COLUMN_COURSE.getIndex()
+				&& validateCell(RegistrationConstant.COLUMN_COURSE)) {
 			traineeDto.getCourseInfo().setCourse((String) row.get(RegistrationConstant.COLUMN_COURSE.getIndex()));
 		}
 
-		if (row.size()>RegistrationConstant.COLUMN_BRANCH.getIndex()&&validateCell(RegistrationConstant.COLUMN_BRANCH)) {
-			String value=((String) row.get(RegistrationConstant.COLUMN_BRANCH.getIndex()));
+		if (row.size() > RegistrationConstant.COLUMN_BRANCH.getIndex()
+				&& validateCell(RegistrationConstant.COLUMN_BRANCH)) {
+			String value = ((String) row.get(RegistrationConstant.COLUMN_BRANCH.getIndex()));
 			traineeDto.getCourseInfo().setBranch(value);
 		}
 
-		if (row.size()>RegistrationConstant.COLUMN_TRAINER_NAME.getIndex()&&validateCell(RegistrationConstant.COLUMN_TRAINER_NAME)) {
+		if (row.size() > RegistrationConstant.COLUMN_TRAINER_NAME.getIndex()
+				&& validateCell(RegistrationConstant.COLUMN_TRAINER_NAME)) {
 			traineeDto.getCourseInfo()
 					.setTrainerName((String) row.get(RegistrationConstant.COLUMN_TRAINER_NAME.getIndex()));
 		}
-		if (row.size()>RegistrationConstant.COLUMN_BATCH_TYPE.getIndex()&&validateCell(RegistrationConstant.COLUMN_BATCH_TYPE)) {
+		if (row.size() > RegistrationConstant.COLUMN_BATCH_TYPE.getIndex()
+				&& validateCell(RegistrationConstant.COLUMN_BATCH_TYPE)) {
 			traineeDto.getCourseInfo()
 					.setBatchType((String) row.get(RegistrationConstant.COLUMN_BATCH_TYPE.getIndex()));
 		}
-		if (row.size()>RegistrationConstant.COLUMN_BATCH_TIMING.getIndex()&&validateCell(RegistrationConstant.COLUMN_BATCH_TIMING)) {
+		if (row.size() > RegistrationConstant.COLUMN_BATCH_TIMING.getIndex()
+				&& validateCell(RegistrationConstant.COLUMN_BATCH_TIMING)) {
 			traineeDto.getCourseInfo()
 					.setBatchTiming((String) row.get(RegistrationConstant.COLUMN_BATCH_TIMING.getIndex()));
 		}
-		if (row.size()>RegistrationConstant.COLUMN_START_DATE.getIndex()&&validateCell(RegistrationConstant.COLUMN_START_DATE)) {
+		if (row.size() > RegistrationConstant.COLUMN_START_DATE.getIndex()
+				&& validateCell(RegistrationConstant.COLUMN_START_DATE)) {
 			traineeDto.getCourseInfo()
 					.setStartDate((String) row.get(RegistrationConstant.COLUMN_START_DATE.getIndex()));
 		}
 
-		if (row.size()>RegistrationConstant.COLUMN_OFFERED_AS.getIndex()&&validateCell(RegistrationConstant.COLUMN_OFFERED_AS)) {
+		if (row.size() > RegistrationConstant.COLUMN_OFFERED_AS.getIndex()
+				&& validateCell(RegistrationConstant.COLUMN_OFFERED_AS)) {
 			traineeDto.getCourseInfo()
 					.setOfferedAs((String) (row.get(RegistrationConstant.COLUMN_OFFERED_AS.getIndex())));
 		}
 
-		if (row.size()>RegistrationConstant.COLUMN_REFERRAL_NAME.getIndex()&&validateCell(RegistrationConstant.COLUMN_REFERRAL_NAME)) {
+		if (row.size() > RegistrationConstant.COLUMN_REFERRAL_NAME.getIndex()
+				&& validateCell(RegistrationConstant.COLUMN_REFERRAL_NAME)) {
 			traineeDto.getOthersDto()
 					.setReferalName((String) row.get(RegistrationConstant.COLUMN_REFERRAL_NAME.getIndex()));
 		}
-		if (row.size()>RegistrationConstant.COLUMN_REFERRAL_CONTACT_NUMBER.getIndex()&&validateCell(RegistrationConstant.COLUMN_REFERRAL_CONTACT_NUMBER)) {
+		if (row.size() > RegistrationConstant.COLUMN_REFERRAL_CONTACT_NUMBER.getIndex()
+				&& validateCell(RegistrationConstant.COLUMN_REFERRAL_CONTACT_NUMBER)) {
 			Long referalContactNumber = Long
 					.parseLong(row.get(RegistrationConstant.COLUMN_REFERRAL_CONTACT_NUMBER.getIndex()).toString());
 			traineeDto.getOthersDto().setReferalContactNumber(referalContactNumber);
 		}
-		if (row.size()>RegistrationConstant.COLUMN_COMMENTS.getIndex()&&validateCell(RegistrationConstant.COLUMN_COMMENTS)) {
+		if (row.size() > RegistrationConstant.COLUMN_COMMENTS.getIndex()
+				&& validateCell(RegistrationConstant.COLUMN_COMMENTS)) {
 			traineeDto.getOthersDto().setComments((String) row.get(RegistrationConstant.COLUMN_COMMENTS.getIndex()));
 		}
-		if (row.size()>RegistrationConstant.COLUMN_XWORKZ_EMAIL.getIndex()&&validateCell(RegistrationConstant.COLUMN_XWORKZ_EMAIL)) {
+		if (row.size() > RegistrationConstant.COLUMN_XWORKZ_EMAIL.getIndex()
+				&& validateCell(RegistrationConstant.COLUMN_XWORKZ_EMAIL)) {
 			traineeDto.getOthersDto()
 					.setXworkzEmail((String) row.get(RegistrationConstant.COLUMN_XWORKZ_EMAIL.getIndex()));
 		}
-		if (row.size()>RegistrationConstant.COLUMN_WORKING.getIndex()&&validateCell(RegistrationConstant.COLUMN_WORKING)) {
+		if (row.size() > RegistrationConstant.COLUMN_WORKING.getIndex()
+				&& validateCell(RegistrationConstant.COLUMN_WORKING)) {
 			traineeDto.getOthersDto().setWorking((String) row.get(RegistrationConstant.COLUMN_WORKING.getIndex()));
 		}
-		if (row.size()>RegistrationConstant.COLUMN_PREFERRED_LOCATION.getIndex()&&validateCell(RegistrationConstant.COLUMN_PREFERRED_LOCATION)) {
+		if (row.size() > RegistrationConstant.COLUMN_PREFERRED_LOCATION.getIndex()
+				&& validateCell(RegistrationConstant.COLUMN_PREFERRED_LOCATION)) {
 			traineeDto.getOthersDto()
 					.setPreferredLocation((String) row.get(RegistrationConstant.COLUMN_PREFERRED_LOCATION.getIndex()));
 		}
-		if (row.size()>RegistrationConstant.COLUMN_PREFERRED_CLASS_TYPE.getIndex()&&validateCell(RegistrationConstant.COLUMN_PREFERRED_CLASS_TYPE)) {
+		if (row.size() > RegistrationConstant.COLUMN_PREFERRED_CLASS_TYPE.getIndex()
+				&& validateCell(RegistrationConstant.COLUMN_PREFERRED_CLASS_TYPE)) {
 			traineeDto.getOthersDto().setPreferredClassType(
 					(String) row.get(RegistrationConstant.COLUMN_PREFERRED_CLASS_TYPE.getIndex()));
 		}
-		if (row.size()>RegistrationConstant.COLUMN_SEND_WHATSAPP_LINK.getIndex()&&validateCell(RegistrationConstant.COLUMN_SEND_WHATSAPP_LINK)) {
+		if (row.size() > RegistrationConstant.COLUMN_SEND_WHATSAPP_LINK.getIndex()
+				&& validateCell(RegistrationConstant.COLUMN_SEND_WHATSAPP_LINK)) {
 			traineeDto.getOthersDto()
 					.setSendWhatsAppLink((String) row.get(RegistrationConstant.COLUMN_SEND_WHATSAPP_LINK.getIndex()));
 
 		}
-		if (row.size()>RegistrationConstant.COLUMN_REGISTRATION_DATE.getIndex()&&validateCell(RegistrationConstant.COLUMN_REGISTRATION_DATE)) {
+		if (row.size() > RegistrationConstant.COLUMN_REGISTRATION_DATE.getIndex()
+				&& validateCell(RegistrationConstant.COLUMN_REGISTRATION_DATE)) {
 			traineeDto.getOthersDto()
 					.setRegistrationDate((String) row.get(RegistrationConstant.COLUMN_REGISTRATION_DATE.getIndex()));
 		}
-		if (row.size()>RegistrationConstant.COLUMN_CREATED_BY.getIndex()&&validateCell(RegistrationConstant.COLUMN_CREATED_BY)) {
+		if (row.size() > RegistrationConstant.COLUMN_CREATED_BY.getIndex()
+				&& validateCell(RegistrationConstant.COLUMN_CREATED_BY)) {
 			traineeDto.getAdminDto()
 					.setCreatedBy(row.get(RegistrationConstant.COLUMN_CREATED_BY.getIndex()).toString());
 		}
 
-		if (row.size()>RegistrationConstant.COLUMN_CREATED_ON.getIndex()&&validateCell(RegistrationConstant.COLUMN_CREATED_ON)) {
+		if (row.size() > RegistrationConstant.COLUMN_CREATED_ON.getIndex()
+				&& validateCell(RegistrationConstant.COLUMN_CREATED_ON)) {
 			String createdOnValue = row.get(RegistrationConstant.COLUMN_CREATED_ON.getIndex()).toString();
 			traineeDto.getAdminDto().setCreatedOn(createdOnValue);
 		}
 
-		if (row.size()>RegistrationConstant.COLUMN_UPDATED_BY.getIndex()&&validateCell(RegistrationConstant.COLUMN_UPDATED_BY)) {
+		if (row.size() > RegistrationConstant.COLUMN_UPDATED_BY.getIndex()
+				&& validateCell(RegistrationConstant.COLUMN_UPDATED_BY)) {
 			traineeDto.getAdminDto()
 					.setUpdatedBy(row.get(RegistrationConstant.COLUMN_UPDATED_BY.getIndex()).toString());
 		}
 
-		if (row.size()>RegistrationConstant.COLUMN_UPDATED_ON.getIndex()&&validateCell(RegistrationConstant.COLUMN_UPDATED_ON)) {
+		if (row.size() > RegistrationConstant.COLUMN_UPDATED_ON.getIndex()
+				&& validateCell(RegistrationConstant.COLUMN_UPDATED_ON)) {
 			traineeDto.getAdminDto()
 					.setUpdatedOn(row.get(RegistrationConstant.COLUMN_UPDATED_ON.getIndex()).toString());
 		}
-		if (row.size()>RegistrationConstant.COLUMN_USN_NUMBER.getIndex()&&validateCell(RegistrationConstant.COLUMN_USN_NUMBER)) {
+		if (row.size() > RegistrationConstant.COLUMN_USN_NUMBER.getIndex()
+				&& validateCell(RegistrationConstant.COLUMN_USN_NUMBER)) {
 			traineeDto.getCsrDto().setUsnNumber(row.get(RegistrationConstant.COLUMN_USN_NUMBER.getIndex()).toString());
 		}
-		if (row.size()>RegistrationConstant.COLUMN_ALTERNATIVE_CONTACT_NUMBER.getIndex()&&validateCell(RegistrationConstant.COLUMN_ALTERNATIVE_CONTACT_NUMBER)) {
+		if (row.size() > RegistrationConstant.COLUMN_ALTERNATIVE_CONTACT_NUMBER.getIndex()
+				&& validateCell(RegistrationConstant.COLUMN_ALTERNATIVE_CONTACT_NUMBER)) {
 			Long alternativeContactNumber = Long
 					.parseLong(row.get(RegistrationConstant.COLUMN_ALTERNATIVE_CONTACT_NUMBER.getIndex()).toString());
 			traineeDto.getCsrDto().setAlternateContactNumber(alternativeContactNumber);
 		}
-		if (row.size()>RegistrationConstant.COLUMN_UNIQUE_ID.getIndex()&&validateCell(RegistrationConstant.COLUMN_UNIQUE_ID)) {
+		if (row.size() > RegistrationConstant.COLUMN_UNIQUE_ID.getIndex()
+				&& validateCell(RegistrationConstant.COLUMN_UNIQUE_ID)) {
 			traineeDto.getCsrDto().setUniqueId(row.get(RegistrationConstant.COLUMN_UNIQUE_ID.getIndex()).toString());
 		}
-		if (row.size()>RegistrationConstant.COLUMN_CSR_FLAG.getIndex()&&validateCell(RegistrationConstant.COLUMN_CSR_FLAG)) {
+		if (row.size() > RegistrationConstant.COLUMN_CSR_FLAG.getIndex()
+				&& validateCell(RegistrationConstant.COLUMN_CSR_FLAG)) {
 			traineeDto.getCsrDto().setCsrFlag(row.get(RegistrationConstant.COLUMN_CSR_FLAG.getIndex()).toString());
 		}
-		if (row.size()>RegistrationConstant.COLUMN_ACTIVE_FLAG.getIndex()&&validateCell(RegistrationConstant.COLUMN_ACTIVE_FLAG)) {
+		if (row.size() > RegistrationConstant.COLUMN_ACTIVE_FLAG.getIndex()
+				&& validateCell(RegistrationConstant.COLUMN_ACTIVE_FLAG)) {
 			traineeDto.getCsrDto()
 					.setActiveFlag(row.get(RegistrationConstant.COLUMN_ACTIVE_FLAG.getIndex()).toString());
 		}
@@ -611,7 +642,6 @@ public class DreamWrapper {
 		followUpDto.setFlag("Active");
 		followUpDto.setFlagSheet("Active");
 
-
 		return followUpDto;
 	}
 
@@ -633,7 +663,6 @@ public class DreamWrapper {
 		followUpDto.getAdminDto().setUpdatedOn("NA");
 		followUpDto.setFlag("Active");
 		followUpDto.setFlagSheet("Active");
-
 
 		return followUpDto;
 	}

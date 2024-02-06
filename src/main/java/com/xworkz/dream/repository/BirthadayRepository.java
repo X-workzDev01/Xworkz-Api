@@ -12,6 +12,6 @@ public interface BirthadayRepository {
 
     List<List<Object>> getBirthadayDetails(String spreadsheetId) throws IOException;
 
-	UpdateValuesResponse updateDob(String rowRange, ValueRange valueRange) throws IOException;
+	UpdateValuesResponse updateDob(String rowRange, ValueRange valueRange);
 
 }

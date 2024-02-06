@@ -116,7 +116,7 @@ public class BirthadayServiceImpl implements BirthadayService {
 	}
 
 	@Override
-	public boolean updateDob(TraineeDto dto) throws IllegalAccessException, IOException {
+	public boolean updateDob(TraineeDto dto)  {
 
 		int rowNumber = dto.getId() + 1;
 		log.debug("Row Number to update,{}", rowNumber);
@@ -124,7 +124,13 @@ public class BirthadayServiceImpl implements BirthadayService {
 		log.debug("Row Range ,{}", rowRange);
 		BirthDayInfoDto birthday = AssignToBirthDayDto(dto);
 		log.info("Updating BOD details of students,{}", birthday);
-		List<List<Object>> values = Arrays.asList(wrapper.extractDtoDetails(birthday));
+		List<List<Object>> values = null;
+		try {
+			values = Arrays.asList(wrapper.extractDtoDetails(birthday));
+		} catch (IllegalAccessException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		if (!values.isEmpty()) {
 			List<Object> modifiedValues = new ArrayList<>(values.get(0).subList(1, values.get(0).size()));
 			values.set(0, modifiedValues);

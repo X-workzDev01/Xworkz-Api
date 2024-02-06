@@ -15,6 +15,6 @@ public interface BirthadayService {
 	ResponseEntity<String> saveBirthDayInfo(String spreadsheetId, TraineeDto dto, HttpServletRequest request)
 			throws IllegalAccessException, IOException;
 
-	boolean updateDob(TraineeDto dto) throws IllegalAccessException, IOException;
+	boolean updateDob(TraineeDto dto);
 
 }
