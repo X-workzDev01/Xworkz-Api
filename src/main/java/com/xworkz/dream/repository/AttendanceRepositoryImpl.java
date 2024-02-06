@@ -124,6 +124,13 @@ public class AttendanceRepositoryImpl implements AttendanceRepository {
 		return true;
 
 	}
+	
+	@Override
+	public List<List<Object>> getNamesAndCourseName(String spreadsheetId,String range, String value) throws IOException {
+		log.info("Reading names and courseName from sheet for spreadsheetId: {}", spreadsheetId);
+		ValueRange response = sheetsService.spreadsheets().values().get(spreadsheetId, range).execute();
+		return response.getValues();
+	}
 
 
 }

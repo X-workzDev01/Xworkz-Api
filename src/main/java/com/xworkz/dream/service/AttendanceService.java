@@ -13,8 +13,10 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import com.xworkz.dream.dto.AbsentDaysDto;
 import com.xworkz.dream.dto.AbsenteesDto;
+import com.xworkz.dream.dto.AttendanceDataDto;
 import com.xworkz.dream.dto.AttendanceDto;
 import com.xworkz.dream.dto.AttendanceTrainee;
+import com.xworkz.dream.dto.FollowUpDto;
 
 import freemarker.template.TemplateException;
 
@@ -36,7 +38,14 @@ public interface AttendanceService {
 
 	public Boolean markTraineeAttendance(String courseName, Boolean batchAttendanceStatus)
 			throws IOException, IllegalAccessException;
+
+	public List<AttendanceDto> addJoined(String courseName) throws IOException, IllegalAccessException;
+
+	public  ResponseEntity<AttendanceDataDto> attendanceReadData(Integer startingIndex, Integer maxRows,
+			String courseName);
+
+	public List<AttendanceDto> filterData(String searchValue, String courseName) throws IOException;
 	
-	public List<AttendanceDto> addJoined(String courseName) throws IOException,IllegalAccessException;
+	public ResponseEntity<List<AttendanceDto>> getSearchSuggestion(String value, String courseName);
 
 }

@@ -6,11 +6,11 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
-import java.util.Objects;
+import java.util.ListIterator;
 import java.util.Set;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 import javax.mail.MessagingException;
 import javax.servlet.http.HttpServletRequest;
@@ -22,6 +22,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -32,6 +33,7 @@ import com.google.api.services.sheets.v4.model.ValueRange;
 import com.xworkz.dream.constants.Status;
 import com.xworkz.dream.dto.AbsentDaysDto;
 import com.xworkz.dream.dto.AbsenteesDto;
+import com.xworkz.dream.dto.AttendanceDataDto;
 import com.xworkz.dream.dto.AttendanceDto;
 import com.xworkz.dream.dto.AttendanceTrainee;
 import com.xworkz.dream.dto.BatchAttendanceDto;
@@ -63,6 +65,8 @@ public class AttendanceServiceImpl implements AttendanceService {
 	private String attandanceInfoSheetName;
 	@Value("${sheets.batchAttendanceInfoRange}")
 	private String batchAttendanceInfoRange;
+	@Value("${sheets.attandenceNameAndCourseRange}")
+	private String attandenceNameAndCourseRange;
 	@Autowired
 	private WrapperUtil util;
 	@Autowired
@@ -92,7 +96,8 @@ public class AttendanceServiceImpl implements AttendanceService {
 		Boolean traineeAlreadyAdded = this.traineeAlreadyAdded(dto.getCourse(), dto.getId());
 		if (traineeAlreadyAdded == false) {
 			if (violation.isEmpty() && dto != null) {
-				if (dto.getAttemptStatus().equalsIgnoreCase(Status.Joined.toString())) {
+				if (dto.getAttemptStatus().equalsIgnoreCase(Status.Joined.toString())
+						&& !dto.getCourse().equals("NA")) {
 					wrapper.setValueAttendaceDto(dto);
 					List<Object> list = util.extractDtoDetails(dto);
 					list.remove(4);
@@ -160,7 +165,6 @@ public class AttendanceServiceImpl implements AttendanceService {
 			int rowIndex = findByID(sheetId, dto.getId());
 			String range = attandanceInfoSheetName + attendanceStartRange + rowIndex + ":" + attendanceEndRange
 					+ rowIndex;
-
 			if (attendanceDto.getId() != null) {
 				updateAbsentDatesAndReasons(attendanceDto, dto);
 				updateTotalAbsent(attendanceDto, dto);
@@ -173,7 +177,6 @@ public class AttendanceServiceImpl implements AttendanceService {
 					log.debug("values {}", values);
 				}
 				valueRange.setValues(values);
-
 				UpdateValuesResponse update = attendanceRepository.update(sheetId, range, valueRange);
 				cacheService.updateCacheAttendancde("attendanceData", "listOfAttendance", attendanceDto.getId(),
 						attendanceDto);
@@ -237,7 +240,6 @@ public class AttendanceServiceImpl implements AttendanceService {
 			List<List<Object>> list = attendanceRepository.getAttendanceData(sheetId, attendanceInfoIDRange);
 			List<List<Object>> filteredList = list.stream().filter(entry -> batch.equals(entry.get(3))) // Filter by
 					.collect(Collectors.toList());
-
 			List<AttendanceTrainee> traineeInfoList = new ArrayList<>();
 
 			for (List<Object> entry : filteredList) {
@@ -404,6 +406,153 @@ public class AttendanceServiceImpl implements AttendanceService {
 	private String createFollowupDtoFromDetails(List<Object> details) {
 		FollowUpDto listToFollowUpDTO = wrapper.listToFollowUpDTO(details);
 		return listToFollowUpDTO.getBasicInfo().getEmail();
+	}
+
+	@Override
+	public ResponseEntity<AttendanceDataDto> attendanceReadData(Integer startingIndex, Integer maxRows,
+			String courseName) {
+		System.err.println("courseName : " + courseName);
+		try {
+
+			List<List<Object>> followUpDetails = repository.getFollowUpDetails(sheetId);
+			List<List<Object>> attendanceData = attendanceRepository.getAttendanceData(sheetId, attendanceInfoIDRange);
+			List<FollowUpDto> filterFollowUpDetails = this.followUpDetails(followUpDetails);
+			//System.err.println("filterFollowUpDetails : " + filterFollowUpDetails);
+
+			if (followUpDetails != null && attendanceData != null) {
+				List<List<Object>> sortedData = attendanceData.stream().sorted(Comparator.comparing(
+						list -> list != null && !list.isEmpty() && list.size() > 10 ? list.get(10).toString() : "",
+						Comparator.reverseOrder())).collect(Collectors.toList());
+				 List<List<Object>> collect;
+		            if (!courseName.equals("null")) {
+		                collect = sortedData.stream()
+		                        .filter(items -> filterFollowUpDetails.stream().anyMatch(id -> items.get(1).equals(id.toString()))
+		                                && items.get(3).equals(courseName))
+		                        .collect(Collectors.toList());
+		            } else {
+		                collect = sortedData.stream()
+		                        .filter(items -> filterFollowUpDetails.stream().anyMatch(id -> items.get(1).equals(id.toString())))
+		                        .collect(Collectors.toList());
+		            }
+
+		            List<AttendanceDto> limitedRows = this.getLimitedRows(collect, startingIndex, maxRows);
+		            AttendanceDataDto dto = new AttendanceDataDto(limitedRows, collect.size());
+		            log.info("Returning response for spreadsheetId: {}", sheetId);
+		            return ResponseEntity.ok(dto);
+			}
+
+		} catch (
+
+		IOException e) {
+			log.error("An error occurred while reading in spreadsheetId: {}", sheetId, e);
+		}
+		return null;
+
+	}
+
+	private List<AttendanceDto> getLimitedRows(List<List<Object>> values, int startingIndex, int maxRows) {
+		List<AttendanceDto> attendanceDtos = new ArrayList<>();
+		if (values != null) {
+			int endIndex = startingIndex + maxRows;
+			ListIterator<List<Object>> iterator = values.listIterator(startingIndex);
+			while (iterator.hasNext() && iterator.nextIndex() < endIndex) {
+				List<Object> row = iterator.next();
+				if (row != null && !row.isEmpty()) {
+					AttendanceDto attendanceDto = wrapper.attendanceListToDto(row);
+					System.err.println("attendanceDto in 5555 : " + attendanceDto);
+					attendanceDtos.add(attendanceDto);
+					System.err.println("attendanceDtos : " + attendanceDtos);
+				}
+			}
+			log.info("Returning {} Attendance objects", attendanceDtos.size());
+		}
+		return attendanceDtos;
+	}
+
+	private List<FollowUpDto> followUpDetails(List<List<Object>> followUpDetails) {
+		return followUpDetails.stream().filter(row -> "Joined".equals(row.get(8))).map(this::followupDtoFromDetails)
+				.collect(Collectors.toList());
+	}
+
+	private FollowUpDto followupDtoFromDetails(List<Object> details) {
+		FollowUpDto listToFollowUpDTO = wrapper.listToFollowUpDTO(details);
+		return listToFollowUpDTO;
+	}
+
+	@Override
+	public List<AttendanceDto> filterData(String searchValue, String courseName) throws IOException {
+		try {
+			if (searchValue != null && !searchValue.isEmpty()) {
+				log.info("Filtering data in spreadsheetId: {} with search value: {}", sheetId, searchValue);
+				List<List<Object>> attendanceData = attendanceRepository.getAttendanceData(sheetId,
+						attendanceInfoIDRange);
+				List<List<Object>> filteredLists = attendanceData.stream().filter(list -> list.stream().anyMatch(
+						value -> value != null && value.toString().toLowerCase().contains(searchValue.toLowerCase())))
+						.collect(Collectors.toList());
+				if (!courseName.equals("null")) {
+					List<AttendanceDto> flist = filteredLists.stream().map(items -> wrapper.attendanceListToDto(items))
+							.filter(dto -> dto.getCourse().equalsIgnoreCase(courseName)).collect(Collectors.toList());
+					log.info("Filtered {} Attendance objects", flist.size());
+
+					return flist;
+
+				} else {
+					List<AttendanceDto> flist = filteredLists.stream().map(items -> wrapper.attendanceListToDto(items))
+							.filter(dto -> dto.getTraineeName().equalsIgnoreCase(searchValue))
+							.collect(Collectors.toList());
+					log.info("Filtered {} TraineeDto objects", flist.size());
+
+					return flist;
+
+				}
+			} else {
+				log.warn("Search value is null or empty. Returning an empty list.");
+				return new ArrayList<>();
+			}
+		} catch (IOException e) {
+			log.error("An error occurred while filtering data in spreadsheetId: {}", sheetId, e);
+			throw e;
+		}
+	}
+
+	@Override
+	public ResponseEntity<List<AttendanceDto>> getSearchSuggestion(String value, String courseName) {
+		List<AttendanceDto> suggestion = new ArrayList<>();
+		if (value != null) {
+			try {
+				if (!courseName.equalsIgnoreCase("null")) {
+					List<List<Object>> dataList = attendanceRepository
+							.getNamesAndCourseName(sheetId, attandenceNameAndCourseRange, value).stream()
+							.filter(list -> list.get(3) != null && list.get(3).toString().equalsIgnoreCase(courseName))
+							.collect(Collectors.toList());
+					List<List<Object>> filteredData = dataList.stream().filter(list -> list.stream().anyMatch(val -> {
+						return val.toString().toLowerCase().startsWith(value.toLowerCase());
+					})).collect(Collectors.toList());
+					for (List<Object> list : filteredData) {
+						AttendanceDto dto = wrapper.attendanceListToDto(list);
+						suggestion.add(dto);
+					}
+				} else {
+					List<List<Object>> dataList = attendanceRepository.getNamesAndCourseName(sheetId,
+							attandenceNameAndCourseRange, value);
+					List<List<Object>> filteredData = dataList.stream().filter(list -> list.stream().anyMatch(val -> {
+						return val.toString().toLowerCase().startsWith(value.toLowerCase());
+					})).collect(Collectors.toList());
+					for (List<Object> list : filteredData) {
+						AttendanceDto dto = wrapper.attendanceListToDto(list);
+						suggestion.add(dto);
+					}
+				}
+
+				log.info("Returning {} search suggestions", suggestion.size());
+				return ResponseEntity.ok(suggestion);
+			} catch (IOException e) {
+				log.error("An error occurred while getting search suggestion in spreadsheetId: {}", sheetId, e);
+				return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new ArrayList<>());
+			}
+		}
+		log.warn("Null value provided for search suggestion");
+		return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ArrayList<>());
 	}
 
 }

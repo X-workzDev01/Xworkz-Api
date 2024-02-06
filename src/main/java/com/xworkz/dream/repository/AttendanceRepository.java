@@ -16,5 +16,7 @@ public interface AttendanceRepository {
 	public boolean saveDetilesWithDataSize(List<Object> list, String attendanceRange) throws IOException;
 	
 	public boolean saveDetilesWithoutSize(List<Object> list, String attendanceRange) throws IOException ;
+	
+	public List<List<Object>> getNamesAndCourseName(String spreadsheetId,String range, String value) throws IOException;
 
 }

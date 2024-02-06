@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -25,8 +26,11 @@ import org.springframework.web.bind.annotation.RestController;
 import com.xworkz.dream.dto.AbsentDaysDto;
 import com.xworkz.dream.dto.AbsentDto;
 import com.xworkz.dream.dto.AbsenteesDto;
+import com.xworkz.dream.dto.AttendanceDataDto;
 import com.xworkz.dream.dto.AttendanceDto;
 import com.xworkz.dream.dto.AttendanceTrainee;
+import com.xworkz.dream.dto.SheetsDto;
+import com.xworkz.dream.dto.TraineeDto;
 import com.xworkz.dream.service.AttendanceService;
 import com.xworkz.dream.service.BatchService;
 
@@ -114,6 +118,35 @@ public class AttendanceController {
 		}
 
 		return new ResponseEntity<>(traineeNameAndCourseNameMap, HttpStatus.OK);
+	}
+
+	@GetMapping("/readData")
+	public ResponseEntity<AttendanceDataDto> readData(@RequestParam Integer startingIndex,
+			@RequestParam Integer maxRows, @RequestParam String courseName) {
+		log.info("Reading data with parameters - SpreadsheetId: {}, Starting Index: {}, Max Rows: {}, Course Name: {}",
+				spreadsheetId, startingIndex, maxRows, courseName);
+		return attendanceService.attendanceReadData(startingIndex, maxRows, courseName);
+	}
+
+	@GetMapping("/filterData/{courseName}")
+	public List<AttendanceDto> filterData(@PathVariable String courseName,
+			@RequestParam String searchValue) {
+		try {
+			log.info("Filtering data with parameters - SpreadsheetId: {}, Search Value: {}", spreadsheetId,
+					searchValue);
+			return attendanceService.filterData(searchValue, courseName);
+		} catch (IOException e) {
+			log.error("An error occurred during data filtering", e.getMessage());
+		}
+		return null;
+
+	}
+
+	@GetMapping("/suggestion/{courseName}")
+	public ResponseEntity<List<AttendanceDto>> getSearchSuggestion(@RequestParam String value, @PathVariable String courseName) {
+		log.info("Getting suggestions for search: {}", value);
+		return attendanceService.getSearchSuggestion(value, courseName);
+
 	}
 
 }
