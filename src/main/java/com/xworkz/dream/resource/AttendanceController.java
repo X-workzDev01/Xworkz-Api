@@ -129,21 +129,16 @@ public class AttendanceController {
 	}
 
 	@GetMapping("/filterData/{courseName}")
-	public List<AttendanceDto> filterData(@PathVariable String courseName,
-			@RequestParam String searchValue) {
-		try {
-			log.info("Filtering data with parameters - SpreadsheetId: {}, Search Value: {}", spreadsheetId,
-					searchValue);
-			return attendanceService.filterData(searchValue, courseName);
-		} catch (IOException e) {
-			log.error("An error occurred during data filtering", e.getMessage());
-		}
-		return null;
+	public List<AttendanceDto> filterData(@PathVariable String courseName, @RequestParam String searchValue) {
+
+		log.info("Filtering data with parameters - SpreadsheetId: {}, Search Value: {}", spreadsheetId, searchValue);
+		return attendanceService.filterData(searchValue, courseName);
 
 	}
 
 	@GetMapping("/suggestion/{courseName}")
-	public ResponseEntity<List<AttendanceDto>> getSearchSuggestion(@RequestParam String value, @PathVariable String courseName) {
+	public ResponseEntity<List<AttendanceDto>> getSearchSuggestion(@RequestParam String value,
+			@PathVariable String courseName) {
 		log.info("Getting suggestions for search: {}", value);
 		return attendanceService.getSearchSuggestion(value, courseName);
 

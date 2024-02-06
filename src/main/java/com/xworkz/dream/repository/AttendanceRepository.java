@@ -1,22 +1,21 @@
 package com.xworkz.dream.repository;
 
-import java.io.IOException;
 import java.util.List;
 
 import com.google.api.services.sheets.v4.model.UpdateValuesResponse;
 import com.google.api.services.sheets.v4.model.ValueRange;
 
 public interface AttendanceRepository {
-	public boolean writeAttendance(String spreadsheetId, List<Object> row, String range) throws IOException;
+	boolean writeAttendance(String spreadsheetId, List<Object> row, String range);
 
-	List<List<Object>> getAttendanceData(String spreadsheetId, String attendanceInfoRange) throws IOException;
+	List<List<Object>> getAttendanceData(String spreadsheetId, String attendanceInfoRange);
 
-	public UpdateValuesResponse update(String spreadsheetId, String range2, ValueRange valueRange) throws IOException;
-	
-	public boolean saveDetilesWithDataSize(List<Object> list, String attendanceRange) throws IOException;
-	
-	public boolean saveDetilesWithoutSize(List<Object> list, String attendanceRange) throws IOException ;
-	
-	public List<List<Object>> getNamesAndCourseName(String spreadsheetId,String range, String value) throws IOException;
+	UpdateValuesResponse update(String spreadsheetId, String range2, ValueRange valueRange);
+
+	boolean saveDetilesWithDataSize(List<Object> list, String attendanceRange);
+
+	boolean saveDetilesWithoutSize(List<Object> list, String attendanceRange);
+
+	List<List<Object>> getNamesAndCourseName(String spreadsheetId, String range, String value);
 
 }
