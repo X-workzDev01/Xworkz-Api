@@ -128,8 +128,7 @@ public class BirthadayServiceImpl implements BirthadayService {
 		try {
 			values = Arrays.asList(wrapper.extractDtoDetails(birthday));
 		} catch (IllegalAccessException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+		log.error("Exception in update DOB service");
 		}
 		if (!values.isEmpty()) {
 			List<Object> modifiedValues = new ArrayList<>(values.get(0).subList(1, values.get(0).size()));
