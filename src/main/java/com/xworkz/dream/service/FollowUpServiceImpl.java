@@ -424,6 +424,8 @@ public class FollowUpServiceImpl implements FollowUpService {
 				List<List<Object>> data = lists.stream()
 						.filter(elements -> statusList.getStatusCheck().contains(elements.get(8).toString()))
 						.collect(Collectors.toList());
+				if (data != null) {
+
 				data.stream().forEach(items -> {
 					FollowUpDto dto = wrapper.listToFollowUpDTO(items);
 					if (dto.getCallback() != null && dto.getCallback().length() > 11
@@ -467,6 +469,7 @@ public class FollowUpServiceImpl implements FollowUpService {
 
 				}
 			}
+		}
 
 			else if (status.toString()
 					.equalsIgnoreCase(Status.Never_followUp.toString().replace('_', ' ').toString())) {
@@ -657,9 +660,9 @@ public class FollowUpServiceImpl implements FollowUpService {
 						return ResponseEntity.ok(followUpDataDto);
 
 					} else {
-						dtos.stream().sorted(Comparator.comparing(FollowUpDto::getRegistrationDate).reversed())
+						List<FollowUpDto> finalData=dtos.stream().sorted(Comparator.comparing(FollowUpDto::getRegistrationDate).reversed())
 								.skip(startingIndex).limit(maxRows).collect(Collectors.toList());
-						FollowUpDataDto followUpDataDto = new FollowUpDataDto(dtos, data.size());
+						FollowUpDataDto followUpDataDto = new FollowUpDataDto(finalData, dtos.size());
 						return ResponseEntity.ok(followUpDataDto);
 					}
 				}
