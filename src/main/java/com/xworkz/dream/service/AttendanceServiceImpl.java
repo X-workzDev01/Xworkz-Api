@@ -475,9 +475,7 @@ public class AttendanceServiceImpl implements AttendanceService {
 				List<Object> row = iterator.next();
 				if (row != null && !row.isEmpty()) {
 					AttendanceDto attendanceDto = wrapper.attendanceListToDto(row);
-					System.err.println("attendanceDto in 5555 : " + attendanceDto);
 					attendanceDtos.add(attendanceDto);
-					System.err.println("attendanceDtos : " + attendanceDtos);
 				}
 			}
 			log.info("Returning {} Attendance objects", attendanceDtos.size());
