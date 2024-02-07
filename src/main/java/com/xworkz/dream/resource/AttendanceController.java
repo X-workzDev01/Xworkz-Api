@@ -108,7 +108,7 @@ public class AttendanceController {
 	}
 
 	@PostMapping("/addTrainee")
-	public ResponseEntity<Map<Integer, String>> addTraineeToJoind(@RequestParam String courseName)
+	public ResponseEntity<Map<Integer, String>> addTraineeToJoined(@RequestParam String courseName)
 			throws IOException, IllegalAccessException {
 		List<AttendanceDto> addJoined = attendanceService.addJoined(courseName);
 		Map<Integer, String> traineeNameAndCourseNameMap = new HashMap<>();

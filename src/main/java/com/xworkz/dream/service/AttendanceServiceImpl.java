@@ -82,6 +82,7 @@ public class AttendanceServiceImpl implements AttendanceService {
 	private AttendanceRepository attendanceRepository;
 	@Autowired
 	private RegisterRepository registerRepository;
+	
 
 	private static Logger log = LoggerFactory.getLogger(AttendanceServiceImpl.class);
 
@@ -95,7 +96,7 @@ public class AttendanceServiceImpl implements AttendanceService {
 			if (traineeAlreadyAdded == false) {
 				if (violation.isEmpty() && dto != null) {
 					if (dto.getAttemptStatus().equalsIgnoreCase(Status.Joined.toString())
-							&& !dto.getCourse().equals("NA")) {
+							&& !dto.getCourse().equals(Status.NA.toString())) {
 						wrapper.setValueAttendaceDto(dto);
 						List<Object> list;
 
@@ -115,7 +116,7 @@ public class AttendanceServiceImpl implements AttendanceService {
 
 			}
 		} catch (IllegalAccessException e) {
-			e.getMessage();
+			log.error("Error accessing traineeAlreadyAdded method: {}", e.getMessage());
 		}
 		return ResponseEntity.ok("Attendance detiles does not added ");
 
@@ -166,7 +167,7 @@ public class AttendanceServiceImpl implements AttendanceService {
 
 			}
 		} catch (IOException | IllegalAccessException e) {
-			e.getMessage();
+			log.error("Error accessing attendance data or updating attendance details: {}", e.getMessage());
 		}
 
 	}
@@ -207,14 +208,14 @@ public class AttendanceServiceImpl implements AttendanceService {
 		LocalDate localDate = LocalDate.now();
 		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 		String newAbsentDate = localDate.format(formatter);
-		String updatedAbsentDates = !currentAbsentDates.equals(null) && currentAbsentDates.contains("NA")
+		String updatedAbsentDates = !currentAbsentDates.equals(null) && currentAbsentDates.contains(Status.NA.toString())
 				? newAbsentDate
 				: currentAbsentDates + "," + newAbsentDate;
 		attendanceDto.setAbsentDate(updatedAbsentDates);
 
 		String currentReason = attendanceDto.getReason();
 		String newReason = dto.getReason();
-		String updatedReasons = !currentReason.equals(null) && currentReason.contains("NA") ? newReason
+		String updatedReasons = !currentReason.equals(null) && currentReason.contains(Status.NA.toString()) ? newReason
 				: currentReason + "," + newReason;
 		attendanceDto.setReason(updatedReasons);
 		attendanceDto.getAdminDto().setUpdatedBy(dto.getUpdatedBy());
@@ -259,7 +260,7 @@ public class AttendanceServiceImpl implements AttendanceService {
 				String name = (String) entry.get(2);
 				traineeInfoList.add(new AttendanceTrainee(id, name));
 			} catch (NumberFormatException e) {
-				e.getMessage();
+				log.error("Error parsing trainee ID: {}", e.getMessage());
 			}
 		}
 		return traineeInfoList;
@@ -343,7 +344,7 @@ public class AttendanceServiceImpl implements AttendanceService {
 					return false;
 				}
 			} catch (IOException | IllegalAccessException e) {
-				e.getMessage();
+				log.error("Error marking trainee attendance: {}", e.getMessage());
 			}
 		}
 		return batchAttendanceStatus;
@@ -374,7 +375,7 @@ public class AttendanceServiceImpl implements AttendanceService {
 										}
 
 									} catch (IllegalAccessException | IOException e) {
-										log.error(e.getMessage());
+										log.error("Error adding joined trainee: {}", e.getMessage());
 									}
 
 								});
@@ -384,7 +385,7 @@ public class AttendanceServiceImpl implements AttendanceService {
 				return Collections.emptyList();
 			}
 		} catch (IOException e1) {
-			e1.getMessage();
+			log.error("Error adding joined trainee: {}", e1.getMessage());
 		}
 
 		return null;
@@ -392,7 +393,7 @@ public class AttendanceServiceImpl implements AttendanceService {
 	}
 
 	private List<String> filterFollowUpDetails(List<List<Object>> followUpDetails) {
-		return followUpDetails.stream().filter(row -> "Joined".equals(row.get(8)))
+		return followUpDetails.stream().filter(row -> Status.Joined.equals(row.get(8)))
 				.map(this::createFollowupDtoFromDetails).collect(Collectors.toList());
 	}
 
@@ -458,9 +459,7 @@ public class AttendanceServiceImpl implements AttendanceService {
 				return ResponseEntity.ok(dto);
 			}
 
-		} catch (
-
-		IOException e) {
+		} catch (IOException e) {
 			log.error("An error occurred while reading in spreadsheetId: {}", sheetId, e);
 		}
 		return null;

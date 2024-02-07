@@ -60,7 +60,7 @@ public class AttendanceRepositoryImpl implements AttendanceRepository {
 
 	@Override
 	public boolean writeAttendance(String spreadsheetId, List<Object> row, String range) {
-		log.info("Writing attendance to sheet...");
+		log.info("Writing attendance to sheet... :{} ", spreadsheetId);
 
 		ValueRange value;
 		try {
@@ -74,7 +74,7 @@ public class AttendanceRepositoryImpl implements AttendanceRepository {
 				return this.saveDetilesWithoutSize(row, range);
 			}
 		} catch (IOException e) {
-			e.getMessage();
+			log.error("Error writing attendance to sheet: {}", e.getMessage());
 		}
 		return false;
 
@@ -83,34 +83,32 @@ public class AttendanceRepositoryImpl implements AttendanceRepository {
 	@Override
 	@Cacheable(value = "attendanceData", key = "'listOfAttendance'")
 	public List<List<Object>> getAttendanceData(String spreadsheetId, String range) {
-		log.info("Getting data from sheet...");
+		log.info("Getting data from sheet : {} ", spreadsheetId);
 		ValueRange response;
 		try {
 			response = sheetsService.spreadsheets().values().get(spreadsheetId, range).execute();
-			log.info("Data retrieved successfully.");
 			return response.getValues();
 		} catch (IOException e) {
-			e.getMessage();
+			log.error("Error getting attendance data from sheet: {}", e.getMessage());
 		}
 		return null;
-		
+
 	}
 
 	@Override
 	public UpdateValuesResponse update(String spreadsheetId, String range, ValueRange valueRange) {
-		log.info("Updating sheet data...");
-		log.error("valueRange : " + valueRange);
+		log.info("Updating sheet data : {}", spreadsheetId);
 		try {
-			return sheetsService.spreadsheets().values().update(spreadsheetId, range, valueRange).setValueInputOption("RAW")
-					.execute();
+			return sheetsService.spreadsheets().values().update(spreadsheetId, range, valueRange)
+					.setValueInputOption("RAW").execute();
 		} catch (IOException e) {
-			e.getMessage();
+			log.error("Error updating sheet data: {}", e.getMessage());
 		}
 		return null;
 	}
 
 	@Override
-	public boolean saveDetilesWithDataSize(List<Object> list, String attendanceRange){
+	public boolean saveDetilesWithDataSize(List<Object> list, String attendanceRange) {
 		List<List<Object>> values = new ArrayList<>();
 		List<Object> rowData = new ArrayList<>();
 		rowData.add("");
@@ -119,16 +117,14 @@ public class AttendanceRepositoryImpl implements AttendanceRepository {
 
 		ValueRange body = new ValueRange().setValues(values);
 		try {
-			sheetsService.spreadsheets().values().append(sheetId, attendanceRange, body).setValueInputOption("USER_ENTERED")
-					.execute();
+			sheetsService.spreadsheets().values().append(sheetId, attendanceRange, body)
+					.setValueInputOption("USER_ENTERED").execute();
 			log.debug("registering fees repository data list is : {}", body);
 			return true;
 		} catch (IOException e) {
-			e.getMessage();
+			log.error("Error saving attendance details with data size: {}", e.getMessage());
 		}
 		return false;
-		
-		
 
 	}
 
@@ -143,31 +139,29 @@ public class AttendanceRepositoryImpl implements AttendanceRepository {
 
 		ValueRange body = new ValueRange().setValues(values);
 		try {
-			sheetsService.spreadsheets().values().append(sheetId, attendanceRange, body).setValueInputOption("USER_ENTERED")
-					.execute();
+			sheetsService.spreadsheets().values().append(sheetId, attendanceRange, body)
+					.setValueInputOption("USER_ENTERED").execute();
 			log.debug("registering fees repository data list is : {}", body);
 			return true;
 		} catch (IOException e) {
-			e.getMessage();
+			log.error("Error saving attendance details without data size: {}", e.getMessage());
 		}
 		return false;
-		
 
 	}
 
 	@Override
-	public List<List<Object>> getNamesAndCourseName(String spreadsheetId, String range, String value)
-			 {
+	public List<List<Object>> getNamesAndCourseName(String spreadsheetId, String range, String value) {
 		log.info("Reading names and courseName from sheet for spreadsheetId: {}", spreadsheetId);
 		ValueRange response;
 		try {
 			response = sheetsService.spreadsheets().values().get(spreadsheetId, range).execute();
 			return response.getValues();
 		} catch (IOException e) {
-			e.getMessage();
+			log.error("Error reading names and course names from sheet: {}", e.getMessage());
 		}
 		return null;
-		
+
 	}
 
 }
