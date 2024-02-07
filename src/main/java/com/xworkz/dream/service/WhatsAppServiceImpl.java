@@ -202,7 +202,6 @@ public class WhatsAppServiceImpl implements WhatsAppService {
 
 			boolean sendWhatsAppLink = util.sendWhatsAppLink(emailByCourseName, subject,
 					batchDetailsByCourseName.getWhatsAppLink());
-			System.err.println("sendWhatsAppLink : "+sendWhatsAppLink);
 			if (sendWhatsAppLink == true) {
 				log.info("WhatsApp link sent successfully for courseName: {}", courseName);
 				this.processAndBulkUpdate(spreadsheetId, courseName);
