@@ -289,6 +289,8 @@ public class RegistrationServiceImpl implements RegistrationService {
 				valueRange.setValues(values);
 
 				UpdateValuesResponse updated = repo.update(spreadsheetId, range, valueRange);
+				boolean updateDob=service.updateDob(dto);
+				log.info("updated DOB in Sheet,{}",updateDob);
 				if (updated != null && !updated.isEmpty()) {
 					followUpService.updateFollowUp(spreadsheetId, email, dto);
 					cacheService.getCacheDataByEmail("sheetsData", spreadsheetId, email, dto);
