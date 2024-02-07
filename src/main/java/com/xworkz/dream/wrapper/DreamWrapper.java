@@ -75,11 +75,11 @@ public class DreamWrapper {
 
 		if (rowSize > 0 && row.get(0) != null && !row.get(0).toString().isEmpty()) {
 			followUpDto.setId(Integer.valueOf(row.get(0).toString()));
-		} else if (rowSize > 1 && row.get(1) != null && !row.get(1).toString().isEmpty()) {
+		}  if (rowSize > 1 && row.get(1) != null && !row.get(1).toString().isEmpty()) {
 			followUpDto.getBasicInfo().setTraineeName((String) row.get(1));
 		}
 
-		else if (rowSize > 2 && row.get(2) != null && !row.get(2).toString().isEmpty()) {
+		if (rowSize > 2 && row.get(2) != null && !row.get(2).toString().isEmpty()) {
 			followUpDto.getBasicInfo().setEmail((String) row.get(2));
 		}
 
