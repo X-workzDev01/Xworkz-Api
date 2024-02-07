@@ -29,6 +29,7 @@ import com.google.api.services.sheets.v4.model.UpdateValuesResponse;
 import com.google.api.services.sheets.v4.model.ValueRange;
 import com.google.auth.http.HttpCredentialsAdapter;
 import com.google.auth.oauth2.GoogleCredentials;
+import com.xworkz.dream.constants.RepositoryConstant;
 
 @Repository
 public class BirthadayRepositoryImpl implements BirthadayRepository {
@@ -73,7 +74,7 @@ public class BirthadayRepositoryImpl implements BirthadayRepository {
 		values.add(rowData);
 		ValueRange body = new ValueRange().setValues(values);
 		sheetsService.spreadsheets().values().append(spreadsheetId, dateOfBirthDetailsRange, body)
-				.setValueInputOption("USER_ENTERED").execute();
+				.setValueInputOption(RepositoryConstant.USER_ENTERED.toString()).execute();
 		log.info("Birthday details saved successfully for spreadsheetId: {}", spreadsheetId);
 		return true;
 	}
@@ -90,9 +91,9 @@ public class BirthadayRepositoryImpl implements BirthadayRepository {
 		UpdateValuesResponse response = null;
 		try {
 			response = sheetsService.spreadsheets().values().update(sheetId, rowRange, valueRange)
-					.setValueInputOption("RAW").execute();
+					.setValueInputOption(RepositoryConstant.RAW.toString()).execute();
 		} catch (IOException e) {
-			log.error("Exception in UpdateDOB Repo,{}"+e);
+			log.error("Exception in UpdateDOB Repo,{}",e);
 		}
 		return response;
 	}

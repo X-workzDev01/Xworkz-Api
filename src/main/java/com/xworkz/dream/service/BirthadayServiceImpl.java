@@ -51,7 +51,7 @@ public class BirthadayServiceImpl implements BirthadayService {
 	@Override
 	public ResponseEntity<String> saveBirthDayInfo(String spreadsheetId, TraineeDto dto, HttpServletRequest request)
 			throws IllegalAccessException, IOException {
-		BirthDayInfoDto birthday = AssignToBirthDayDto(dto);
+		BirthDayInfoDto birthday = assignToBirthDayDto(dto);
 		List<Object> list = wrapper.extractDtoDetails(birthday);
 
 		boolean save = repository.saveBirthDayDetails(spreadsheetId, list);
@@ -63,7 +63,7 @@ public class BirthadayServiceImpl implements BirthadayService {
 		return ResponseEntity.ok("Birth day information Not added");
 	}
 
-	private BirthDayInfoDto AssignToBirthDayDto(TraineeDto dto) {
+	private BirthDayInfoDto assignToBirthDayDto(TraineeDto dto) {
 		BirthDayInfoDto birthday = new BirthDayInfoDto();
 		birthday.setDto(dto.getBasicInfo());
 		birthday.setBirthDayMailSent("NO");
@@ -122,13 +122,13 @@ public class BirthadayServiceImpl implements BirthadayService {
 		log.debug("Row Number to update,{}", rowNumber);
 		String rowRange = dobSheetName+birthDayStartRow + rowNumber + ":" + birthDayEndRow+rowNumber;
 		log.debug("Row Range ,{}", rowRange);
-		BirthDayInfoDto birthday = AssignToBirthDayDto(dto);
+		BirthDayInfoDto birthday = assignToBirthDayDto(dto);
 		log.info("Updating BOD details of students,{}", birthday);
 		List<List<Object>> values = null;
 		try {
 			values = Arrays.asList(wrapper.extractDtoDetails(birthday));
 		} catch (IllegalAccessException e) {
-		log.error("Exception in update DOB service");
+		log.error("Exception in update DOB service,{}",e);
 		}
 		if (!values.isEmpty()) {
 			List<Object> modifiedValues = new ArrayList<>(values.get(0).subList(1, values.get(0).size()));
