@@ -23,7 +23,7 @@ public interface RegistrationService {
 	public ResponseEntity<String> contactNumberCheck(String spreadsheetId, Long contactNumber,
 			HttpServletRequest request);
 
-	public ResponseEntity<SheetsDto> readData(String spreadsheetId, int startingIndex, int maxRows, String courseName);
+	public ResponseEntity<SheetsDto> readData(String spreadsheetId, int startingIndex, int maxRows, String courseName, String collegeName);
 
 	public List<TraineeDto> getLimitedRows(List<List<Object>> values, int startingIndex, int maxRows);
 

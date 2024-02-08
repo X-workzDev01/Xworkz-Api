@@ -81,10 +81,10 @@ public class RegistrationController {
 
 	@GetMapping("/readData")
 	public ResponseEntity<SheetsDto> readData(@RequestHeader String spreadsheetId, @RequestParam int startingIndex,
-			@RequestParam int maxRows, @RequestParam String courseName) {
+			@RequestParam int maxRows, @RequestParam String courseName,@RequestParam String collegeName) {
 		log.info("Reading data with parameters - SpreadsheetId: {}, Starting Index: {}, Max Rows: {}, Course Name: {}",
 				spreadsheetId, startingIndex, maxRows, courseName);
-		return service.readData(spreadsheetId, startingIndex, maxRows, courseName);
+		return service.readData(spreadsheetId, startingIndex, maxRows, courseName,collegeName);
 	}
 
 	@GetMapping("/filterData/{courseName}")
