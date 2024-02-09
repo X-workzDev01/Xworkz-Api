@@ -1,5 +1,5 @@
 package com.xworkz.dream.constants;
 
 public enum ServiceConstant {
-	NA, CSR, ACTIVE, XBR,NULL
+	NA, XBR,NULL,NOT_CONFIRMED,NONE,NEW,ENQUIRY,CSR,ACTIVE;
 }
