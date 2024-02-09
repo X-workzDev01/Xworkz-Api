@@ -5,15 +5,14 @@ import java.util.List;
 
 public interface WhatsAppService {
 
-
-	public boolean updateWhatsAppLinkByCourseName(String spreadsheetId, String cousreName, String whatsAppLink)
+	boolean updateWhatsAppLinkByCourseName(String spreadsheetId, String cousreName, String whatsAppLink)
 			throws IOException, IllegalAccessException;
 
-	public List<String> getEmailByCourseName(String spreadsheetId, String cousreName)
-			throws IOException;
+	List<String> getEmailByCourseName(String spreadsheetId, String cousreName) throws IOException;
 
-	public Boolean sendWhatsAppLink(String spreadsheetId, String courseName)throws IOException;
-	
-	public Boolean updateWhatsAppLinkByBatchName(String courseName,String whatsAppLink) throws IllegalAccessException, IOException ;
-	
+	Boolean sendWhatsAppLink(String spreadsheetId, String courseName) throws IOException;
+
+	Boolean updateWhatsAppLinkByBatchName(String courseName, String whatsAppLink)
+			throws IllegalAccessException, IOException;
+
 }
