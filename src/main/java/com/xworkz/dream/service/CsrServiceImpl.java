@@ -76,7 +76,7 @@ public class CsrServiceImpl implements CsrService {
 			log.error("Error processing request: {}",e);
 			return ResponseEntity.ok("Failed to process the request");
 		}
-
+ 
 	}
 
 	private void AddToCache(TraineeDto dto, HttpServletRequest request, List<Object> list)
@@ -148,7 +148,7 @@ public class CsrServiceImpl implements CsrService {
 			List<List<Object>> listOfUsn = repo.getUsnNumber(spreadsheetId);
 			return listOfUsn != null
 					&& listOfUsn.stream().filter(list -> list != null && !list.isEmpty() && list.get(0) != null)
-							.anyMatch(list -> list.get(0).toString().equals(usnNumber));
+							.anyMatch(list -> list.get(0).toString().equalsIgnoreCase(usnNumber));
 		}
 		return false;
 	}
