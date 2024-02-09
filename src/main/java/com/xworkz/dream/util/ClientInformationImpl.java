@@ -6,6 +6,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
+import com.xworkz.dream.constants.ServiceConstant;
 import com.xworkz.dream.dto.AuditDto;
 import com.xworkz.dream.dto.ClientDto;
 import com.xworkz.dream.dto.ClientHrDto;
@@ -16,27 +17,27 @@ public class ClientInformationImpl implements ClientInformationUtil {
 
 	@Override
 	public void setValuesToClientHrDto(ClientHrDto dto) {
-		if (dto.getHrScopName() == null) {
-			dto.setHrScopName("NA");
+		if (dto.getHrScopName() == null||dto.getHrScopName().isEmpty()) {
+			dto.setHrScopName(ServiceConstant.NA.toString());
 		}
-		if (dto.getHrEmail() == null) {
-			dto.setHrEmail("NA");
+		if (dto.getHrEmail() == null||dto.getHrEmail().isEmpty()) {
+			dto.setHrEmail(ServiceConstant.NA.toString());
 		}
 		if (dto.getHrContactNumber() == null) {
 			dto.setHrContactNumber(0l);
 		}
-		if (dto.getDesignation() == null) {
-			dto.setDesignation("NA");
+		if (dto.getDesignation() == null||dto.getDesignation().isEmpty()) {
+			dto.setDesignation(ServiceConstant.NA.toString());
 		}
 		
-		if (dto.getStatus() == null) {
-			dto.setStatus("NA");
+		if (dto.getStatus() == null||dto.getStatus().isEmpty()) {
+			dto.setStatus(ServiceConstant.NA.toString());
 		}
 		if (dto.getAdminDto() == null) {
 			dto.setAdminDto(new AuditDto()); // Assuming AdminDto has a no-argument constructor
 		}
 		if (dto.getAdminDto().getCreatedBy() == null) {
-			dto.getAdminDto().setCreatedBy("NA");
+			dto.getAdminDto().setCreatedBy(ServiceConstant.NA.toString());
 		}
 		dto.getAdminDto().setCreatedOn(LocalDateTime.now().toString());
 	}
@@ -44,24 +45,24 @@ public class ClientInformationImpl implements ClientInformationUtil {
 	@Override
 	public void settingNaValues(HrFollowUpDto dto) {
 
-		if (dto.getAttemptBy() == null) {
-			dto.setAttemptBy("NA");
+		if (dto.getAttemptBy() == null||dto.getAttemptBy().isEmpty()) {
+			dto.setAttemptBy(ServiceConstant.NA.toString());
 		}
 		dto.setAttemptOn(LocalDateTime.now().toString());
 		if (dto.getAttemptStatus() == null) {
-			dto.setAttemptStatus("NA");
+			dto.setAttemptStatus(ServiceConstant.NA.toString());
 		}
-		if (dto.getCallBackDate() == null) {
-			dto.setCallBackDate("NA");
+		if (dto.getCallBackDate() == null||dto.getCallBackDate().isEmpty()) {
+			dto.setCallBackDate(ServiceConstant.NA.toString());
 		}
 		if (dto.getCallDuration() == null) {
 			dto.setCallDuration(0);
 		}
-		if (dto.getComments() == null) {
-			dto.setComments("NA");
+		if (dto.getComments() == null||dto.getComments().isEmpty()) {
+			dto.setComments(ServiceConstant.NA.toString());
 		}
-		if (dto.getCallBackTime() == null) {
-			dto.setCallBackTime("NA");
+		if (dto.getCallBackTime() == null||dto.getComments().isEmpty()) {
+			dto.setCallBackTime(ServiceConstant.NA.toString());
 		}
 
 	}
@@ -69,42 +70,42 @@ public class ClientInformationImpl implements ClientInformationUtil {
 	@Override
 	public void setValuesToClientDto(ClientDto dto) {
 		log.debug("client wrapper setting NA values to the fields null {}", dto);
-		if (dto.getCompanyName() == null) {
-			dto.setCompanyName("NA");
+		if (dto.getCompanyName() == null||dto.getCompanyName().isEmpty()) {
+			dto.setCompanyName(ServiceConstant.NA.toString());
 		}
-		if (dto.getCompanyEmail() == null) {
-			dto.setCompanyEmail("NA");
+		if (dto.getCompanyEmail() == null||dto.getCompanyEmail().isEmpty()) {
+			dto.setCompanyEmail(ServiceConstant.NA.toString());
 		}
 		if (dto.getCompanyLandLineNumber() == null) {
 			dto.setCompanyLandLineNumber(0l);
 		}
-		if (dto.getCompanyWebsite() == null) {
-			dto.setCompanyWebsite("NA");
+		if (dto.getCompanyWebsite() == null||dto.getCompanyWebsite().isEmpty()) {
+			dto.setCompanyWebsite(ServiceConstant.NA.toString());
 		}
-		if (dto.getCompanyLocation() == null) {
-			dto.setCompanyLocation("NA");
+		if (dto.getCompanyLocation() == null||dto.getCompanyLocation().isEmpty()) {
+			dto.setCompanyLocation(ServiceConstant.NA.toString());
 		}
 
-		if (dto.getCompanyAddress() == null) {
-			dto.setCompanyAddress("NA");
+		if (dto.getCompanyAddress() == null||dto.getCompanyAddress().isEmpty()) {
+			dto.setCompanyAddress(ServiceConstant.NA.toString());
 		}
-		if (dto.getCompanyFounder() == null) {
-			dto.setCompanyFounder("NA");
+		if (dto.getCompanyFounder() == null||dto.getCompanyFounder().isEmpty()) {
+			dto.setCompanyFounder(ServiceConstant.NA.toString());
 		}
-		if (dto.getCompanyType() == null) {
-			dto.setCompanyType("NA");
+		if (dto.getCompanyType() == null||dto.getCompanyType().isEmpty()) {
+			dto.setCompanyType(ServiceConstant.NA.toString());
 		}
-		if (dto.getSourceOfConnetion() == null) {
-			dto.setSourceOfConnetion("NA");
+		if (dto.getSourceOfConnetion() == null||dto.getSourceOfConnetion().isEmpty()) {
+			dto.setSourceOfConnetion(ServiceConstant.NA.toString());
 		}
-		if (dto.getStatus() == null) {
-			dto.setStatus("NA");
+		if (dto.getStatus() == null||dto.getStatus().isEmpty()) {
+			dto.setStatus(ServiceConstant.NA.toString());
 		}
 		if (dto.getAdminDto() == null) {
 			dto.setAdminDto(new AuditDto()); // Assuming AdminDto has a no-argument constructor
 		}
 		if (dto.getAdminDto().getCreatedBy() == null) {
-			dto.getAdminDto().setCreatedBy("NA");
+			dto.getAdminDto().setCreatedBy(ServiceConstant.NA.toString());
 		}
 		// here we need to set createdBy email
 		dto.getAdminDto().setCreatedOn(LocalDateTime.now().toString());
