@@ -260,6 +260,44 @@ public class FollowUpUtil {
 		return predicate;
 	}
 
+	public Predicate<FollowUpDto> byStatusAndCourseAndDate(String status, String courseName, String date,
+			String collegeName, DateTimeFormatter dateFormatter, StatusList statusList,
+			Predicate<FollowUpDto> predicate) {
+		if (!status.equals("null") && !courseName.equals("null") && !date.equals("null")
+				&& collegeName.equals("null")) {
+			if (status.equalsIgnoreCase(Status.Interested.toString())) {
+				predicate = followUpData -> FollowUpStatusCheck.getInterested()
+						.contains(followUpData.getCurrentStatus()) && followUpData.getCallback().equalsIgnoreCase(date)
+						&& followUpData.getCourseName().equalsIgnoreCase(courseName);
+			} else if (status.equalsIgnoreCase(Status.Not_interested.toString().replace('_', ' '))) {
+				predicate = followUpData -> FollowUpStatusCheck.getNotInterested()
+						.contains(followUpData.getCurrentStatus()) && followUpData.getCallback().equalsIgnoreCase(date)
+						&& followUpData.getCourseName().equalsIgnoreCase(courseName);
+			} else if (status.equalsIgnoreCase(Status.RNR.toString())) {
+				predicate = followUpData -> FollowUpStatusCheck.getRnr().contains(followUpData.getCurrentStatus())
+						&& followUpData.getCallback().equalsIgnoreCase(date)
+						&& followUpData.getCourseName().equalsIgnoreCase(courseName);
+			} else if (status.equalsIgnoreCase(Status.Never_followUp.toString().replace('_', ' '))) {
+				predicate = followUpData -> followUpData.getCurrentlyFollowedBy()
+						.equalsIgnoreCase(Status.NONE.toString()) && followUpData.getCallback().equalsIgnoreCase(date)
+						&& followUpData.getCourseName().equalsIgnoreCase(courseName);
+			} else if (status.equalsIgnoreCase(Status.Past_followup.toString().replace('_', ' '))) {
+				predicate = followUpData -> statusList.getStatusCheck().contains(followUpData.getCurrentStatus())
+						&& followUpData.getAdminDto().getUpdatedBy() != null
+						&& !followUpData.getAdminDto().getUpdatedBy().equalsIgnoreCase("NA")
+						&& (LocalDate.parse(LocalDate.parse(followUpData.getCallback()).format(dateFormatter)))
+								.isBefore(LocalDate.now().minusDays(2))
+						&& followUpData.getCallback().equalsIgnoreCase(date)
+						&& followUpData.getCourseName().equalsIgnoreCase(courseName);
+			} else {
+				predicate = followUpData -> followUpData.getCurrentStatus().equalsIgnoreCase(status)
+						&& followUpData.getCallback().equalsIgnoreCase(date)
+						&& followUpData.getCourseName().equalsIgnoreCase(courseName);
+			}
+		}
+		return predicate;
+	}
+
 	public Predicate<FollowUpDto> byStatusAndDate(String status, String courseName, String date, String collegeName,
 			DateTimeFormatter dateFormatter, StatusList statusList, Predicate<FollowUpDto> predicate) {
 		if (!status.equals("null") && courseName.equals("null") && !date.equals("null") && collegeName.equals("null")) {
@@ -289,6 +327,5 @@ public class FollowUpUtil {
 		}
 		return predicate;
 	}
-	
-	
+
 }
