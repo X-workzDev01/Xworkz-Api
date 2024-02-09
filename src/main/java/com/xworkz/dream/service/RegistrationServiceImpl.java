@@ -21,6 +21,7 @@ import org.springframework.stereotype.Service;
 
 import com.google.api.services.sheets.v4.model.UpdateValuesResponse;
 import com.google.api.services.sheets.v4.model.ValueRange;
+import com.xworkz.dream.constants.ServiceConstant;
 import com.xworkz.dream.dto.CSR;
 import com.xworkz.dream.dto.SheetsDto;
 import com.xworkz.dream.dto.TraineeDto;
@@ -64,12 +65,13 @@ public class RegistrationServiceImpl implements RegistrationService {
 			String uniqueId = csrService.generateUniqueID();
 			CSR csr = new CSR();
 			log.info("set {} if offeredAs a CSR",
-					dto.getCourseInfo().getOfferedAs().equalsIgnoreCase("csr") ? "1" : "0");
+					dto.getCourseInfo().getOfferedAs().equalsIgnoreCase(ServiceConstant.CSR.toString()) ? "1" : "0");
 			csr.setCsrFlag(dto.getCourseInfo().getOfferedAs().equalsIgnoreCase("CSR Offered") ? "1" : "0");
-			csr.setActiveFlag("Active");
+			csr.setActiveFlag(ServiceConstant.ACTIVE.toString());
 			csr.setAlternateContactNumber(0l);
-			csr.setUniqueId(dto.getCourseInfo().getOfferedAs().equalsIgnoreCase("CSR Offered") ? uniqueId : "NA");
-			csr.setUsnNumber("NA");
+			csr.setUniqueId(dto.getCourseInfo().getOfferedAs().equalsIgnoreCase("CSR Offered") ? uniqueId
+					: ServiceConstant.NA.toString());
+			csr.setUsnNumber(ServiceConstant.NA.toString());
 			dto.setCsrDto(csr);
 
 			wrapper.setValuesForTraineeDto(dto);
@@ -158,37 +160,58 @@ public class RegistrationServiceImpl implements RegistrationService {
 	}
 
 	@Override
-	public ResponseEntity<SheetsDto> readData(String spreadsheetId, int startingIndex, int maxRows, String courseName) {
+	public ResponseEntity<SheetsDto> readData(String spreadsheetId, int startingIndex, int maxRows, String courseName,
+			String collegeName) {
 		try {
+			long endRows = startingIndex + maxRows;
+			SheetsDto traineeData = new SheetsDto();
 			List<List<Object>> dataList = repo.readData(spreadsheetId);
 			if (dataList != null) {
-				List<List<Object>> sortedData = dataList.stream().sorted(Comparator.comparing(
+				List<List<Object>> sortedByDate = dataList.stream().sorted(Comparator.comparing(
 						list -> list != null && !list.isEmpty() && list.size() > 24 ? list.get(24).toString() : "",
 						Comparator.reverseOrder())).collect(Collectors.toList());
-				if (!courseName.equals("null")) {
-					List<List<Object>> sortedCourse = sortedData.stream()
+				if (!courseName.equalsIgnoreCase(ServiceConstant.NULL.toString())
+						&& !collegeName.equalsIgnoreCase(ServiceConstant.NULL.toString())) {
+					List<TraineeDto> sortedData = sortedByDate.stream()
+							.filter(items -> items != null && items.size() > 9 && items.contains(courseName))
+							.filter(items -> items != null && items.size() > 8 && items.contains(collegeName))
+							.map(wrapper::listToDto).collect(Collectors.toList());
+					traineeData.setSheetsData(
+							sortedData.stream().skip(startingIndex).limit(endRows).collect(Collectors.toList()));
+					traineeData.setSize(sortedData.size());
+					return ResponseEntity.ok(traineeData);
+				} else if (!courseName.equalsIgnoreCase(ServiceConstant.NULL.toString())) {
+					List<List<Object>> sortedCourse = sortedByDate.stream()
 							.filter(items -> items != null && items.size() > 9 && items.contains(courseName))
 							.collect(Collectors.toList());
-					List<TraineeDto> dtos = getLimitedRows(sortedCourse, startingIndex, maxRows);
-					SheetsDto dto = new SheetsDto(dtos, sortedCourse.size());
+					traineeData.setSheetsData(sortedCourse.stream().skip(startingIndex).limit(endRows)
+							.map(wrapper::listToDto).collect(Collectors.toList()));
+					traineeData.setSize(sortedCourse.size());
 					log.info("Returning response for course: {}", courseName);
-					return ResponseEntity.ok(dto);
+					return ResponseEntity.ok(traineeData);
+				} else if (!collegeName.equalsIgnoreCase(ServiceConstant.NULL.toString())) {
+					List<List<Object>> sortedByCollege = sortedByDate.stream()
+							.filter(items -> items != null && items.size() > 8 && items.contains(collegeName))
+							.collect(Collectors.toList());
+					traineeData.setSheetsData(sortedByCollege.stream().skip(startingIndex).limit(endRows)
+							.map(wrapper::listToDto).collect(Collectors.toList()));
+					traineeData.setSize(sortedByCollege.size());
+					log.info("Returning response for college Name: {}", collegeName);
+					return ResponseEntity.ok(traineeData);
 				}
-
-				List<TraineeDto> dtos = getLimitedRows(sortedData, startingIndex, maxRows);
-				SheetsDto dto = new SheetsDto(dtos, sortedData.size());
 				log.info("Returning response for spreadsheetId: {}", spreadsheetId);
-				return ResponseEntity.ok(dto);
+				traineeData.setSheetsData(sortedByDate.stream().skip(startingIndex).limit(endRows)
+						.map(wrapper::listToDto).collect(Collectors.toList()));
+				traineeData.setSize(sortedByDate.size());
+				return ResponseEntity.ok(traineeData);
 			}
-
 		} catch (IOException e) {
-			log.error("An error occurred while reading in spreadsheetId: {}", spreadsheetId, e);
+			log.error("Exception in readData repository,{}" + e);
 		}
 		return null;
 	}
 
 	@Override
-
 	public List<TraineeDto> getLimitedRows(List<List<Object>> values, int startingIndex, int maxRows) {
 		List<TraineeDto> traineeDtos = new ArrayList<>();
 		if (values != null) {
@@ -289,8 +312,8 @@ public class RegistrationServiceImpl implements RegistrationService {
 				valueRange.setValues(values);
 
 				UpdateValuesResponse updated = repo.update(spreadsheetId, range, valueRange);
-				boolean updateDob=service.updateDob(dto);
-				log.info("updated DOB in Sheet,{}",updateDob);
+				boolean updateDob = service.updateDob(dto);
+				log.info("updated DOB in Sheet,{}", updateDob);
 				if (updated != null && !updated.isEmpty()) {
 					followUpService.updateFollowUp(spreadsheetId, email, dto);
 					cacheService.getCacheDataByEmail("sheetsData", spreadsheetId, email, dto);
@@ -315,12 +338,11 @@ public class RegistrationServiceImpl implements RegistrationService {
 	@Override
 	public TraineeDto getDetailsByEmail(String spreadsheetId, String email) throws IOException {
 		List<List<Object>> data = repo.readData(spreadsheetId);
-		TraineeDto trainee = data.stream()
-				.filter(list -> list.get(2).toString().contentEquals(email))
-				.findFirst().map(wrapper::listToDto).orElse(null);
+		TraineeDto trainee = data.stream().filter(list -> list.get(2).toString().contentEquals(email)).findFirst()
+				.map(wrapper::listToDto).orElse(null);
 		if (trainee != null) {
 			return trainee;
-		} else { 
+		} else {
 			return null;
 
 		}
