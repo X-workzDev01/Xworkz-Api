@@ -6,10 +6,10 @@ import com.xworkz.dream.dto.HrFollowUpDto;
 
 public interface ClientInformationUtil {
 
-	abstract void setValuesToClientHrDto(ClientHrDto dto);
+	void setValuesToClientHrDto(ClientHrDto dto);
 
-	abstract void settingNaValues(HrFollowUpDto dto);
+	void settingNaValues(HrFollowUpDto dto);
 
-	public void setValuesToClientDto(ClientDto dto);
+	void setValuesToClientDto(ClientDto dto);
 
 }
