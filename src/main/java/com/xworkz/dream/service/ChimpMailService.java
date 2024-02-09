@@ -2,18 +2,18 @@ package com.xworkz.dream.service;
 
 import org.springframework.mail.javamail.MimeMessagePreparator;
 
+ public interface ChimpMailService {
+	 boolean validateAndSendMailByMailId(MimeMessagePreparator messagePreparator);
 
-public interface ChimpMailService {
-	public boolean validateAndSendMailByMailId(MimeMessagePreparator messagePreparator);
-	
-	public void validateAndSendBirthdayMail(MimeMessagePreparator messagePreparator);
-	
-	public void validateAndSendMail(MimeMessagePreparator messagePreparator);
+	 void validateAndSendBirthdayMail(MimeMessagePreparator messagePreparator);
 
-	public boolean validateAndSendMailByMailOtp(MimeMessagePreparator messagePreparator);
+	 void validateAndSendMail(MimeMessagePreparator messagePreparator);
 
-	public String sendSMS(String apiKey, String username, String sender, String phone, String message, String smsType,
+	 boolean validateAndSendMailByMailOtp(MimeMessagePreparator messagePreparator);
+
+	 String sendSMS(String apiKey, String username, String sender, String phone, String message, String smsType,
 			String route, String templateId);
-	public boolean validateAndSendMailByMailIdDev(MimeMessagePreparator messagePreparator) ;
+
+	 boolean validateAndSendMailByMailIdDev(MimeMessagePreparator messagePreparator);
 
 }
