@@ -70,7 +70,7 @@ public class DreamWrapper {
 
 	public FollowUpDto listToFollowUpDTO(List<Object> row) {
 		FollowUpDto followUpDto = new FollowUpDto(0, new BasicInfoDto(), null, null, null, null, null, null, null, null,
-				null);
+				null,null,null);
 		int rowSize = row.size();
 
 		if (rowSize > 0 && row.get(0) != null && !row.get(0).toString().isEmpty()) {
