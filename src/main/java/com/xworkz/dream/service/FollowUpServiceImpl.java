@@ -350,6 +350,8 @@ public class FollowUpServiceImpl implements FollowUpService {
 			String courseName, String date, String collegeName) {
 		log.info("Get Follow-up Details service start. SpreadsheetId: {}, StartingIndex: {}, MaxRows: {}, Status: {}, "
 				+ "CourseName: {}, Date: {}", spreadsheetId, startingIndex, maxRows, status, courseName, date);
+.equalsIgnoreCase(Status.Wrong_number.toString().replace('_', ' '))))
+
 		DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 		try {
 			List<List<Object>> followUpList = repo.getFollowUpDetails(spreadsheetId);
@@ -363,6 +365,7 @@ public class FollowUpServiceImpl implements FollowUpService {
 						.collect(Collectors.toList());
 				List<FollowUpDto> limitedRows = dto.stream().skip(startingIndex).limit(maxRows)
 						.collect(Collectors.toList());
+
 				FollowUpDataDto followUpDataDto = new FollowUpDataDto(limitedRows, dto.size());
 				return followUpDataDto;
 			} catch (Exception e) {
