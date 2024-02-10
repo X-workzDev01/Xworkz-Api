@@ -80,7 +80,7 @@ public class CsrServiceImpl implements CsrService {
 	}
 
 	public void addToCache(TraineeDto dto, HttpServletRequest request, List<Object> list)
-			throws IllegalAccessException, IOException {
+			 {
 		cacheService.updateCache("sheetsData", "listOfTraineeData", list);
 		if (dto.getBasicInfo().getEmail() != null) {
 			cacheService.addEmailToCache("emailData", spreadsheetId, dto.getBasicInfo().getEmail());
@@ -89,7 +89,13 @@ public class CsrServiceImpl implements CsrService {
 			cacheService.addContactNumberToCache("contactData", spreadsheetId, dto.getBasicInfo().getContactNumber());
 		}
 		log.info("Saving birth details: {}", dto);
-		service.saveBirthDayInfo(spreadsheetId, dto, request);
+		try {
+			service.saveBirthDayInfo(spreadsheetId, dto, request);
+		} catch (IllegalAccessException|IOException  e) {
+		
+			e.printStackTrace();
+			log.error("Exception in addToCache: {}",e.getMessage());
+		} 
 		// adding alternative number to cache
 		cacheService.addContactNumberToCache("alternativeNumber", "listOfAlternativeContactNumbers",
 				dto.getCsrDto().getAlternateContactNumber());

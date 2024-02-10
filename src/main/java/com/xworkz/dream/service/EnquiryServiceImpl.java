@@ -96,7 +96,7 @@ public class EnquiryServiceImpl implements EnquiryService {
 			}
 			return ResponseEntity.ok("Data written successfully, not added to Follow Up");
 		} catch (Exception e) {
-			log.error("Error processing request: ",e.getMessage(), e);
+			log.error("Error processing request:{} ",e.getMessage(), e);
 			return ResponseEntity.ok("Failed to process the request");
 		}
 
@@ -115,7 +115,7 @@ public class EnquiryServiceImpl implements EnquiryService {
 		try {
 			writeDataEnquiry(spreadsheetId, traineeDto, request);
 		} catch (MessagingException | TemplateException e) {
-			log.error("Error Writing enquiry data to sheet: ",e.getMessage(), e);
+			log.error("Error Writing enquiry data to sheet:{} ",e.getMessage(), e);
 		}
 		return true;
 
