@@ -1,6 +1,7 @@
 package com.xworkz.dream.service;
 
 import java.util.List;
+import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -18,7 +19,7 @@ public interface AttendanceService {
 
 	Boolean traineeAlreadyAdded(String courseName, Integer id);
 
-	void markAndSaveAbsentDetails(List<AbsenteesDto> attendanceDtoList, String batch);
+	List<String> markAndSaveAbsentDetails(List<AbsenteesDto> attendanceDtoList, String batch);
 
 	List<AttendanceTrainee> getTrainee(String batch);
 

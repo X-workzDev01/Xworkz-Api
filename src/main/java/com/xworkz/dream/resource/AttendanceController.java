@@ -61,11 +61,14 @@ public class AttendanceController {
 
 	@ApiOperation(value = "Everyday mark absentees by batch")
 	@PostMapping("/absentees")
-	public void markAttendance(@RequestBody List<AbsenteesDto> absentDtoList, @RequestParam String batch)
+	public List<String> markAttendance(@RequestBody List<AbsenteesDto> absentDtoList, @RequestParam String batch)
 			throws IOException, IllegalAccessException {
 		log.info("Received request to mark attendance for multiple users.");
-		attendanceService.markAndSaveAbsentDetails(absentDtoList, batch);
-		log.info("Attendance marking completed.");
+		List<String> markAndSaveAbsentDetails = attendanceService.markAndSaveAbsentDetails(absentDtoList, batch);
+	if(markAndSaveAbsentDetails !=null) {
+		return markAndSaveAbsentDetails;
+	}
+	return null;
 
 	}
 
@@ -143,5 +146,6 @@ public class AttendanceController {
 		return attendanceService.getSearchSuggestion(value, courseName);
 
 	}
+	
 
 }

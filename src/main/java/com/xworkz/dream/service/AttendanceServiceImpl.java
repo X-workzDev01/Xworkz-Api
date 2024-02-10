@@ -7,11 +7,14 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.List;
 import java.util.ListIterator;
+import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import javax.mail.FetchProfile.Item;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.ConstraintViolation;
 import javax.validation.Validation;
@@ -27,6 +30,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import com.google.api.client.util.Data;
 import com.google.api.services.sheets.v4.model.UpdateValuesResponse;
 import com.google.api.services.sheets.v4.model.ValueRange;
 import com.xworkz.dream.constants.Status;
@@ -82,7 +86,6 @@ public class AttendanceServiceImpl implements AttendanceService {
 	private AttendanceRepository attendanceRepository;
 	@Autowired
 	private RegisterRepository registerRepository;
-	
 
 	private static Logger log = LoggerFactory.getLogger(AttendanceServiceImpl.class);
 
@@ -142,65 +145,79 @@ public class AttendanceServiceImpl implements AttendanceService {
 	}
 
 	@Override
-	public void markAndSaveAbsentDetails(@RequestBody List<AbsenteesDto> absentDtoList, @RequestParam String batch) {
+	public List<String> markAndSaveAbsentDetails(@RequestBody List<AbsenteesDto> absentDtoList,
+			@RequestParam String batch) {
 		log.info("Marking and saving absent details...");
-		List<List<Object>> attendanceList;
+		List<String> name = new ArrayList<String>();
 		try {
-			attendanceList = attendanceRepository.getAttendanceData(sheetId, attendanceInfoIDRange);
-			log.info("attendanceList in attendanceinfo sheet: " + attendanceList);
+
+			List<List<Object>> attendanceList = attendanceRepository.getAttendanceData(sheetId, attendanceInfoIDRange);
 			List<List<Object>> filteredList = attendanceList.stream().filter(entry -> batch.equals(entry.get(3)))
 					.collect(Collectors.toList());
-			Boolean markTraineeAttendance;
-
-			markTraineeAttendance = this.markTraineeAttendance(batch, true);
-
+			this.markTraineeAttendance(batch, true);
 			for (List<Object> values : filteredList) {
 				AttendanceDto attendanceDto = wrapper.attendanceListToDto(values);
-				{
-					for (AbsenteesDto dto : absentDtoList)
-						if (markTraineeAttendance == true) {
-							updateAttendanceDetails(attendanceDto, dto);
-						} else {
-							updateAttendanceDetails(attendanceDto, dto);
-						}
+				Boolean checkAbsentDate = this.checkAbsentDate(attendanceDto);
+				if (checkAbsentDate == false) {
+					for (AbsenteesDto dto : absentDtoList) {
+						updateAttendanceDetails(attendanceDto, dto);
+					}
+
+				} else {
+					name.add(attendanceDto.getTraineeName());
 				}
 
 			}
+			return name;
 		} catch (IOException | IllegalAccessException e) {
 			log.error("Error accessing attendance data or updating attendance details: {}", e.getMessage());
 		}
+		return null;
 
 	}
 
 	private void updateAttendanceDetails(AttendanceDto attendanceDto, AbsenteesDto dto)
 			throws IOException, IllegalAccessException {
-		if (dto.getId().equals(attendanceDto.getId())) {
+		if (attendanceDto.getId() != null && dto.getId().equals(attendanceDto.getId())) {
 			int rowIndex = findByID(sheetId, dto.getId());
 			String range = attandanceInfoSheetName + attendanceStartRange + rowIndex + ":" + attendanceEndRange
 					+ rowIndex;
-			if (attendanceDto.getId() != null) {
-				updateAbsentDatesAndReasons(attendanceDto, dto);
-				updateTotalAbsent(attendanceDto, dto);
-				List<List<Object>> values = Arrays.asList(wrapper.extractDtoDetails(attendanceDto));
-				ValueRange valueRange = new ValueRange();
-				if (!values.isEmpty()) {
-					List<Object> modifiedValues = new ArrayList<>(values.get(0).subList(0, values.get(0).size()));
-					modifiedValues.remove(0);
-					values.set(0, modifiedValues);
-					log.debug("values {}", values);
-				}
-				valueRange.setValues(values);
-				UpdateValuesResponse update = attendanceRepository.update(sheetId, range, valueRange);
-				cacheService.updateCacheAttendancde("attendanceData", "listOfAttendance", attendanceDto.getId(),
-						attendanceDto);
-				if (update.isEmpty()) {
-					log.info("Not updated attendance");
-				} else {
-					attendanceRepository.getAttendanceData(sheetId, attendanceInfoIDRange);
-					log.info("Attendance updated successfully");
-				}
+
+			updateAbsentDatesAndReasons(attendanceDto, dto);
+			updateTotalAbsent(attendanceDto, dto);
+			List<List<Object>> values = Arrays.asList(wrapper.extractDtoDetails(attendanceDto));
+			ValueRange valueRange = new ValueRange();
+			if (!values.isEmpty()) {
+				List<Object> modifiedValues = new ArrayList<>(values.get(0).subList(0, values.get(0).size()));
+				modifiedValues.remove(0);
+				values.set(0, modifiedValues);
+				log.debug("values {}", values);
+			}
+			valueRange.setValues(values);
+			UpdateValuesResponse update = attendanceRepository.update(sheetId, range, valueRange);
+			cacheService.updateCacheAttendancde("attendanceData", "listOfAttendance", attendanceDto.getId(),
+					attendanceDto);
+			if (!update.isEmpty()) {
+				attendanceRepository.getAttendanceData(sheetId, attendanceInfoIDRange);
+				log.info("Attendance updated successfully");
+			} else {
+				log.info("Attendance Not Updated");
 			}
 		}
+
+	}
+
+	private Boolean checkAbsentDate(AttendanceDto attendanceDto) {
+		String absentDate = attendanceDto.getAbsentDate();
+		String[] split = absentDate.split(",");
+		for (String date : split) {
+			System.err.println("date  : " + date);
+			if (date.equals(LocalDate.now().toString())) {
+				return true;
+			}
+		}
+		return false;
+
 	}
 
 	private void updateAbsentDatesAndReasons(AttendanceDto attendanceDto, AbsenteesDto dto) {
@@ -208,7 +225,7 @@ public class AttendanceServiceImpl implements AttendanceService {
 		LocalDate localDate = LocalDate.now();
 		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 		String newAbsentDate = localDate.format(formatter);
-		String updatedAbsentDates = !currentAbsentDates.equals(null) && currentAbsentDates.contains(Status.NA.toString())
+		String updatedAbsentDates = !currentAbsentDates.equals(null) && currentAbsentDates.equals(Status.NA.toString())
 				? newAbsentDate
 				: currentAbsentDates + "," + newAbsentDate;
 		attendanceDto.setAbsentDate(updatedAbsentDates);
@@ -222,6 +239,7 @@ public class AttendanceServiceImpl implements AttendanceService {
 		attendanceDto.getAdminDto().setUpdatedOn(LocalDate.now().toString());
 		log.info("Absent dates and reasons updated: " + attendanceDto.getAbsentDate() + ", "
 				+ attendanceDto.getReason());
+
 	}
 
 	private void updateTotalAbsent(AttendanceDto attendanceDto, AbsenteesDto dto) {
@@ -249,20 +267,19 @@ public class AttendanceServiceImpl implements AttendanceService {
 
 	@Override
 	public List<AttendanceTrainee> getTrainee(String batch) {
-		List<List<Object>> list = attendanceRepository.getAttendanceData(sheetId, attendanceInfoIDRange);
-		List<List<Object>> filteredList = list.stream().filter(entry -> batch.equals(entry.get(3))) // Filter by
-				.collect(Collectors.toList());
 		List<AttendanceTrainee> traineeInfoList = new ArrayList<>();
+		List<List<Object>> list = attendanceRepository.getAttendanceData(sheetId, attendanceInfoIDRange);
+		List<List<Object>> traineeDetails = this.getAttendanceDetils(batch);
+		List<TraineeDto> traineData = traineeDetails.stream().map(wrapper::listToDto).collect(Collectors.toList());
+		List<AttendanceDto> collect = list.stream().filter(items -> items.get(3).equals(batch))
+				.map(wrapper::attendanceListToDto).collect(Collectors.toList());
+		collect.stream().forEach(item -> {
+			traineData.stream().filter(dto -> item.getId().equals(dto.getId())).forEach(dto -> {
+				traineeInfoList.add(new AttendanceTrainee(dto.getId(), dto.getBasicInfo().getTraineeName(),
+						dto.getBasicInfo().getEmail()));
+			});
+		});
 
-		for (List<Object> entry : filteredList) {
-			try {
-				Integer id = Integer.valueOf(entry.get(1).toString());
-				String name = (String) entry.get(2);
-				traineeInfoList.add(new AttendanceTrainee(id, name));
-			} catch (NumberFormatException e) {
-				log.error("Error parsing trainee ID: {}", e.getMessage());
-			}
-		}
 		return traineeInfoList;
 
 	}
@@ -347,7 +364,32 @@ public class AttendanceServiceImpl implements AttendanceService {
 				log.error("Error marking trainee attendance: {}", e.getMessage());
 			}
 		}
-		return batchAttendanceStatus;
+		return false;
+	}
+
+	private List<List<Object>> getAttendanceDetils(String courseName) {
+		List<List<Object>> followUpDetails;
+		List<List<Object>> readData;
+		try {
+			followUpDetails = repository.getFollowUpDetails(sheetId);
+			readData = registerRepository.readData(sheetId);
+			List<List<Object>> traineeDetails = followUpDetails.stream().filter(followUpDetail -> {
+				return Status.Joined.toString().equals(followUpDetail.get(8));
+			}).map(followUpDetail -> {
+				return readData.stream().filter(data -> data.get(0).equals(followUpDetail.get(0))).findFirst()
+						.orElse(null);
+			}).collect(Collectors.toList());
+
+			List<List<Object>> collect = traineeDetails.stream().filter(dtos -> dtos.get(9).equals(courseName))
+					.collect(Collectors.toList());
+
+			return collect;
+
+		} catch (IOException e) {
+			log.error("Error retrieving the trainees : {} ", e.getMessage());
+		}
+		return null;
+
 	}
 
 	@Override
@@ -359,12 +401,12 @@ public class AttendanceServiceImpl implements AttendanceService {
 			List<AttendanceDto> attendanceDto = new ArrayList<AttendanceDto>();
 
 			if (followUpDetails != null && !followUpDetails.isEmpty()) {
-				List<String> optionalFollowupDto = filterFollowUpDetails(followUpDetails);
+				List<FollowUpDto> optionalFollowupDto = followUpDetails(followUpDetails);
 				List<TraineeDto> filterTraineDetails = filterTraineDetails(courseName, readData);
 				if (!optionalFollowupDto.isEmpty()) {
-					optionalFollowupDto.stream().forEach(email -> {
-						filterTraineDetails.stream()
-								.filter(dto -> dto.getBasicInfo().getEmail().equalsIgnoreCase(email)).forEach(dto -> {
+					optionalFollowupDto.stream().forEach(followUpDto -> {
+						filterTraineDetails.stream().filter(dto -> dto.getBasicInfo().getEmail()
+								.equalsIgnoreCase(followUpDto.getBasicInfo().getEmail())).forEach(dto -> {
 									try {
 										AttendanceDto saveAttendance = wrapper.saveAttendance(dto);
 										log.info("Created AttendanceDto: {}", saveAttendance);
@@ -392,21 +434,6 @@ public class AttendanceServiceImpl implements AttendanceService {
 
 	}
 
-	private List<String> filterFollowUpDetails(List<List<Object>> followUpDetails) {
-		return followUpDetails.stream().filter(row -> Status.Joined.equals(row.get(8)))
-				.map(this::createFollowupDtoFromDetails).collect(Collectors.toList());
-	}
-
-	private List<TraineeDto> filterTraineDetails(String courseName, List<List<Object>> traineDetails) {
-		return traineDetails.stream().filter(row -> courseName.equals(row.get(9)))
-				.map(this::createTraineeDtoFormDetails).collect(Collectors.toList());
-	}
-
-	private TraineeDto createTraineeDtoFormDetails(List<Object> details) {
-		TraineeDto listToDto = wrapper.listToDto(details);
-		return listToDto;
-	}
-
 	private void processAttendance(AttendanceDto saveAttendance, String courseName)
 			throws IOException, IllegalAccessException {
 		List<Object> extractDtoDetails = wrapper.extractDtoDetails(saveAttendance);
@@ -419,11 +446,6 @@ public class AttendanceServiceImpl implements AttendanceService {
 			log.debug("Attendance Details is not Added");
 		}
 
-	}
-
-	private String createFollowupDtoFromDetails(List<Object> details) {
-		FollowUpDto listToFollowUpDTO = wrapper.listToFollowUpDTO(details);
-		return listToFollowUpDTO.getBasicInfo().getEmail();
 	}
 
 	@Override
@@ -481,16 +503,6 @@ public class AttendanceServiceImpl implements AttendanceService {
 			log.info("Returning {} Attendance objects", attendanceDtos.size());
 		}
 		return attendanceDtos;
-	}
-
-	private List<FollowUpDto> followUpDetails(List<List<Object>> followUpDetails) {
-		return followUpDetails.stream().filter(row -> "Joined".equals(row.get(8))).map(this::followupDtoFromDetails)
-				.collect(Collectors.toList());
-	}
-
-	private FollowUpDto followupDtoFromDetails(List<Object> details) {
-		FollowUpDto listToFollowUpDTO = wrapper.listToFollowUpDTO(details);
-		return listToFollowUpDTO;
 	}
 
 	@Override
@@ -559,6 +571,16 @@ public class AttendanceServiceImpl implements AttendanceService {
 		}
 		log.warn("Null value provided for search suggestion");
 		return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ArrayList<>());
+	}
+
+	private List<FollowUpDto> followUpDetails(List<List<Object>> followUpDetails) {
+		return followUpDetails.stream().filter(row -> Status.Joined.toString().equals(row.get(8)))
+				.map(wrapper::listToFollowUpDTO).collect(Collectors.toList());
+	}
+
+	private List<TraineeDto> filterTraineDetails(String courseName, List<List<Object>> traineDetails) {
+		return traineDetails.stream().filter(row -> courseName.equals(row.get(9))).map(wrapper::listToDto)
+				.collect(Collectors.toList());
 	}
 
 }

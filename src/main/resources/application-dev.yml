@@ -1,6 +1,6 @@
 
 sheets:
-  range: A3:AC
+  range: A3:AH
   emailRange: C3:C
   contactNumberRange: D3:D
   loginInfoRange: loginInfo!A2:B
@@ -8,7 +8,7 @@ sheets:
   attendanceList: attendanceList!A2:J
   attendanceListRange: attendanceList!A2:M
   credentialsPath: classpath:META-INF/credentials-dev.json
-  liveKey: live_1c9a44377323556a9243
+  liveKey: live_d485f9b87a825393bc2f
 
 mailChimp:
   userName: 7FzbzzHIVQSVJVz5r4n/bGa/lhNWJCXUq6oqBxBCTYQ=

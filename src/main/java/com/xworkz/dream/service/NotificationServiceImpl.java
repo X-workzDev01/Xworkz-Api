@@ -90,11 +90,10 @@ public class NotificationServiceImpl implements NotificationService {
 						log.debug(
 								"After Checking All notification condition result {}---------------------------------- {} ================{}",
 								yesterday, today, afterFoureDay);
-
+						
 						SheetNotificationDto dto = new SheetNotificationDto(yesterday, today, afterFoureDay);
-
+						
 						return dto;
-
 					}
 
 					listOfData.stream().forEach(e -> {

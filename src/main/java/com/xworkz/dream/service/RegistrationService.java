@@ -35,5 +35,4 @@ public interface RegistrationService {
 
 	public ResponseEntity<List<TraineeDto>> getSearchSuggestion(String spreadsheetId, String value, String courseName);
 
-
 }

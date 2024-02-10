@@ -64,11 +64,11 @@ public class RegistrationServiceImpl implements RegistrationService {
 			String uniqueId = csrService.generateUniqueID();
 			CSR csr = new CSR();
 			log.info("set {} if offeredAs a CSR",
-					dto.getCourseInfo().getOfferedAs().equalsIgnoreCase("csr offered") ? "1" : "0");
-			csr.setCsrFlag(dto.getCourseInfo().getOfferedAs().equalsIgnoreCase("csr offered") ? "1" : "0");
+					dto.getCourseInfo().getOfferedAs().equalsIgnoreCase("csr") ? "1" : "0");
+			csr.setCsrFlag(dto.getCourseInfo().getOfferedAs().equalsIgnoreCase("CSR Offered") ? "1" : "0");
 			csr.setActiveFlag("Active");
 			csr.setAlternateContactNumber(0l);
-			csr.setUniqueId(dto.getCourseInfo().getOfferedAs().equalsIgnoreCase("csr") ? uniqueId : "NA");
+			csr.setUniqueId(dto.getCourseInfo().getOfferedAs().equalsIgnoreCase("CSR Offered") ? uniqueId : "NA");
 			csr.setUsnNumber("NA");
 			dto.setCsrDto(csr);
 
@@ -289,6 +289,8 @@ public class RegistrationServiceImpl implements RegistrationService {
 				valueRange.setValues(values);
 
 				UpdateValuesResponse updated = repo.update(spreadsheetId, range, valueRange);
+				boolean updateDob=service.updateDob(dto);
+				log.info("updated DOB in Sheet,{}",updateDob);
 				if (updated != null && !updated.isEmpty()) {
 					followUpService.updateFollowUp(spreadsheetId, email, dto);
 					cacheService.getCacheDataByEmail("sheetsData", spreadsheetId, email, dto);

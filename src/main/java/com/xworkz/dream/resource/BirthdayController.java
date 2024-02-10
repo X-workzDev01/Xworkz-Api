@@ -18,20 +18,20 @@ import com.xworkz.dream.dto.TraineeDto;
 import com.xworkz.dream.service.BirthadayService;
 
 import io.swagger.annotations.ApiOperation;
+
 @RestController
 @RequestMapping("/api")
 public class BirthdayController {
 	@Autowired
 	private BirthadayService service;
 	private Logger log = LoggerFactory.getLogger(BirthdayController.class);
-	
+
 	@ApiOperation(value = "To update Birth day info while registering")
 	@PostMapping("/birthDayInfo")
 	public ResponseEntity<String> updateBirthDayInfo(@RequestHeader String spreadsheetId, @RequestBody TraineeDto dto,
 			HttpServletRequest request) throws IllegalAccessException, IOException {
-		 log.info("Request received for updateBirthDayInfo. SpreadsheetId: {}", spreadsheetId);
+		log.info("Request received for updateBirthDayInfo. SpreadsheetId: {}", spreadsheetId);
 		return service.saveBirthDayInfo(spreadsheetId, dto, request);
-
 	}
 
 }

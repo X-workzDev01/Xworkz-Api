@@ -87,6 +87,7 @@ public class RegisterRepositoryImpl implements RegisterRepository {
 		log.info("Data written successfully to spreadsheetId: {}", spreadsheetId);
 		return true;
 	}
+	
 
 	@Override
 	@Cacheable(value = "emailData", key = "#spreadsheetId", unless = "#result == null")
@@ -108,7 +109,7 @@ public class RegisterRepositoryImpl implements RegisterRepository {
 	@Cacheable(value = "sheetsData", key = "#spreadsheetId", unless = "#result == null")
 	public List<List<Object>> readData(String spreadsheetId) throws IOException {
 		log.info("Reading Trainee data from sheet for spreadsheetId: {}", spreadsheetId);
-		ValueRange response = sheetsService.spreadsheets().values().get(spreadsheetId, range).execute();
+		ValueRange response = sheetsService.spreadsheets().values().get(spreadsheetId,range).execute();
 		List<List<Object>> data = response.getValues();
 		return data;
 	}
