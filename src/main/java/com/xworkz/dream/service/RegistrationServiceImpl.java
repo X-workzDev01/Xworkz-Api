@@ -76,7 +76,7 @@ public class RegistrationServiceImpl implements RegistrationService {
 				cacheService.addContactNumberToCache("contactData", spreadsheetId,
 						dto.getBasicInfo().getContactNumber());
 			}
-			log.info("adding register data to the cache:", list);
+			log.info("adding register data to the cache:{}", list);
 			cacheService.updateCache("sheetsData", "listOfTraineeData", list);
 			log.info("adding to follow up:", dto);
 			boolean status = followUpService.addToFollowUp(dto, spreadsheetId);
@@ -98,7 +98,7 @@ public class RegistrationServiceImpl implements RegistrationService {
 
 			return ResponseEntity.ok("Data written successfully, not added to Follow Up");
 		} catch (Exception e) {
-			log.error("Error processing request: " + e.getMessage(), e);
+			log.error("Error processing request:{} " + e.getMessage(), e);
 			return ResponseEntity.ok("Failed to process the request");
 		}
 	}
