@@ -7,14 +7,11 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.HashMap;
 import java.util.List;
 import java.util.ListIterator;
-import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import javax.mail.FetchProfile.Item;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.ConstraintViolation;
 import javax.validation.Validation;
@@ -30,7 +27,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import com.google.api.client.util.Data;
 import com.google.api.services.sheets.v4.model.UpdateValuesResponse;
 import com.google.api.services.sheets.v4.model.ValueRange;
 import com.xworkz.dream.constants.Status;
@@ -147,7 +143,6 @@ public class AttendanceServiceImpl implements AttendanceService {
 	@Override
 	public List<String> markAndSaveAbsentDetails(@RequestBody List<AbsenteesDto> absentDtoList,
 			@RequestParam String batch) {
-		log.info("Marking and saving absent details...");
 		List<String> name = new ArrayList<String>();
 		try {
 
@@ -201,7 +196,7 @@ public class AttendanceServiceImpl implements AttendanceService {
 				attendanceRepository.getAttendanceData(sheetId, attendanceInfoIDRange);
 				log.info("Attendance updated successfully");
 			} else {
-				log.info("Attendance Not Updated");
+				log.debug("Attendance Not Updated");
 			}
 		}
 
@@ -524,7 +519,7 @@ public class AttendanceServiceImpl implements AttendanceService {
 			} else {
 				List<AttendanceDto> flist = filteredLists.stream().map(items -> wrapper.attendanceListToDto(items))
 						.filter(dto -> dto.getTraineeName().equalsIgnoreCase(searchValue)).collect(Collectors.toList());
-				log.info("Filtered {} TraineeDto objects", flist.size());
+				log.debug("Filtered {} TraineeDto objects", flist.size());
 
 				return flist;
 
@@ -565,7 +560,7 @@ public class AttendanceServiceImpl implements AttendanceService {
 				}
 			}
 
-			log.info("Returning {} search suggestions", suggestion.size());
+			log.debug("Returning {} search suggestions", suggestion.size());
 			return ResponseEntity.ok(suggestion);
 
 		}

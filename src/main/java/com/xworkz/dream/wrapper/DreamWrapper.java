@@ -11,6 +11,7 @@ import org.springframework.util.StringUtils;
 
 import com.xworkz.dream.constants.FollowUp;
 import com.xworkz.dream.constants.RegistrationConstant;
+import com.xworkz.dream.constants.ServiceConstant;
 import com.xworkz.dream.constants.Status;
 import com.xworkz.dream.dto.AttendanceDto;
 import com.xworkz.dream.dto.AuditDto;
@@ -557,19 +558,19 @@ public class DreamWrapper {
 			dto.setTotalAbsent(0);
 		}
 		if (dto.getAbsentDate() == null) {
-			dto.setAbsentDate("NA");
+			dto.setAbsentDate(Status.NA.toString());
 		}
 		if (dto.getReason() == null) {
-			dto.setReason("NA");
+			dto.setReason(Status.NA.toString());
 		}
 		if (dto.getAdminDto().getCreatedOn() == null) {
 			dto.getAdminDto().setCreatedOn(LocalDate.now().toString());
 		}
 		if (dto.getAdminDto().getUpdatedBy() == null) {
-			dto.getAdminDto().setUpdatedBy("NA");
+			dto.getAdminDto().setUpdatedBy(Status.NA.toString());
 		}
 		if (dto.getAdminDto().getUpdatedOn() == null) {
-			dto.getAdminDto().setUpdatedOn("NA");
+			dto.getAdminDto().setUpdatedOn(Status.NA.toString());
 		}
 
 	}
@@ -805,16 +806,16 @@ public class DreamWrapper {
 			attendanceDto.setTotalAbsent(0);
 		}
 		if (attendanceDto.getAbsentDate() == null) {
-			attendanceDto.setAbsentDate("NA");
+			attendanceDto.setAbsentDate(Status.NA.toString());
 		}
 		if (attendanceDto.getReason() == null) {
-			attendanceDto.setReason("NA");
+			attendanceDto.setReason(Status.NA.toString());
 		}
 		AuditDto admin = new AuditDto();
 		admin.setCreatedBy("Swagger");
 		admin.setCreatedOn(LocalDate.now().toString());
-		admin.setUpdatedBy("NA");
-		admin.setUpdatedOn("NA");
+		admin.setUpdatedBy(Status.NA.toString());
+		admin.setUpdatedOn(Status.NA.toString());
 		attendanceDto.setAdminDto(admin);
 
 		return attendanceDto;
