@@ -75,7 +75,8 @@ public class DreamWrapper {
 
 		if (rowSize > 0 && row.get(0) != null && !row.get(0).toString().isEmpty()) {
 			followUpDto.setId(Integer.valueOf(row.get(0).toString()));
-		}  if (rowSize > 1 && row.get(1) != null && !row.get(1).toString().isEmpty()) {
+		}
+		if (rowSize > 1 && row.get(1) != null && !row.get(1).toString().isEmpty()) {
 			followUpDto.getBasicInfo().setTraineeName((String) row.get(1));
 		}
 
@@ -216,10 +217,10 @@ public class DreamWrapper {
 		// referalContactNumber, comments
 		// if there any changes in the table, please make sure the right changes are
 		// done here also
-		
+
 		if (row.size() > RegistrationConstant.COLUMN_ID.getIndex() && validateCell(RegistrationConstant.COLUMN_ID)) {
 			traineeDto.setId(Integer.valueOf(row.get(RegistrationConstant.COLUMN_ID.getIndex()).toString()));
-			
+
 		}
 		if (row.size() > RegistrationConstant.COLUMN_TRAINEE_NAME.getIndex()
 				&& validateCell(RegistrationConstant.COLUMN_TRAINEE_NAME)) {
@@ -563,6 +564,12 @@ public class DreamWrapper {
 		}
 		if (dto.getAdminDto().getCreatedOn() == null) {
 			dto.getAdminDto().setCreatedOn(LocalDate.now().toString());
+		}
+		if (dto.getAdminDto().getUpdatedBy() == null) {
+			dto.getAdminDto().setUpdatedBy("NA");
+		}
+		if (dto.getAdminDto().getUpdatedOn() == null) {
+			dto.getAdminDto().setUpdatedOn("NA");
 		}
 
 	}
