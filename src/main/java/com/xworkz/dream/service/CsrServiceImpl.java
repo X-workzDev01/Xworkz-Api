@@ -92,8 +92,7 @@ public class CsrServiceImpl implements CsrService {
 		try {
 			service.saveBirthDayInfo(spreadsheetId, dto, request);
 		} catch (IllegalAccessException|IOException  e) {
-		
-			e.printStackTrace();
+	
 			log.error("Exception in addToCache: {}",e.getMessage());
 		} 
 		// adding alternative number to cache
