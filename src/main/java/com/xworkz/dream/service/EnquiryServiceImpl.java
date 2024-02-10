@@ -11,7 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
-import com.xworkz.dream.dto.AuditDto;
+import com.xworkz.dream.constants.ServiceConstant;
 import com.xworkz.dream.dto.CSR;
 import com.xworkz.dream.dto.CourseDto;
 import com.xworkz.dream.dto.EnquiryDto;
@@ -51,19 +51,20 @@ public class EnquiryServiceImpl implements EnquiryService {
 			String uniqueId = csrService.generateUniqueID();
 			CSR csr = new CSR();
 			log.info("set {} if offeredAs a CSR",
-					dto.getCourseInfo().getOfferedAs().equalsIgnoreCase("csr") ? "1" : "0");
-			csr.setCsrFlag(dto.getCourseInfo().getOfferedAs().equalsIgnoreCase("csr") ? "1" : "0");
-			csr.setActiveFlag("Active");
+					dto.getCourseInfo().getOfferedAs().equalsIgnoreCase(ServiceConstant.CSR.toString()) ? "1" : "0");
+			csr.setCsrFlag(dto.getCourseInfo().getOfferedAs().equalsIgnoreCase(ServiceConstant.CSR.toString()) ? "1" : "0");
+			csr.setActiveFlag(ServiceConstant.ACTIVE.toString());
 			csr.setAlternateContactNumber(0l);
-			csr.setUniqueId(dto.getCourseInfo().getOfferedAs().equalsIgnoreCase("csr") ? uniqueId : "NA");
-			csr.setUsnNumber("NA");
+			csr.setUniqueId(dto.getCourseInfo().getOfferedAs().equalsIgnoreCase(ServiceConstant.CSR.toString()) ? uniqueId : ServiceConstant.NA.toString());
+			csr.setUsnNumber(ServiceConstant.NA.toString());
 			dto.setCsrDto(csr);
 			wrapper.setValuesForTraineeDto(dto);
 
 			List<Object> list = wrapper.extractDtoDetails(dto);
 
 			repo.writeData(spreadsheetId, list);
-			cacheService.updateCache("sheetsData", spreadsheetId, list);
+			cacheService.updateCache("sheetsData", "listOfTraineeData", list);
+			System.out.println("Enquiry:"+list);
 			if (dto.getBasicInfo().getEmail() != null) {
 				cacheService.addEmailToCache("emailData", spreadsheetId, dto.getBasicInfo().getEmail());
 
@@ -95,7 +96,7 @@ public class EnquiryServiceImpl implements EnquiryService {
 			}
 			return ResponseEntity.ok("Data written successfully, not added to Follow Up");
 		} catch (Exception e) {
-			log.error("Error processing request: " + e.getMessage(), e);
+			log.error("Error processing request: ",e.getMessage(), e);
 			return ResponseEntity.ok("Failed to process the request");
 		}
 
@@ -105,8 +106,8 @@ public class EnquiryServiceImpl implements EnquiryService {
 	public boolean addEnquiry(EnquiryDto enquiryDto, String spreadsheetId, HttpServletRequest request) {
 		wrapper.validateEnquiry(enquiryDto);
 		TraineeDto traineeDto = new TraineeDto();
-		traineeDto.setCourseInfo(new CourseDto("NA"));
-		traineeDto.setOthersDto(new OthersDto("NA"));
+		traineeDto.setCourseInfo(new CourseDto(ServiceConstant.NA.toString()));
+		traineeDto.setOthersDto(new OthersDto(ServiceConstant.NA.toString()));
 		traineeDto.setBasicInfo(enquiryDto.getBasicInfo());
 		traineeDto.setEducationInfo(enquiryDto.getEducationInfo());
 		traineeDto.setAdminDto(enquiryDto.getAdminDto());
@@ -114,7 +115,7 @@ public class EnquiryServiceImpl implements EnquiryService {
 		try {
 			writeDataEnquiry(spreadsheetId, traineeDto, request);
 		} catch (MessagingException | TemplateException e) {
-			log.error("Error Writing enquiry data to sheet: " + e.getMessage(), e);
+			log.error("Error Writing enquiry data to sheet: ",e.getMessage(), e);
 		}
 		return true;
 

@@ -55,7 +55,7 @@ public class CsrServiceImpl implements CsrService {
 			wrapper.setValuesForCSRDto(dto);
 			List<Object> list = wrapper.extractDtoDetails(dto);
 			repo.writeData(spreadsheetId, list);
-			AddToCache(dto, request, list);
+			addToCache(dto, request, list);
 			boolean status = followUpService.addCsrToFollowUp(dto, spreadsheetId);
 
 			if (status) {
@@ -79,9 +79,9 @@ public class CsrServiceImpl implements CsrService {
  
 	}
 
-	private void AddToCache(TraineeDto dto, HttpServletRequest request, List<Object> list)
+	public void addToCache(TraineeDto dto, HttpServletRequest request, List<Object> list)
 			throws IllegalAccessException, IOException {
-		cacheService.updateCache("sheetsData", spreadsheetId, list);
+		cacheService.updateCache("sheetsData", "listOfTraineeData", list);
 		if (dto.getBasicInfo().getEmail() != null) {
 			cacheService.addEmailToCache("emailData", spreadsheetId, dto.getBasicInfo().getEmail());
 		}
