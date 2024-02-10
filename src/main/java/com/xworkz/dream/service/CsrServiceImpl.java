@@ -94,13 +94,10 @@ public class CsrServiceImpl implements CsrService {
 		} catch (IllegalAccessException|IOException  e) {
 	
 			log.error("Exception in addToCache: {}",e.getMessage());
-		} 
-		// adding alternative number to cache
+		}
 		cacheService.addContactNumberToCache("alternativeNumber", "listOfAlternativeContactNumbers",
 				dto.getCsrDto().getAlternateContactNumber());
-		// adding USN number to cache
 		cacheService.addEmailToCache("usnNumber", "listOfUsnNumbers", dto.getCsrDto().getUsnNumber());
-		// adding Unique Number to caches
 		cacheService.addEmailToCache("uniqueNumber", "listofUniqueNumbers", dto.getCsrDto().getUniqueId());
 	}
 

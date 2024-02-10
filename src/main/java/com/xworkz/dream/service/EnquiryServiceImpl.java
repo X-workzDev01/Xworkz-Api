@@ -52,10 +52,13 @@ public class EnquiryServiceImpl implements EnquiryService {
 			CSR csr = new CSR();
 			log.info("set {} if offeredAs a CSR",
 					dto.getCourseInfo().getOfferedAs().equalsIgnoreCase(ServiceConstant.CSR.toString()) ? "1" : "0");
-			csr.setCsrFlag(dto.getCourseInfo().getOfferedAs().equalsIgnoreCase(ServiceConstant.CSR.toString()) ? "1" : "0");
+			csr.setCsrFlag(
+					dto.getCourseInfo().getOfferedAs().equalsIgnoreCase(ServiceConstant.CSR.toString()) ? "1" : "0");
 			csr.setActiveFlag(ServiceConstant.ACTIVE.toString());
 			csr.setAlternateContactNumber(0l);
-			csr.setUniqueId(dto.getCourseInfo().getOfferedAs().equalsIgnoreCase(ServiceConstant.CSR.toString()) ? uniqueId : ServiceConstant.NA.toString());
+			csr.setUniqueId(
+					dto.getCourseInfo().getOfferedAs().equalsIgnoreCase(ServiceConstant.CSR.toString()) ? uniqueId
+							: ServiceConstant.NA.toString());
 			csr.setUsnNumber(ServiceConstant.NA.toString());
 			dto.setCsrDto(csr);
 			wrapper.setValuesForTraineeDto(dto);
@@ -64,7 +67,7 @@ public class EnquiryServiceImpl implements EnquiryService {
 
 			repo.writeData(spreadsheetId, list);
 			cacheService.updateCache("sheetsData", "listOfTraineeData", list);
-			System.out.println("Enquiry:"+list);
+			System.out.println("Enquiry:" + list);
 			if (dto.getBasicInfo().getEmail() != null) {
 				cacheService.addEmailToCache("emailData", spreadsheetId, dto.getBasicInfo().getEmail());
 
@@ -96,7 +99,7 @@ public class EnquiryServiceImpl implements EnquiryService {
 			}
 			return ResponseEntity.ok("Data written successfully, not added to Follow Up");
 		} catch (Exception e) {
-			log.error("Error processing request:{} ",e.getMessage(), e);
+			log.error("Error processing request:{} ", e.getMessage());
 			return ResponseEntity.ok("Failed to process the request");
 		}
 
@@ -111,11 +114,11 @@ public class EnquiryServiceImpl implements EnquiryService {
 		traineeDto.setBasicInfo(enquiryDto.getBasicInfo());
 		traineeDto.setEducationInfo(enquiryDto.getEducationInfo());
 		traineeDto.setAdminDto(enquiryDto.getAdminDto());
-		
+
 		try {
 			writeDataEnquiry(spreadsheetId, traineeDto, request);
 		} catch (MessagingException | TemplateException e) {
-			log.error("Error Writing enquiry data to sheet:{} ",e.getMessage(), e);
+			log.error("Error Writing enquiry data to sheet:{} ", e.getMessage());
 		}
 		return true;
 

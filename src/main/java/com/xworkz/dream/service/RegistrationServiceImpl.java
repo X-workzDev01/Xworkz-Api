@@ -98,12 +98,12 @@ public class RegistrationServiceImpl implements RegistrationService {
 
 			return ResponseEntity.ok("Data written successfully, not added to Follow Up");
 		} catch (Exception e) {
-			log.error("Error processing request:{} " + e.getMessage(), e);
+			log.error("Error processing request:{} ", e.getMessage());
 			return ResponseEntity.ok("Failed to process the request");
 		}
 	}
 
-	public void assignCsrDto(TraineeDto dto) {
+	private void assignCsrDto(TraineeDto dto) {
 		String uniqueId = csrService.generateUniqueID();
 		CSR csr = new CSR();
 		log.info("set {} if offeredAs a CSR",
