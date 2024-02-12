@@ -53,7 +53,6 @@ public class AttendanceController {
 	@ApiOperation(value = "Everyday mark absentees by batch")
 	@PostMapping("/absentees")
 	public List<String> markAttendance(@RequestBody List<AbsenteesDto> absentDtoList, @RequestParam String batch) {
-		log.info("Received request to mark attendance for multiple users.");
 		List<String> markAndSaveAbsentDetails = attendanceService.markAndSaveAbsentDetails(absentDtoList, batch);
 		if (markAndSaveAbsentDetails != null) {
 			return markAndSaveAbsentDetails;

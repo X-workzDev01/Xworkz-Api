@@ -194,9 +194,9 @@ public class AttendanceServiceImpl implements AttendanceService {
 					attendanceDto);
 			if (!update.isEmpty()) {
 				attendanceRepository.getAttendanceData(sheetId, attendanceInfoIDRange);
-				log.info("Attendance updated successfully");
+				log.info("Attendance updated successfully : {} ",update);
 			} else {
-				log.debug("Attendance Not Updated");
+				log.debug("Attendance Not Updated : {} ",update);
 			}
 		}
 
@@ -206,7 +206,6 @@ public class AttendanceServiceImpl implements AttendanceService {
 		String absentDate = attendanceDto.getAbsentDate();
 		String[] split = absentDate.split(",");
 		for (String date : split) {
-			System.err.println("date  : " + date);
 			if (date.equals(LocalDate.now().toString())) {
 				return true;
 			}
