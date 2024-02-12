@@ -18,7 +18,7 @@ public interface AttendanceService {
 
 	Boolean traineeAlreadyAdded(String courseName, Integer id);
 
-	void markAndSaveAbsentDetails(List<AbsenteesDto> attendanceDtoList, String batch);
+	List<String> markAndSaveAbsentDetails(List<AbsenteesDto> attendanceDtoList, String batch);
 
 	List<AttendanceTrainee> getTrainee(String batch);
 

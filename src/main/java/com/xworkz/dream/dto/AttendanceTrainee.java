@@ -20,5 +20,7 @@ public class AttendanceTrainee {
 	private Integer id;
 	@JsonProperty("name")
 	private String name;
+	@JsonProperty("email")
+	private String email;
 
 }

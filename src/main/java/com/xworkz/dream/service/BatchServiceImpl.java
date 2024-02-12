@@ -17,6 +17,8 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import com.xworkz.dream.constants.ServiceConstant;
+import com.xworkz.dream.constants.Status;
 import com.xworkz.dream.dto.BatchDetailsDto;
 import com.xworkz.dream.dto.TraineeDto;
 import com.xworkz.dream.repository.BatchRepository;
@@ -89,7 +91,7 @@ public class BatchServiceImpl implements BatchService {
 		List<List<Object>> detailsByCourseName = repository.getCourseDetails(spreadsheetId);
 		batch = null;
 		List<List<Object>> filter = detailsByCourseName.stream()
-				.filter(e -> e.contains(courseName) && e.contains("Active")).collect(Collectors.toList());
+				.filter(dtos -> dtos.get(1).equals(courseName) && dtos.get(7).equals(ServiceConstant.ACTIVE)).collect(Collectors.toList());
 		filter.stream().forEach(item -> {
 			this.batch = wrapper.batchDetailsToDto(item);
 		});
