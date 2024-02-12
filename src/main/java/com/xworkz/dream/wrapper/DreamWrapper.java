@@ -71,7 +71,7 @@ public class DreamWrapper {
 
 	public FollowUpDto listToFollowUpDTO(List<Object> row) {
 		FollowUpDto followUpDto = new FollowUpDto(0, new BasicInfoDto(), null, null, null, null, null, null, null, null,
-				null);
+				null,null,null);
 		int rowSize = row.size();
 
 		if (rowSize > 0 && row.get(0) != null && !row.get(0).toString().isEmpty()) {
@@ -558,10 +558,10 @@ public class DreamWrapper {
 			dto.setTotalAbsent(0);
 		}
 		if (dto.getAbsentDate() == null) {
-			dto.setAbsentDate(Status.NA.toString());
+			dto.setAbsentDate(ServiceConstant.NA.toString());
 		}
 		if (dto.getReason() == null) {
-			dto.setReason(Status.NA.toString());
+			dto.setReason(ServiceConstant.NA.toString());
 		}
 		if (dto.getAdminDto().getCreatedOn() == null) {
 			dto.getAdminDto().setCreatedOn(LocalDate.now().toString());
@@ -578,7 +578,7 @@ public class DreamWrapper {
 	public EnquiryDto validateEnquiry(EnquiryDto dto) {
 		BasicInfoDto basicDto = dto.getBasicInfo();
 		if (basicDto != null) {
-			basicDto.setDateOfBirth("NA");
+			basicDto.setDateOfBirth(ServiceConstant.NA.toString());
 
 			if (basicDto.getEmail() == null || basicDto.getEmail().isEmpty()) {
 				String contactNumber = String.valueOf(basicDto.getContactNumber());
@@ -590,19 +590,19 @@ public class DreamWrapper {
 		EducationInfoDto educationDto = dto.getEducationInfo();
 		if (educationDto != null) {
 			if (educationDto.getCollegeName() == null || educationDto.getCollegeName().isEmpty()) {
-				educationDto.setCollegeName("NA");
+				educationDto.setCollegeName(ServiceConstant.NA.toString());
 			}
 
 			if (educationDto.getStream() == null || educationDto.getStream().isEmpty()) {
-				educationDto.setStream("NA");
+				educationDto.setStream(ServiceConstant.NA.toString());
 			}
 
 			if (educationDto.getQualification() == null || educationDto.getQualification().isEmpty()) {
-				educationDto.setQualification("NA");
+				educationDto.setQualification(ServiceConstant.NA.toString());
 			}
 
 			if (educationDto.getYearOfPassout() == null || educationDto.getYearOfPassout().isEmpty()) {
-				educationDto.setYearOfPassout("NA");
+				educationDto.setYearOfPassout(ServiceConstant.NA.toString());
 			}
 		}
 
@@ -623,10 +623,10 @@ public class DreamWrapper {
 		followUpDto.setCurrentlyFollowedBy(FollowUp.NONE.toString());
 		followUpDto.setCurrentStatus(FollowUp.NEW.toString());
 		followUpDto.setAdminDto(traineeDto.getAdminDto());
-		followUpDto.getAdminDto().setUpdatedBy("NA");
-		followUpDto.getAdminDto().setUpdatedOn("NA");
-		followUpDto.setFlagSheet("Active");
-		followUpDto.setFlag("Active");
+		followUpDto.getAdminDto().setUpdatedBy(ServiceConstant.NA.toString());
+		followUpDto.getAdminDto().setUpdatedOn(ServiceConstant.NA.toString());
+		followUpDto.setFlagSheet(ServiceConstant.ACTIVE.toString());
+		followUpDto.setFlag(ServiceConstant.ACTIVE.toString());
 
 		return followUpDto;
 	}
@@ -645,10 +645,10 @@ public class DreamWrapper {
 		followUpDto.setCurrentlyFollowedBy(FollowUp.NONE.toString());
 		followUpDto.setCurrentStatus(FollowUp.ENQUIRY.toString());
 		followUpDto.setAdminDto(traineeDto.getAdminDto());
-		followUpDto.getAdminDto().setUpdatedBy("NA");
-		followUpDto.getAdminDto().setUpdatedOn("NA");
-		followUpDto.setFlag("Active");
-		followUpDto.setFlagSheet("Active");
+		followUpDto.getAdminDto().setUpdatedBy(ServiceConstant.NA.toString());
+		followUpDto.getAdminDto().setUpdatedOn(ServiceConstant.NA.toString());
+		followUpDto.setFlag(ServiceConstant.ACTIVE.toString());
+		followUpDto.setFlagSheet(ServiceConstant.ACTIVE.toString());
 
 		return followUpDto;
 	}
@@ -667,10 +667,10 @@ public class DreamWrapper {
 		followUpDto.setCurrentlyFollowedBy(FollowUp.NONE.toString());
 		followUpDto.setCurrentStatus(traineeDto.getCourseInfo().getOfferedAs());
 		followUpDto.setAdminDto(traineeDto.getAdminDto());
-		followUpDto.getAdminDto().setUpdatedBy("NA");
-		followUpDto.getAdminDto().setUpdatedOn("NA");
-		followUpDto.setFlag("Active");
-		followUpDto.setFlagSheet("Active");
+		followUpDto.getAdminDto().setUpdatedBy(ServiceConstant.NA.toString());
+		followUpDto.getAdminDto().setUpdatedOn(ServiceConstant.NA.toString());
+		followUpDto.setFlag(ServiceConstant.ACTIVE.toString());
+		followUpDto.setFlagSheet(ServiceConstant.ACTIVE.toString());
 
 		return followUpDto;
 	}
@@ -698,7 +698,7 @@ public class DreamWrapper {
 		sdto.setAttemptStatus(statusDto.getAttemptStatus());
 		sdto.setComments(statusDto.getComments());
 		sdto.setCallDuration(statusDto.getCallDuration());
-		if (statusDto.getCallBack().equals("NA")) {
+		if (statusDto.getCallBack().equals(ServiceConstant.NA.toString())) {
 			sdto.setCallBack(LocalDate.now().plusDays(1).toString());
 		} else {
 			sdto.setCallBack(statusDto.getCallBack());
@@ -710,24 +710,24 @@ public class DreamWrapper {
 
 	public void setFieldValueAsNa(TraineeDto dto) {
 		if (dto.getCourseInfo().getCourse() == null) {
-			dto.getCourseInfo().setCourse("NA");
+			dto.getCourseInfo().setCourse(ServiceConstant.NA.toString());
 
 		}
 		if (dto.getCourseInfo().getBranch() == null) {
-			dto.getCourseInfo().setBranch("NA");
+			dto.getCourseInfo().setBranch(ServiceConstant.NA.toString());
 		}
 		if (dto.getCourseInfo().getTrainerName() == null) {
-			dto.getCourseInfo().setTrainerName("NA");
+			dto.getCourseInfo().setTrainerName(ServiceConstant.NA.toString());
 		}
 		if (dto.getCourseInfo().getBatchType() == null) {
-			dto.getCourseInfo().setBatchType("NA");
+			dto.getCourseInfo().setBatchType(ServiceConstant.NA.toString());
 
 		}
 		if (dto.getCourseInfo().getBatchTiming() == null) {
-			dto.getCourseInfo().setBatchTiming("NA");
+			dto.getCourseInfo().setBatchTiming(ServiceConstant.NA.toString());
 		}
 		if (dto.getCourseInfo().getStartDate() == null) {
-			dto.getCourseInfo().setStartDate("NA");
+			dto.getCourseInfo().setStartDate(ServiceConstant.NA.toString());
 		}
 	}
 
@@ -738,8 +738,8 @@ public class DreamWrapper {
 		dto.getOthersDto().setSendWhatsAppLink(Status.NO.toString());
 		dto.getOthersDto().setRegistrationDate(LocalDateTime.now().toString());
 		dto.getAdminDto().setCreatedOn(LocalDateTime.now().toString());
-		dto.getAdminDto().setUpdatedBy("NA");
-		dto.getAdminDto().setUpdatedOn("NA");
+		dto.getAdminDto().setUpdatedBy(ServiceConstant.NA.toString());
+		dto.getAdminDto().setUpdatedOn(ServiceConstant.NA.toString());
 
 		if (dto.getOthersDto().getReferalName() == null) {
 			dto.getOthersDto().setReferalName(Status.NA.toString());
@@ -790,8 +790,8 @@ public class DreamWrapper {
 		} else {
 			admin.setCreatedBy(dto.getAdminDto().getCreatedBy());
 			admin.setCreatedOn(dto.getAdminDto().getCreatedOn());
-			admin.setUpdatedBy("NA");
-			admin.setUpdatedOn("NA");
+			admin.setUpdatedBy(ServiceConstant.NA.toString());
+			admin.setUpdatedOn(ServiceConstant.NA.toString());
 			dto.setAdminDto(admin);
 		}
 
@@ -806,16 +806,18 @@ public class DreamWrapper {
 			attendanceDto.setTotalAbsent(0);
 		}
 		if (attendanceDto.getAbsentDate() == null) {
-			attendanceDto.setAbsentDate(Status.NA.toString());
+
+			attendanceDto.setAbsentDate(ServiceConstant.NA.toString());
 		}
 		if (attendanceDto.getReason() == null) {
-			attendanceDto.setReason(Status.NA.toString());
+			attendanceDto.setReason(ServiceConstant.NA.toString());
+
 		}
 		AuditDto admin = new AuditDto();
-		admin.setCreatedBy("Swagger");
+		admin.setCreatedBy(ServiceConstant.Swagger.toString());
 		admin.setCreatedOn(LocalDate.now().toString());
-		admin.setUpdatedBy(Status.NA.toString());
-		admin.setUpdatedOn(Status.NA.toString());
+		admin.setUpdatedBy(ServiceConstant.NA.toString());
+		admin.setUpdatedOn(ServiceConstant.NA.toString());
 		attendanceDto.setAdminDto(admin);
 
 		return attendanceDto;

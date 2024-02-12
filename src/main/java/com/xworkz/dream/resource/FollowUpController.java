@@ -51,14 +51,14 @@ public class FollowUpController {
 
 	@ApiOperation(value = "To get follow up details by pagination")
 	@GetMapping("/followUp")
-	public ResponseEntity<FollowUpDataDto> getFollowUpData(@RequestHeader String spreadsheetId,
-			@RequestParam int startingIndex, @RequestParam int maxRows, @RequestParam String status,
-			@RequestParam String courseName, @RequestParam String date) throws IOException {
+	public FollowUpDataDto getFollowUpData(@RequestHeader String spreadsheetId, @RequestParam int startingIndex,
+			@RequestParam int maxRows, @RequestParam String status, @RequestParam String courseName,
+			@RequestParam String date, @RequestParam String collegeName) throws IOException {
 		log.info(
 				"Fetching follow-up details: spreadsheetId={}, startingIndex={}, maxRows={}, status={}, courseName={}, date={}",
 				spreadsheetId, startingIndex, maxRows, status, courseName, date);
 		;
-		return service.getFollowUpDetails(spreadsheetId, startingIndex, maxRows, status, courseName, date);
+		return service.getFollowUpDetails(spreadsheetId, startingIndex, maxRows, status, courseName, date, collegeName);
 	}
 
 	@ApiOperation(value = "To get status details by email ")
@@ -77,7 +77,7 @@ public class FollowUpController {
 		log.info("Fetching follow-up details by email: spreadsheetId={}, email={}", spreadsheetId, email);
 		return service.getFollowUpByEmail(spreadsheetId, email, request);
 	}
- 
+
 	@ApiOperation(value = "To get Registration details by email")
 	@GetMapping("/getFollowUpStatusByEmail/{email}")
 	public ResponseEntity<List<StatusDto>> getFollowUpStatusByEmail(@RequestHeader String spreadsheetId,
@@ -93,14 +93,6 @@ public class FollowUpController {
 			@RequestBody FollowUpDto dto, HttpServletRequest request) throws IOException, IllegalAccessException {
 		log.info("Updating follow-up data: spreadsheetId={}, email={}, dto={}", spreadsheetId, email, dto);
 		return service.updateFollowUp(spreadsheetId, email, dto);
-	}
-
-	@ApiOperation(value = "Get followup Status detiles By Date")
-	@GetMapping("/getFollowupstatusByDate")
-	public ResponseEntity<FollowUpDataDto> getFollowStatusByDate(@RequestParam String date,
-			@RequestParam int startIndex, @RequestParam int endIndex, HttpServletRequest request) throws IOException {
-		log.info("Fetching follow-up status by date: date={}, startIndex={}, endIndex={}", date, startIndex, endIndex);
-		return service.getFollowStatusByDate(date, startIndex, endIndex, id, request);
 	}
 
 	@GetMapping("/getTraineeDetails")

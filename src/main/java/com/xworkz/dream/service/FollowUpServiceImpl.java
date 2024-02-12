@@ -11,9 +11,12 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.ListIterator;
 import java.util.Objects;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+
 import javax.servlet.http.HttpServletRequest;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,9 +24,9 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+
 import com.google.api.services.sheets.v4.model.UpdateValuesResponse;
 import com.google.api.services.sheets.v4.model.ValueRange;
-import com.xworkz.dream.constants.Status;
 import com.xworkz.dream.dto.AuditDto;
 import com.xworkz.dream.dto.FollowUpDataDto;
 import com.xworkz.dream.dto.FollowUpDto;
@@ -32,6 +35,7 @@ import com.xworkz.dream.dto.TraineeDto;
 import com.xworkz.dream.dto.utils.StatusList;
 import com.xworkz.dream.repository.FollowUpRepository;
 import com.xworkz.dream.repository.RegisterRepository;
+import com.xworkz.dream.service.util.FollowUpUtil;
 import com.xworkz.dream.wrapper.DreamWrapper;
 
 @Service
@@ -64,6 +68,8 @@ public class FollowUpServiceImpl implements FollowUpService {
 	@Autowired
 	private CacheService cacheService;
 	private static final Logger log = LoggerFactory.getLogger(FollowUpServiceImpl.class);
+	@Autowired
+	private FollowUpUtil followUpUtil;
 
 	@Override
 	public boolean addToFollowUp(TraineeDto traineeDto, String spreadSheetId)
@@ -313,374 +319,85 @@ public class FollowUpServiceImpl implements FollowUpService {
 			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
 					.body("An error occurred with credentials file ");
 		}
-	} 
+	}
 
 	@Override
 	public ResponseEntity<FollowUpDto> getFollowUpByEmail(String spreadsheetId, String email,
-			HttpServletRequest request) throws IOException {
+			HttpServletRequest request) {
 		log.info("Get follow-up by email service start. SpreadsheetId: {}, Email: {}", spreadsheetId, email);
-		List<List<Object>> data = repo.getFollowUpDetails(spreadsheetId);
-		FollowUpDto followUp = data.stream()
-				.filter(list -> list.get(2).toString().equalsIgnoreCase(email)).findFirst()
-				.map(wrapper::listToFollowUpDTO).orElse(null);
- 
-		if (followUp != null) {
-			log.info("Follow-up details found for email: {}", email);
-			return ResponseEntity.ok(followUp);
-		} else {
-			log.info("Follow-up details not found for email: {}", email);
-			return ResponseEntity.ok(followUp);
+		List<List<Object>> data;
+		try {
+			data = repo.getFollowUpDetails(spreadsheetId);
+			FollowUpDto followUp = data.stream().filter(list -> list.get(2).toString().equalsIgnoreCase(email))
+					.findFirst().map(wrapper::listToFollowUpDTO).orElse(null);
+
+			if (followUp != null) {
+				log.info("Follow-up details found for email: {}", email);
+				return ResponseEntity.ok(followUp);
+			} else {
+				log.info("Follow-up details not found for email: {}", email);
+				return ResponseEntity.ok(followUp);
+			}
+		} catch (IOException e) {
+			log.error("error fetching data from repo {} ", e);
+			return null;
 		}
 	}
 
 	@Override
-	public ResponseEntity<FollowUpDataDto> getFollowUpDetails(String spreadsheetId, int startingIndex, int maxRows,
-			String status, String courseName, String date) throws IOException {
-		log.info("Get Follow-up Details service start. SpreadsheetId: {}, StartingIndex: {}, MaxRows: {}, Status: {}, "
-				+ "CourseName: {}, Date: {}", spreadsheetId, startingIndex, maxRows, status, courseName, date);
-		List<FollowUpDto> followUpDto = new ArrayList<FollowUpDto>();
-		List<List<Object>> lists = repo.getFollowUpDetails(spreadsheetId).stream()
-				.filter(items -> items.get(15).toString().equalsIgnoreCase("Active")).collect(Collectors.toList());
-		List<List<Object>> traineeData = repository.readData(spreadsheetId);
-
-		if (status != null && !status.isEmpty() && lists != null) {
-			if (status.toString().equalsIgnoreCase(Status.ENQUIRY.toString())) {
-				List<List<Object>> data = lists.stream()
-						.filter(list -> list.stream()
-								.anyMatch(value -> value != null && value.toString().equalsIgnoreCase(status)))
+	public FollowUpDataDto getFollowUpDetails(String spreadsheetId, int startingIndex, int maxRows, String status,
+			String courseName, String date, String collegeName) {
+		log.info(
+				"Get Follow-up Details service start. SpreadsheetId: {}, StartingIndex: {}, MaxRows: {}, Status: {}, "
+						+ "CourseName: {}, Date: {} ,CollegeName : {}  ",
+				spreadsheetId, startingIndex, maxRows, status, courseName, date, collegeName);
+		DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+		try {
+			List<List<Object>> followUpList = repo.getFollowUpDetails(spreadsheetId);
+			List<List<Object>> traineeData = repository.readData(spreadsheetId);
+			StatusList statusList = new StatusList();
+			Predicate<FollowUpDto> predicate = predicateByStatus(status, courseName, date, collegeName, dateFormatter,
+					statusList);
+			try {
+				List<FollowUpDto> dto = followUpUtil.getFollowupList(followUpList, traineeData).stream()
+						.filter(predicate).sorted(Comparator.comparing(FollowUpDto::getRegistrationDate).reversed())
+						.collect(Collectors.toList());
+				List<FollowUpDto> limitedRows = dto.stream().skip(startingIndex).limit(maxRows)
 						.collect(Collectors.toList());
 
-				List<FollowUpDto> dtos = new ArrayList<FollowUpDto>();
-				if (data != null) {
-					data.stream().forEach(items -> {
-						FollowUpDto dto = wrapper.listToFollowUpDTO(items);
-						TraineeDto traineedto = getTraineeDtoByEmail(traineeData, dto.getBasicInfo().getEmail());
-						if (traineedto != null) {
-							dto.setCourseName(traineedto.getCourseInfo().getCourse());
-						}
-						dtos.add(dto);
-
-					});
-					log.debug("Pagination data: {}", data);
-					if (!courseName.equalsIgnoreCase("null")) {
-						List<FollowUpDto> filterData = dtos.stream()
-								.filter(item -> item.getCourseName().equalsIgnoreCase(courseName))
-								.collect(Collectors.toList());
-						List<FollowUpDto> finalList = filterData.stream()
-								.sorted(Comparator.comparing(FollowUpDto::getRegistrationDate).reversed())
-								.skip(startingIndex).limit(maxRows).collect(Collectors.toList());
-						FollowUpDataDto followUpDataDto = new FollowUpDataDto(finalList, filterData.size());
-						return ResponseEntity.ok(followUpDataDto);
-
-					} else {
-						List<FollowUpDto> finalData = dtos.stream()
-								.sorted(Comparator.comparing(FollowUpDto::getRegistrationDate).reversed())
-								.skip(startingIndex).limit(maxRows).collect(Collectors.toList());
-						FollowUpDataDto followUpDataDto = new FollowUpDataDto(finalData, dtos.size());
-						return ResponseEntity.ok(followUpDataDto);
-					}
-				}
-			} else if (status.toString().equalsIgnoreCase(Status.NEW.toString())) {
-				List<List<Object>> data = lists.stream()
-						.filter(list -> list.stream()
-								.anyMatch(value -> value != null && value.toString().equalsIgnoreCase(status)))
-						.collect(Collectors.toList());
-
-				List<FollowUpDto> dtos = new ArrayList<FollowUpDto>();
-				if (data != null) {
-					data.stream().forEach(items -> {
-						FollowUpDto dto = wrapper.listToFollowUpDTO(items);
-						TraineeDto traineedto = getTraineeDtoByEmail(traineeData, dto.getBasicInfo().getEmail());
-						if (traineedto != null) {
-							dto.setCourseName(traineedto.getCourseInfo().getCourse());
-						}
-						dtos.add(dto);
-
-					});
-					log.debug("Pagination data: {}", data);
-					if (!courseName.equalsIgnoreCase("null")) {
-						List<FollowUpDto> filterData = dtos.stream()
-								.filter(item -> item.getCourseName().equalsIgnoreCase(courseName))
-								.collect(Collectors.toList());
-						List<FollowUpDto> finalList = filterData.stream()
-								.sorted(Comparator.comparing(FollowUpDto::getRegistrationDate).reversed())
-								.skip(startingIndex).limit(maxRows).collect(Collectors.toList());
-						FollowUpDataDto followUpDataDto = new FollowUpDataDto(finalList, filterData.size());
-						return ResponseEntity.ok(followUpDataDto);
-
-					} else {
-						List<FollowUpDto> finalData = dtos.stream()
-								.sorted(Comparator.comparing(FollowUpDto::getRegistrationDate).reversed())
-								.skip(startingIndex).limit(maxRows).collect(Collectors.toList());
-						FollowUpDataDto followUpDataDto = new FollowUpDataDto(finalData, dtos.size());
-						return ResponseEntity.ok(followUpDataDto);
-					}
-				}
-			} else if (status.toString()
-					.equalsIgnoreCase(Status.Past_followup.toString().replace('_', ' ').toString())) {
-				List<FollowUpDto> followUpDtos = new ArrayList<FollowUpDto>();
-				StatusList statusList = new StatusList();
-				DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-				List<List<Object>> data = lists.stream()
-						.filter(elements -> statusList.getStatusCheck().contains(elements.get(8).toString()))
-						.collect(Collectors.toList());
-				data.stream().forEach(items -> {
-					FollowUpDto dto = wrapper.listToFollowUpDTO(items);
-					if (dto.getCallback() != null && dto.getCallback().length() > 11
-							&& !dto.getAdminDto().getUpdatedBy().equalsIgnoreCase("NA")
-							&& (LocalDate.parse(LocalDateTime.parse(dto.getCallback()).format(dateFormatter)))
-									.isBefore(LocalDate.now().minusDays(2))) {
-						followUpDtos.add(dto);
-
-					} else if (dto.getCallback() != null && dto.getCallback().length() < 11
-							&& !dto.getAdminDto().getUpdatedBy().equalsIgnoreCase("NA")
-							&& (LocalDate.parse(LocalDate.parse(dto.getCallback()).format(dateFormatter)))
-									.isBefore(LocalDate.now().minusDays(2))) {
-						followUpDtos.add(dto);
-					}
-
-				});
-				if (followUpDto != null) {
-					followUpDto = followUpDtos.stream()
-							.sorted(Comparator.comparing(FollowUpDto::getRegistrationDate).reversed())
-							.skip(startingIndex).limit(maxRows).collect(Collectors.toList());
-					followUpDtos.stream().forEach(dto -> {
-						TraineeDto traineedto = getTraineeDtoByEmail(traineeData, dto.getBasicInfo().getEmail());
-						if (traineedto != null) {
-							dto.setCourseName(traineedto.getCourseInfo().getCourse());
-						}
-
-					});
-
-					log.debug("Pagination data: {}", followUpDto);
-					if (!courseName.equalsIgnoreCase("null")) {
-						List<FollowUpDto> filterData = followUpDtos.stream()
-								.filter(item -> item.getCourseName().equalsIgnoreCase(courseName))
-								.collect(Collectors.toList());
-						FollowUpDataDto followUpDataDto = new FollowUpDataDto(filterData, filterData.size());
-						return ResponseEntity.ok(followUpDataDto);
-
-					} else {
-						FollowUpDataDto followUpDataDto = new FollowUpDataDto(followUpDto, followUpDtos.size());
-						return ResponseEntity.ok(followUpDataDto);
-					}
-
-				}
+				FollowUpDataDto followUpDataDto = new FollowUpDataDto(limitedRows, dto.size());
+				return followUpDataDto;
+			} catch (Exception e) {
+				log.error("filter data fecthing error {} ", e);
 			}
-
-			else if (status.toString()
-					.equalsIgnoreCase(Status.Never_followUp.toString().replace('_', ' ').toString())) {
-				List<FollowUpDto> followUpDtos = new ArrayList<FollowUpDto>();
-				StatusList statusList = new StatusList();
-				List<List<Object>> data = lists.stream()
-						.filter(elements -> statusList.getStatusCheck().contains(elements.get(8)))
-						.collect(Collectors.toList());
-				data.stream().forEach(items -> {
-					FollowUpDto dto = wrapper.listToFollowUpDTO(items);
-					if (dto.getCurrentlyFollowedBy().equalsIgnoreCase("NONE")) {
-						followUpDtos.add(dto);
-					}
-				});
-				if (followUpDtos != null) {
-					followUpDto = followUpDtos.stream()
-							.sorted(Comparator.comparing(FollowUpDto::getRegistrationDate).reversed())
-							.skip(startingIndex).limit(maxRows).collect(Collectors.toList());
-					followUpDtos.stream().forEach(dto -> {
-						TraineeDto traineedto = getTraineeDtoByEmail(traineeData, dto.getBasicInfo().getEmail());
-						if (traineedto != null) {
-							dto.setCourseName(traineedto.getCourseInfo().getCourse());
-						}
-
-					});
-
-					log.debug("Pagination data: {}", followUpDtos);
-					if (!courseName.equalsIgnoreCase("null")) {
-						List<FollowUpDto> filterData = followUpDtos.stream()
-								.filter(item -> item.getCourseName().equalsIgnoreCase(courseName))
-								.collect(Collectors.toList());
-						FollowUpDataDto followUpDataDto = new FollowUpDataDto(filterData, filterData.size());
-						return ResponseEntity.ok(followUpDataDto);
-
-					} else {
-						FollowUpDataDto followUpDataDto = new FollowUpDataDto(followUpDto, followUpDtos.size());
-						return ResponseEntity.ok(followUpDataDto);
-					}
-
-				}
-			}
-
-			else if (status.toString().equalsIgnoreCase(Status.Joined.toString())) {
-				List<List<Object>> data = lists.stream()
-						.filter(list -> list.stream()
-								.anyMatch(value -> value != null && value.toString().equalsIgnoreCase(status)))
-						.collect(Collectors.toList());
-				List<FollowUpDto> dtos = new ArrayList<FollowUpDto>();
-				if (data != null) {
-					data.stream().forEach(items -> {
-						FollowUpDto dto = wrapper.listToFollowUpDTO(items);
-						TraineeDto traineedto = getTraineeDtoByEmail(traineeData, dto.getBasicInfo().getEmail());
-						if (traineedto != null) {
-							dto.setCourseName(traineedto.getCourseInfo().getCourse());
-						}
-						dtos.add(dto);
-
-					});
-					log.debug("Pagination data: {}", data);
-					if (!courseName.equalsIgnoreCase("null")) {
-						List<FollowUpDto> filterData = dtos.stream()
-								.filter(item -> item.getCourseName().equalsIgnoreCase(courseName))
-								.collect(Collectors.toList());
-						List<FollowUpDto> finalList = filterData.stream()
-								.sorted(Comparator.comparing(FollowUpDto::getRegistrationDate).reversed())
-								.skip(startingIndex).limit(maxRows).collect(Collectors.toList());
-						FollowUpDataDto followUpDataDto = new FollowUpDataDto(finalList, filterData.size());
-						return ResponseEntity.ok(followUpDataDto);
-
-					} else {
-						List<FollowUpDto> finalData = dtos.stream()
-								.sorted(Comparator.comparing(FollowUpDto::getRegistrationDate).reversed())
-								.skip(startingIndex).limit(maxRows).collect(Collectors.toList());
-						FollowUpDataDto followUpDataDto = new FollowUpDataDto(finalData, dtos.size());
-						return ResponseEntity.ok(followUpDataDto);
-					}
-				}
-			} else if (status.toString().equalsIgnoreCase(Status.RNR.toString())) {
-				List<List<Object>> data = lists.stream().filter(list -> list.stream()
-						.anyMatch(value -> value != null && value.toString().equalsIgnoreCase(Status.Busy.toString())
-								|| value.toString().equalsIgnoreCase(
-										Status.Incomingcall_not_available.toString().replace('_', ' '))
-								|| value.toString().equalsIgnoreCase(Status.Not_reachable.toString().replace('_', ' '))
-								|| value.toString().equalsIgnoreCase(Status.RNR.toString())
-								|| value.toString().equalsIgnoreCase(Status.Call_Drop.toString().replace('_', ' '))))
-						.collect(Collectors.toList());
-
-				List<FollowUpDto> dtos = new ArrayList<FollowUpDto>();
-				if (data != null) {
-					data.stream().forEach(items -> {
-						FollowUpDto dto = wrapper.listToFollowUpDTO(items);
-						TraineeDto traineedto = getTraineeDtoByEmail(traineeData, dto.getBasicInfo().getEmail());
-						if (traineedto != null) {
-							dto.setCourseName(traineedto.getCourseInfo().getCourse());
-						}
-						dtos.add(dto);
-
-					});
-					log.debug("Pagination data: {}", data);
-					if (!courseName.equalsIgnoreCase("null")) {
-						List<FollowUpDto> filterData = dtos.stream()
-								.filter(item -> item.getCourseName().equalsIgnoreCase(courseName))
-								.collect(Collectors.toList());
-						List<FollowUpDto> finalList = filterData.stream()
-								.sorted(Comparator.comparing(FollowUpDto::getRegistrationDate).reversed())
-								.skip(startingIndex).limit(maxRows).collect(Collectors.toList());
-						FollowUpDataDto followUpDataDto = new FollowUpDataDto(finalList, filterData.size());
-						return ResponseEntity.ok(followUpDataDto);
-
-					} else {
-						List<FollowUpDto> finalData = dtos.stream()
-								.sorted(Comparator.comparing(FollowUpDto::getRegistrationDate).reversed())
-								.skip(startingIndex).limit(maxRows).collect(Collectors.toList());
-						FollowUpDataDto followUpDataDto = new FollowUpDataDto(finalData, dtos.size());
-						return ResponseEntity.ok(followUpDataDto);
-					}
-				}
-			} else if (status.toString().equalsIgnoreCase(Status.Not_interested.toString().replace('_', ' '))) {
-				List<List<Object>> data = lists.stream().filter(list -> list.stream().anyMatch(value -> value != null
-						&& value.toString().equalsIgnoreCase(Status.Not_interested.toString().replace('_', ' '))
-						|| value.toString().equalsIgnoreCase(Status.Drop_After_Course.toString().replace('_', ' '))
-						|| value.toString().equalsIgnoreCase(Status.Drop_After_Placement.toString().replace('_', ' '))
-						|| value.toString().equalsIgnoreCase(Status.Higher_studies.toString().replace('_', ' '))
-						|| value.toString().equalsIgnoreCase(Status.Joined_other_institute.toString().replace('_', ' '))
-						|| value.toString().equalsIgnoreCase(Status.Not_joining.toString().replace('_', ' '))
-						|| value.toString().equalsIgnoreCase(Status.Wrong_number.toString().replace('_', ' '))))
-						.collect(Collectors.toList());
-
-				List<FollowUpDto> dtos = new ArrayList<FollowUpDto>();
-				if (data != null) {
-					data.stream().forEach(items -> {
-						FollowUpDto dto = wrapper.listToFollowUpDTO(items);
-						TraineeDto traineedto = getTraineeDtoByEmail(traineeData, dto.getBasicInfo().getEmail());
-						if (traineedto != null) {
-							dto.setCourseName(traineedto.getCourseInfo().getCourse());
-						}
-						dtos.add(dto);
-
-					});
-					log.debug("Pagination data: {}", data);
-					if (!courseName.equalsIgnoreCase("null")) {
-						List<FollowUpDto> filterData = dtos.stream()
-								.filter(item -> item.getCourseName().equalsIgnoreCase(courseName))
-								.collect(Collectors.toList());
-						List<FollowUpDto> finalList = filterData.stream()
-								.sorted(Comparator.comparing(FollowUpDto::getRegistrationDate).reversed())
-								.skip(startingIndex).limit(maxRows).collect(Collectors.toList());
-						FollowUpDataDto followUpDataDto = new FollowUpDataDto(finalList, filterData.size());
-						return ResponseEntity.ok(followUpDataDto);
-
-					} else {
-						List<FollowUpDto> finalData = dtos.stream()
-								.sorted(Comparator.comparing(FollowUpDto::getRegistrationDate).reversed())
-								.skip(startingIndex).limit(maxRows).collect(Collectors.toList());
-						FollowUpDataDto followUpDataDto = new FollowUpDataDto(finalData, dtos.size());
-						return ResponseEntity.ok(followUpDataDto);
-					}
-				}
-			} else if (status.toString().equalsIgnoreCase(Status.Interested.toString())) {
-				List<List<Object>> data = lists.stream()
-						.filter(list -> list.stream().anyMatch(value -> value != null
-								&& value.toString().equalsIgnoreCase(Status.Let_us_know.toString().replace('_', ' '))
-								|| value.toString().equalsIgnoreCase(Status.Need_online.toString().replace('_', ' '))
-								|| value.toString().equalsIgnoreCase(Status.Joining.toString())
-								|| value.toString().equalsIgnoreCase(Status.Interested.toString())))
-						.collect(Collectors.toList());
-
-				List<FollowUpDto> dtos = new ArrayList<FollowUpDto>();
-				if (data != null) {
-					data.stream().forEach(items -> {
-						FollowUpDto dto = wrapper.listToFollowUpDTO(items);
-						TraineeDto traineedto = getTraineeDtoByEmail(traineeData, dto.getBasicInfo().getEmail());
-						if (traineedto != null) {
-							dto.setCourseName(traineedto.getCourseInfo().getCourse());
-						}
-						dtos.add(dto);
-
-					});
-					log.debug("Pagination data: {}", data);
-					if (!courseName.equalsIgnoreCase("null")) {
-						List<FollowUpDto> filterData = dtos.stream()
-								.filter(item -> item.getCourseName().equalsIgnoreCase(courseName))
-								.collect(Collectors.toList());
-						List<FollowUpDto> finalList = filterData.stream()
-								.sorted(Comparator.comparing(FollowUpDto::getRegistrationDate).reversed())
-								.skip(startingIndex).limit(maxRows).collect(Collectors.toList());
-						FollowUpDataDto followUpDataDto = new FollowUpDataDto(finalList, filterData.size());
-						return ResponseEntity.ok(followUpDataDto);
-
-					} else {
-						dtos.stream().sorted(Comparator.comparing(FollowUpDto::getRegistrationDate).reversed())
-								.skip(startingIndex).limit(maxRows).collect(Collectors.toList());
-						FollowUpDataDto followUpDataDto = new FollowUpDataDto(dtos, data.size());
-						return ResponseEntity.ok(followUpDataDto);
-					}
-				}
-			} else {
-				log.warn("Follow-up data not found.");
-				return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
-			}
-		} else {
-			log.warn("Bad request. Status is null or empty.");
-			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
+		} catch (Exception e) {
+			log.error("sheet data fetchinng ceeor {}", e);
 		}
 		return null;
+
 	}
 
-	private TraineeDto getTraineeDtoByEmail(List<List<Object>> traineeData, String email) {
-		if (traineeData == null || email == null) {
-			return null;
-		}
-		return traineeData.stream()
-				.filter(row -> row.size() > 2 && row.get(2) != null && row.get(2).toString().equalsIgnoreCase(email))
-				.map(wrapper::listToDto).findFirst().orElse(null);
+	private Predicate<FollowUpDto> predicateByStatus(String status, String courseName, String date, String collegeName,
+			DateTimeFormatter dateFormatter, StatusList statusList) {
+		Predicate<FollowUpDto> predicate = null;
+		predicate = followUpUtil.byStatus(status, courseName, date, collegeName, dateFormatter, statusList, predicate);
+		predicate = followUpUtil.byStatusAndCourseName(status, courseName, date, collegeName, dateFormatter, statusList,
+				predicate);
+		predicate = followUpUtil.byStatusAndDate(status, courseName, date, collegeName, dateFormatter, statusList,
+				predicate);
+		predicate = followUpUtil.byStatusAndCollegeName(status, courseName, date, collegeName, dateFormatter,
+				statusList, predicate);
+		predicate = followUpUtil.byStatusAndCourseNameAndCollegeName(status, courseName, date, collegeName,
+				dateFormatter, statusList, predicate);
+		predicate = followUpUtil.byStatusCourseNameAndDateAndCollegeName(status, courseName, date, collegeName,
+				dateFormatter, statusList, predicate);
+		predicate = followUpUtil.byStatusAndDateAndCollegeName(status, courseName, date, collegeName, dateFormatter,
+				statusList, predicate);
+
+		predicate = followUpUtil.byStatusAndCourseAndDate(status, courseName, date, collegeName, dateFormatter,
+				statusList, predicate);
+
+		return predicate;
 	}
 
 	@Override
@@ -706,17 +423,24 @@ public class FollowUpServiceImpl implements FollowUpService {
 
 	@Override
 	public List<StatusDto> getStatusDetails(String spreadsheetId, int startingIndex, int maxRows, String email,
-			HttpServletRequest request) throws IOException {
+			HttpServletRequest request) {
 		log.info("Get Status Details service start. SpreadsheetId: {}, StartingIndex: {}, MaxRows: {}, Email: {}",
 				spreadsheetId, startingIndex, maxRows, email);
 		List<StatusDto> statusDto = new ArrayList<>();
-		List<List<Object>> dataList = repo.getFollowUpStatusDetails(spreadsheetId);
-		List<List<Object>> data = dataList.stream()
-				.filter(list -> list.stream().anyMatch(value -> value.toString().equalsIgnoreCase(email)))
-				.collect(Collectors.toList());
-		statusDto = getFollowUpStatusData(data, startingIndex, maxRows);
-		log.debug("Status details: {}", statusDto);
-		return statusDto;
+		List<List<Object>> dataList;
+		try {
+			dataList = repo.getFollowUpStatusDetails(spreadsheetId);
+
+			List<List<Object>> data = dataList.stream()
+					.filter(list -> list.stream().anyMatch(value -> value.toString().equalsIgnoreCase(email)))
+					.collect(Collectors.toList());
+			statusDto = getFollowUpStatusData(data, startingIndex, maxRows);
+			log.debug("Status details: {}", statusDto);
+			return statusDto;
+		} catch (IOException e) {
+			log.error("error getting status  {} ", e);
+			return new ArrayList<StatusDto>();
+		}
 	}
 
 	@Override
@@ -800,57 +524,7 @@ public class FollowUpServiceImpl implements FollowUpService {
 		} else {
 			log.info("Follow-up updated successfully. SpreadsheetId: {}, Email: {}", spreadsheetId, email);
 			return ResponseEntity.ok("Updated Successfully");
-		}  
-	}
-
-	private List<FollowUpDto> getLimitedRowsBatchAndDate(List<List<Object>> values, String date, int startingIndex,
-			int maxRows) {
-		log.info("Get Limited Rows Batch and Date service start. Date: {}, StartingIndex: {}, MaxRows: {}", date,
-				startingIndex, maxRows);
-		List<FollowUpDto> followUpDtos = new ArrayList<>();
-
-		int endIndex = startingIndex + maxRows;
-
-		ListIterator<List<Object>> iterator = values.listIterator(startingIndex);
-
-		while (iterator.hasNext() && iterator.nextIndex() < endIndex) {
-			List<Object> row = iterator.next();
-
-			if (row != null && !row.isEmpty()) {
-				FollowUpDto followUpDto = wrapper.listToFollowUpDTO(row);
-				if (followUpDto.getCallback().equalsIgnoreCase(date)) {
-					followUpDtos.add(followUpDto);
-				}
-			}
 		}
-		log.debug("Limited rows batch and date: {}", followUpDtos);
-		return followUpDtos;
-	}
-
-	@Override
-	public ResponseEntity<FollowUpDataDto> getFollowStatusByDate(String date, int startIndex, int endIndex,
-			String spreadsheetID, HttpServletRequest request) throws IOException {
-		log.info("Get Follow Status By Date service start. Date: {}, StartIndex: {}, EndIndex: {}, SpreadsheetID: {}",
-				date, startIndex, endIndex, spreadsheetID);
-		List<List<Object>> dataList = repo.getFollowupStatusByDate(spreadsheetID);
-
-		if (dataList != null && date != null) {
-			List<List<Object>> list = dataList.stream()
-					.filter(item -> item.get(9).equals(date) && item.get(15).toString().equalsIgnoreCase("Active")
-							&& !item.get(8).toString().equalsIgnoreCase(Status.Joined.toString())
-							&& !item.get(8).toString()
-									.equalsIgnoreCase(Status.Not_interested.toString().replace("_", " ")))
-					.collect(Collectors.toList());
-			List<FollowUpDto> dto = getLimitedRowsBatchAndDate(list, date, startIndex, endIndex);
-			Collections.reverse(dto);
-			FollowUpDataDto followUpDataDto = new FollowUpDataDto(dto, list.size());
-			log.info("Getting details: {}", followUpDataDto);
-			return ResponseEntity.ok(followUpDataDto);
-
-		}
-		log.info("Details not found");
-		return null;
-
 	}
 
 	@Override
@@ -873,19 +547,6 @@ public class FollowUpServiceImpl implements FollowUpService {
 			log.error("An IOException occurred: " + e.getMessage(), e);
 			return followUpDataDto;
 		}
-	}
-
-	public List<FollowUpDto> getLimitedRows(List<List<Object>> values, int startingIndex, int maxRows) {
-		List<FollowUpDto> dto = new ArrayList<>();
-		log.info("Get Limited Rows service start. StartingIndex: {}, MaxRows: {}", startingIndex, maxRows);
-		if (values != null) {
-			int endIndex = Math.min(startingIndex + maxRows, values.size());
-
-			dto = values.subList(startingIndex, endIndex).stream().filter(row -> row != null && !row.isEmpty())
-					.map(wrapper::listToFollowUpDTO).collect(Collectors.toList());
-		}
-		log.debug("Returning values with pagination: {}", dto);
-		return dto;
 	}
 
 	private FollowUpDto assignValuesToFollowUp(TraineeDto dto, FollowUpDto followUp) {

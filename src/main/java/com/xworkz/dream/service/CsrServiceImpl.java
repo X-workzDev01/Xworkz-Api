@@ -16,6 +16,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import com.xworkz.dream.constants.ServiceConstant;
 import com.xworkz.dream.dto.CSR;
 import com.xworkz.dream.dto.CourseDto;
 import com.xworkz.dream.dto.CsrDto;
@@ -54,7 +55,7 @@ public class CsrServiceImpl implements CsrService {
 			wrapper.setValuesForCSRDto(dto);
 			List<Object> list = wrapper.extractDtoDetails(dto);
 			repo.writeData(spreadsheetId, list);
-			AddToCache(dto, request, list);
+			addToCache(dto, request, list);
 			boolean status = followUpService.addCsrToFollowUp(dto, spreadsheetId);
 
 			if (status) {
@@ -72,15 +73,15 @@ public class CsrServiceImpl implements CsrService {
 			}
 			return ResponseEntity.ok("Data written successfully, not added to Follow Up");
 		} catch (Exception e) {
-			log.error("Error processing request: " + e.getMessage(), e);
+			log.error("Error processing request: {}",e);
 			return ResponseEntity.ok("Failed to process the request");
 		}
-
+ 
 	}
 
-	private void AddToCache(TraineeDto dto, HttpServletRequest request, List<Object> list)
-			throws IllegalAccessException, IOException {
-		cacheService.updateCache("sheetsData", spreadsheetId, list);
+	public void addToCache(TraineeDto dto, HttpServletRequest request, List<Object> list)
+			 {
+		cacheService.updateCache("sheetsData", "listOfTraineeData", list);
 		if (dto.getBasicInfo().getEmail() != null) {
 			cacheService.addEmailToCache("emailData", spreadsheetId, dto.getBasicInfo().getEmail());
 		}
@@ -88,31 +89,33 @@ public class CsrServiceImpl implements CsrService {
 			cacheService.addContactNumberToCache("contactData", spreadsheetId, dto.getBasicInfo().getContactNumber());
 		}
 		log.info("Saving birth details: {}", dto);
-		service.saveBirthDayInfo(spreadsheetId, dto, request);
-		// adding alternative number to cache
+		try {
+			service.saveBirthDayInfo(spreadsheetId, dto, request);
+		} catch (IllegalAccessException|IOException  e) {
+	
+			log.error("Exception in addToCache: {}",e.getMessage());
+		}
 		cacheService.addContactNumberToCache("alternativeNumber", "listOfAlternativeContactNumbers",
 				dto.getCsrDto().getAlternateContactNumber());
-		// adding USN number to cache
 		cacheService.addEmailToCache("usnNumber", "listOfUsnNumbers", dto.getCsrDto().getUsnNumber());
-		// adding Unique Number to caches
 		cacheService.addEmailToCache("uniqueNumber", "listofUniqueNumbers", dto.getCsrDto().getUniqueId());
 	}
 
 	public boolean registerCsr(CsrDto csrDto, HttpServletRequest request) throws IOException {
 		TraineeDto traineeDto = new TraineeDto();
 		CSR csr = new CSR();
-		traineeDto.setCourseInfo(new CourseDto("NA"));
-		traineeDto.setOthersDto(new OthersDto("NA"));
+		traineeDto.setCourseInfo(new CourseDto(ServiceConstant.NA.toString()));
+		traineeDto.setOthersDto(new OthersDto(ServiceConstant.NA.toString()));
 		traineeDto.setBasicInfo(csrDto.getBasicInfo());
 		traineeDto.setEducationInfo(csrDto.getEducationInfo());
 		traineeDto.getCourseInfo().setOfferedAs(csrDto.getOfferedAs());
 		String uniqueId = generateUniqueID();
 		log.info("set {} if offeredAs a CSR",
-				traineeDto.getCourseInfo().getOfferedAs().equalsIgnoreCase("csr") ? "1" : "0");
-		csr.setCsrFlag(traineeDto.getCourseInfo().getOfferedAs().equalsIgnoreCase("csr") ? "1" : "0");
-		csr.setActiveFlag("Active");
+				traineeDto.getCourseInfo().getOfferedAs().equalsIgnoreCase(ServiceConstant.CSR.toString()) ? "1" : "0");
+		csr.setCsrFlag(traineeDto.getCourseInfo().getOfferedAs().equalsIgnoreCase(ServiceConstant.CSR.toString()) ? "1" : "0");
+		csr.setActiveFlag(ServiceConstant.ACTIVE.toString());
 		csr.setAlternateContactNumber(csrDto.getAlternateContactNumber());
-		csr.setUniqueId(traineeDto.getCourseInfo().getOfferedAs().equalsIgnoreCase("csr") ? uniqueId : "NA");
+		csr.setUniqueId(traineeDto.getCourseInfo().getOfferedAs().equalsIgnoreCase(ServiceConstant.CSR.toString()) ? uniqueId : ServiceConstant.NA.toString());
 		csr.setUsnNumber(csrDto.getUsnNumber());
 		traineeDto.setCsrDto(csr);
 		validateAndRegister(traineeDto, request);
@@ -147,7 +150,7 @@ public class CsrServiceImpl implements CsrService {
 			List<List<Object>> listOfUsn = repo.getUsnNumber(spreadsheetId);
 			return listOfUsn != null
 					&& listOfUsn.stream().filter(list -> list != null && !list.isEmpty() && list.get(0) != null)
-							.anyMatch(list -> list.get(0).toString().equals(usnNumber));
+							.anyMatch(list -> list.get(0).toString().equalsIgnoreCase(usnNumber));
 		}
 		return false;
 	}
@@ -163,9 +166,9 @@ public class CsrServiceImpl implements CsrService {
 			Integer uniqueID = minValue + random.nextInt(maxValue - minValue + 1);
 			if (generatedIDs.add(uniqueID)) {
 				if (uniqueID.toString().length() == 4) {
-					return "XBR" + year + "0" + uniqueID.toString();
+					return ServiceConstant.XBR.toString() + year + "0" + uniqueID.toString();
 				} else {
-					return "XBR" + year + uniqueID.toString();
+					return ServiceConstant.XBR.toString() + year + uniqueID.toString();
 				}
 			}
 			attempts++;
