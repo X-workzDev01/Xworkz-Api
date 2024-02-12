@@ -62,18 +62,7 @@ public class RegistrationServiceImpl implements RegistrationService {
 			throws MessagingException, TemplateException {
 		try {
 			log.info("Writing data for TraineeDto: {}", dto);
-			String uniqueId = csrService.generateUniqueID();
-			CSR csr = new CSR();
-			log.info("set {} if offeredAs a CSR",
-					dto.getCourseInfo().getOfferedAs().equalsIgnoreCase(ServiceConstant.CSR.toString()) ? "1" : "0");
-			csr.setCsrFlag(dto.getCourseInfo().getOfferedAs().equalsIgnoreCase("CSR Offered") ? "1" : "0");
-			csr.setActiveFlag(ServiceConstant.ACTIVE.toString());
-			csr.setAlternateContactNumber(0l);
-			csr.setUniqueId(dto.getCourseInfo().getOfferedAs().equalsIgnoreCase("CSR Offered") ? uniqueId
-					: ServiceConstant.NA.toString());
-			csr.setUsnNumber(ServiceConstant.NA.toString());
-			dto.setCsrDto(csr);
-
+			assignCsrDto(dto);
 			wrapper.setValuesForTraineeDto(dto);
 			List<Object> list = wrapper.extractDtoDetails(dto);
 			repo.writeData(spreadsheetId, list);
@@ -81,17 +70,14 @@ public class RegistrationServiceImpl implements RegistrationService {
 			if (dto.getBasicInfo().getEmail() != null) {
 				log.info("adding email to the cache", dto.getBasicInfo().getEmail());
 				cacheService.addEmailToCache("emailData", spreadsheetId, dto.getBasicInfo().getEmail());
-
 			}
 			if (dto.getBasicInfo().getContactNumber() != null) {
 				log.info("adding contact number to the cache", dto.getBasicInfo().getContactNumber());
 				cacheService.addContactNumberToCache("contactData", spreadsheetId,
 						dto.getBasicInfo().getContactNumber());
-
 			}
-
-			log.info("adding register data to the cache:", list);
-			cacheService.updateCache("sheetsData", spreadsheetId, list);
+			log.info("adding register data to the cache:{}", list);
+			cacheService.updateCache("sheetsData", "listOfTraineeData", list);
 			log.info("adding to follow up:", dto);
 			boolean status = followUpService.addToFollowUp(dto, spreadsheetId);
 
@@ -112,9 +98,23 @@ public class RegistrationServiceImpl implements RegistrationService {
 
 			return ResponseEntity.ok("Data written successfully, not added to Follow Up");
 		} catch (Exception e) {
-			log.error("Error processing request: " + e.getMessage(), e);
+			log.error("Error processing request:{} ", e.getMessage());
 			return ResponseEntity.ok("Failed to process the request");
 		}
+	}
+
+	private void assignCsrDto(TraineeDto dto) {
+		String uniqueId = csrService.generateUniqueID();
+		CSR csr = new CSR();
+		log.info("set {} if offeredAs a CSR",
+				dto.getCourseInfo().getOfferedAs().equalsIgnoreCase(ServiceConstant.CSR.toString()) ? "1" : "0");
+		csr.setCsrFlag(dto.getCourseInfo().getOfferedAs().equalsIgnoreCase("CSR Offered") ? "1" : "0");
+		csr.setActiveFlag(ServiceConstant.ACTIVE.toString());
+		csr.setAlternateContactNumber(0l);
+		csr.setUniqueId(dto.getCourseInfo().getOfferedAs().equalsIgnoreCase("CSR Offered") ? uniqueId
+				: ServiceConstant.NA.toString());
+		csr.setUsnNumber(ServiceConstant.NA.toString());
+		dto.setCsrDto(csr);
 	}
 
 	@Override
