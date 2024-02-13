@@ -71,7 +71,6 @@ public class WrapperUtil {
 		if (dto.getFeesHistoryDto().getEmail().equalsIgnoreCase(feesDto.getFeesHistoryDto().getEmail())) {
 			setToFeesHistory(feesDto.getFeesHistoryDto().getPaidAmount(), feesDto);
 			FeesDto updateDto = new FeesDto();
-			log.info("Fees update running");
 			updateDto = feesDto;
 			updateDto.setFeesHistoryDto(feesDto.getFeesHistoryDto());
 			updateDto.getAdmin().setCreatedBy(dto.getAdmin().getCreatedBy());
@@ -128,7 +127,6 @@ public class WrapperUtil {
 		feesHistoryDto.setPaidAmount(fees);
 		feesHistoryDto.setPaidTo(dto.getFeesHistoryDto().getPaidTo());
 		feesHistoryDto.setId(null);
-
 		feesRepository.updateDetilesToFollowUp("FeesFollowup!B2", extractDtoDetails(feesHistoryDto));
 	}
 

@@ -39,12 +39,14 @@ public class FollowUpUtil {
 					.filter(dto -> dto.getFlagSheet().equalsIgnoreCase(ServiceConstant.ACTIVE.toString()))
 					.forEach(followupDto -> {
 
-						TraineeDto traineeDto = getTraineeDtoByEmail(traineeData,
+						TraineeDto traineeDto = getTraineeDtoByEmail(traineeData, 
 								followupDto.getBasicInfo().getEmail());
-						followupDto.setCourseName(traineeDto.getCourseInfo().getCourse());
-						followupDto.setYear(traineeDto.getEducationInfo().getYearOfPassout());
-						followupDto.setCollegeName(traineeDto.getEducationInfo().getCollegeName());
-						filteredFollowUp.add(followupDto);
+						if (traineeDto != null) {
+							followupDto.setCourseName(traineeDto.getCourseInfo().getCourse());
+							followupDto.setYear(traineeDto.getEducationInfo().getYearOfPassout());
+							followupDto.setCollegeName(traineeDto.getEducationInfo().getCollegeName());
+							filteredFollowUp.add(followupDto);
+						}
 					});
 		}
 		return filteredFollowUp;

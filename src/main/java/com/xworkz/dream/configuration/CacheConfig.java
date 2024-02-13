@@ -30,9 +30,11 @@ public class CacheConfig {
 		// caches.add(new ConcurrentMapCache("getFollowUpStatusData"));
 		// caches.add(new ConcurrentMapCache("getFollowUpData"));
 		caches.add(new ConcurrentMapCache("batchDetails"));
-		caches.add(new ConcurrentMapCache("followUpDetails")); 
+		caches.add(new ConcurrentMapCache("followUpDetails"));
 		caches.add(new ConcurrentMapCache("followUpStatusDetails"));
-		caches.add(new ConcurrentMapCache("feesDetiles"));
+		caches.add(new ConcurrentMapCache("getFeesDetils"));
+		caches.add(new ConcurrentMapCache("getFolllowUpdata"));
+		caches.add(new ConcurrentMapCache("getFeesEmail"));
 		caches.add(new ConcurrentMapCache("clientInformation"));
 		caches.add(new ConcurrentMapCache("hrDetails"));
 		caches.add(new ConcurrentMapCache("hrFollowUpDetails"));
@@ -44,6 +46,5 @@ public class CacheConfig {
 		cacheManager.setCaches(caches);
 		return cacheManager;
 	}
-
 
 }
