@@ -91,7 +91,7 @@ public class BatchServiceImpl implements BatchService {
 		List<List<Object>> detailsByCourseName = repository.getCourseDetails(spreadsheetId);
 		batch = null;
 		List<List<Object>> filter = detailsByCourseName.stream()
-				.filter(dtos -> dtos.get(1).equals(courseName) && dtos.get(7).equals(Status.Active.toString())).collect(Collectors.toList());
+				.filter(dtos -> dtos.get(1).toString().equalsIgnoreCase(courseName) && dtos.get(7).toString().equalsIgnoreCase(Status.Active.toString())).collect(Collectors.toList());
 		filter.stream().forEach(item -> {
 			this.batch = wrapper.batchDetailsToDto(item);
 		});
