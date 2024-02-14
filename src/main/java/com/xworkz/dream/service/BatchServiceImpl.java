@@ -91,7 +91,11 @@ public class BatchServiceImpl implements BatchService {
 		List<List<Object>> detailsByCourseName = repository.getCourseDetails(spreadsheetId);
 		batch = null;
 		List<List<Object>> filter = detailsByCourseName.stream()
-				.filter(dtos -> dtos.get(1).equals(courseName) && ServiceConstant.ACTIVE.equals(dtos.get(7))).collect(Collectors.toList());
+
+				.filter(dtos -> dtos.get(1).toString().equalsIgnoreCase(courseName)
+						&& dtos.get(7).toString().equalsIgnoreCase(ServiceConstant.ACTIVE.toString()))
+				.collect(Collectors.toList());
+
 		filter.stream().forEach(item -> {
 			this.batch = wrapper.batchDetailsToDto(item);
 		});
@@ -157,17 +161,14 @@ public class BatchServiceImpl implements BatchService {
 
 		List<List<Object>> courseDetails = repository.getCourseDetails(sheetId);
 
-	    courseDetails.stream()
-	            .map(wrapper::batchDetailsToDto)
-	            .filter(dto -> dto.getCourseName().equalsIgnoreCase(courseName))
-	            .findFirst()
-	            .ifPresent(dto -> {
-	                try {
-	                    batchWrapper.updateBatchValueSet(details, dto);
-	                } catch (Exception e) {
-	                    log.error(e.getMessage());
-	                }
-	            });
+		courseDetails.stream().map(wrapper::batchDetailsToDto)
+				.filter(dto -> dto.getCourseName().equalsIgnoreCase(courseName)).findFirst().ifPresent(dto -> {
+					try {
+						batchWrapper.updateBatchValueSet(details, dto);
+					} catch (Exception e) {
+						log.error(e.getMessage());
+					}
+				});
 	}
 
 	@Override

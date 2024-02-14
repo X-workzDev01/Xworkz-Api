@@ -36,6 +36,9 @@ public class FollowUpDto {
 	private AuditDto adminDto;
 	private String flag;
 	private String flagSheet;
+	private String year;
+	private String collegeName;
+	
 
 
 }

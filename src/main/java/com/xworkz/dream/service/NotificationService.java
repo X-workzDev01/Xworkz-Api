@@ -7,6 +7,6 @@ import com.xworkz.dream.dto.SheetNotificationDto;
 import com.xworkz.dream.dto.utils.Team;
 
 public interface NotificationService {
-	public SheetNotificationDto notification(List<Team> teamList, String email) throws IOException;
+	 SheetNotificationDto notification(List<Team> teamList, String email) throws IOException;
 
 }
