@@ -89,16 +89,11 @@ public class BatchServiceImpl implements BatchService {
 	@Override
 	public BatchDetailsDto getBatchDetailsByCourseName(String spreadsheetId, String courseName) throws IOException {
 		List<List<Object>> detailsByCourseName = repository.getCourseDetails(spreadsheetId);
-		batch = null;
-		List<List<Object>> filter = detailsByCourseName.stream()
+		BatchDetailsDto batch = detailsByCourseName.stream().map(wrapper::batchDetailsToDto)
+				.filter(dto -> dto.getCourseName().equalsIgnoreCase(courseName)
+						&& dto.getBatchStatus().equalsIgnoreCase(ServiceConstant.ACTIVE.toString()))
+				.findFirst().orElse(null);
 
-				.filter(dtos -> dtos.get(1).toString().equalsIgnoreCase(courseName)
-						&& dtos.get(7).toString().equalsIgnoreCase(ServiceConstant.ACTIVE.toString()))
-				.collect(Collectors.toList());
-
-		filter.stream().forEach(item -> {
-			this.batch = wrapper.batchDetailsToDto(item);
-		});
 		if (batch != null) {
 			return batch;
 
