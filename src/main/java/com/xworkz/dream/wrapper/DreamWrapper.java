@@ -814,7 +814,7 @@ public class DreamWrapper {
 
 		}
 		AuditDto admin = new AuditDto();
-		admin.setCreatedBy(ServiceConstant.Swagger.toString());
+		admin.setCreatedBy(ServiceConstant.SWAGGER.toString());
 		admin.setCreatedOn(LocalDate.now().toString());
 		admin.setUpdatedBy(ServiceConstant.NA.toString());
 		admin.setUpdatedOn(ServiceConstant.NA.toString());

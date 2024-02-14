@@ -29,6 +29,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import com.google.api.services.sheets.v4.model.UpdateValuesResponse;
 import com.google.api.services.sheets.v4.model.ValueRange;
+import com.xworkz.dream.constants.ServiceConstant;
 import com.xworkz.dream.constants.Status;
 import com.xworkz.dream.dto.AbsentDaysDto;
 import com.xworkz.dream.dto.AbsenteesDto;
@@ -43,6 +44,7 @@ import com.xworkz.dream.dto.utils.WrapperUtil;
 import com.xworkz.dream.repository.AttendanceRepository;
 import com.xworkz.dream.repository.FollowUpRepository;
 import com.xworkz.dream.repository.RegisterRepository;
+import com.xworkz.dream.util.DreamUtil;
 import com.xworkz.dream.wrapper.BatchWrapper;
 import com.xworkz.dream.wrapper.DreamWrapper;
 
@@ -82,6 +84,8 @@ public class AttendanceServiceImpl implements AttendanceService {
 	private AttendanceRepository attendanceRepository;
 	@Autowired
 	private RegisterRepository registerRepository;
+	@Autowired
+	private DreamUtil dreamUtil;
 
 	private static Logger log = LoggerFactory.getLogger(AttendanceServiceImpl.class);
 
@@ -155,7 +159,8 @@ public class AttendanceServiceImpl implements AttendanceService {
 				Boolean checkAbsentDate = this.checkAbsentDate(attendanceDto);
 				if (checkAbsentDate == false) {
 					for (AbsenteesDto dto : absentDtoList) {
-						updateAttendanceDetails(attendanceDto, dto);
+						updateAttendanceDetails(attendanceDto, dto,batch);
+					
 					}
 
 				} else {
@@ -171,9 +176,10 @@ public class AttendanceServiceImpl implements AttendanceService {
 
 	}
 
-	private void updateAttendanceDetails(AttendanceDto attendanceDto, AbsenteesDto dto)
+	private void updateAttendanceDetails(AttendanceDto attendanceDto, AbsenteesDto dto,String batch)
 			throws IOException, IllegalAccessException {
 		if (attendanceDto.getId() != null && dto.getId().equals(attendanceDto.getId())) {
+			
 			int rowIndex = findByID(sheetId, dto.getId());
 			String range = attandanceInfoSheetName + attendanceStartRange + rowIndex + ":" + attendanceEndRange
 					+ rowIndex;
@@ -194,6 +200,7 @@ public class AttendanceServiceImpl implements AttendanceService {
 					attendanceDto);
 			if (!update.isEmpty()) {
 				attendanceRepository.getAttendanceData(sheetId, attendanceInfoIDRange);
+				sendAbsentMail(dto.getId(),batch,dto.getReason());
 				log.info("Attendance updated successfully : {} ",update);
 			} else {
 				log.debug("Attendance Not Updated : {} ",update);
@@ -263,7 +270,7 @@ public class AttendanceServiceImpl implements AttendanceService {
 	public List<AttendanceTrainee> getTrainee(String batch) {
 		List<AttendanceTrainee> traineeInfoList = new ArrayList<>();
 		List<List<Object>> list = attendanceRepository.getAttendanceData(sheetId, attendanceInfoIDRange);
-		List<List<Object>> traineeDetails = this.getAttendanceDetils(batch);
+		List<List<Object>> traineeDetails = this.getTraineeDetails(batch);
 		List<TraineeDto> traineData = traineeDetails.stream().map(wrapper::listToDto).collect(Collectors.toList());
 		List<AttendanceDto> collect = list.stream().filter(items -> items.get(3).equals(batch))
 				.map(wrapper::attendanceListToDto).collect(Collectors.toList());
@@ -361,7 +368,7 @@ public class AttendanceServiceImpl implements AttendanceService {
 		return false;
 	}
 
-	private List<List<Object>> getAttendanceDetils(String courseName) {
+	private List<List<Object>> getTraineeDetails(String courseName) {
 		List<List<Object>> followUpDetails;
 		List<List<Object>> readData;
 		try {
@@ -456,7 +463,7 @@ public class AttendanceServiceImpl implements AttendanceService {
 						list -> list != null && !list.isEmpty() && list.size() > 10 ? list.get(10).toString() : "",
 						Comparator.reverseOrder())).collect(Collectors.toList());
 				List<List<Object>> collect;
-				if (!courseName.equals("null")) {
+				if (!courseName.equalsIgnoreCase(ServiceConstant.NULL.toString())) {
 					collect = sortedData.stream()
 							.filter(items -> filterFollowUpDetails.stream()
 									.anyMatch(dto -> items.get(1).equals(dto.getId().toString()))
@@ -468,7 +475,6 @@ public class AttendanceServiceImpl implements AttendanceService {
 									.anyMatch(dto -> items.get(1).equals(dto.getId().toString())))
 							.collect(Collectors.toList());
 				}
-
 				List<AttendanceDto> limitedRows = this.getLimitedRows(collect, startingIndex, maxRows);
 				AttendanceDataDto dto = new AttendanceDataDto(limitedRows, collect.size());
 				log.info("Returning response for spreadsheetId: {}", sheetId);
@@ -508,7 +514,7 @@ public class AttendanceServiceImpl implements AttendanceService {
 			List<List<Object>> filteredLists = attendanceData.stream().filter(list -> list.stream().anyMatch(
 					value -> value != null && value.toString().toLowerCase().contains(searchValue.toLowerCase())))
 					.collect(Collectors.toList());
-			if (!courseName.equals("null")) {
+			if (!courseName.equalsIgnoreCase(ServiceConstant.NULL.toString())) {
 				List<AttendanceDto> flist = filteredLists.stream().map(items -> wrapper.attendanceListToDto(items))
 						.filter(dto -> dto.getCourse().equalsIgnoreCase(courseName)).collect(Collectors.toList());
 				log.info("Filtered {} Attendance objects", flist.size());
@@ -535,7 +541,7 @@ public class AttendanceServiceImpl implements AttendanceService {
 		List<AttendanceDto> suggestion = new ArrayList<>();
 		if (value != null) {
 
-			if (!courseName.equalsIgnoreCase("null")) {
+			if (!courseName.equalsIgnoreCase(ServiceConstant.NULL.toString())) {
 				List<List<Object>> dataList = attendanceRepository
 						.getNamesAndCourseName(sheetId, attandenceNameAndCourseRange, value).stream()
 						.filter(list -> list.get(3) != null && list.get(3).toString().equalsIgnoreCase(courseName))
@@ -575,6 +581,16 @@ public class AttendanceServiceImpl implements AttendanceService {
 	private List<TraineeDto> filterTraineDetails(String courseName, List<List<Object>> traineDetails) {
 		return traineDetails.stream().filter(row -> courseName.equals(row.get(9))).map(wrapper::listToDto)
 				.collect(Collectors.toList());
+	}
+	
+	
+	private void sendAbsentMail(Integer id,String courseName,String reason) {
+		System.err.println("id : "+id + " coursename : "+courseName );
+		List<List<Object>> traineeDetails = this.getTraineeDetails(courseName);
+		List<TraineeDto> collect = traineeDetails.stream().map(wrapper::listToDto).collect(Collectors.toList());
+		collect.stream().filter(dto->dto.getId().equals(id)).forEach(dto->{
+		dreamUtil.sendAbsentMail(dto.getBasicInfo().getEmail(), dto.getBasicInfo().getTraineeName(),reason);
+		});
 	}
 
 }

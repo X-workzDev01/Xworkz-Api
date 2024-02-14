@@ -2,6 +2,7 @@ package com.xworkz.dream.util;
 
 import java.io.IOException;
 import java.security.SecureRandom;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Base64;
 import java.util.List;
@@ -195,6 +196,15 @@ public class UtilProd implements DreamUtil {
 		}
 		sendBirthadyEmailChimp(traineeEmail, subject, name);
 	}
+	
+	@Override
+	public Boolean sendAbsentMail(String email, String name,String reason) {
+		if(email !=null && name !=null && reason !=null) {
+			this.sendAbsentEmailChimp(email, name, reason);
+			return true;
+		}
+		return false;
+	}
 
 	// ================================================================================================
 	// this is mail chimp if use below code send mail through contact@xworkz.in
@@ -335,6 +345,27 @@ public class UtilProd implements DreamUtil {
 		};
 		chimpMailService.validateAndSendBirthdayMail(messagePreparator);
 	}
+	
+	private void sendAbsentEmailChimp(String email, String name, String reason) {
+		Context context = new Context();
+
+		context.setVariable("name", name);
+		context.setVariable("date", LocalDate.now());
+		context.setVariable("reason", reason);
+		String content = templateEngine.process("Absence", context);
+
+		MimeMessagePreparator messagePreparator = mimeMessage -> {
+
+			MimeMessageHelper messageHelper = new MimeMessageHelper(mimeMessage);
+			messageHelper.setFrom(helper.decrypt(chimpUserName));
+			messageHelper.addCc("hr@x-workz.in");
+			messageHelper.setTo(email);
+
+			messageHelper.setSubject("Notice of Absence");
+			messageHelper.setText(content, true);
+		};
+		chimpMailService.validateAndSendBirthdayMail(messagePreparator);
+	}
 
 	@Override
 	public boolean csrEmailSent(TraineeDto dto) {
@@ -377,4 +408,5 @@ public class UtilProd implements DreamUtil {
 		return false;
 	}
 
+	
 }

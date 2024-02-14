@@ -23,7 +23,6 @@ public class ChimpmailServiceImpl implements ChimpMailService {
 	private static final Logger log = LoggerFactory.getLogger(ChimpmailServiceImpl.class);
 
 	@Override
-	@Async
 	public boolean validateAndSendMailByMailIdDev(MimeMessagePreparator messagePreparator) {
 		log.info("invoked validateAndSendMailByMailId of SpringMailServiceImpl...");
  
@@ -55,7 +54,6 @@ public class ChimpmailServiceImpl implements ChimpMailService {
 	}
 
 	@Override
-	@Async
 	public boolean validateAndSendMailByMailId(MimeMessagePreparator messagePreparator) {
 		log.info("invoked validateAndSendMailByMailId of SpringMailServiceImpl...");
 
@@ -72,7 +70,6 @@ public class ChimpmailServiceImpl implements ChimpMailService {
 	}
 
 	@Override
-	@Async
 	public void validateAndSendBirthdayMail(MimeMessagePreparator messagePreparator) {
 		log.info("invoked validateAndSendMailByMailId of SpringMailServiceImpl...");
 
