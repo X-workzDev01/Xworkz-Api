@@ -196,18 +196,16 @@ public class UtilProd implements DreamUtil {
 		}
 		sendBirthadyEmailChimp(traineeEmail, subject, name);
 	}
-	
+
 	@Override
-	public Boolean sendAbsentMail(String email, String name,String reason) {
-		if(email !=null && name !=null && reason !=null) {
+	public Boolean sendAbsentMail(String email, String name, String reason) {
+		if (email != null && name != null && reason != null) {
 			this.sendAbsentEmailChimp(email, name, reason);
 			return true;
 		}
 		return false;
 	}
 
-	// ================================================================================================
-	// this is mail chimp if use below code send mail through contact@xworkz.in
 	private boolean otpMailService(String email, int otp, String subject) {
 		Context context = new Context();
 
@@ -345,7 +343,7 @@ public class UtilProd implements DreamUtil {
 		};
 		chimpMailService.validateAndSendBirthdayMail(messagePreparator);
 	}
-	
+
 	private void sendAbsentEmailChimp(String email, String name, String reason) {
 		Context context = new Context();
 
@@ -408,5 +406,4 @@ public class UtilProd implements DreamUtil {
 		return false;
 	}
 
-	
 }

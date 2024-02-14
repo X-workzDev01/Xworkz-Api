@@ -179,8 +179,6 @@ public class UtilDev implements DreamUtil {
 		sendBirthadyEmailChimp(traineeEmail, subject, name);
 	}
 
-	// ================================================================================================
-	// this is mail chimp if use below code send mail through contact@xworkz.in
 	private boolean otpMailService(String email, int otp, String subject) {
 		Context context = new Context();
 
@@ -341,7 +339,6 @@ public class UtilDev implements DreamUtil {
 			messageHelper.setSubject("Absent Mail");
 			messageHelper.setText(content, true);
 		};
-		System.err.println("messagePreparator : " + messagePreparator);
 		chimpMailService.validateAndSendMail(messagePreparator);
 	}
 
