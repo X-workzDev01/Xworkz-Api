@@ -106,7 +106,7 @@ public class RegisterRepositoryImpl implements RegisterRepository {
 	}
 
 	@Override
-	@Cacheable(value = "sheetsData", key = "#spreadsheetId", unless = "#result == null")
+	@Cacheable(value = "sheetsData", key = "'listOfTraineeData'", unless = "#result == null")
 	public List<List<Object>> readData(String spreadsheetId) throws IOException {
 		log.info("Reading Trainee data from sheet for spreadsheetId: {}", spreadsheetId);
 		ValueRange response = sheetsService.spreadsheets().values().get(spreadsheetId,range).execute();

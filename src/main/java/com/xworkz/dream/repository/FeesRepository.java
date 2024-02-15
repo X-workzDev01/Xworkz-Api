@@ -16,4 +16,5 @@ public interface FeesRepository {
 
 	 boolean updateDetilesToFollowUp(String getFeesDetilesfollowupRange, List<Object> list) throws IOException;
 
+
 }

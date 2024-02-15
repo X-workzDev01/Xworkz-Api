@@ -33,5 +33,7 @@ public interface DreamUtil {
 	public boolean csrEmailSent(TraineeDto dto);
 
 	public boolean csrSmsSent(String name,String contactNo);
+	
+	Boolean sendAbsentMail(String email,String name,String reason);
 
 }
