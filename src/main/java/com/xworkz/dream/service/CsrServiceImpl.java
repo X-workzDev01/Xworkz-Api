@@ -55,7 +55,7 @@ public class CsrServiceImpl implements CsrService {
 			wrapper.setValuesForCSRDto(dto);
 			List<Object> list = wrapper.extractDtoDetails(dto);
 			repo.writeData(spreadsheetId, list);
-			AddToCache(dto, request, list);
+			addToCache(dto, request, list);
 			boolean status = followUpService.addCsrToFollowUp(dto, spreadsheetId);
 
 			if (status) {
@@ -79,9 +79,9 @@ public class CsrServiceImpl implements CsrService {
  
 	}
 
-	private void AddToCache(TraineeDto dto, HttpServletRequest request, List<Object> list)
-			throws IllegalAccessException, IOException {
-		cacheService.updateCache("sheetsData", spreadsheetId, list);
+	public void addToCache(TraineeDto dto, HttpServletRequest request, List<Object> list)
+			 {
+		cacheService.updateCache("sheetsData", "listOfTraineeData", list);
 		if (dto.getBasicInfo().getEmail() != null) {
 			cacheService.addEmailToCache("emailData", spreadsheetId, dto.getBasicInfo().getEmail());
 		}
@@ -89,13 +89,15 @@ public class CsrServiceImpl implements CsrService {
 			cacheService.addContactNumberToCache("contactData", spreadsheetId, dto.getBasicInfo().getContactNumber());
 		}
 		log.info("Saving birth details: {}", dto);
-		service.saveBirthDayInfo(spreadsheetId, dto, request);
-		// adding alternative number to cache
+		try {
+			service.saveBirthDayInfo(spreadsheetId, dto, request);
+		} catch (IllegalAccessException|IOException  e) {
+	
+			log.error("Exception in addToCache: {}",e.getMessage());
+		}
 		cacheService.addContactNumberToCache("alternativeNumber", "listOfAlternativeContactNumbers",
 				dto.getCsrDto().getAlternateContactNumber());
-		// adding USN number to cache
 		cacheService.addEmailToCache("usnNumber", "listOfUsnNumbers", dto.getCsrDto().getUsnNumber());
-		// adding Unique Number to caches
 		cacheService.addEmailToCache("uniqueNumber", "listofUniqueNumbers", dto.getCsrDto().getUniqueId());
 	}
 
