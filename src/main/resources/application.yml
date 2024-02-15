@@ -1,6 +1,6 @@
 spring:
    profiles:
-      active: dev 
+      active: local 
    freemarker:
     template-loader-path: classpath:/templates/
 sheets:
@@ -9,14 +9,14 @@ sheets:
   emailRange: C3:C
   contactNumberRange: D3:D
   dropdownRange: dropDowns!A2:I
-  loginInfoRange: loginInfo!A2:B
+  loginInfoRange: loginInfo!A2:B 
   followUpRange: followUp!A2:Q
   followUpStatus: followUpStatus!A2:L
   rowStartRange: B
   rowEndRange: AH  
   traineeSheetName: xworkzApi!
   followUpSheetName: followUp!
-  followUprowStartRange: B2
+  followUprowStartRange: B2 
   followUprowEndRange: Q
   followUpEmailRange: followUp!C2:C
   idRange: xworkzApi!A3:A    
@@ -46,14 +46,17 @@ sheets:
   attandanceInfoSheetName: attendanceInfo!
   attandenceNameAndCourseRange : attendanceInfo! C2:D
   batchAttendanceInfoSheetName: batchAttendanceInfo!
-  batchAttendanceInfoRange: batchAttendanceInfo!A2:D
+  batchAttendanceInfoRange: batchAttendanceInfo!A2:D 
   batchAttendanceInfoStartRange: B
   batchAttendanceInfoEndRange: D
   feesRegister: FeesDetiles!B2:X
   getFeesDetiles: FeesDetiles!A2:X
   getFeesDetilesfollowupRange : FeesFollowup!A2:J
   feesEmailRange: FeesDetiles!C2:C
-  alternativeNumberRange: xworkzApi!AE3:AE
+  feesFollowUpUpdateRange: FeesFollowup!B2
+  feesUpdateStartRange: FeesDetiles!B
+  feesUpdateEndRange: :V
+  alternativeNumberRange: xworkzApi!AE3:AE 
   usnNumberRange: xworkzApi!AD3:AD
   uniqueNumberRange: xworkzApi!AF3:AF
   clientInformationRange: clientDetails!B2:O

@@ -11,14 +11,15 @@ import com.xworkz.dream.constants.SheetConstant;
 import com.xworkz.dream.dto.AuditDto;
 import com.xworkz.dream.dto.BatchDetailsDto;
 import com.xworkz.dream.dto.utils.FeesUtils;
+import com.xworkz.dream.feesDtos.EmailList;
 import com.xworkz.dream.feesDtos.FeesDto;
 import com.xworkz.dream.feesDtos.FeesHistoryDto;
 
-@Service 
+@Service
 public class FeesDetilesWrapperImpl implements FeesDetilesWrapper {
 	@Autowired
 	private FeesUtils feesUtiles;
-
+ 
 	public static boolean validateCell(SheetConstant sheetConstant) {
 		return StringUtils.hasLength(String.valueOf(sheetConstant.getIndex()));
 	}
@@ -105,17 +106,20 @@ public class FeesDetilesWrapperImpl implements FeesDetilesWrapper {
 		if (validateCell(SheetConstant.COLUMN_EMAIL)) {
 			BatchDetailsDto details = feesUtiles
 					.getBatchDetiles(row.get(SheetConstant.COLUMN_EMAIL.getIndex()).toString());
-			feesDto.setCourseName((String) details.getCourseName());
+			if (details != null) {
+				feesDto.setCourseName((String) details.getCourseName());
 
-			feesDto.setTotalAmount(details.getTotalAmount()
-					- Long.valueOf(row.get(SheetConstant.COLUMN_FEES_CONCESSION.getIndex()).toString())
-							* details.getTotalAmount() / 100
-					+ Long.parseLong(row.get(SheetConstant.LATE_FEES.getIndex()).toString()));
-			feesDto.setBalance(feesDto.getTotalAmount()
-					- Long.valueOf((String) row.get(SheetConstant.COLUMN_PAID_AMOUNT.getIndex())));
+				feesDto.setTotalAmount(details.getTotalAmount()
+						- Long.valueOf(row.get(SheetConstant.COLUMN_FEES_CONCESSION.getIndex()).toString())
+								* details.getTotalAmount() / 100
+						+ Long.parseLong(row.get(SheetConstant.LATE_FEES.getIndex()).toString()));
+				feesDto.setBalance(feesDto.getTotalAmount()
+						- Long.valueOf((String) row.get(SheetConstant.COLUMN_PAID_AMOUNT.getIndex())));
 
+			}
 		}
 		return feesDto;
+
 	}
 
 	public FeesHistoryDto getListToFeesHistoryDto(List<Object> row) {
@@ -155,6 +159,14 @@ public class FeesDetilesWrapperImpl implements FeesDetilesWrapper {
 		}
 
 		return feesHistoryDto;
+	}
+
+	public EmailList listToEmail(List<Object> list) {
+		EmailList emailList = new EmailList(null);
+		if (validateCell(SheetConstant.COLUMN_EMAIL)) {
+			emailList.setEmail((String) list.get(0));
+		}
+		return emailList;
 	}
 
 }

@@ -72,7 +72,7 @@ public class RegisterRepositoryImpl implements RegisterRepository {
 		sheetsService = new Sheets.Builder(GoogleNetHttpTransport.newTrustedTransport(), JSON_FACTORY,
 				requestInitializer).setApplicationName(applicationName).build();
 	}
-
+ 
 	@Override
 	public boolean writeData(String spreadsheetId, List<Object> row) throws IOException {
 		List<List<Object>> values = new ArrayList<>();

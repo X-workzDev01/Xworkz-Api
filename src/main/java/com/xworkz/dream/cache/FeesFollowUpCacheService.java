@@ -4,8 +4,12 @@ import java.util.List;
 
 public interface FeesFollowUpCacheService {
 
-	public void addNewFeesDetilesIntoCache(String cacheName, String key, List<Object> data);
+	void addNewFeesDetilesIntoCache(String cacheName, String key, List<Object> data);
 
-	public void addEmailToCache(String cacheName, String key, String email);
+	void addFeesFollowUpIntoCache(String cacheName, String key, List<Object> followUpData);
 
+	void updateCacheIntoFeesDetils(String cacheName, String key, String email, List<Object> feesUpdateData)
+			throws IllegalAccessException;
+
+	void addEmailToCache(String cacheName, String key, String email);
 }

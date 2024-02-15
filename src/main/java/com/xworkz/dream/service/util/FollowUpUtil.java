@@ -150,7 +150,8 @@ public class FollowUpUtil {
 			} else if (status.equalsIgnoreCase(Status.Past_followup.toString().replace('_', ' '))) {
 				predicate = followUpData -> statusList.getStatusCheck().contains(followUpData.getCurrentStatus())
 						&& followUpData.getAdminDto().getUpdatedBy() != null
-						&& !followUpData.getAdminDto().getUpdatedBy().equalsIgnoreCase("NA")
+						&& !followUpData.getAdminDto().getUpdatedBy().equalsIgnoreCase(
+								"NA")
 						&& (LocalDate.parse(LocalDate.parse(followUpData.getCallback()).format(dateFormatter)))
 								.isBefore(LocalDate.now().minusDays(2))
 						&& followUpData.getCollegeName().equalsIgnoreCase(collegeName)

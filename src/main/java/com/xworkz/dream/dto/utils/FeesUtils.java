@@ -13,6 +13,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
+import com.xworkz.dream.constants.FeesConstant;
+import com.xworkz.dream.constants.ServiceConstant;
 import com.xworkz.dream.constants.Status;
 import com.xworkz.dream.dto.AuditDto;
 import com.xworkz.dream.dto.BatchDetailsDto;
@@ -29,7 +31,7 @@ public class FeesUtils {
 	@Value("${login.sheetId}")
 	private String spreadSheetId;
 	@Autowired
-	private RegistrationService registrationService;  
+	private RegistrationService registrationService;
 	@Autowired
 	private BatchService batchService;
 
@@ -37,17 +39,18 @@ public class FeesUtils {
 
 	public BatchDetailsDto getBatchDetiles(String email) throws IOException {
 		TraineeDto traineeDto = registrationService.getDetailsByEmail(spreadSheetId, email);
-		//log.info("Finding Trainee detiles by course ");
-		BatchDetailsDto details = batchService.getBatchDetailsByCourseName(spreadSheetId,
-				traineeDto.getCourseInfo().getCourse());
-		//log.info("Finding Batch detiles by course "); 
-		return details;
-	} 
+		if (traineeDto != null) {
+			BatchDetailsDto details = batchService.getBatchDetailsByCourseName(spreadSheetId,
+					traineeDto.getCourseInfo().getCourse());
+			return details;
+		}
+		return new BatchDetailsDto();
+	}
 
 	public String getTraineeDetiles(String email) throws IOException {
-		//log.info("Finding Trainee detiles  ");
 		TraineeDto traineeDto = registrationService.getDetailsByEmail(spreadSheetId, email);
-		if (traineeDto.getCourseInfo().getOfferedAs().equalsIgnoreCase("CSR Offered")) {
+		if (traineeDto.getCourseInfo().getOfferedAs()
+				.equalsIgnoreCase(FeesConstant.CSR_Offered.toString().replace('_', ' '))) {
 			return traineeDto.getBasicInfo().getEmail();
 		}
 		return null;
@@ -147,24 +150,24 @@ public class FeesUtils {
 			if (uiDto.getEmail() != null) {
 				log.info("set fees detiles by batch");
 				feesDtos.getFeesHistoryDto().setEmail(uiDto.getEmail());
-				feesDtos.getFeesHistoryDto().setTransectionId("NA");
+				feesDtos.getFeesHistoryDto().setTransectionId(FeesConstant.NA.toString());
 				feesDtos.setName(uiDto.getName());
 				feesDtos.getAdmin().setCreatedBy(uiDto.getAdminDto().getCreatedBy());
 				feesDtos.getAdmin().setCreatedOn(uiDto.getAdminDto().getCreatedOn());
-				feesDtos.getAdmin().setUpdatedBy("NA");
-				feesDtos.getAdmin().setUpdatedOn("NA");
-				feesDtos.setFeesStatus("FREE");
+				feesDtos.getAdmin().setUpdatedBy(FeesConstant.NA.toString());
+				feesDtos.getAdmin().setUpdatedOn(FeesConstant.NA.toString());
+				feesDtos.setFeesStatus(FeesConstant.FREE.toString());
 				feesDtos.setLateFees(0L);
 				feesDtos.setFeeConcession(0);
-				feesDtos.getFeesHistoryDto().setFeesfollowupDate("NA");
+				feesDtos.getFeesHistoryDto().setFeesfollowupDate(FeesConstant.NA.toString());
 				feesDtos.getFeesHistoryDto().setPaidAmount("0");
-				feesDtos.getFeesHistoryDto().setLastFeesPaidDate("NA");
-				feesDtos.setSoftFlag("Active");
-				feesDtos.getFeesHistoryDto().setPaymentMode("NA");
-				feesDtos.setMailSendStatus("No");
-				feesDtos.setComments("NA");
+				feesDtos.getFeesHistoryDto().setLastFeesPaidDate(FeesConstant.NA.toString());
+				feesDtos.setSoftFlag(ServiceConstant.ACTIVE.toString());
+				feesDtos.getFeesHistoryDto().setPaymentMode(FeesConstant.NA.toString());
+				feesDtos.setMailSendStatus(FeesConstant.NO.toString());
+				feesDtos.setComments(FeesConstant.NA.toString());
 				feesDtos.setReminderDate(LocalDate.parse(details.getStartDate()).plusDays(28).toString());
-				feesDtos.getFeesHistoryDto().setPaidTo("NA");
+				feesDtos.getFeesHistoryDto().setPaidTo(FeesConstant.NA.toString());
 				feesDtos.getFeesHistoryDto()
 						.setFollowupCallbackDate(LocalDate.parse(details.getStartDate()).plusDays(1).toString());
 			}
