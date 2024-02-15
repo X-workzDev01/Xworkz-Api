@@ -328,18 +328,17 @@ public class FollowUpServiceImpl implements FollowUpService {
 		List<List<Object>> data;
 		try {
 			data = repo.getFollowUpDetails(spreadsheetId);
-		FollowUpDto followUp = data.stream().filter(list -> list.get(2).toString().equalsIgnoreCase(email)).findFirst()
-				.map(wrapper::listToFollowUpDTO).orElse(null);
+			FollowUpDto followUp = data.stream().filter(list -> list.get(2).toString().equalsIgnoreCase(email))
+					.findFirst().map(wrapper::listToFollowUpDTO).orElse(null);
 
-		if (followUp != null) {
-			log.info("Follow-up details found for email: {}", email);
-			return ResponseEntity.ok(followUp);
-		} else {
-			log.info("Follow-up details not found for email: {}", email);
-			return ResponseEntity.ok(followUp);
-		}
-		} 
-		catch (IOException e) {
+			if (followUp != null) {
+				log.info("Follow-up details found for email: {}", email);
+				return ResponseEntity.ok(followUp);
+			} else {
+				log.info("Follow-up details not found for email: {}", email);
+				return ResponseEntity.ok(followUp);
+			}
+		} catch (IOException e) {
 			log.error("error fetching data from repo {} ", e);
 			return null;
 		}
@@ -348,8 +347,10 @@ public class FollowUpServiceImpl implements FollowUpService {
 	@Override
 	public FollowUpDataDto getFollowUpDetails(String spreadsheetId, int startingIndex, int maxRows, String status,
 			String courseName, String date, String collegeName) {
-		log.info("Get Follow-up Details service start. SpreadsheetId: {}, StartingIndex: {}, MaxRows: {}, Status: {}, "
-				+ "CourseName: {}, Date: {}", spreadsheetId, startingIndex, maxRows, status, courseName, date);
+		log.info(
+				"Get Follow-up Details service start. SpreadsheetId: {}, StartingIndex: {}, MaxRows: {}, Status: {}, "
+						+ "CourseName: {}, Date: {} ,CollegeName : {}  ",
+				spreadsheetId, startingIndex, maxRows, status, courseName, date, collegeName);
 		DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 		try {
 			List<List<Object>> followUpList = repo.getFollowUpDetails(spreadsheetId);
@@ -363,6 +364,7 @@ public class FollowUpServiceImpl implements FollowUpService {
 						.collect(Collectors.toList());
 				List<FollowUpDto> limitedRows = dto.stream().skip(startingIndex).limit(maxRows)
 						.collect(Collectors.toList());
+
 				FollowUpDataDto followUpDataDto = new FollowUpDataDto(limitedRows, dto.size());
 				return followUpDataDto;
 			} catch (Exception e) {
@@ -391,6 +393,10 @@ public class FollowUpServiceImpl implements FollowUpService {
 				dateFormatter, statusList, predicate);
 		predicate = followUpUtil.byStatusAndDateAndCollegeName(status, courseName, date, collegeName, dateFormatter,
 				statusList, predicate);
+
+		predicate = followUpUtil.byStatusAndCourseAndDate(status, courseName, date, collegeName, dateFormatter,
+				statusList, predicate);
+
 		return predicate;
 	}
 

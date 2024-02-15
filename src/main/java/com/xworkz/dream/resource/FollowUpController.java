@@ -51,16 +51,14 @@ public class FollowUpController {
 
 	@ApiOperation(value = "To get follow up details by pagination")
 	@GetMapping("/followUp")
-	public FollowUpDataDto getFollowUpData(@RequestHeader String spreadsheetId,
-			@RequestParam int startingIndex, @RequestParam int maxRows, @RequestParam String status,
-			@RequestParam String courseName, @RequestParam String date, String collegeName, String year)
-			throws IOException {
+	public FollowUpDataDto getFollowUpData(@RequestHeader String spreadsheetId, @RequestParam int startingIndex,
+			@RequestParam int maxRows, @RequestParam String status, @RequestParam String courseName,
+			@RequestParam String date, @RequestParam String collegeName) throws IOException {
 		log.info(
 				"Fetching follow-up details: spreadsheetId={}, startingIndex={}, maxRows={}, status={}, courseName={}, date={}",
 				spreadsheetId, startingIndex, maxRows, status, courseName, date);
 		;
-		return service.getFollowUpDetails(spreadsheetId, startingIndex, maxRows, status, courseName,
-				date, collegeName);
+		return service.getFollowUpDetails(spreadsheetId, startingIndex, maxRows, status, courseName, date, collegeName);
 	}
 
 	@ApiOperation(value = "To get status details by email ")
@@ -96,6 +94,7 @@ public class FollowUpController {
 		log.info("Updating follow-up data: spreadsheetId={}, email={}, dto={}", spreadsheetId, email, dto);
 		return service.updateFollowUp(spreadsheetId, email, dto);
 	}
+
 	@GetMapping("/getTraineeDetails")
 	@ApiOperation("To get the details of trainee based on the course in follow up")
 	public FollowUpDataDto traineeDetailsByCourseInFollowUp(@RequestHeader String spreadsheetId,

@@ -8,20 +8,25 @@ import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
+import com.xworkz.dream.cache.FeesFollowUpCacheService;
+import com.xworkz.dream.constants.CacheConstant;
+import com.xworkz.dream.constants.FeesConstant;
+import com.xworkz.dream.constants.ServiceConstant;
 import com.xworkz.dream.dto.BatchDetailsDto;
 import com.xworkz.dream.dto.utils.FeesUtils;
 import com.xworkz.dream.dto.utils.WrapperUtil;
 import com.xworkz.dream.feesDtos.FeesDto;
+import com.xworkz.dream.feesDtos.FeesFinalDto;
 import com.xworkz.dream.repository.FeesRepository;
 import com.xworkz.dream.wrapper.FeesDetilesWrapper;
 
 @Service
 public class FeesSchedulerImpl implements FeesScheduler {
-
+	@Autowired
+	private FeesFinalDto feesFinalDtoRanges;
 	@Autowired
 	private FeesUtils feesUtil;
 	@Autowired
@@ -30,8 +35,8 @@ public class FeesSchedulerImpl implements FeesScheduler {
 	private FeesDetilesWrapper feesWrapper;
 	@Autowired
 	private WrapperUtil util;
-	@Value("${sheets.getFeesDetiles}")
-	private String getFeesDetilesRange;
+	@Autowired
+	private FeesFollowUpCacheService feesCacheService;
 	private Logger log = LoggerFactory.getLogger(FeesSchedulerImpl.class);
 
 	@Override
@@ -40,8 +45,9 @@ public class FeesSchedulerImpl implements FeesScheduler {
 		log.info("Scheduler running After free Course");
 
 		try {
-			feesRepository.getAllFeesDetiles(getFeesDetilesRange).stream().filter(
-					items -> items != null && items.size() > 2 && items.get(2) != null && items.contains("Active"))
+			feesRepository.getAllFeesDetiles(feesFinalDtoRanges.getGetFeesDetilesRange()).stream()
+					.filter(items -> items != null && items.size() > 2 && items.get(2) != null
+							&& items.contains(ServiceConstant.ACTIVE.toString()))
 					.map(items -> {
 						try {
 							FeesDto dto = feesWrapper.listToFeesDTO(items);
@@ -66,7 +72,6 @@ public class FeesSchedulerImpl implements FeesScheduler {
 		return null;
 	}
 
-
 	private FeesDto afterAMonthChangeStatusAutometically(FeesDto dto, BatchDetailsDto detiles)
 			throws IOException, IllegalAccessException {
 		if (dto.getFeesStatus().equalsIgnoreCase("FREE") && LocalDate.parse(detiles.getStartDate()).plusDays(29)
@@ -80,27 +85,33 @@ public class FeesSchedulerImpl implements FeesScheduler {
 			list.remove(11);
 			list.remove(20);
 			list.remove(20);
-			list.add("Active");
+			list.add(ServiceConstant.ACTIVE.toString());
 			feesRepository.updateFeesDetiles(followupRanges, list);
+			feesCacheService.updateCacheIntoFeesDetils(CacheConstant.getFeesDetils.toString(),
+					CacheConstant.AllDetils.toString(), dto.getFeesHistoryDto().getEmail(), list);
 			return dto;
 		}
 		return dto;
 	}
 
-
 	private FeesDto updateCSRofferedAfterFreeTraining(FeesDto dto, BatchDetailsDto detiles)
 			throws IOException, IllegalAccessException {
-		if (dto.getFeesStatus().equalsIgnoreCase("FREE") && LocalDate.parse(detiles.getStartDate()).plusDays(59)
-				.isAfter(LocalDate.parse(detiles.getStartDate()))) {
-			dto.setFeesStatus("FEES_DUE");
+		if (dto.getFeesStatus().equalsIgnoreCase(FeesConstant.FREE.toString()) && LocalDate
+				.parse(detiles.getStartDate()).plusDays(59).isAfter(LocalDate.parse(detiles.getStartDate()))) {
+			dto.setFeesStatus(FeesConstant.FEES_DUE.toString());
 			int index = util.findIndex(dto.getFeesHistoryDto().getEmail());
-			String followupRanges = "FeesDetiles!B" + index + ":U" + index;
+			String followupRanges = feesFinalDtoRanges.getFeesUpdateStartRange() + index
+					+ feesFinalDtoRanges.getFeesUpdateEndRange() + index;
 			List<Object> list = util.extractDtoDetails(dto);
 			list.remove(2);
 			list.remove(11);
 			list.remove(11);
 			list.remove(20);
+			list.remove(20);
+			list.add(ServiceConstant.ACTIVE.toString());
 			feesRepository.updateFeesDetiles(followupRanges, list);
+			feesCacheService.updateCacheIntoFeesDetils(CacheConstant.getFeesDetils.toString(),
+					CacheConstant.AllDetils.toString(), dto.getFeesHistoryDto().getEmail(), list);
 			return dto;
 		}
 		return dto;
