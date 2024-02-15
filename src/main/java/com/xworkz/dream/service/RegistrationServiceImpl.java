@@ -8,7 +8,6 @@ import java.util.List;
 import java.util.ListIterator;
 import java.util.stream.Collectors;
 
-import javax.mail.MessagingException;
 import javax.servlet.http.HttpServletRequest;
 
 import org.slf4j.Logger;
@@ -29,8 +28,6 @@ import com.xworkz.dream.repository.RegisterRepository;
 import com.xworkz.dream.service.util.RegistrationUtil;
 import com.xworkz.dream.util.DreamUtil;
 import com.xworkz.dream.wrapper.DreamWrapper;
-
-import freemarker.template.TemplateException;
 
 @Service
 public class RegistrationServiceImpl implements RegistrationService {
@@ -60,9 +57,7 @@ public class RegistrationServiceImpl implements RegistrationService {
 	private static final Logger log = LoggerFactory.getLogger(DreamServiceImpl.class);
 
 	@Override
-	public ResponseEntity<String> writeData(String spreadsheetId, TraineeDto dto, HttpServletRequest request)
-
-			throws MessagingException, TemplateException {
+	public ResponseEntity<String> writeData(String spreadsheetId, TraineeDto dto, HttpServletRequest request) {
 		try {
 			log.info("Writing data for TraineeDto: {}", dto);
 			assignCsrDto(dto);
@@ -307,7 +302,7 @@ public class RegistrationServiceImpl implements RegistrationService {
 		return traineeDtos;
 	}
 
-	private int findRowIndexByEmail(String spreadsheetId, String email) throws IOException {
+	private int findRowIndexByEmail(String spreadsheetId, String email) {
 		try {
 			log.info("Finding row index by email in spreadsheetId: {} for email: {}", spreadsheetId, email);
 			List<List<Object>> data = repo.getEmails(spreadsheetId, email);
@@ -324,9 +319,9 @@ public class RegistrationServiceImpl implements RegistrationService {
 			log.info("Email {} not found in the spreadsheet.", email);
 			return -1;
 		} catch (IOException e) {
-			log.error("An error occurred while finding row index by email in spreadsheetId: {}", spreadsheetId, e);
-			throw e;
+			log.error("An error occurred while finding row index by email in spreadsheetId: {}", e.getMessage());
 		}
+		return 0;
 	}
 
 	@Override
@@ -378,7 +373,7 @@ public class RegistrationServiceImpl implements RegistrationService {
 	}
 
 	@Override
-	public TraineeDto getDetailsByEmail(String spreadsheetId, String email) throws IOException {
+	public TraineeDto getDetailsByEmail(String spreadsheetId, String email) {
 		List<List<Object>> data = repo.readData(spreadsheetId);
 		TraineeDto trainee = data.stream().filter(list -> list.get(2).toString().contentEquals(email)).findFirst()
 				.map(wrapper::listToDto).orElse(null);

@@ -2,7 +2,6 @@ package com.xworkz.dream.repository;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.ArrayList;
@@ -61,20 +60,23 @@ public class RegisterRepositoryImpl implements RegisterRepository {
 
 	@Override
 	@PostConstruct
-	public void setSheetsService() throws IOException, FileNotFoundException, GeneralSecurityException {
-
+	public void setSheetsService() {
 		Resource resource = resourceLoader.getResource(credentialsPath);
-		File file = resource.getFile();
-
-		GoogleCredentials credentials = GoogleCredentials.fromStream(new FileInputStream(file)).createScoped(SCOPES);
-
-		HttpRequestInitializer requestInitializer = new HttpCredentialsAdapter(credentials);
-		sheetsService = new Sheets.Builder(GoogleNetHttpTransport.newTrustedTransport(), JSON_FACTORY,
-				requestInitializer).setApplicationName(applicationName).build();
+		File file;
+		try {
+			file = resource.getFile();
+			GoogleCredentials credentials;
+			credentials = GoogleCredentials.fromStream(new FileInputStream(file)).createScoped(SCOPES);
+			HttpRequestInitializer requestInitializer = new HttpCredentialsAdapter(credentials);
+			sheetsService = new Sheets.Builder(GoogleNetHttpTransport.newTrustedTransport(), JSON_FACTORY,
+					requestInitializer).setApplicationName(applicationName).build();
+		} catch (GeneralSecurityException | IOException e) {
+			log.error("Exception in setSheetsService repository,{}", e.getMessage());
+		}
 	}
 
 	@Override
-	public boolean writeData(String spreadsheetId, List<Object> row) throws IOException {
+	public boolean writeData(String spreadsheetId, List<Object> row) {
 		List<List<Object>> values = new ArrayList<>();
 		// Add an empty string as a placeholder for the A column
 		List<Object> rowData = new ArrayList<>();
@@ -82,26 +84,39 @@ public class RegisterRepositoryImpl implements RegisterRepository {
 		rowData.addAll(row.subList(1, row.size())); // Start from the second element (B column)
 		values.add(rowData);
 		ValueRange body = new ValueRange().setValues(values);
-		sheetsService.spreadsheets().values().append(spreadsheetId, range, body).setValueInputOption("USER_ENTERED")
-				.execute();
+		try {
+			sheetsService.spreadsheets().values().append(spreadsheetId, range, body).setValueInputOption("USER_ENTERED")
+					.execute();
+		} catch (IOException e) {
+			log.error("Exception in write repository:{}", e.getMessage());
+		}
 		log.info("Data written successfully to spreadsheetId: {}", spreadsheetId);
 		return true;
 	}
-	
 
 	@Override
 	@Cacheable(value = "emailData", key = "#spreadsheetId", unless = "#result == null")
-	public List<List<Object>> getEmails(String spreadsheetId, String email) throws IOException {
+	public List<List<Object>> getEmails(String spreadsheetId, String email) {
 		log.info("Reading email data from sheet for spreadsheetId: {}", spreadsheetId);
-		ValueRange emailValue = sheetsService.spreadsheets().values().get(spreadsheetId, emailRange).execute();
+		ValueRange emailValue = null;
+		try {
+			emailValue = sheetsService.spreadsheets().values().get(spreadsheetId, emailRange).execute();
+		} catch (IOException e) {
+			log.error("Exception in getEmails,{}", e.getMessage());
+		}
 		return emailValue.getValues();
 	}
 
 	@Override
 	@Cacheable(value = "contactData", key = "#spreadsheetId", unless = "#result == null")
-	public List<List<Object>> getContactNumbers(String spreadsheetId) throws IOException {
+	public List<List<Object>> getContactNumbers(String spreadsheetId) {
 		log.info("Reading contact numbers from sheet for spreadsheetId: {}", spreadsheetId);
-		ValueRange response = sheetsService.spreadsheets().values().get(spreadsheetId, contactNumberRange).execute();
+		ValueRange response = null;
+		try {
+			response = sheetsService.spreadsheets().values().get(spreadsheetId, contactNumberRange).execute();
+		} catch (IOException e) {
+			log.error("Exception in getContactNumber repository,{}", e.getMessage());
+		}
 		return response.getValues();
 	}
 
@@ -111,55 +126,75 @@ public class RegisterRepositoryImpl implements RegisterRepository {
 		log.info("Reading Trainee data from sheet for spreadsheetId: {}", spreadsheetId);
 		ValueRange response = null;
 		try {
-			response = sheetsService.spreadsheets().values().get(spreadsheetId,range).execute();
+			response = sheetsService.spreadsheets().values().get(spreadsheetId, range).execute();
 		} catch (IOException e) {
-			log.error("Exception in readData method, {}",e.getMessage());		}
+			log.error("Exception in readData method, {}", e.getMessage());
+		}
 		List<List<Object>> data = response.getValues();
 		return data;
 	}
 
 	@Override
-	public UpdateValuesResponse update(String spreadsheetId, String range2, ValueRange valueRange) throws IOException {
+	public UpdateValuesResponse update(String spreadsheetId, String range2, ValueRange valueRange) {
 		log.info("Data updated successfully in spreadsheetId: {}", spreadsheetId);
-		UpdateValuesResponse response = sheetsService.spreadsheets().values().update(spreadsheetId, range2, valueRange)
-				.setValueInputOption("RAW").execute();
+		UpdateValuesResponse response = null;
+		try {
+			response = sheetsService.spreadsheets().values().update(spreadsheetId, range2, valueRange)
+					.setValueInputOption("RAW").execute();
+		} catch (IOException e) {
+			log.error("Exception in update method, {}", e.getMessage());
+		}
 		return response;
 	}
 
 	@Override
-	public List<List<Object>> getEmailsAndNames(String spreadsheetId, String value)  {
+	public List<List<Object>> getEmailsAndNames(String spreadsheetId, String value) {
 		log.info("Reading emails and names from sheet for spreadsheetId: {}", spreadsheetId);
 		ValueRange response = null;
 		try {
 			response = sheetsService.spreadsheets().values().get(spreadsheetId, emailAndNameRange).execute();
 		} catch (IOException e) {
-			log.error("Exception in getEmailsAndNames method,{}",e.getMessage());
+			log.error("Exception in getEmailsAndNames method,{}", e.getMessage());
 		}
 		return response.getValues();
 	}
 
 	@Override
 	@Cacheable(value = "alternativeNumber", key = "'listOfAlternativeContactNumbers'", unless = "#result == null")
-	public List<List<Object>> getAlternativeNumber(String spreadsheetId) throws IOException {
+	public List<List<Object>> getAlternativeNumber(String spreadsheetId) {
 		log.info("Reading Alternative contact number from sheet");
-		ValueRange response = sheetsService.spreadsheets().values().get(spreadsheetId, alternativeNumberRange)
-				.execute();
+		ValueRange response = null;
+		try {
+			response = sheetsService.spreadsheets().values().get(spreadsheetId, alternativeNumberRange).execute();
+		} catch (IOException e) {
+			log.error("Exception in getAlternativeNumber method, {}", e.getMessage());
+		}
 		return response.getValues();
 	}
 
 	@Override
 	@Cacheable(value = "usnNumber", key = "'listOfUsnNumbers'", unless = "#result == null")
-	public List<List<Object>> getUsnNumber(String spreadsheetId) throws IOException {
+	public List<List<Object>> getUsnNumber(String spreadsheetId) {
 		log.info("Reading Usn Number from sheet");
-		ValueRange response = sheetsService.spreadsheets().values().get(spreadsheetId, usnNumberRange).execute();
+		ValueRange response = null;
+		try {
+			response = sheetsService.spreadsheets().values().get(spreadsheetId, usnNumberRange).execute();
+		} catch (IOException e) {
+			log.error("Exception in getUsnNumber method, {}", e.getMessage());
+		}
 		return response.getValues();
 	}
 
 	@Override
-	@Cacheable(value="uniqueNumber",key="'listofUniqueNumbers'")
-	public List<List<Object>> getUniqueNumbers(String spreadsheetId) throws IOException {
+	@Cacheable(value = "uniqueNumber", key = "'listofUniqueNumbers'")
+	public List<List<Object>> getUniqueNumbers(String spreadsheetId) {
 		log.info("Reading Unique numbers from sheet");
-		ValueRange response = sheetsService.spreadsheets().values().get(spreadsheetId, uniqueNumberRange).execute();
+		ValueRange response = null;
+		try {
+			response = sheetsService.spreadsheets().values().get(spreadsheetId, uniqueNumberRange).execute();
+		} catch (IOException e) {
+			log.error("Exception in getUniqueNumbers method, {}", e.getMessage());
+		}
 		return response.getValues();
 
 	}

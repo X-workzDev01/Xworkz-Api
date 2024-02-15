@@ -1,9 +1,7 @@
 package com.xworkz.dream.resource;
 
-import java.io.IOException;
 import java.util.List;
 
-import javax.mail.MessagingException;
 import javax.servlet.http.HttpServletRequest;
 
 import org.slf4j.Logger;
@@ -25,7 +23,6 @@ import com.xworkz.dream.dto.SheetsDto;
 import com.xworkz.dream.dto.TraineeDto;
 import com.xworkz.dream.service.RegistrationService;
 
-import freemarker.template.TemplateException;
 import io.swagger.annotations.ApiOperation;
 
 @RestController
@@ -46,7 +43,7 @@ public class RegistrationController {
 	@ApiOperation(value = "To register the trainee details in the google sheets")
 	@PostMapping("/register")
 	public ResponseEntity<String> register(@RequestHeader String spreadsheetId, @RequestBody TraineeDto values,
-			HttpServletRequest request) throws IOException, MessagingException, TemplateException {
+			HttpServletRequest request) {
 		log.info("Received request to register trainee details: {}", values);
 
 		return service.writeData(spreadsheetId, values, request);
@@ -103,8 +100,7 @@ public class RegistrationController {
 
 	@ApiOperation(value = "To get Registration details by email")
 	@GetMapping("/readByEmail")
-	public ResponseEntity<?> getDataByEmail(@RequestHeader String spreadsheetId, @RequestParam String email)
-			throws IOException {
+	public ResponseEntity<?> getDataByEmail(@RequestHeader String spreadsheetId, @RequestParam String email){
 		log.info("Getting details by email - SpreadsheetId: {}, Email: {}", spreadsheetId, email);
 		return ResponseEntity.ok(service.getDetailsByEmail(spreadsheetId, email));
 
