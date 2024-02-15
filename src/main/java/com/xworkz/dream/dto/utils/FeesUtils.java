@@ -37,14 +37,21 @@ public class FeesUtils {
 
 	private Logger log = LoggerFactory.getLogger(FeesUtils.class);
 
-	public BatchDetailsDto getBatchDetiles(String email) throws IOException {
-		TraineeDto traineeDto = registrationService.getDetailsByEmail(spreadSheetId, email);
-		if (traineeDto != null) {
-			BatchDetailsDto details = batchService.getBatchDetailsByCourseName(spreadSheetId,
-					traineeDto.getCourseInfo().getCourse());
-			return details;
+	public BatchDetailsDto getBatchDetiles(String email) {
+		TraineeDto traineeDto;
+		try {
+			traineeDto = registrationService.getDetailsByEmail(spreadSheetId, email);
+
+			if (traineeDto != null) {
+				BatchDetailsDto details = batchService.getBatchDetailsByCourseName(spreadSheetId,
+						traineeDto.getCourseInfo().getCourse());
+				return details;
+			}
+		} catch (IOException e) {
+			log.error("Batch detils is empty {} ", e);
 		}
 		return new BatchDetailsDto();
+
 	}
 
 	public String getTraineeDetiles(String email) throws IOException {
@@ -137,7 +144,7 @@ public class FeesUtils {
 		return new SheetFeesDetiles(Collections.emptyList(), 0);
 	}
 
-	public FeesDto feesDtosetValues(FeesUiDto uidto) throws IOException {
+	public FeesDto feesDtosetValues(FeesUiDto uidto) {
 		FeesDto feesDto = new FeesDto();
 		BatchDetailsDto details = getBatchDetiles(uidto.getEmail());
 		return setFeesDetilesDto(uidto, feesDto, details);

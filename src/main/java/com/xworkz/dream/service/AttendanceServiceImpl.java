@@ -82,7 +82,6 @@ public class AttendanceServiceImpl implements AttendanceService {
 	private AttendanceRepository attendanceRepository;
 	@Autowired
 	private RegisterRepository registerRepository;
-	
 
 	private static Logger log = LoggerFactory.getLogger(AttendanceServiceImpl.class);
 
@@ -115,7 +114,7 @@ public class AttendanceServiceImpl implements AttendanceService {
 				}
 
 			}
-		} catch (IllegalAccessException e) {
+		} catch (Exception e) {
 			log.error("Error accessing traineeAlreadyAdded method: {}", e.getMessage());
 		}
 		return ResponseEntity.ok("Attendance detiles does not added ");
@@ -208,9 +207,9 @@ public class AttendanceServiceImpl implements AttendanceService {
 		LocalDate localDate = LocalDate.now();
 		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 		String newAbsentDate = localDate.format(formatter);
-		String updatedAbsentDates = !currentAbsentDates.equals(null) && currentAbsentDates.contains(Status.NA.toString())
-				? newAbsentDate
-				: currentAbsentDates + "," + newAbsentDate;
+		String updatedAbsentDates = !currentAbsentDates.equals(null)
+				&& currentAbsentDates.contains(Status.NA.toString()) ? newAbsentDate
+						: currentAbsentDates + "," + newAbsentDate;
 		attendanceDto.setAbsentDate(updatedAbsentDates);
 
 		String currentReason = attendanceDto.getReason();
@@ -459,7 +458,7 @@ public class AttendanceServiceImpl implements AttendanceService {
 				return ResponseEntity.ok(dto);
 			}
 
-		} catch (IOException e) {
+		} catch (Exception e) {
 			log.error("An error occurred while reading in spreadsheetId: {}", sheetId, e);
 		}
 		return null;

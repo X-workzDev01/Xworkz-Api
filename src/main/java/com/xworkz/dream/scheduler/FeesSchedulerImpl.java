@@ -1,6 +1,5 @@
 package com.xworkz.dream.scheduler;
 
-import java.io.IOException;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -43,76 +42,83 @@ public class FeesSchedulerImpl implements FeesScheduler {
 	@Scheduled(fixedRate = 12 * 60 * 60 * 1000)
 	public String afterFreeCourseCompletedChengeFeesStatus() {
 		log.info("Scheduler running After free Course");
+		feesRepository.getAllFeesDetiles(feesFinalDtoRanges.getGetFeesDetilesRange()).stream()
+				.filter(items -> items != null && items.size() > 2 && items.get(2) != null
+						&& items.contains(ServiceConstant.ACTIVE.toString()))
+				.map(items -> {
+					try {
+						FeesDto dto = feesWrapper.listToFeesDTO(items);
+						if (dto.getFeesHistoryDto().getEmail()
+								.equalsIgnoreCase(feesUtil.getTraineeDetiles(dto.getFeesHistoryDto().getEmail()))) {
+							BatchDetailsDto detiles = feesUtil.getBatchDetiles(dto.getFeesHistoryDto().getEmail());
+							updateCSRofferedAfterFreeTraining(dto, detiles);
+							return null;
+						} else {
+							BatchDetailsDto detiles = feesUtil.getBatchDetiles(dto.getFeesHistoryDto().getEmail());
+							afterAMonthChangeStatusAutometically(dto, detiles);
 
-		try {
-			feesRepository.getAllFeesDetiles(feesFinalDtoRanges.getGetFeesDetilesRange()).stream()
-					.filter(items -> items != null && items.size() > 2 && items.get(2) != null
-							&& items.contains(ServiceConstant.ACTIVE.toString()))
-					.map(items -> {
-						try {
-							FeesDto dto = feesWrapper.listToFeesDTO(items);
-							if (dto.getFeesHistoryDto().getEmail()
-									.equalsIgnoreCase(feesUtil.getTraineeDetiles(dto.getFeesHistoryDto().getEmail()))) {
-								BatchDetailsDto detiles = feesUtil.getBatchDetiles(dto.getFeesHistoryDto().getEmail());
-								updateCSRofferedAfterFreeTraining(dto, detiles);
-								return null;
-							} else {
-								BatchDetailsDto detiles = feesUtil.getBatchDetiles(dto.getFeesHistoryDto().getEmail());
-								afterAMonthChangeStatusAutometically(dto, detiles);
-
-								return null;
-							}
-						} catch (IOException | IllegalAccessException e) {
-							log.error("Fetching Detiles is not Found");
 							return null;
 						}
-					}).collect(Collectors.toList());
-		} catch (IOException e) {
-		}
+					} catch (Exception e) {
+						log.error("Fetching Detiles is not Found");
+						return null;
+					}
+				}).collect(Collectors.toList());
+
 		return null;
 	}
 
-	private FeesDto afterAMonthChangeStatusAutometically(FeesDto dto, BatchDetailsDto detiles)
-			throws IOException, IllegalAccessException {
+	private FeesDto afterAMonthChangeStatusAutometically(FeesDto dto, BatchDetailsDto detiles) {
 		if (dto.getFeesStatus().equalsIgnoreCase("FREE") && LocalDate.parse(detiles.getStartDate()).plusDays(29)
 				.isAfter(LocalDate.parse(detiles.getStartDate()))) {
 			dto.setFeesStatus("FEES_DUE");
-			int index = util.findIndex(dto.getFeesHistoryDto().getEmail());
-			String followupRanges = "FeesDetiles!B" + index + ":AB" + index;
-			List<Object> list = util.extractDtoDetails(dto);
-			list.remove(2);
-			list.remove(11);
-			list.remove(11);
-			list.remove(20);
-			list.remove(20);
-			list.add(ServiceConstant.ACTIVE.toString());
-			feesRepository.updateFeesDetiles(followupRanges, list);
-			feesCacheService.updateCacheIntoFeesDetils(CacheConstant.getFeesDetils.toString(),
-					CacheConstant.AllDetils.toString(), dto.getFeesHistoryDto().getEmail(), list);
-			return dto;
+			int index;
+			try {
+				index = util.findIndex(dto.getFeesHistoryDto().getEmail());
+
+				String followupRanges = "FeesDetiles!B" + index + ":AB" + index;
+				List<Object> list = util.extractDtoDetails(dto);
+				list.remove(2);
+				list.remove(11);
+				list.remove(11);
+				list.remove(20);
+				list.remove(20);
+				list.add(ServiceConstant.ACTIVE.toString());
+				feesRepository.updateFeesDetiles(followupRanges, list);
+				feesCacheService.updateCacheIntoFeesDetils(CacheConstant.getFeesDetils.toString(),
+						CacheConstant.allDetils.toString(), dto.getFeesHistoryDto().getEmail(), list);
+				return dto;
+			} catch (Exception e) {
+				log.error("Error Updatind data {} ", e);
+			}
 		}
 		return dto;
 	}
 
-	private FeesDto updateCSRofferedAfterFreeTraining(FeesDto dto, BatchDetailsDto detiles)
-			throws IOException, IllegalAccessException {
+	private FeesDto updateCSRofferedAfterFreeTraining(FeesDto dto, BatchDetailsDto detiles) {
 		if (dto.getFeesStatus().equalsIgnoreCase(FeesConstant.FREE.toString()) && LocalDate
 				.parse(detiles.getStartDate()).plusDays(59).isAfter(LocalDate.parse(detiles.getStartDate()))) {
 			dto.setFeesStatus(FeesConstant.FEES_DUE.toString());
-			int index = util.findIndex(dto.getFeesHistoryDto().getEmail());
-			String followupRanges = feesFinalDtoRanges.getFeesUpdateStartRange() + index
-					+ feesFinalDtoRanges.getFeesUpdateEndRange() + index;
-			List<Object> list = util.extractDtoDetails(dto);
-			list.remove(2);
-			list.remove(11);
-			list.remove(11);
-			list.remove(20);
-			list.remove(20);
-			list.add(ServiceConstant.ACTIVE.toString());
-			feesRepository.updateFeesDetiles(followupRanges, list);
-			feesCacheService.updateCacheIntoFeesDetils(CacheConstant.getFeesDetils.toString(),
-					CacheConstant.AllDetils.toString(), dto.getFeesHistoryDto().getEmail(), list);
-			return dto;
+			int index;
+			try {
+				index = util.findIndex(dto.getFeesHistoryDto().getEmail());
+
+				String followupRanges = feesFinalDtoRanges.getFeesUpdateStartRange() + index
+						+ feesFinalDtoRanges.getFeesUpdateEndRange() + index;
+				List<Object> list = util.extractDtoDetails(dto);
+				list.remove(2);
+				list.remove(11);
+				list.remove(11);
+				list.remove(20);
+				list.remove(20);
+				list.add(ServiceConstant.ACTIVE.toString());
+				feesRepository.updateFeesDetiles(followupRanges, list);
+				feesCacheService.updateCacheIntoFeesDetils(CacheConstant.getFeesDetils.toString(),
+						CacheConstant.allDetils.toString(), dto.getFeesHistoryDto().getEmail(), list);
+				return dto;
+			} catch (Exception e) {
+				log.error("Error Updating data to csr after free training {}  ", e);
+			}
 		}
 		return dto;
 	}

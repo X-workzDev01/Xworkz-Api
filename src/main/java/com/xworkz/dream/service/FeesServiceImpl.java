@@ -46,7 +46,7 @@ public class FeesServiceImpl implements FeesService {
 	private DreamWrapper dreamWrapper;
 
 	@Override
-	public String writeFeesDetiles(FeesUiDto dto, String feesEmailRange) throws IOException, IllegalAccessException {
+	public String writeFeesDetiles(FeesUiDto dto, String feesEmailRange) {
 		log.info("Running service writeFeesDetiles with input: {}", dto);
 		EmailList duplicateEntry = null;
 		List<List<Object>> emails = feesRepository.getEmailList(feesEmailRange);
@@ -54,11 +54,11 @@ public class FeesServiceImpl implements FeesService {
 			duplicateEntry = emails.stream().map(feesWrapper::listToEmail)
 					.filter(email -> email.getEmail().equalsIgnoreCase(dto.getEmail())).findFirst().orElse(null);
 			if (duplicateEntry == null) {
-				boolean write = feesRepository
-						.writeFeesDetiles(util.extractDtoDetails(feesUtils.feesDtosetValues(dto)));
+				boolean write;
+				write = feesRepository.writeFeesDetiles(util.extractDtoDetails(feesUtils.feesDtosetValues(dto)));
 				if (write == true) {
 					feesCacheService.addNewFeesDetilesIntoCache(CacheConstant.getFeesDetils.toString(),
-							CacheConstant.AllDetils.toString(),
+							CacheConstant.allDetils.toString(),
 							util.extractDtoDetails(feesUtils.feesDtosetValues(dto)));
 					feesCacheService.addEmailToCache(CacheConstant.getFeesEmail.toString(),
 							CacheConstant.email.toString(), dto.getEmail());
@@ -69,11 +69,14 @@ public class FeesServiceImpl implements FeesService {
 				log.error("Failed to save fees details: {}", dto);
 				return "Failed to save fees details";
 			}
+
 		} else {
-			boolean write = feesRepository.writeFeesDetiles(util.extractDtoDetails(feesUtils.feesDtosetValues(dto)));
+			boolean write;
+			write = feesRepository.writeFeesDetiles(util.extractDtoDetails(feesUtils.feesDtosetValues(dto)));
+
 			if (write == true) {
 				feesCacheService.addNewFeesDetilesIntoCache(CacheConstant.getFeesDetils.toString(),
-						CacheConstant.AllDetils.toString(), util.extractDtoDetails(feesUtils.feesDtosetValues(dto)));
+						CacheConstant.allDetils.toString(), util.extractDtoDetails(feesUtils.feesDtosetValues(dto)));
 				feesCacheService.addEmailToCache(CacheConstant.getFeesEmail.toString(), CacheConstant.email.toString(),
 						dto.getEmail());
 				log.info("Fees details saved successfully: {}", dto);
@@ -90,17 +93,12 @@ public class FeesServiceImpl implements FeesService {
 
 	@Override
 	public SheetFeesDetiles getAllFeesDetiles(String getFeesDetilesRange, String minIndex, String maxIndex, String date,
-			String courseName, String paymentMode) throws IOException {
+			String courseName, String paymentMode) {
 		log.info("Read data from the repository for feesDto details");
 		List<FeesDto> convertingListToDto = feesRepository.getAllFeesDetiles(getFeesDetilesRange).stream()
-				.filter(items -> items.toString().contains("Active")).map(items -> {
-					try {
-						return feesWrapper.listToFeesDTO(items);
-					} catch (IOException e) {
-						log.error("List converting error", e.getMessage(), e);
-						return new FeesDto();
-					}
-				}).collect(Collectors.toList());
+				.map(feesWrapper::listToFeesDTO)
+				.filter(dto -> dto.getSoftFlag().equalsIgnoreCase(ServiceConstant.ACTIVE.toString()))
+				.collect(Collectors.toList());
 		log.info("Return data after filter process for feesDto details");
 		return feesUtils.getDataByselectedItems(minIndex, maxIndex, date, courseName, paymentMode, convertingListToDto);
 
@@ -108,7 +106,7 @@ public class FeesServiceImpl implements FeesService {
 
 	@Override
 	public FeesWithHistoryDto getDetilesByEmail(String email, String getFeesDetilesRange,
-			String getFeesDetilesfollowupRange) throws IOException {
+			String getFeesDetilesfollowupRange) {
 		log.info("start getting detilsBy email");
 		List<FeesDto> filteredDtos = getFeesDetilesByemail(email, getFeesDetilesRange);
 
@@ -122,7 +120,7 @@ public class FeesServiceImpl implements FeesService {
 	}
 
 	@Override
-	public String updateFeesFollowUp(FeesDto feesDto, String getFeesDetilesRange) throws IOException {
+	public String updateFeesFollowUp(FeesDto feesDto, String getFeesDetilesRange) {
 		log.info("Entering the update in fees follow-up");
 		List<FeesDto> feesDtos = getFeesDetilesByemail(feesDto.getFeesHistoryDto().getEmail(), getFeesDetilesRange);
 		log.info("Enter The update  in fees followup");
@@ -134,10 +132,9 @@ public class FeesServiceImpl implements FeesService {
 				feesDtos.stream().forEach(dto -> {
 					try {
 						util.upateValuesSet(feesDto, dto);
-					} catch (IllegalAccessException e) {
-						log.error("Error updating values in FeesDto: {}", e.getMessage(), e);
-					} catch (IOException e) {
-						log.error("IOException during value update: {}", e.getMessage(), e);
+					} catch (Exception e) {
+						log.error("Error updating values in FeesDto: {}", e);
+
 					}
 				});
 				log.info("Data updated successfully");
@@ -147,50 +144,31 @@ public class FeesServiceImpl implements FeesService {
 		return "Update data Error";
 	}
 
-	public List<FeesDto> getFeesDetilesByemail(String email, String getFeesDetilesRange) throws IOException {
+	public List<FeesDto> getFeesDetilesByemail(String email, String getFeesDetilesRange) {
 		List<FeesDto> filteredDtos = feesRepository.getAllFeesDetiles(getFeesDetilesRange).stream()
-				.filter(items -> items != null && items.size() > 2 && items.get(2) != null
-						&& items.get(2).toString().equalsIgnoreCase(email))
-				.map(items -> {
-					try {
-						FeesDto dto = feesWrapper.listToFeesDTO(items);
-						return dto;
-					} catch (IOException e) {
-						log.error("Error converting list to FeesDto", e);
-						return null;
-					}
-				}).collect(Collectors.toList());
+				.map(feesWrapper::listToFeesDTO)
+				.filter(dto -> dto.getFeesHistoryDto().getEmail().equalsIgnoreCase(email)).collect(Collectors.toList());
 		log.info("Fees details fetched successfully for email: {}", email);
 		return filteredDtos;
 	}
 
 	@Override
 	public String transForData(String id, String feesEmailRange) {
-		try {
-			followUpRepository.getFollowUpDetails(id).stream().map(dreamWrapper::listToFollowUpDTO)
-					.filter(feesDto -> feesDto.getCurrentStatus().equalsIgnoreCase(Status.Joined.toString())
-							&& feesDto.getFlagSheet().equalsIgnoreCase(ServiceConstant.ACTIVE.toString()))
-					.forEach(dto -> {
-						FeesUiDto uiDto = new FeesUiDto();
-						uiDto.setAdminDto(dto.getAdminDto());
-						uiDto.setEmail(dto.getBasicInfo().getEmail());
-						uiDto.setName(dto.getBasicInfo().getTraineeName());
-						uiDto.setStatus(dto.getCurrentStatus());
-						uiDto.setLateFees(0L);
-						try {
-							writeFeesDetiles(uiDto, feesEmailRange);
-						} catch (Exception e) {
-							log.error("updated error please Check email {} ", e);
-						}
-					});
+		followUpRepository.getFollowUpDetails(id).stream().map(dreamWrapper::listToFollowUpDTO)
+				.filter(feesDto -> feesDto.getCurrentStatus().equalsIgnoreCase(Status.Joined.toString())
+						&& feesDto.getFlagSheet().equalsIgnoreCase(ServiceConstant.ACTIVE.toString()))
+				.forEach(dto -> {
+					FeesUiDto uiDto = new FeesUiDto();
+					uiDto.setAdminDto(dto.getAdminDto());
+					uiDto.setEmail(dto.getBasicInfo().getEmail());
+					uiDto.setName(dto.getBasicInfo().getTraineeName());
+					uiDto.setStatus(dto.getCurrentStatus());
+					uiDto.setLateFees(0L);
+					writeFeesDetiles(uiDto, feesEmailRange);
 
-			return "Transforred Data succesfully";
+				});
 
-		} catch (IOException e) {
-			log.error("error getting data from followup  {} ", e);
-			return "data Transfor Rejected";
-
-		}
+		return "Transforred Data succesfully";
 
 	}
 

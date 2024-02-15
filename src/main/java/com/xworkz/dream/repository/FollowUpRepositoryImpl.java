@@ -100,10 +100,15 @@ public class FollowUpRepositoryImpl implements FollowUpRepository {
 	}
 
 	@Override
-	public List<List<Object>> getFollowUpDetails(String spreadsheetId) throws IOException {
-		ValueRange response = sheetsService.spreadsheets().values().get(spreadsheetId, followUpRange).execute();
-		log.info("FollowUp details retrieved successfully for spreadsheetId: {}", spreadsheetId);
-		return response.getValues();
+	public List<List<Object>> getFollowUpDetails(String spreadsheetId) {
+		try {
+
+			log.info("FollowUp details retrieved successfully for spreadsheetId: {}", spreadsheetId);
+			return sheetsService.spreadsheets().values().get(spreadsheetId, followUpRange).execute().getValues();
+		} catch (IOException e) {
+			return Collections.emptyList();
+		}
+
 	}
 
 	@Override
@@ -168,5 +173,4 @@ public class FollowUpRepositoryImpl implements FollowUpRepository {
 				.setValueInputOption("RAW").execute();
 	}
 
-	
 }

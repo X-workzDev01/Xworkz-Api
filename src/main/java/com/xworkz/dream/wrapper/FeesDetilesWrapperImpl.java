@@ -1,6 +1,5 @@
 package com.xworkz.dream.wrapper;
 
-import java.io.IOException;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,7 +24,7 @@ public class FeesDetilesWrapperImpl implements FeesDetilesWrapper {
 	}
 
 	@Override
-	public FeesDto listToFeesDTO(List<Object> row) throws IOException {
+	public FeesDto listToFeesDTO(List<Object> row) {
 		FeesDto feesDto = new FeesDto(0, null, new FeesHistoryDto(), null, null, null, 0, null, null, null, null,
 				new AuditDto(), null, null);
 
