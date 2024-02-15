@@ -9,11 +9,11 @@ import com.google.api.services.sheets.v4.Sheets;
 import com.google.api.services.sheets.v4.model.ValueRange;
 
 public interface SheetSaveOpration {
-	public boolean saveDetilesWithoutSize(List<Object> list, String feesRegisterRange) throws IOException;
+	public boolean saveDetilesWithoutSize(List<Object> list, String feesRegisterRange);
 
-	public boolean saveDetilesWithDataSize(List<Object> list, String feesRegisterRange) throws IOException;
+	public boolean saveDetilesWithDataSize(List<Object> list, String feesRegisterRange);
 
-	public Sheets ConnsetSheetService() throws IOException, FileNotFoundException, GeneralSecurityException;
+	public Sheets ConnsetSheetService();
 
 	public ValueRange updateDetilesToSheet(List<Object> list);
 

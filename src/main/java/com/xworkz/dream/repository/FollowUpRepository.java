@@ -7,6 +7,7 @@ import com.google.api.services.sheets.v4.model.UpdateValuesResponse;
 import com.google.api.services.sheets.v4.model.ValueRange;
 
 public interface FollowUpRepository {
+
 	boolean saveToFollowUp(String spreadsheetId, List<Object> row) throws IOException;
 
 	boolean updateFollowUpStatus(String spreadsheetId, List<Object> statusData) throws IOException;

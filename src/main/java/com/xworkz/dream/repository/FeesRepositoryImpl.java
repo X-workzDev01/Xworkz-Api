@@ -1,8 +1,7 @@
 package com.xworkz.dream.repository;
 
-import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.security.GeneralSecurityException;
+import java.util.Collections;
 import java.util.List;
 
 import javax.annotation.PostConstruct;
@@ -30,70 +29,102 @@ public class FeesRepositoryImpl implements FeesRepository {
 	private Logger log = LoggerFactory.getLogger(FeesRepositoryImpl.class);
 
 	@PostConstruct
-	private void setsheetsRepository() throws IOException, FileNotFoundException, GeneralSecurityException {
-		sheetsRepository = saveOpration.ConnsetSheetService();
+	private void setsheetsRepository() {
+		try {
+			sheetsRepository = saveOpration.ConnsetSheetService();
+		} catch (Exception e) {
+			log.error("Sheet Connection is Failed  {} ", e);
+		}
 	}
 
 	@Override
-	public boolean writeFeesDetiles(List<Object> list) throws IOException {
-		log.info("Running fees repository  {}", list);
+	public boolean writeFeesDetiles(List<Object> list) {
+		try {
+			ValueRange value;
+			value = sheetsRepository.spreadsheets().values().get(spreadSheetId, feesRegisterRange).execute();
 
-		ValueRange value = sheetsRepository.spreadsheets().values().get(spreadSheetId, feesRegisterRange).execute();
-		if (value.getValues() != null && value.getValues().size() >= 1) {
-			log.info("Fees register sucessfully");
-			return saveOpration.saveDetilesWithDataSize(list, feesRegisterRange);
+			if (value.getValues() != null && value.getValues().size() >= 1) {
+				log.info("Fees register sucessfully");
+				return saveOpration.saveDetilesWithDataSize(list, feesRegisterRange);
 
-		} else {
-			log.info("Fees register sucessfully");
-			return saveOpration.saveDetilesWithoutSize(list, feesRegisterRange);
+			} else {
+				log.info("Fees register sucessfully");
+				return saveOpration.saveDetilesWithoutSize(list, feesRegisterRange);
+			}
+		} catch (IOException e) {
+			log.error("error fetching data  {}  ", e);
+			return false;
 		}
 
 	}
 
 	@Override
-	@Cacheable(value = "getFeesDetils", key = "'AllDetils'")
-	public List<List<Object>> getAllFeesDetiles(String getFeesDetilesRange) throws IOException {
+	@Cacheable(value = "getFeesDetils", key = "'allDetils'")
+	public List<List<Object>> getAllFeesDetiles(String getFeesDetilesRange) {
 		log.info("get fees detiles form the sheet");
-		return sheetsRepository.spreadsheets().values().get(spreadSheetId, getFeesDetilesRange).execute().getValues();
+		try {
+			return sheetsRepository.spreadsheets().values().get(spreadSheetId, getFeesDetilesRange).execute()
+					.getValues();
+		} catch (IOException e) {
+			log.error("error fetching data  {}  ", e);
+			return Collections.emptyList();
+		}
 	}
 
 	@Override
 	@Cacheable(value = "getFolllowUpdata", key = "'feesfollowUpData'")
-	public List<List<Object>> getFeesDetilesByemailInFollowup(String getFeesDetilesfollowupRange) throws IOException {
-		log.info("get fees followUp detiles form the sheet");
-		return sheetsRepository.spreadsheets().values().get(spreadSheetId, getFeesDetilesfollowupRange).execute()
-				.getValues();
+	public List<List<Object>> getFeesDetilesByemailInFollowup(String getFeesDetilesfollowupRange) {
+		try {
+			return sheetsRepository.spreadsheets().values().get(spreadSheetId, getFeesDetilesfollowupRange).execute()
+					.getValues();
+		} catch (IOException e) {
+			log.error("error fetching data  {}  ", e);
+			return Collections.emptyList();
+		}
 	}
 
 	@Override
-	public String updateFeesDetiles(String getFeesDetilesfollowupRange, List<Object> list) throws IOException {
-		log.info("update Fees Detiles is Running");
-		log.error(getFeesDetilesfollowupRange);
-		log.error("" + list);
+	public String updateFeesDetiles(String getFeesDetilesfollowupRange, List<Object> list) {
 		ValueRange body = saveOpration.updateDetilesToSheet(list);
-		return sheetsRepository.spreadsheets().values().update(spreadSheetId, getFeesDetilesfollowupRange, body)
-				.setValueInputOption("RAW").execute().setSpreadsheetId(spreadSheetId).getUpdatedRange();
+		try {
+			return sheetsRepository.spreadsheets().values().update(spreadSheetId, getFeesDetilesfollowupRange, body)
+					.setValueInputOption("RAW").execute().setSpreadsheetId(spreadSheetId).getUpdatedRange();
+		} catch (IOException e) {
+			log.error("Error updating data {}     ", e);
+			return "data Update Error";
+		}
 	}
 
 	@Override
-	public boolean updateDetilesToFollowUp(String followup, List<Object> list) throws IOException {
+	public boolean updateDetilesToFollowUp(String followup, List<Object> list) {
 		log.info("update fees followUp detiles form the sheet   " + list);
-		ValueRange value = sheetsRepository.spreadsheets().values().get(spreadSheetId, followup).execute();
-		if (value.getValues() != null && value.getValues().size() >= 1) {
-			log.info("Fees register sucessfully");
-			return saveOpration.saveDetilesWithDataSize(list, followup);
+		ValueRange value;
+		try {
+			value = sheetsRepository.spreadsheets().values().get(spreadSheetId, followup).execute();
 
-		} else {
-			log.info("Fees register sucessfully");
-			return saveOpration.saveDetilesWithoutSize(list, followup);
+			if (value.getValues() != null && value.getValues().size() >= 1) {
+				log.info("Fees register sucessfully");
+				return saveOpration.saveDetilesWithDataSize(list, followup);
+
+			} else {
+				log.info("Fees register sucessfully");
+				return saveOpration.saveDetilesWithoutSize(list, followup);
+			}
+		} catch (IOException e) {
+			log.error("error update data  {}  ", e);
+			return false;
 		}
 	}
 
 	@Override
 	@Cacheable(value = "getFeesEmail", key = "'email'")
-	public List<List<Object>> getEmailList(String feesEmailRange) throws IOException {
-		log.info("Getting Email from the sheet store to cache ");
-		ValueRange response = sheetsRepository.spreadsheets().values().get(spreadSheetId, feesEmailRange).execute();
-		return response.getValues();
+	public List<List<Object>> getEmailList(String feesEmailRange) {
+		try {
+			return sheetsRepository.spreadsheets().values().get(spreadSheetId, feesEmailRange).execute().getValues();
+		} catch (IOException e) {
+			log.error("error fetching data  {}  ", e);
+			return Collections.emptyList();
+		}
+
 	}
 }

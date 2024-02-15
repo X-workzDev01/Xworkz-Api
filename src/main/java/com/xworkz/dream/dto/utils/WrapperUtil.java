@@ -1,6 +1,5 @@
 package com.xworkz.dream.dto.utils;
 
-import java.io.IOException;
 import java.lang.reflect.Field;
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -29,25 +28,32 @@ public class WrapperUtil {
 	private FeesFollowUpCacheService feesCacheService;
 	Logger log = LoggerFactory.getLogger(WrapperUtil.class);
 
-	public List<Object> extractDtoDetails(Object dto) throws IllegalAccessException {
+	public List<Object> extractDtoDetails(Object dto) {
 		List<Object> detailsList = new ArrayList<>();
 		Class<?> dtoClass = dto.getClass();
 		Field[] fields = dtoClass.getDeclaredFields();
 		for (Field field : fields) {
 			field.setAccessible(true);
-			Object fieldValue = field.get(dto);
-			if (fieldValue != null && !field.getType().isPrimitive() && !field.getType().getName().startsWith("java")) {
-				List<Object> subDtoDetails = extractDtoDetails(fieldValue);
-				detailsList.addAll(subDtoDetails);
-			} else {
-				detailsList.add(fieldValue);
+			Object fieldValue;
+			try {
+				fieldValue = field.get(dto);
+
+				if (fieldValue != null && !field.getType().isPrimitive()
+						&& !field.getType().getName().startsWith("java")) {
+					List<Object> subDtoDetails = extractDtoDetails(fieldValue);
+					detailsList.addAll(subDtoDetails);
+				} else {
+					detailsList.add(fieldValue);
+				}
+			} catch (Exception e) {
+				log.error("Error converting data {} ", e);
 			}
 		}
 
 		return detailsList;
 	}
 
-	public int findIndex(String email) throws IOException {
+	public int findIndex(String email) {
 		List<List<Object>> values = feesRepository.getEmailList(feesFinalDtoRanges.getFeesEmailRange());
 		if (values != null) {
 			for (int i = 0; i < values.size(); i++) {
@@ -60,7 +66,7 @@ public class WrapperUtil {
 		return -1;
 	}
 
-	public String upateValuesSet(FeesDto feesDto, FeesDto dto) throws IllegalAccessException, IOException {
+	public String upateValuesSet(FeesDto feesDto, FeesDto dto) {
 		if (dto.getFeesHistoryDto().getEmail().equalsIgnoreCase(feesDto.getFeesHistoryDto().getEmail())) {
 			setToFeesHistory(feesDto.getFeesHistoryDto().getPaidAmount(), feesDto);
 			FeesDto updateDto = new FeesDto();
@@ -101,12 +107,12 @@ public class WrapperUtil {
 				System.err.println(updateDto);
 				feesRepository.updateFeesDetiles(followupRanges, extractDtoDetails(updateDto));
 				feesCacheService.updateCacheIntoFeesDetils(CacheConstant.getFeesDetils.toString(),
-						CacheConstant.AllDetils.toString(), updateDto.getFeesHistoryDto().getEmail(),
+						CacheConstant.allDetils.toString(), updateDto.getFeesHistoryDto().getEmail(),
 						extractDtoDetails(updateDto));
 				log.info("FeesDetiles Updated Sucessfully");
 				return "Feesfollowup and feesDetiles Updated Sucessfully";
 
-			} catch (IllegalAccessException | IOException e) {
+			} catch (Exception e) {
 				log.error("fees Detiles Cannot be updated some exception is there");
 
 			}
@@ -114,7 +120,7 @@ public class WrapperUtil {
 		return "Email is miss matching data could not be updated ";
 	}
 
-	private void setToFeesHistory(String fees, FeesDto dto) throws IllegalAccessException, IOException {
+	private void setToFeesHistory(String fees, FeesDto dto) {
 		FeesHistoryDto feesHistoryDto = new FeesHistoryDto();
 		feesHistoryDto.setFeesfollowupDate(LocalDate.now().toString());
 		feesHistoryDto.setEmail(dto.getFeesHistoryDto().getEmail());

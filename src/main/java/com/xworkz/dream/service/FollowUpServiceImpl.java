@@ -338,7 +338,7 @@ public class FollowUpServiceImpl implements FollowUpService {
 				log.info("Follow-up details not found for email: {}", email);
 				return ResponseEntity.ok(followUp);
 			}
-		} catch (IOException e) {
+		} catch (Exception e) {
 			log.error("error fetching data from repo {} ", e);
 			return null;
 		}

@@ -8,7 +8,7 @@ import com.xworkz.dream.feesDtos.FeesDto;
 import com.xworkz.dream.feesDtos.FeesHistoryDto;
 
 public interface FeesDetilesWrapper {
-	FeesDto listToFeesDTO(List<Object> row) throws IOException;
+	FeesDto listToFeesDTO(List<Object> row);
 
 	FeesHistoryDto getListToFeesHistoryDto(List<Object> row);
 

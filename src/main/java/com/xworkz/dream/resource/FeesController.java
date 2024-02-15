@@ -1,7 +1,5 @@
 package com.xworkz.dream.resource;
 
-import java.io.IOException;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,8 +32,7 @@ public class FeesController {
 
 	@ApiOperation("Saving feesDetiles")
 	@PostMapping("/saveFees")
-	public ResponseEntity<String> writeFeesSaveOpration(@RequestBody FeesUiDto dto)
-			throws IOException, IllegalAccessException {
+	public ResponseEntity<String> writeFeesSaveOpration(@RequestBody FeesUiDto dto) {
 		log.info("Running save Fees detiles controller ");
 		return ResponseEntity.ok(feesService.writeFeesDetiles(dto, feesFinalDtoRanges.getFeesEmailRange()));
 
@@ -44,13 +41,13 @@ public class FeesController {
 	@ApiOperation("Update feesDetiles")
 
 	@PutMapping("/updateFeesDeties")
-	public ResponseEntity<String> updateFeesFollowUp(@RequestBody FeesDto dto) throws IOException {
+	public ResponseEntity<String> updateFeesFollowUp(@RequestBody FeesDto dto) {
 		return ResponseEntity.ok(feesService.updateFeesFollowUp(dto, feesFinalDtoRanges.getGetFeesDetilesRange()));
 	}
 
 	@ApiOperation("get FeesDetiles by Email")
 	@GetMapping("/getFeesDetilesByEmail/{email}")
-	public ResponseEntity<FeesWithHistoryDto> getDetilesByEmail(@PathVariable String email) throws IOException {
+	public ResponseEntity<FeesWithHistoryDto> getDetilesByEmail(@PathVariable String email) {
 		return ResponseEntity.ok(feesService.getDetilesByEmail(email, feesFinalDtoRanges.getGetFeesDetilesRange(),
 				feesFinalDtoRanges.getGetFeesDetilesfollowupRange()));
 	}
@@ -59,7 +56,7 @@ public class FeesController {
 	@GetMapping("/getFeesDetilesBySelectedOption/{minIndex}/{maxIndex}/{date}/{batch}/{paymentMode}")
 	public ResponseEntity<SheetFeesDetiles> getFeesDetilesBySelectedOption(@PathVariable String minIndex,
 			@PathVariable String maxIndex, @PathVariable String date, @PathVariable String batch,
-			@PathVariable String paymentMode) throws IOException {
+			@PathVariable String paymentMode) {
 		System.err.println(feesFinalDtoRanges.getGetFeesDetilesRange());
 		return ResponseEntity.ok(feesService.getAllFeesDetiles(feesFinalDtoRanges.getGetFeesDetilesRange(), minIndex,
 				maxIndex, date, batch, paymentMode));
