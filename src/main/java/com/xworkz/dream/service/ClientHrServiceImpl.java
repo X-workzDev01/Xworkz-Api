@@ -1,6 +1,5 @@
 package com.xworkz.dream.service;
 
-import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -49,13 +48,18 @@ public class ClientHrServiceImpl implements ClientHrService {
 	private final static Logger log = LoggerFactory.getLogger(ClientHrServiceImpl.class);
 
 	@Override
-	public String saveClientHrInformation(ClientHrDto clientHrDto) throws IllegalAccessException, IOException {
+	public String saveClientHrInformation(ClientHrDto clientHrDto) {
 		log.info("ClientHr Service");
 		if (clientHrDto != null) {
 
 			clientInformationUtil.setValuesToClientHrDto(clientHrDto);
 			log.debug("Received ClientHrDto: {}", clientHrDto);
-			List<Object> listItem = dreamWrapper.extractDtoDetails(clientHrDto);
+			List<Object> listItem = null;
+			try {
+				listItem = dreamWrapper.extractDtoDetails(clientHrDto);
+			} catch (IllegalAccessException e) {
+				log.error("Exception in save client information,{}", e.getMessage());
+			}
 
 			if (clientHrRepository.saveClientHrInformation(listItem)) {
 				clientCacheService.addHRDetailsToCache("hrDetails", "listofHRDetails", listItem);
@@ -72,7 +76,7 @@ public class ClientHrServiceImpl implements ClientHrService {
 	}
 
 	@Override
-	public ClientHrData readData(int startingIndex, int maxRows, int companyId) throws IOException {
+	public ClientHrData readData(int startingIndex, int maxRows, int companyId) {
 		log.info("get data from client hr");
 		int size = clientHrRepository.readData().size();
 		if (companyId != 0) {
@@ -92,7 +96,7 @@ public class ClientHrServiceImpl implements ClientHrService {
 	}
 
 	@Override
-	public boolean hrEmailcheck(String hrEmail) throws IOException {
+	public boolean hrEmailcheck(String hrEmail) {
 		if (hrEmail != null) {
 			return clientHrRepository.readData().stream().map(clientWrapper::listToClientHrDto)
 					.anyMatch(clientHrDto -> hrEmail.equals(clientHrDto.getHrEmail()));
@@ -102,7 +106,7 @@ public class ClientHrServiceImpl implements ClientHrService {
 	}
 
 	@Override
-	public List<ClientHrDto> getHrDetailsByCompanyId(int companyId) throws IOException {
+	public List<ClientHrDto> getHrDetailsByCompanyId(int companyId) {
 		log.info("get details by companyId, {}", companyId);
 		List<ClientHrDto> listofClientHr = clientHrRepository.readData().stream().map(clientWrapper::listToClientHrDto)
 				.filter(clientHrDto -> clientHrDto.getCompanyId() == companyId).collect(Collectors.toList());
@@ -110,7 +114,7 @@ public class ClientHrServiceImpl implements ClientHrService {
 	}
 
 	@Override
-	public ClientHrDto getHRDetailsByHrId(int hrId) throws IOException {
+	public ClientHrDto getHRDetailsByHrId(int hrId) {
 		ClientHrDto hrDto = null;
 		if (hrId != 0) {
 			return hrDto = clientHrRepository.readData().stream().map(clientWrapper::listToClientHrDto)
@@ -120,27 +124,32 @@ public class ClientHrServiceImpl implements ClientHrService {
 	}
 
 	@Override
-	public boolean hrContactNumberCheck(Long contactNumber) throws IOException {
+	public boolean hrContactNumberCheck(Long contactNumber) {
 		log.info("checking contact number, {}", contactNumber);
 		List<List<Object>> listOfHrDetails = clientHrRepository.readData();
 		if (contactNumber != null) {
 			if (listOfHrDetails != null) {
 				return listOfHrDetails.stream().map(clientWrapper::listToClientHrDto)
-						.anyMatch(clientHrDto-> contactNumber.equals(clientHrDto.getHrContactNumber()));
+						.anyMatch(clientHrDto -> contactNumber.equals(clientHrDto.getHrContactNumber()));
 			}
 		}
 		return false;
 	}
 
 	@Override
-	public String updateHrDetails(int hrId, ClientHrDto clientHrDto) throws IllegalAccessException, IOException {
+	public String updateHrDetails(int hrId, ClientHrDto clientHrDto) {
 		int rowNumber = hrId + 1;
 		String range = hrSheetName + hrStartRow + rowNumber + ":" + hrEndRow + rowNumber;
 		if (hrId != 0 && clientHrDto != null) {
 			AuditDto auditDto = new AuditDto();
 			auditDto.setUpdatedOn(LocalDateTime.now().toString());
 			clientHrDto.getAdminDto().setUpdatedOn(LocalDateTime.now().toString());
-			List<List<Object>> values = Arrays.asList(dreamWrapper.extractDtoDetails(clientHrDto));
+			List<List<Object>> values = null;
+			try {
+				values = Arrays.asList(dreamWrapper.extractDtoDetails(clientHrDto));
+			} catch (IllegalAccessException e) {
+				log.error("Exception update HR,{}", e.getMessage());
+			}
 
 			if (!values.isEmpty()) {
 				List<Object> modifiedValues = new ArrayList<>(values.get(0).subList(1, values.get(0).size()));
@@ -152,10 +161,15 @@ public class ClientHrServiceImpl implements ClientHrService {
 			UpdateValuesResponse updated = clientHrRepository.updateHrDetails(range, valueRange);
 			log.info("update response is :{}", updated);
 			if (updated != null) {
-				List<List<Object>> listOfItems = Arrays.asList(dreamWrapper.extractDtoDetails(clientHrDto));
-			log.info("{}",listOfItems);
-				log.info("values to be added:{}",values);
-		clientCacheService.updateHrDetailsInCache("hrDetails", "listofHRDetails",listOfItems);
+				List<List<Object>> listOfItems = null;
+				try {
+					listOfItems = Arrays.asList(dreamWrapper.extractDtoDetails(clientHrDto));
+					log.info("{}", listOfItems);
+					log.info("values to be added:{}", values);
+					clientCacheService.updateHrDetailsInCache("hrDetails", "listofHRDetails", listOfItems);
+				} catch (IllegalAccessException e) {
+					log.error("Exception update HR,{}", e.getMessage());
+				}
 				return "updated Successfully";
 			} else {
 				return "not updated successfully";

@@ -101,7 +101,7 @@ public class CsrServiceImpl implements CsrService {
 		cacheService.addEmailToCache("uniqueNumber", "listofUniqueNumbers", dto.getCsrDto().getUniqueId());
 	}
 
-	public boolean registerCsr(CsrDto csrDto, HttpServletRequest request) throws IOException {
+	public boolean registerCsr(CsrDto csrDto, HttpServletRequest request) {
 		TraineeDto traineeDto = new TraineeDto();
 		CSR csr = new CSR();
 		traineeDto.setCourseInfo(new CourseDto(ServiceConstant.NA.toString()));
@@ -124,7 +124,7 @@ public class CsrServiceImpl implements CsrService {
 	}
 
 	@Override
-	public boolean checkContactNumber(Long contactNumber) throws IOException {
+	public boolean checkContactNumber(Long contactNumber) {
 		boolean isExists = false;
 		if (contactNumber != null) {
 			List<List<Object>> listOfC_number = repo.getContactNumbers(spreadsheetId);
@@ -144,7 +144,7 @@ public class CsrServiceImpl implements CsrService {
 	}
 
 	@Override
-	public boolean checkUsnNumber(String usnNumber) throws IOException {
+	public boolean checkUsnNumber(String usnNumber) {
 		log.info("check Usn Number ");
 		if (usnNumber != null) {
 			List<List<Object>> listOfUsn = repo.getUsnNumber(spreadsheetId);
@@ -178,7 +178,7 @@ public class CsrServiceImpl implements CsrService {
 	}
 
 	@Override
-	public boolean checkUniqueNumber(String uniqueNumber) throws IOException {
+	public boolean checkUniqueNumber(String uniqueNumber) {
 		if (uniqueNumber != null) {
 			log.info("checking unique number");
 			List<List<Object>> listOfUniqueNumber = repo.getUniqueNumbers(spreadsheetId);

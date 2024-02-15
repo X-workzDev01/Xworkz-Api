@@ -171,7 +171,6 @@ public class WhatsAppServiceImpl implements WhatsAppService {
 	}
 
 	private int findRowIndexByEmail(String spreadsheetId, String email) throws IOException {
-		try {
 			log.info("Finding row index by email in spreadsheetId: {} for email: {}", spreadsheetId, email);
 			List<List<Object>> data = repo.getEmails(spreadsheetId, email);
 			List<List<Object>> values = data;
@@ -186,10 +185,6 @@ public class WhatsAppServiceImpl implements WhatsAppService {
 			}
 			log.info("Email {} not found in the spreadsheet.", email);
 			return -1;
-		} catch (IOException e) {
-			log.error("An error occurred while finding row index by email in spreadsheetId: {}", spreadsheetId, e);
-			throw e;
-		}
 	}
 
 	@Override

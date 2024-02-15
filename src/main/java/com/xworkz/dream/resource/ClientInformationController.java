@@ -41,14 +41,14 @@ public class ClientInformationController {
 
 	@ApiOperation("Read client data with pagination")
 	@GetMapping("/readclientinfomation")
-	public ClientDataDto readClientData(@RequestParam int startingIndex, @RequestParam int maxRows) throws IOException {
+	public ClientDataDto readClientData(@RequestParam int startingIndex, @RequestParam int maxRows){
 		log.info("read client data controller, start index {} and ending  index  {}", startingIndex, maxRows);
 		return clientInformationService.readClientData(startingIndex, maxRows);
 	}
 
 	@ApiOperation("To check Whether CompanyName is exists or not")
 	@GetMapping("/companynamecheck")
-	public String checkComanyName(@RequestParam String companyName) throws IOException {
+	public String checkComanyName(@RequestParam String companyName) {
 		log.info("checking company is already exist or not  {}", companyName);
 		if (clientInformationService.checkComanyName(companyName)) {
 			return "Company Already Exists";

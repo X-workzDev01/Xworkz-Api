@@ -39,14 +39,14 @@ public class ClientHrInformationController {
 
 	@ApiOperation("To save client HR information")
 	@GetMapping("/hrdetails")
-	public ClientHrData readData(@RequestParam int startingIndex, @RequestParam int maxRows,@RequestParam int companyId) throws IOException {
+	public ClientHrData readData(@RequestParam int startingIndex, @RequestParam int maxRows,@RequestParam int companyId){
 		log.debug("Reading client HR information");
 		return clientHrService.readData(startingIndex, maxRows,companyId);
 	}
 
 	@ApiOperation("To check Whether CompanyName is exists or not")
 	@GetMapping("/hremailcheck")
-	public String checkHrEmail(@RequestParam String hrEmail) throws IOException {
+	public String checkHrEmail(@RequestParam String hrEmail) {
 		log.info("checking company is already exist or not  {}", hrEmail);
 		if (clientHrService.hrEmailcheck(hrEmail)) {
 			return "Email already exists.";

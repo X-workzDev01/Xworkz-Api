@@ -1,6 +1,5 @@
 package com.xworkz.dream.service;
 
-import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -50,11 +49,15 @@ public class ClientInformationServiceImpl implements ClientInformationService {
 	private static final Logger log = LoggerFactory.getLogger(ClientInformationServiceImpl.class);
 
 	@Override
-	public String writeClientInformation(ClientDto dto) throws IOException, IllegalAccessException {
+	public String writeClientInformation(ClientDto dto) {
 		if (dto != null) {
-
 			clientInformationUtil.setValuesToClientDto(dto);
-			List<Object> list = dreamWrapper.extractDtoDetails(dto);
+			List<Object> list = null;
+			try {
+				list = dreamWrapper.extractDtoDetails(dto);
+			} catch (IllegalAccessException e) {
+				log.error("Exception in writeClient,{}", e.getMessage());
+			}
 			log.info("in client service, Extracted values: {}", list);
 			if (clientRepository.writeClientInformation(list)) {
 				log.debug("adding newly added data to the cache, clientInformation :{}", list);
@@ -71,13 +74,13 @@ public class ClientInformationServiceImpl implements ClientInformationService {
 	}
 
 	@Override
-	public ClientDataDto readClientData(int startingIndex, int maxRows) throws IOException {
+	public ClientDataDto readClientData(int startingIndex, int maxRows) {
 		log.debug("start index {} and end index {}", startingIndex, maxRows);
 		List<List<Object>> listOfData = clientRepository.readData();
 
 		if (listOfData != null) {
 			List<ClientDto> ListOfClientDto = listOfData.stream().map(clientWrapper::listToClientDto)
-					.filter(dto ->dto.getStatus()!=null&&!dto.getStatus().equalsIgnoreCase("InActive"))
+					.filter(dto -> dto.getStatus() != null && !dto.getStatus().equalsIgnoreCase("InActive"))
 					.sorted(Comparator.comparing(ClientDto::getId, Comparator.reverseOrder()))
 					.collect(Collectors.toList());
 			List<ClientDto> clientData = ListOfClientDto.stream().skip(startingIndex).limit(maxRows)
@@ -90,7 +93,7 @@ public class ClientInformationServiceImpl implements ClientInformationService {
 	}
 
 	@Override
-	public boolean checkComanyName(String companyName) throws IOException {
+	public boolean checkComanyName(String companyName) {
 		log.info("checkComanyName service class " + companyName);
 
 		List<List<Object>> listOfData = clientRepository.readData();
@@ -104,7 +107,7 @@ public class ClientInformationServiceImpl implements ClientInformationService {
 	}
 
 	@Override
-	public ClientDto getClientDtoById(int companyId) throws IOException {
+	public ClientDto getClientDtoById(int companyId) {
 		ClientDto clientDto = null;
 		log.info("find the dto by id");
 		if (companyId != 0) {
@@ -118,7 +121,7 @@ public class ClientInformationServiceImpl implements ClientInformationService {
 	}
 
 	@Override
-	public boolean checkEmail(String companyEmail) throws IOException {
+	public boolean checkEmail(String companyEmail) {
 		log.info("checking company Email: {}", companyEmail);
 		List<List<Object>> listOfData = clientRepository.readData();
 		if (companyEmail != null) {
@@ -129,24 +132,23 @@ public class ClientInformationServiceImpl implements ClientInformationService {
 		}
 		return false;
 	}
-	
 
 	@Override
-	public boolean checkContactNumber(String contactNumber) throws IOException {
+	public boolean checkContactNumber(String contactNumber) {
 		log.info("checking company contactNumber: {}", contactNumber);
 		List<List<Object>> listOfData = clientRepository.readData();
 		if (contactNumber != null) {
 			if (listOfData != null) {
-				 Long companyLandLineNumber = Long.parseLong(contactNumber);
+				Long companyLandLineNumber = Long.parseLong(contactNumber);
 				return listOfData.stream().map(clientWrapper::listToClientDto)
 						.anyMatch(clientDto -> companyLandLineNumber.equals(clientDto.getCompanyLandLineNumber()));
 			}
 		}
 		return false;
 	}
-	
+
 	@Override
-	public boolean checkCompanyWebsite(String companyWebsite) throws IOException {
+	public boolean checkCompanyWebsite(String companyWebsite) {
 		log.info("checking company ompanyWebsite: {}", companyWebsite);
 		List<List<Object>> listOfData = clientRepository.readData();
 		if (companyWebsite != null) {
@@ -159,7 +161,7 @@ public class ClientInformationServiceImpl implements ClientInformationService {
 	}
 
 	@Override
-	public List<ClientDto> getSuggestionDetails(String companyName) throws IOException {
+	public List<ClientDto> getSuggestionDetails(String companyName) {
 		log.info("get the suggestion details by companyName :{}", companyName);
 		List<ClientDto> suggestionList = new ArrayList<ClientDto>();
 		List<List<Object>> listOfData = clientRepository.readData();
@@ -176,12 +178,13 @@ public class ClientInformationServiceImpl implements ClientInformationService {
 	}
 
 	@Override
-	public List<ClientDto> getDetailsbyCompanyName(String companyName) throws IOException {
+	public List<ClientDto> getDetailsbyCompanyName(String companyName) {
 		List<ClientDto> clientDto = null;
 		List<List<Object>> listofDtos = clientRepository.readData();
 		if (companyName != null) {
 			if (listofDtos != null) {
-				clientDto = listofDtos.stream().map(clientWrapper::listToClientDto).filter(ClientDto -> ClientDto.getCompanyName().equalsIgnoreCase(companyName))
+				clientDto = listofDtos.stream().map(clientWrapper::listToClientDto)
+						.filter(ClientDto -> ClientDto.getCompanyName().equalsIgnoreCase(companyName))
 						.collect(Collectors.toList());
 				log.info("returned company dto is, {}", clientDto);
 			}
@@ -193,10 +196,8 @@ public class ClientInformationServiceImpl implements ClientInformationService {
 		}
 	}
 
-	
-	
 	@Override
-	public String updateClientDto(int companyId, ClientDto clientDto) throws IOException, IllegalAccessException {
+	public String updateClientDto(int companyId, ClientDto clientDto) {
 		log.info("updating client dto {}, Id {}", clientDto, companyId);
 		String range = clientSheetName + clientStartRow + (companyId + 1) + ":" + clientEndRow + (companyId + 1);
 
@@ -204,28 +205,32 @@ public class ClientInformationServiceImpl implements ClientInformationService {
 			AuditDto auditDto = new AuditDto();
 			auditDto.setUpdatedOn(LocalDateTime.now().toString());
 			clientDto.getAdminDto().setUpdatedOn(auditDto.getUpdatedOn());
-			List<List<Object>> values = Arrays.asList(dreamWrapper.extractDtoDetails(clientDto));
+			List<List<Object>> values;
+			try {
+				values = Arrays.asList(dreamWrapper.extractDtoDetails(clientDto));
 
-			if (!values.isEmpty()) {
-				List<Object> modifiedValues = new ArrayList<>(values.get(0).subList(1, values.get(0).size()));
-				modifiedValues.remove(0);
-				values.set(0, modifiedValues);
-				log.debug("values {}", values);
-			}
-			ValueRange valueRange = new ValueRange();
-			valueRange.setValues(values);
-			UpdateValuesResponse updated = clientRepository.updateclientInfo(range, valueRange);
-			log.info("update response is :{}", updated);
-			if (updated != null) {
-				List<List<Object>> listOfItems = Arrays.asList(dreamWrapper.extractDtoDetails(clientDto));
-				clientCacheService.updateClientDetailsInCache("clientInformation", "ListOfClientDto", listOfItems);
-				return "updated Successfully";
-			} else {
-				return "not updated successfully";
+				if (!values.isEmpty()) {
+					List<Object> modifiedValues = new ArrayList<>(values.get(0).subList(1, values.get(0).size()));
+					modifiedValues.remove(0);
+					values.set(0, modifiedValues);
+					log.debug("values {}", values);
+				}
+				ValueRange valueRange = new ValueRange();
+				valueRange.setValues(values);
+				UpdateValuesResponse updated = clientRepository.updateclientInfo(range, valueRange);
+				log.info("update response is :{}", updated);
+				if (updated != null) {
+					List<List<Object>> listOfItems = Arrays.asList(dreamWrapper.extractDtoDetails(clientDto));
+					clientCacheService.updateClientDetailsInCache("clientInformation", "ListOfClientDto", listOfItems);
+					return "updated Successfully";
+				} else {
+					return "not updated successfully";
+				}
+			} catch (Exception e) {
+				log.error("Exception in updateClientDto,{}", e.getMessage());
 			}
 		}
 		return null;
 	}
-
 
 }

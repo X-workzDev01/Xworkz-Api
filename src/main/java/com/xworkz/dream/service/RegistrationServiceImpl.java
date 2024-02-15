@@ -303,7 +303,6 @@ public class RegistrationServiceImpl implements RegistrationService {
 	}
 
 	private int findRowIndexByEmail(String spreadsheetId, String email) {
-		try {
 			log.info("Finding row index by email in spreadsheetId: {} for email: {}", spreadsheetId, email);
 			List<List<Object>> data = repo.getEmails(spreadsheetId, email);
 			List<List<Object>> values = data;
@@ -318,10 +317,6 @@ public class RegistrationServiceImpl implements RegistrationService {
 			}
 			log.info("Email {} not found in the spreadsheet.", email);
 			return -1;
-		} catch (IOException e) {
-			log.error("An error occurred while finding row index by email in spreadsheetId: {}", e.getMessage());
-		}
-		return 0;
 	}
 
 	@Override
@@ -353,7 +348,7 @@ public class RegistrationServiceImpl implements RegistrationService {
 				log.info("updated DOB in Sheet,{}", updateDob);
 				if (updated != null && !updated.isEmpty()) {
 					followUpService.updateFollowUp(spreadsheetId, email, dto);
-					cacheService.getCacheDataByEmail("sheetsData", spreadsheetId, email, dto);
+					cacheService.getCacheDataByEmail("sheetsData", "listOfTraineeData", email, dto);
 					log.info("Updated Successfully. Email: {}", email);
 					cacheService.getCacheDataByEmail("emailData", spreadsheetId, email, dto.getBasicInfo().getEmail());
 					return ResponseEntity.ok("Updated Successfully");

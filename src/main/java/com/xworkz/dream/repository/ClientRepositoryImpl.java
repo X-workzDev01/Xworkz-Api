@@ -2,9 +2,7 @@ package com.xworkz.dream.repository;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.security.GeneralSecurityException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -56,58 +54,77 @@ public class ClientRepositoryImpl implements ClientRepository {
 
 	@Override
 	@PostConstruct
-	public void setSheetsService() throws IOException, FileNotFoundException, GeneralSecurityException {
+	public void setSheetsService() {
 
 		Resource resource = resourceLoader.getResource(credentialsPath);
-		File file = resource.getFile();
+		File file;
+		try {
+			file = resource.getFile();
 
-		GoogleCredentials credentials = GoogleCredentials.fromStream(new FileInputStream(file)).createScoped(SCOPES);
+			GoogleCredentials credentials = GoogleCredentials.fromStream(new FileInputStream(file))
+					.createScoped(SCOPES);
 
-		HttpRequestInitializer requestInitializer = new HttpCredentialsAdapter(credentials);
-		sheetsService = new Sheets.Builder(GoogleNetHttpTransport.newTrustedTransport(), JSON_FACTORY,
-				requestInitializer).setApplicationName(applicationName).build();
+			HttpRequestInitializer requestInitializer = new HttpCredentialsAdapter(credentials);
+			sheetsService = new Sheets.Builder(GoogleNetHttpTransport.newTrustedTransport(), JSON_FACTORY,
+					requestInitializer).setApplicationName(applicationName).build();
+		} catch (Exception e) {
+			log.error("Exception in setSheetService ClientRepo,{}", e.getMessage());
+		}
 	}
 
 	@Override
-	public boolean writeClientInformation(List<Object> row) throws IOException {
+	public boolean writeClientInformation(List<Object> row) {
 		List<List<Object>> values = new ArrayList<>();
 		List<Object> rowData = new ArrayList<>();
-		ValueRange valueRange = sheetsService.spreadsheets().values().get(sheetId, clientInformationRange).execute();
-		if (valueRange.getValues() != null && valueRange.getValues().size() >= 1) {
-			log.debug("if sheet doesn't contain any data:{}", valueRange);
-			rowData.add("");
-			rowData.addAll(row.subList(1, row.size()));
-			values.add(rowData);
-			ValueRange body = new ValueRange().setValues(values);
-			sheetsService.spreadsheets().values().append(sheetId, clientInformationRange, body)
-					.setValueInputOption("USER_ENTERED").execute();
-		} else {
-			log.debug("if sheet doesn't contain any data:{}", valueRange);
-			rowData.addAll(row.subList(1, row.size()));
-			values.add(rowData);
-			ValueRange body = new ValueRange().setValues(values);
-			sheetsService.spreadsheets().values().append(sheetId, clientInformationRange, body)
-					.setValueInputOption("USER_ENTERED").execute();
+		ValueRange valueRange;
+		try {
+			valueRange = sheetsService.spreadsheets().values().get(sheetId, clientInformationRange).execute();
+			if (valueRange.getValues() != null && valueRange.getValues().size() >= 1) {
+				log.debug("if sheet doesn't contain any data:{}", valueRange);
+				rowData.add("");
+				rowData.addAll(row.subList(1, row.size()));
+				values.add(rowData);
+				ValueRange body = new ValueRange().setValues(values);
+				sheetsService.spreadsheets().values().append(sheetId, clientInformationRange, body)
+						.setValueInputOption("USER_ENTERED").execute();
+			} else {
+				log.debug("if sheet doesn't contain any data:{}", valueRange);
+				rowData.addAll(row.subList(1, row.size()));
+				values.add(rowData);
+				ValueRange body = new ValueRange().setValues(values);
+				sheetsService.spreadsheets().values().append(sheetId, clientInformationRange, body)
+						.setValueInputOption("USER_ENTERED").execute();
+			}
+		} catch (Exception e) {
+			log.error("Exception in write Client repo,{}", e.getMessage());
 		}
 		return true;
 	}
 
-
 	@Cacheable(value = "clientInformation", key = "'ListOfClientDto'")
-	public List<List<Object>> readData() throws IOException {
+	public List<List<Object>> readData() {
 		log.info(" client repository, reading client information ");
-		ValueRange valueRange = sheetsService.spreadsheets().values().get(sheetId, clientInformationReadRange)
-				.execute();
-			List<List<Object>> values = valueRange.getValues();
-			return values;
+		ValueRange valueRange = null;
+		try {
+			valueRange = sheetsService.spreadsheets().values().get(sheetId, clientInformationReadRange).execute();
+		} catch (IOException e) {
+			log.error("Exception in read ClientRepo,{}", e.getMessage());
+		}
+		List<List<Object>> values = valueRange.getValues();
+		return values;
 	}
 
 	@Override
-	public UpdateValuesResponse updateclientInfo(String range, ValueRange valueRange) throws IOException {
-		log.info("updating Coompany Details to the sheet, {}",range);
-		UpdateValuesResponse response = sheetsService.spreadsheets().values().update(sheetId, range, valueRange)
-				.setValueInputOption("RAW").execute();
+	public UpdateValuesResponse updateclientInfo(String range, ValueRange valueRange) {
+		log.info("updating Coompany Details to the sheet, {}", range);
+		UpdateValuesResponse response = null;
+		try {
+			response = sheetsService.spreadsheets().values().update(sheetId, range, valueRange)
+					.setValueInputOption("RAW").execute();
+		} catch (IOException e) {
+			log.error("Exception in updateclientInfo ClientRepo,{}", e.getMessage());
+		}
 		return response;
 	}
-	
+
 }

@@ -3,7 +3,6 @@ package com.xworkz.dream.repository;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.ArrayList;
@@ -59,55 +58,76 @@ public class ClientHrRepositoryImpl implements ClientHrRepository {
 
 	@Override
 	@PostConstruct
-	public void setSheetsService() throws IOException, FileNotFoundException, GeneralSecurityException {
+	public void setSheetsService() {
 
 		Resource resource = resourceLoader.getResource(credentialsPath);
-		File file = resource.getFile();
+		File file;
+		try {
+			file = resource.getFile();
 
-		GoogleCredentials credentials = GoogleCredentials.fromStream(new FileInputStream(file)).createScoped(SCOPES);
-
-		HttpRequestInitializer requestInitializer = new HttpCredentialsAdapter(credentials);
-		sheetsService = new Sheets.Builder(GoogleNetHttpTransport.newTrustedTransport(), JSON_FACTORY,
-				requestInitializer).setApplicationName(applicationName).build();
+			GoogleCredentials credentials;
+			credentials = GoogleCredentials.fromStream(new FileInputStream(file)).createScoped(SCOPES);
+			HttpRequestInitializer requestInitializer = new HttpCredentialsAdapter(credentials);
+			sheetsService = new Sheets.Builder(GoogleNetHttpTransport.newTrustedTransport(), JSON_FACTORY,
+					requestInitializer).setApplicationName(applicationName).build();
+		} catch (GeneralSecurityException | IOException e) {
+			log.error("Exception in setSheetsService from clientHr,{}", e.getMessage());
+		}
 	}
 
 	@Override
-	public boolean saveClientHrInformation(List<Object> row) throws IOException {
+	public boolean saveClientHrInformation(List<Object> row) {
 		List<List<Object>> values = new ArrayList<>();
 		List<Object> rowData = new ArrayList<>();
-		ValueRange valueRange = sheetsService.spreadsheets().values().get(sheetId, clientHrInformationRange).execute();
-		if (valueRange.getValues() != null && valueRange.getValues().size() >= 1) {
-			log.debug("if sheet doesn't contain any data:{}", valueRange);
-			rowData.add("");
-			rowData.addAll(row.subList(1, row.size()));
-			values.add(rowData);
-			ValueRange body = new ValueRange().setValues(values);
-			sheetsService.spreadsheets().values().append(sheetId, clientHrInformationRange, body)
-					.setValueInputOption("USER_ENTERED").execute();
-		} else {
-			log.debug("if sheet doesn't contain any data:{}", valueRange);
-			rowData.addAll(row.subList(1, row.size()));
-			values.add(rowData);
-			ValueRange body = new ValueRange().setValues(values);
-			sheetsService.spreadsheets().values().append(sheetId, clientHrInformationRange, body)
-					.setValueInputOption("USER_ENTERED").execute();
+		ValueRange valueRange = null;
+		try {
+			valueRange = sheetsService.spreadsheets().values().get(sheetId, clientHrInformationRange).execute();
+			if (valueRange.getValues() != null && valueRange.getValues().size() >= 1) {
+				log.debug("if sheet doesn't contain any data:{}", valueRange);
+				rowData.add("");
+				rowData.addAll(row.subList(1, row.size()));
+				values.add(rowData);
+				ValueRange body = new ValueRange().setValues(values);
+				sheetsService.spreadsheets().values().append(sheetId, clientHrInformationRange, body)
+						.setValueInputOption("USER_ENTERED").execute();
+			} else {
+				log.debug("if sheet doesn't contain any data:{}", valueRange);
+				rowData.addAll(row.subList(1, row.size()));
+				values.add(rowData);
+				ValueRange body = new ValueRange().setValues(values);
+				sheetsService.spreadsheets().values().append(sheetId, clientHrInformationRange, body)
+						.setValueInputOption("USER_ENTERED").execute();
+			}
+		} catch (IOException e) {
+			log.error("Exception in saveClientHrInformation from clientHr,{}", e.getMessage());
 		}
 		return true;
+
 	}
 
 	@Override
 	@Cacheable(value = "hrDetails", key = "'listofHRDetails'")
-	public List<List<Object>> readData() throws IOException {
-		List<List<Object>> values = sheetsService.spreadsheets().values().get(sheetId, clientHrInformationReadRange)
-				.execute().getValues();
+	public List<List<Object>> readData() {
+		List<List<Object>> values = null;
+		try {
+			values = sheetsService.spreadsheets().values().get(sheetId, clientHrInformationReadRange).execute()
+					.getValues();
+		} catch (IOException e) {
+			log.error("Exception in readData repository,{}", e.getMessage());
+		}
 		return values;
 	}
 
 	@Override
-	public UpdateValuesResponse updateHrDetails(String range, ValueRange valueRange) throws IOException {
+	public UpdateValuesResponse updateHrDetails(String range, ValueRange valueRange) {
 		log.info("updating the HR details ,{}", range);
-		UpdateValuesResponse response = sheetsService.spreadsheets().values().update(sheetId, range, valueRange)
-				.setValueInputOption("RAW").execute();
+		UpdateValuesResponse response = null;
+		try {
+			response = sheetsService.spreadsheets().values().update(sheetId, range, valueRange)
+					.setValueInputOption("RAW").execute();
+		} catch (IOException e) {
+			log.error("Exception in updateHrDetails repository,{}", e.getMessage());
+		}
 		return response;
 	}
 
