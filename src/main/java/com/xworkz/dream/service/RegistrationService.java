@@ -27,13 +27,13 @@ import freemarker.template.TemplateException;
 
 	List<TraineeDto> getLimitedRows(List<List<Object>> values, int startingIndex, int maxRows);
 
-	List<TraineeDto> filterData(String spreadsheetId, String searchValue, String courseName) throws IOException;
+	List<TraineeDto> filterData(String spreadsheetId, String searchValue, String courseName,String collegeName);
 
 	ResponseEntity<String> update(String spreadsheetId, String email, TraineeDto dto);
 
 	TraineeDto getDetailsByEmail(String spreadsheetId, String email) throws IOException;
 
-	ResponseEntity<List<TraineeDto>> getSearchSuggestion(String spreadsheetId, String value, String courseName);
+	ResponseEntity<List<TraineeDto>> getSearchSuggestion(String spreadsheetId, String value, String courseName, String collegeName);
 
 
 }

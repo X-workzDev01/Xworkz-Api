@@ -107,9 +107,13 @@ public class RegisterRepositoryImpl implements RegisterRepository {
 
 	@Override
 	@Cacheable(value = "sheetsData", key = "'listOfTraineeData'", unless = "#result == null")
-	public List<List<Object>> readData(String spreadsheetId) throws IOException {
+	public List<List<Object>> readData(String spreadsheetId) {
 		log.info("Reading Trainee data from sheet for spreadsheetId: {}", spreadsheetId);
-		ValueRange response = sheetsService.spreadsheets().values().get(spreadsheetId,range).execute();
+		ValueRange response = null;
+		try {
+			response = sheetsService.spreadsheets().values().get(spreadsheetId,range).execute();
+		} catch (IOException e) {
+			log.error("Exception in readData method, {}",e.getMessage());		}
 		List<List<Object>> data = response.getValues();
 		return data;
 	}
@@ -123,9 +127,14 @@ public class RegisterRepositoryImpl implements RegisterRepository {
 	}
 
 	@Override
-	public List<List<Object>> getEmailsAndNames(String spreadsheetId, String value) throws IOException {
+	public List<List<Object>> getEmailsAndNames(String spreadsheetId, String value)  {
 		log.info("Reading emails and names from sheet for spreadsheetId: {}", spreadsheetId);
-		ValueRange response = sheetsService.spreadsheets().values().get(spreadsheetId, emailAndNameRange).execute();
+		ValueRange response = null;
+		try {
+			response = sheetsService.spreadsheets().values().get(spreadsheetId, emailAndNameRange).execute();
+		} catch (IOException e) {
+			log.error("Exception in getEmailsAndNames method,{}",e.getMessage());
+		}
 		return response.getValues();
 	}
 

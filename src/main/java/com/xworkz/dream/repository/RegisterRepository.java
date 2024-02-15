@@ -18,11 +18,11 @@ public interface RegisterRepository {
 
 	List<List<Object>> getContactNumbers(String spreadsheetId) throws IOException;
 
-	List<List<Object>> readData(String spreadsheetId) throws IOException;
+	List<List<Object>> readData(String spreadsheetId);
 
 	UpdateValuesResponse update(String spreadsheetId, String range2, ValueRange valueRange) throws IOException;
 
-	List<List<Object>> getEmailsAndNames(String spreadsheetId, String value) throws IOException;
+	List<List<Object>> getEmailsAndNames(String spreadsheetId, String value);
 
 	List<List<Object>> getAlternativeNumber(String spreadsheetId) throws IOException;
 

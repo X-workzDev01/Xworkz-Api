@@ -63,12 +63,9 @@ public class RegistrationController {
 	@ApiOperation(value = "To get Suggestions while search")
 	@GetMapping("register/suggestion/{courseName}")
 	public ResponseEntity<List<TraineeDto>> getSearchSuggestion(@RequestHeader String spreadsheetId,
-
-			@RequestParam String value, @PathVariable String courseName) {
+			@RequestParam String value, @PathVariable String courseName,@RequestParam String collegeName) {
 		log.info("Getting suggestions for search: {}", value);
-		return service.getSearchSuggestion(spreadsheetId, value, courseName);
-
-
+		return service.getSearchSuggestion(spreadsheetId, value, courseName,collegeName);
 	}
 
 	@ApiOperation(value = "To register Check whether contact number already exist while registering")
@@ -89,16 +86,10 @@ public class RegistrationController {
 
 	@GetMapping("/filterData/{courseName}")
 	public List<TraineeDto> filterData(@RequestHeader String spreadsheetId, @PathVariable String courseName,
-			@RequestParam String searchValue) {
-		try {
-			log.info("Filtering data with parameters - SpreadsheetId: {}, Search Value: {}", spreadsheetId,
-					searchValue);
-			return service.filterData(spreadsheetId, searchValue, courseName);
-		} catch (IOException e) {
-			log.error("An error occurred during data filtering", e.getMessage());
-		}
-		return null;
-
+			@RequestParam String searchValue,@RequestParam String collegeName) {
+		log.info("Filtering data with parameters - SpreadsheetId: {}, Search Value: {}", spreadsheetId,
+				searchValue);
+		return service.filterData(spreadsheetId, searchValue, courseName,collegeName);
 	}
 
 	@ApiOperation(value = "To Update Registrated Details of Trainee")
@@ -112,7 +103,6 @@ public class RegistrationController {
 
 	@ApiOperation(value = "To get Registration details by email")
 	@GetMapping("/readByEmail")
-
 	public ResponseEntity<?> getDataByEmail(@RequestHeader String spreadsheetId, @RequestParam String email)
 			throws IOException {
 		log.info("Getting details by email - SpreadsheetId: {}, Email: {}", spreadsheetId, email);

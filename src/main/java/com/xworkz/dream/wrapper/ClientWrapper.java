@@ -8,8 +8,8 @@ import com.xworkz.dream.dto.HrFollowUpDto;
 
 public interface ClientWrapper {
 
-	abstract HrFollowUpDto listToHrFollowUpDto(List<Object> row);
-	abstract ClientDto listToClientDto(List<Object> row);
-	abstract ClientHrDto listToClientHrDto(List<Object> row);
+	 HrFollowUpDto listToHrFollowUpDto(List<Object> row);
+	 ClientDto listToClientDto(List<Object> row);
+	 ClientHrDto listToClientHrDto(List<Object> row);
 
 }

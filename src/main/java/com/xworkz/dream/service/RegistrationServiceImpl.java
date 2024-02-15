@@ -26,6 +26,7 @@ import com.xworkz.dream.dto.CSR;
 import com.xworkz.dream.dto.SheetsDto;
 import com.xworkz.dream.dto.TraineeDto;
 import com.xworkz.dream.repository.RegisterRepository;
+import com.xworkz.dream.service.util.RegistrationUtil;
 import com.xworkz.dream.util.DreamUtil;
 import com.xworkz.dream.wrapper.DreamWrapper;
 
@@ -53,6 +54,8 @@ public class RegistrationServiceImpl implements RegistrationService {
 	private CacheService cacheService;
 	@Autowired
 	private CsrService csrService;
+	@Autowired
+	private RegistrationUtil registrationUtil;
 
 	private static final Logger log = LoggerFactory.getLogger(DreamServiceImpl.class);
 
@@ -162,51 +165,49 @@ public class RegistrationServiceImpl implements RegistrationService {
 	@Override
 	public ResponseEntity<SheetsDto> readData(String spreadsheetId, int startingIndex, int maxRows, String courseName,
 			String collegeName) {
-		try {
-			long endRows = startingIndex + maxRows;
-			SheetsDto traineeData = new SheetsDto();
-			List<List<Object>> dataList = repo.readData(spreadsheetId);
-			if (dataList != null) {
-				List<List<Object>> sortedByDate = dataList.stream().sorted(Comparator.comparing(
-						list -> list != null && !list.isEmpty() && list.size() > 24 ? list.get(24).toString() : "",
-						Comparator.reverseOrder())).collect(Collectors.toList());
-				if (!courseName.equalsIgnoreCase(ServiceConstant.NULL.toString())
-						&& !collegeName.equalsIgnoreCase(ServiceConstant.NULL.toString())) {
-					List<TraineeDto> sortedData = sortedByDate.stream()
-							.filter(items -> items != null && items.size() > 9 && items.contains(courseName))
-							.filter(items -> items != null && items.size() > 8 && items.contains(collegeName))
-							.map(wrapper::listToDto).collect(Collectors.toList());
-					traineeData.setSheetsData(
-							sortedData.stream().skip(startingIndex).limit(endRows).collect(Collectors.toList()));
-					traineeData.setSize(sortedData.size());
-					return ResponseEntity.ok(traineeData);
-				} else if (!courseName.equalsIgnoreCase(ServiceConstant.NULL.toString())) {
-					List<List<Object>> sortedCourse = sortedByDate.stream()
-							.filter(items -> items != null && items.size() > 9 && items.contains(courseName))
-							.collect(Collectors.toList());
-					traineeData.setSheetsData(sortedCourse.stream().skip(startingIndex).limit(endRows)
-							.map(wrapper::listToDto).collect(Collectors.toList()));
-					traineeData.setSize(sortedCourse.size());
-					log.info("Returning response for course: {}", courseName);
-					return ResponseEntity.ok(traineeData);
-				} else if (!collegeName.equalsIgnoreCase(ServiceConstant.NULL.toString())) {
-					List<List<Object>> sortedByCollege = sortedByDate.stream()
-							.filter(items -> items != null && items.size() > 8 && items.contains(collegeName))
-							.collect(Collectors.toList());
-					traineeData.setSheetsData(sortedByCollege.stream().skip(startingIndex).limit(endRows)
-							.map(wrapper::listToDto).collect(Collectors.toList()));
-					traineeData.setSize(sortedByCollege.size());
-					log.info("Returning response for college Name: {}", collegeName);
-					return ResponseEntity.ok(traineeData);
-				}
-				log.info("Returning response for spreadsheetId: {}", spreadsheetId);
-				traineeData.setSheetsData(sortedByDate.stream().skip(startingIndex).limit(endRows)
+		long endRows = startingIndex + maxRows;
+		SheetsDto traineeData = new SheetsDto();
+		List<List<Object>> dataList = repo.readData(spreadsheetId);
+		if (dataList != null) {
+			List<List<Object>> sortedByDate = dataList.stream()
+					.sorted(Comparator.comparing(
+							list -> list != null && !list.isEmpty() && list.size() > 24 ? list.get(24).toString() : "",
+							Comparator.reverseOrder()))
+					.collect(Collectors.toList());
+			if (!courseName.equalsIgnoreCase(ServiceConstant.NULL.toString())
+					&& !collegeName.equalsIgnoreCase(ServiceConstant.NULL.toString())) {
+				List<TraineeDto> sortedData = sortedByDate.stream()
+						.filter(items -> items != null && items.size() > 9 && items.contains(courseName))
+						.filter(items -> items != null && items.size() > 8 && items.contains(collegeName))
+						.map(wrapper::listToDto).collect(Collectors.toList());
+				traineeData.setSheetsData(
+						sortedData.stream().skip(startingIndex).limit(endRows).collect(Collectors.toList()));
+				traineeData.setSize(sortedData.size());
+				return ResponseEntity.ok(traineeData);
+			} else if (!courseName.equalsIgnoreCase(ServiceConstant.NULL.toString())) {
+				List<List<Object>> sortedCourse = sortedByDate.stream()
+						.filter(items -> items != null && items.size() > 9 && items.contains(courseName))
+						.collect(Collectors.toList());
+				traineeData.setSheetsData(sortedCourse.stream().skip(startingIndex).limit(endRows)
 						.map(wrapper::listToDto).collect(Collectors.toList()));
-				traineeData.setSize(sortedByDate.size());
+				traineeData.setSize(sortedCourse.size());
+				log.info("Returning response for course: {}", courseName);
+				return ResponseEntity.ok(traineeData);
+			} else if (!collegeName.equalsIgnoreCase(ServiceConstant.NULL.toString())) {
+				List<List<Object>> sortedByCollege = sortedByDate.stream()
+						.filter(items -> items != null && items.size() > 8 && items.contains(collegeName))
+						.collect(Collectors.toList());
+				traineeData.setSheetsData(sortedByCollege.stream().skip(startingIndex).limit(endRows)
+						.map(wrapper::listToDto).collect(Collectors.toList()));
+				traineeData.setSize(sortedByCollege.size());
+				log.info("Returning response for college Name: {}", collegeName);
 				return ResponseEntity.ok(traineeData);
 			}
-		} catch (IOException e) {
-			log.error("Exception in readData repository,{}" + e);
+			log.info("Returning response for spreadsheetId: {}", spreadsheetId);
+			traineeData.setSheetsData(sortedByDate.stream().skip(startingIndex).limit(endRows).map(wrapper::listToDto)
+					.collect(Collectors.toList()));
+			traineeData.setSize(sortedByDate.size());
+			return ResponseEntity.ok(traineeData);
 		}
 		return null;
 	}
@@ -230,39 +231,80 @@ public class RegistrationServiceImpl implements RegistrationService {
 	}
 
 	@Override
-	public List<TraineeDto> filterData(String spreadsheetId, String searchValue, String courseName) throws IOException {
-		try {
+	public List<TraineeDto> filterData(String spreadsheetId, String searchValue, String courseName,
+			String collegeName) {
+		List<List<Object>> data = repo.readData(spreadsheetId);
+		List<TraineeDto> traineeDtos = new ArrayList<TraineeDto>();
+		if (data != null) {
+			List<TraineeDto> listOfTrainee = registrationUtil.readOnlyActiveData(data);
 			if (searchValue != null && !searchValue.isEmpty()) {
-				log.info("Filtering data in spreadsheetId: {} with search value: {}", spreadsheetId, searchValue);
-				List<List<Object>> data = repo.readData(spreadsheetId);
-				List<List<Object>> filteredLists = data.stream().filter(list -> list.stream().anyMatch(
-						value -> value != null && value.toString().toLowerCase().contains(searchValue.toLowerCase())))
-						.collect(Collectors.toList());
-				if (!courseName.equals("null")) {
-					List<TraineeDto> flist = filteredLists.stream().map(items -> wrapper.listToDto(items))
-							.filter(dto -> dto.getCourseInfo().getCourse().equalsIgnoreCase(courseName))
+				if (!courseName.equalsIgnoreCase(ServiceConstant.NULL.toString())
+						&& !collegeName.equalsIgnoreCase(ServiceConstant.NULL.toString())) {
+					log.info("filterdata by collegeName:{},courseName:{},searchValue:{}", collegeName, courseName,
+							searchValue);
+					traineeDtos = listOfTrainee.stream()
+							.filter(traineeDto -> traineeDto != null
+									&& traineeDto.getCourseInfo().getCourse().equalsIgnoreCase(courseName))
+							.filter(traineeDto -> traineeDto != null
+									&& traineeDto.getEducationInfo().getCollegeName().equalsIgnoreCase(collegeName))
+							.filter(traineeDto -> traineeDto != null
+									&& traineeDto.getBasicInfo().getEmail().equalsIgnoreCase(searchValue))
 							.collect(Collectors.toList());
-					log.info("Filtered {} TraineeDto objects", flist.size());
-
-					return flist;
-
+					return traineeDtos;
+				} else if (!courseName.equalsIgnoreCase(ServiceConstant.NULL.toString())) {
+					log.info("filterdata by courseName:{},searchValue:{}", courseName, searchValue);
+					traineeDtos = listOfTrainee.stream()
+							.filter(traineeDto -> traineeDto != null
+									&& traineeDto.getCourseInfo().getCourse().equalsIgnoreCase(courseName))
+							.filter(traineeDto -> traineeDto != null
+									&& traineeDto.getBasicInfo().getEmail().equalsIgnoreCase(searchValue))
+							.collect(Collectors.toList());
+					return traineeDtos;
+				} else if (!collegeName.equalsIgnoreCase(ServiceConstant.NULL.toString())) {
+					log.info("filterdata by collegeName:{},searchValue:{}", collegeName, searchValue);
+					traineeDtos = listOfTrainee.stream()
+							.filter(traineeDto -> traineeDto != null
+									&& traineeDto.getEducationInfo().getCollegeName().equalsIgnoreCase(collegeName))
+							.filter(traineeDto -> traineeDto != null
+									&& traineeDto.getBasicInfo().getEmail().equalsIgnoreCase(searchValue))
+							.collect(Collectors.toList());
+					return traineeDtos;
 				} else {
-					List<TraineeDto> flist = filteredLists.stream().map(items -> wrapper.listToDto(items))
-							.filter(dto -> dto.getBasicInfo().getEmail().equalsIgnoreCase(searchValue))
+					log.info("filterdata by searchValue:{}", searchValue);
+					traineeDtos = listOfTrainee.stream()
+							.filter(traineeDto -> traineeDto != null
+									&& traineeDto.getBasicInfo().getEmail().equalsIgnoreCase(searchValue)
+									|| traineeDto.getBasicInfo().getTraineeName().equalsIgnoreCase(searchValue))
 							.collect(Collectors.toList());
-					log.info("Filtered {} TraineeDto objects", flist.size());
-
-					return flist;
-
+					return traineeDtos;
 				}
-			} else {
-				log.warn("Search value is null or empty. Returning an empty list.");
-				return new ArrayList<>();
+			} else if (!courseName.equalsIgnoreCase(ServiceConstant.NULL.toString())
+					&& !collegeName.equalsIgnoreCase(ServiceConstant.NULL.toString())) {
+				log.info("filterdata by collegeName:{},courseName:{}", collegeName, courseName);
+				traineeDtos = listOfTrainee.stream()
+						.filter(traineeDto -> traineeDto != null
+								&& traineeDto.getCourseInfo().getCourse().equalsIgnoreCase(courseName))
+						.filter(traineeDto -> traineeDto != null
+								&& traineeDto.getEducationInfo().getCollegeName().equalsIgnoreCase(collegeName))
+						.collect(Collectors.toList());
+				return traineeDtos;
+			} else if (!collegeName.equalsIgnoreCase(ServiceConstant.NULL.toString())) {
+				log.info("filter by collegeName:{}", collegeName);
+				traineeDtos = listOfTrainee.stream()
+						.filter(traineeDto -> traineeDto != null
+								&& traineeDto.getEducationInfo().getCollegeName().equalsIgnoreCase(collegeName))
+						.collect(Collectors.toList());
+				return traineeDtos;
+			} else if (!courseName.equalsIgnoreCase(ServiceConstant.NULL.toString())) {
+				log.info("filterdata by courseName:{}", courseName);
+				traineeDtos = listOfTrainee.stream()
+						.filter(traineeDto -> traineeDto != null
+								&& traineeDto.getCourseInfo().getCourse().equalsIgnoreCase(courseName))
+						.collect(Collectors.toList());
+				return traineeDtos;
 			}
-		} catch (IOException e) {
-			log.error("An error occurred while filtering data in spreadsheetId: {}", spreadsheetId, e);
-			throw e;
 		}
+		return traineeDtos;
 	}
 
 	private int findRowIndexByEmail(String spreadsheetId, String email) throws IOException {
@@ -349,37 +391,44 @@ public class RegistrationServiceImpl implements RegistrationService {
 	}
 
 	@Override
-	public ResponseEntity<List<TraineeDto>> getSearchSuggestion(String spreadsheetId, String value, String courseName) {
+	public ResponseEntity<List<TraineeDto>> getSearchSuggestion(String spreadsheetId, String value, String courseName,
+			String collegeName) {
 		List<TraineeDto> suggestion = new ArrayList<>();
-		if (value != null) {
-			try {
-				if (!courseName.equalsIgnoreCase("null")) {
-					List<List<Object>> dataList = repo.getEmailsAndNames(spreadsheetId, value).stream()
-							.filter(list -> list.get(9) != null && list.get(9).toString().equalsIgnoreCase(courseName))
-							.collect(Collectors.toList());
-					List<List<Object>> filteredData = dataList.stream().filter(list -> list.stream().anyMatch(val -> {
-						return val.toString().toLowerCase().startsWith(value.toLowerCase());
-					})).collect(Collectors.toList());
-					for (List<Object> list : filteredData) {
-						TraineeDto dto = wrapper.listToDto(list);
-						suggestion.add(dto);
-					}
-				} else {
-					List<List<Object>> dataList = repo.getEmailsAndNames(spreadsheetId, value);
-					List<List<Object>> filteredData = dataList.stream().filter(list -> list.stream().anyMatch(val -> {
-						return val.toString().toLowerCase().startsWith(value.toLowerCase());
-					})).collect(Collectors.toList());
-					for (List<Object> list : filteredData) {
-						TraineeDto dto = wrapper.listToDto(list);
-						suggestion.add(dto);
-					}
-				}
-
+		List<List<Object>> dataList = repo.getEmailsAndNames(spreadsheetId, value);
+		if (value != null && !value.isEmpty() && dataList != null) {
+			List<TraineeDto> listOfTrainee = registrationUtil.convertToTraineeDto(dataList);
+			if (!courseName.equalsIgnoreCase(ServiceConstant.NULL.toString())
+					&& !collegeName.equalsIgnoreCase(ServiceConstant.NULL.toString())) {
+				log.info("suggestion by college:{} and course name:{}", collegeName, courseName);
+				suggestion = listOfTrainee.stream()
+						.filter(traineeDto -> traineeDto.getCourseInfo().getCourse().equalsIgnoreCase(courseName))
+						.filter(traineeDto -> traineeDto.getEducationInfo().getCollegeName()
+								.equalsIgnoreCase(collegeName))
+						.filter(traineeDto -> traineeDto.getBasicInfo().getTraineeName().toLowerCase()
+								.startsWith(value.toLowerCase()))
+						.collect(Collectors.toList());
+				return ResponseEntity.ok(suggestion);
+			} else if (!courseName.equalsIgnoreCase(ServiceConstant.NULL.toString())) {
+				log.info("suggestion by course name:{}", courseName);
+				suggestion = listOfTrainee.stream()
+						.filter(traineeDto -> traineeDto.getCourseInfo().getCourse().equalsIgnoreCase(courseName))
+						.filter(traineeDto -> traineeDto.getBasicInfo().getTraineeName().toLowerCase()
+								.startsWith(value.toLowerCase()))
+						.collect(Collectors.toList());
+				return ResponseEntity.ok(suggestion);
+			} else if (!collegeName.equalsIgnoreCase(ServiceConstant.NULL.toString())) {
+				log.info("suggestion by course name:{}", collegeName);
+				suggestion = listOfTrainee.stream().filter(
+						traineeDto -> traineeDto.getEducationInfo().getCollegeName().equalsIgnoreCase(collegeName))
+						.filter(traineeDto -> traineeDto.getBasicInfo().getTraineeName().toLowerCase()
+								.startsWith(value.toLowerCase()))
+						.collect(Collectors.toList());
+				return ResponseEntity.ok(suggestion);
+			} else {
+				suggestion = listOfTrainee.stream().filter(traineeDto -> traineeDto.getBasicInfo().getTraineeName()
+						.toLowerCase().startsWith(value.toLowerCase())).collect(Collectors.toList());
 				log.info("Returning {} search suggestions", suggestion.size());
 				return ResponseEntity.ok(suggestion);
-			} catch (IOException e) {
-				log.error("An error occurred while getting search suggestion in spreadsheetId: {}", spreadsheetId, e);
-				return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new ArrayList<>());
 			}
 		}
 		log.warn("Null value provided for search suggestion");
