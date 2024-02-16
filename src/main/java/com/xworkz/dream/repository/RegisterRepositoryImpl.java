@@ -72,7 +72,6 @@ public class RegisterRepositoryImpl implements RegisterRepository {
 	@Override
 	@Cacheable(value = "emailData", key = "#spreadsheetId", unless = "#result == null")
 	public List<List<Object>> getEmails(String spreadsheetId, String email) {
-		log.info("Reading email data from sheet for spreadsheetId: {}", spreadsheetId);
 		try {
 			return sheetsService.spreadsheets().values().get(spreadsheetId, emailRange).execute().getValues();
 		} catch (IOException e) {
@@ -84,7 +83,6 @@ public class RegisterRepositoryImpl implements RegisterRepository {
 	@Override
 	@Cacheable(value = "contactData", key = "#spreadsheetId", unless = "#result == null")
 	public List<List<Object>> getContactNumbers(String spreadsheetId) {
-		log.info("Reading contact numbers from sheet for spreadsheetId: {}", spreadsheetId);
 		try {
 		return sheetsService.spreadsheets().values().get(spreadsheetId, contactNumberRange).execute().getValues();
 		} catch (IOException e) {
@@ -96,7 +94,6 @@ public class RegisterRepositoryImpl implements RegisterRepository {
 	@Override
 	@Cacheable(value = "sheetsData", key = "'listOfTraineeData'", unless = "#result == null")
 	public List<List<Object>> readData(String spreadsheetId) {
-		log.info("Reading Trainee data from sheet for spreadsheetId: {}", spreadsheetId);
 		try {
 			return sheetsService.spreadsheets().values().get(spreadsheetId, range).execute().getValues();
 		} catch (IOException e) {
@@ -107,7 +104,6 @@ public class RegisterRepositoryImpl implements RegisterRepository {
 
 	@Override
 	public UpdateValuesResponse update(String spreadsheetId, String range2, ValueRange valueRange) {
-		log.info("Data updated successfully in spreadsheetId: {}", spreadsheetId);
 		try {
 			return sheetsService.spreadsheets().values().update(spreadsheetId, range2, valueRange)
 					.setValueInputOption("RAW").execute();
@@ -120,7 +116,6 @@ public class RegisterRepositoryImpl implements RegisterRepository {
 
 	@Override
 	public List<List<Object>> getEmailsAndNames(String spreadsheetId, String value) {
-		log.info("Reading emails and names from sheet for spreadsheetId: {}", spreadsheetId);
 		try {
 			return sheetsService.spreadsheets().values().get(spreadsheetId, emailAndNameRange).execute().getValues();
 		} catch (IOException e) {
@@ -133,7 +128,6 @@ public class RegisterRepositoryImpl implements RegisterRepository {
 	@Override
 	@Cacheable(value = "alternativeNumber", key = "'listOfAlternativeContactNumbers'", unless = "#result == null")
 	public List<List<Object>> getAlternativeNumber(String spreadsheetId) {
-		log.info("Reading Alternative contact number from sheet");
 		try {
 			return  sheetsService.spreadsheets().values().get(spreadsheetId, alternativeNumberRange).execute().getValues();
 		} catch (IOException e) {
@@ -145,7 +139,6 @@ public class RegisterRepositoryImpl implements RegisterRepository {
 	@Override
 	@Cacheable(value = "usnNumber", key = "'listOfUsnNumbers'", unless = "#result == null")
 	public List<List<Object>> getUsnNumber(String spreadsheetId) {
-		log.info("Reading Usn Number from sheet sheet ID,{}",spreadsheetId);
 		try {
 			return sheetsService.spreadsheets().values().get(spreadsheetId, usnNumberRange).execute().getValues();
 		} catch (IOException e) {
@@ -157,7 +150,6 @@ public class RegisterRepositoryImpl implements RegisterRepository {
 	@Override
 	@Cacheable(value = "uniqueNumber", key = "'listofUniqueNumbers'")
 	public List<List<Object>> getUniqueNumbers(String spreadsheetId) {
-		log.info("Reading Unique numbers from sheet,{}",spreadsheetId);
 		try {
 			return sheetsService.spreadsheets().values().get(spreadsheetId, uniqueNumberRange).execute().getValues();
 		} catch (IOException e) {
