@@ -32,6 +32,8 @@ import com.google.auth.oauth2.GoogleCredentials;
 public class NotificationRepositoryImpl implements NotificationRepository {
 	@Value("${sheets.followUpRange}")
 	private String followUpRange;
+	@Value("${sheets.getFeesDetiles}")
+	private String getFeesDetiles;
 	private Sheets sheetsService;
 	private static final JsonFactory JSON_FACTORY = GsonFactory.getDefaultInstance();
 	private static final List<String> SCOPES = Collections.singletonList(SheetsScopes.SPREADSHEETS);
@@ -63,6 +65,21 @@ public class NotificationRepositoryImpl implements NotificationRepository {
 		ValueRange response = sheetsService.spreadsheets().values().get(spreadsheetId, followUpRange).execute();
 		log.info("Notification details retrieved successfully for spreadsheetId: {}", spreadsheetId);
 		return response.getValues();
+	}
+	@Override
+	public List<List<Object>> feesNotification(String spreadsheetId) {
+
+		log.info("Get all feesNotification detiles ");
+		ValueRange response;
+		try {
+			response = sheetsService.spreadsheets().values().get(spreadsheetId, getFeesDetiles).execute();
+			log.info("Fees Notification details retrieved successfully for spreadsheetId: {}", spreadsheetId);
+			return response.getValues();
+		} catch (IOException e) {
+		    log.error("Error Fees Data retrieved : {} ",e.getMessage());
+		}
+		return null;
+		
 	}
 
 }

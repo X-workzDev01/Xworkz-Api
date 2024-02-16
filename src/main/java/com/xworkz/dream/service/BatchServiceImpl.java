@@ -39,7 +39,6 @@ public class BatchServiceImpl implements BatchService {
 	private DreamWrapper wrapper;
 	@Autowired
 	private BatchWrapper batchWrapper;
-	private BatchDetailsDto batch;
 
 	private static final Logger log = LoggerFactory.getLogger(BatchServiceImpl.class);
 
