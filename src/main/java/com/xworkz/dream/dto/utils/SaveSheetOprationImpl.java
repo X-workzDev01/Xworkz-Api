@@ -52,7 +52,7 @@ public class SaveSheetOprationImpl implements SheetSaveOpration {
 			sheetsService.spreadsheets().values().append(spreadSheetId, feesRegisterRange, body)
 					.setValueInputOption("USER_ENTERED").execute();
 		} catch (IOException e) {
-			log.error("error connection ");
+			log.error("error connection ", e);
 		}
 		log.debug("registering fees repository data list is : {}", body);
 		return true;
@@ -73,7 +73,7 @@ public class SaveSheetOprationImpl implements SheetSaveOpration {
 					requestInitializer).setApplicationName(applicationName).build();
 			return sheetsService;
 		} catch (Exception e) {
-
+			log.info("Error connection Sheet {} ", e);
 			return null;
 		}
 	}
@@ -92,7 +92,7 @@ public class SaveSheetOprationImpl implements SheetSaveOpration {
 					.setValueInputOption("USER_ENTERED").execute();
 			return true;
 		} catch (IOException e) {
-			log.error("Error writing data ");
+			log.error("Error writing data {}   ", e);
 			return false;
 
 		}

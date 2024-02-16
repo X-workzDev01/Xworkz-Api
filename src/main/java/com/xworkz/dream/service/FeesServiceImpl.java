@@ -1,6 +1,5 @@
 package com.xworkz.dream.service;
 
-import java.io.IOException;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -94,12 +93,10 @@ public class FeesServiceImpl implements FeesService {
 	@Override
 	public SheetFeesDetiles getAllFeesDetiles(String getFeesDetilesRange, String minIndex, String maxIndex, String date,
 			String courseName, String paymentMode) {
-		log.info("Read data from the repository for feesDto details");
 		List<FeesDto> convertingListToDto = feesRepository.getAllFeesDetiles(getFeesDetilesRange).stream()
 				.map(feesWrapper::listToFeesDTO)
 				.filter(dto -> dto.getSoftFlag().equalsIgnoreCase(ServiceConstant.ACTIVE.toString()))
 				.collect(Collectors.toList());
-		log.info("Return data after filter process for feesDto details");
 		return feesUtils.getDataByselectedItems(minIndex, maxIndex, date, courseName, paymentMode, convertingListToDto);
 
 	}
@@ -107,7 +104,6 @@ public class FeesServiceImpl implements FeesService {
 	@Override
 	public FeesWithHistoryDto getDetilesByEmail(String email, String getFeesDetilesRange,
 			String getFeesDetilesfollowupRange) {
-		log.info("start getting detilsBy email");
 		List<FeesDto> filteredDtos = getFeesDetilesByemail(email, getFeesDetilesRange);
 
 		List<FeesHistoryDto> filteredData = feesRepository.getFeesDetilesByemailInFollowup(getFeesDetilesfollowupRange)
@@ -115,15 +111,12 @@ public class FeesServiceImpl implements FeesService {
 				.filter(items -> items != null && !items.isEmpty() && items.size() > 1 && items.get(1) != null
 						&& items.get(1).toString().equalsIgnoreCase(email))
 				.map(items -> feesWrapper.getListToFeesHistoryDto(items)).collect(Collectors.toList());
-		log.info("Details retrieved successfully by email");
 		return new FeesWithHistoryDto(filteredDtos, filteredData);
 	}
 
 	@Override
 	public String updateFeesFollowUp(FeesDto feesDto, String getFeesDetilesRange) {
-		log.info("Entering the update in fees follow-up");
 		List<FeesDto> feesDtos = getFeesDetilesByemail(feesDto.getFeesHistoryDto().getEmail(), getFeesDetilesRange);
-		log.info("Enter The update  in fees followup");
 		log.debug("Update Dto is {}", feesDto);
 		if (0L != feesDtos.get(0).getBalance()) {
 			if ((int) Long.parseLong(feesDtos.get(0).getFeesHistoryDto().getPaidAmount())

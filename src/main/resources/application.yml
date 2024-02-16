@@ -1,6 +1,6 @@
 spring:
    profiles:
-      active: dev 
+      active: local 
    freemarker:
     template-loader-path: classpath:/templates/
 sheets:

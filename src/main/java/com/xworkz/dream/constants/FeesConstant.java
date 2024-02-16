@@ -2,5 +2,5 @@ package com.xworkz.dream.constants;
 
 public enum FeesConstant {
 
-	Pending, Completed, FREE, FEES_DUE, NA, NO,CSR_Offered,
+	PENDING, COMPLETED, FREE, FEES_DUE, NA, NO,CSR_OFFERED,
 }

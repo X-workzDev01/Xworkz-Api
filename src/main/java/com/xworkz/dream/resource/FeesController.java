@@ -1,7 +1,5 @@
 package com.xworkz.dream.resource;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -28,12 +26,10 @@ public class FeesController {
 	private FeesService feesService;
 	@Autowired
 	private FeesFinalDto feesFinalDtoRanges;
-	private Logger log = LoggerFactory.getLogger(FeesController.class);
 
 	@ApiOperation("Saving feesDetiles")
 	@PostMapping("/saveFees")
 	public ResponseEntity<String> writeFeesSaveOpration(@RequestBody FeesUiDto dto) {
-		log.info("Running save Fees detiles controller ");
 		return ResponseEntity.ok(feesService.writeFeesDetiles(dto, feesFinalDtoRanges.getFeesEmailRange()));
 
 	}
@@ -57,7 +53,6 @@ public class FeesController {
 	public ResponseEntity<SheetFeesDetiles> getFeesDetilesBySelectedOption(@PathVariable String minIndex,
 			@PathVariable String maxIndex, @PathVariable String date, @PathVariable String batch,
 			@PathVariable String paymentMode) {
-		System.err.println(feesFinalDtoRanges.getGetFeesDetilesRange());
 		return ResponseEntity.ok(feesService.getAllFeesDetiles(feesFinalDtoRanges.getGetFeesDetilesRange(), minIndex,
 				maxIndex, date, batch, paymentMode));
 	}

@@ -11,7 +11,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
-import com.xworkz.dream.dto.AuditDto;
 import com.xworkz.dream.dto.CSR;
 import com.xworkz.dream.dto.CourseDto;
 import com.xworkz.dream.dto.EnquiryDto;
