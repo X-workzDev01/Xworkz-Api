@@ -26,7 +26,7 @@ public class WrapperUtil {
 	private FeesRepository feesRepository;
 	@Autowired
 	private FeesFollowUpCacheService feesCacheService;
-	Logger log = LoggerFactory.getLogger(WrapperUtil.class);
+	private Logger log = LoggerFactory.getLogger(WrapperUtil.class);
 
 	public List<Object> extractDtoDetails(Object dto) {
 		List<Object> detailsList = new ArrayList<>();
@@ -105,14 +105,14 @@ public class WrapperUtil {
 				String followupRanges = feesFinalDtoRanges.getFeesUpdateStartRange() + index
 						+ feesFinalDtoRanges.getFeesUpdateEndRange() + index;
 				feesRepository.updateFeesDetiles(followupRanges, extractDtoDetails(updateDto));
-				feesCacheService.updateCacheIntoFeesDetils(CacheConstant.getFeesDetils.toString(),
-						CacheConstant.allDetils.toString(), updateDto.getFeesHistoryDto().getEmail(),
+				feesCacheService.updateCacheIntoFeesDetils(CacheConstant.getFeesDetails.toString(),
+						CacheConstant.allDetails.toString(), updateDto.getFeesHistoryDto().getEmail(),
 						extractDtoDetails(updateDto));
 				log.info("FeesDetiles Updated Sucessfully");
 				return "Feesfollowup and feesDetiles Updated Sucessfully";
 
 			} catch (Exception e) {
-				log.error("fees Detiles Cannot be updated some exception is there");
+				log.error("fees Detiles Cannot be updated some exception is there {} ", e);
 
 			}
 		}
@@ -132,7 +132,7 @@ public class WrapperUtil {
 		feesHistoryDto.setId(null);
 		feesRepository.updateDetilesToFollowUp(feesFinalDtoRanges.getFeesUpdateRange(),
 				extractDtoDetails(feesHistoryDto));
-		feesCacheService.addFeesFollowUpIntoCache(CacheConstant.getFolllowUpdata.toString(),
+		feesCacheService.addFeesFollowUpIntoCache(CacheConstant.getFeesFolllowUpdata.toString(),
 				CacheConstant.feesfollowUpData.toString(), extractDtoDetails(feesHistoryDto));
 	}
 

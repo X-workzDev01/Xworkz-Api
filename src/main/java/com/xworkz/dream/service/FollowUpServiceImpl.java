@@ -428,19 +428,15 @@ public class FollowUpServiceImpl implements FollowUpService {
 				spreadsheetId, startingIndex, maxRows, email);
 		List<StatusDto> statusDto = new ArrayList<>();
 		List<List<Object>> dataList;
-		try {
-			dataList = repo.getFollowUpStatusDetails(spreadsheetId);
+		dataList = repo.getFollowUpStatusDetails(spreadsheetId);
 
-			List<List<Object>> data = dataList.stream()
-					.filter(list -> list.stream().anyMatch(value -> value.toString().equalsIgnoreCase(email)))
-					.collect(Collectors.toList());
-			statusDto = getFollowUpStatusData(data, startingIndex, maxRows);
-			log.debug("Status details: {}", statusDto);
-			return statusDto;
-		} catch (IOException e) {
-			log.error("error getting status  {} ", e);
-			return new ArrayList<StatusDto>();
-		}
+		List<List<Object>> data = dataList.stream()
+				.filter(list -> list.stream().anyMatch(value -> value.toString().equalsIgnoreCase(email)))
+				.collect(Collectors.toList());
+		statusDto = getFollowUpStatusData(data, startingIndex, maxRows);
+		log.debug("Status details: {}", statusDto);
+		return statusDto;
+
 	}
 
 	@Override

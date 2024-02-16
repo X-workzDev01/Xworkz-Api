@@ -66,14 +66,12 @@ public class FeesUtils {
 	public SheetFeesDetiles getDataByselectedItems(String minIndex, String maxIndex, String date, String courseName,
 			String paymentMode, List<FeesDto> convertingListToDto) {
 		if (!courseName.equals("null") && date.equals("null") && paymentMode.equals("null")) {
-			log.info("Running filter By CourseName");
 			List<FeesDto> listDto = convertingListToDto.stream()
 					.filter(items -> items.getCourseName().equalsIgnoreCase(courseName)).collect(Collectors.toList());
 			List<FeesDto> listDtos = listDto.stream().skip(Integer.parseInt(minIndex)).limit(Integer.parseInt(maxIndex))
 					.sorted(Comparator.comparing(FeesDto::getId).reversed()).collect(Collectors.toList());
 			return new SheetFeesDetiles(listDtos, listDto.size());
 		} else if (!courseName.equals("null") && !date.equals("null") && paymentMode.equals("null")) {
-			log.info("Running filter By CourseName and Date");
 			List<FeesDto> listDtos = convertingListToDto.stream()
 					.filter(items -> !items.getFeesHistoryDto().getFeesfollowupDate().toString().equalsIgnoreCase("NA")
 							&& items.getCourseName().equalsIgnoreCase(courseName)
@@ -84,7 +82,6 @@ public class FeesUtils {
 					.sorted(Comparator.comparing(FeesDto::getId).reversed()).collect(Collectors.toList());
 			return new SheetFeesDetiles(listDto, listDtos.size());
 		} else if (courseName.equals("null") && !date.equals("null") && paymentMode.equals("null")) {
-			log.info("Running filter By CourseName and Date");
 			List<FeesDto> listDtos = convertingListToDto.stream()
 					.filter(items -> !items.getFeesHistoryDto().getFeesfollowupDate().toString().equalsIgnoreCase("NA")
 							&& LocalDate.parse(items.getFeesHistoryDto().getFeesfollowupDate())
@@ -94,7 +91,6 @@ public class FeesUtils {
 					.sorted(Comparator.comparing(FeesDto::getId).reversed()).collect(Collectors.toList());
 			return new SheetFeesDetiles(listDto, listDtos.size());
 		} else if (courseName.equals("null") && !date.equals("null") && !paymentMode.equals("null")) {
-			log.info("Running filter By CourseName and Date");
 			List<FeesDto> listDtos = convertingListToDto.stream()
 					.filter(items -> !items.getFeesHistoryDto().getFeesfollowupDate().toString().equalsIgnoreCase("NA")
 							&& LocalDate.parse(items.getFeesHistoryDto().getFeesfollowupDate())
@@ -105,7 +101,6 @@ public class FeesUtils {
 					.sorted(Comparator.comparing(FeesDto::getId).reversed()).collect(Collectors.toList());
 			return new SheetFeesDetiles(listDto, listDtos.size());
 		} else if (!courseName.equals("null") && date.equals("null") && !paymentMode.equals("null")) {
-			log.info("Running filter By CourseName and paymentDate");
 			List<FeesDto> listDtos = convertingListToDto.stream()
 					.filter(items -> !items.getFeesHistoryDto().getFeesfollowupDate().toString().equalsIgnoreCase("NA")
 							&& items.getFeesHistoryDto().getPaymentMode().equalsIgnoreCase(paymentMode)
@@ -115,7 +110,6 @@ public class FeesUtils {
 					.sorted(Comparator.comparing(FeesDto::getId).reversed()).collect(Collectors.toList());
 			return new SheetFeesDetiles(listDto, listDtos.size());
 		} else if (courseName.equals("null") && date.equals("null") && !paymentMode.equals("null")) {
-			log.info("Running filter By Fees Status");
 			List<FeesDto> listDtos = convertingListToDto.stream()
 					.filter(items -> items.getFeesHistoryDto().getPaymentMode().equalsIgnoreCase(paymentMode))
 					.collect(Collectors.toList());
@@ -123,7 +117,6 @@ public class FeesUtils {
 					.sorted(Comparator.comparing(FeesDto::getId).reversed()).collect(Collectors.toList());
 			return new SheetFeesDetiles(listDto, listDtos.size());
 		} else if (!courseName.equals("null") && !date.equals("null") && !paymentMode.equals("null")) {
-			log.info("Running filter By CourseName and Date and status");
 			List<FeesDto> listDtos = convertingListToDto.stream()
 					.filter(items -> !items.getFeesHistoryDto().getFeesfollowupDate().toString().equalsIgnoreCase("NA")
 							&& LocalDate.parse(items.getFeesHistoryDto().getFeesfollowupDate()).isEqual(
@@ -135,7 +128,6 @@ public class FeesUtils {
 					.skip(Integer.parseInt(minIndex)).limit(Integer.parseInt(maxIndex)).collect(Collectors.toList());
 			return new SheetFeesDetiles(listDto, listDtos.size());
 		} else if (courseName.equals("null") && date.equals("null") && paymentMode.equals("null")) {
-			log.info("Running filter No filter");
 			List<FeesDto> listDto = convertingListToDto.stream().sorted(Comparator.comparing(FeesDto::getId).reversed())
 					.skip(Integer.parseInt(minIndex)).limit(Integer.parseInt(maxIndex)).collect(Collectors.toList());
 			return new SheetFeesDetiles(listDto, convertingListToDto.size());
@@ -155,7 +147,6 @@ public class FeesUtils {
 		if (uiDto != null && uiDto.getStatus() != null
 				&& uiDto.getStatus().equalsIgnoreCase(Status.Joined.toString())) {
 			if (uiDto.getEmail() != null) {
-				log.info("set fees detiles by batch");
 				feesDtos.getFeesHistoryDto().setEmail(uiDto.getEmail());
 				feesDtos.getFeesHistoryDto().setTransectionId(FeesConstant.NA.toString());
 				feesDtos.setName(uiDto.getName());

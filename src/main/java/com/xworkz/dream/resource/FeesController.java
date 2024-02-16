@@ -30,7 +30,7 @@ public class FeesController {
 	@ApiOperation("Saving feesDetiles")
 	@PostMapping("/saveFees")
 	public ResponseEntity<String> writeFeesSaveOpration(@RequestBody FeesUiDto dto) {
-		return ResponseEntity.ok(feesService.writeFeesDetiles(dto, feesFinalDtoRanges.getFeesEmailRange()));
+		return ResponseEntity.ok(feesService.writeFeesDetails(dto, feesFinalDtoRanges.getFeesEmailRange()));
 
 	}
 
@@ -44,7 +44,7 @@ public class FeesController {
 	@ApiOperation("get FeesDetiles by Email")
 	@GetMapping("/getFeesDetilesByEmail/{email}")
 	public ResponseEntity<FeesWithHistoryDto> getDetilesByEmail(@PathVariable String email) {
-		return ResponseEntity.ok(feesService.getDetilesByEmail(email, feesFinalDtoRanges.getGetFeesDetilesRange(),
+		return ResponseEntity.ok(feesService.getDetailsByEmail(email, feesFinalDtoRanges.getGetFeesDetilesRange(),
 				feesFinalDtoRanges.getGetFeesDetilesfollowupRange()));
 	}
 
@@ -53,7 +53,7 @@ public class FeesController {
 	public ResponseEntity<SheetFeesDetiles> getFeesDetilesBySelectedOption(@PathVariable String minIndex,
 			@PathVariable String maxIndex, @PathVariable String date, @PathVariable String batch,
 			@PathVariable String paymentMode) {
-		return ResponseEntity.ok(feesService.getAllFeesDetiles(feesFinalDtoRanges.getGetFeesDetilesRange(), minIndex,
+		return ResponseEntity.ok(feesService.getAllFeesDetails(feesFinalDtoRanges.getGetFeesDetilesRange(), minIndex,
 				maxIndex, date, batch, paymentMode));
 	}
 
