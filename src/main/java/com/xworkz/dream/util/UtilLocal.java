@@ -88,8 +88,6 @@ public class UtilLocal implements DreamUtil {
 
 	@Override
 	public void sendBirthadyEmail(String traineeEmail, String subject, String name) {
-		// TODO Auto-generated method stub
-
 	}
 
 	@Override
@@ -102,6 +100,12 @@ public class UtilLocal implements DreamUtil {
 	public boolean csrSmsSent(String name, String contactNo) {
 		logger.info("SMS sent to {} with contact number {}", name, contactNo);
 		return false;
+	}
+
+	@Override
+	public Boolean sendAbsentMail(String email, String name,String reason) {
+		logger.info("Absent Mail : {}  name: {}",email,name);
+		return true;
 	}
 
 }

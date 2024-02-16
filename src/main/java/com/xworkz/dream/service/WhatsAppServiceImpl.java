@@ -16,6 +16,7 @@ import org.springframework.stereotype.Service;
 
 import com.google.api.services.sheets.v4.model.UpdateValuesResponse;
 import com.google.api.services.sheets.v4.model.ValueRange;
+import com.xworkz.dream.constants.Status;
 import com.xworkz.dream.dto.BatchDetailsDto;
 import com.xworkz.dream.dto.TraineeDto;
 import com.xworkz.dream.repository.BatchRepository;
@@ -48,6 +49,8 @@ public class WhatsAppServiceImpl implements WhatsAppService {
 	private String batchDetailsEndRange;
 	@Value("${sheets.traineeSheetName}")
 	private String traineeSheetName;
+	@Autowired
+	private CacheService cacheService;
 
 	private static final Logger log = LoggerFactory.getLogger(WhatsAppServiceImpl.class);
 
@@ -95,18 +98,18 @@ public class WhatsAppServiceImpl implements WhatsAppService {
 	public List<String> getEmailByCourseName(String spreadsheetId, String courseName) throws IOException {
 		List<List<Object>> readData = repo.readData(spreadsheetId);
 		List<String> emailList = readData.stream().filter(row -> row.size() > 2 && row.get(9) instanceof String).filter(
-				row -> courseName.equalsIgnoreCase((String) row.get(9)) && "No".equalsIgnoreCase((String) row.get(23)))
+				row -> courseName.equalsIgnoreCase((String) row.get(9)) && Status.NO.toString().equalsIgnoreCase((String) row.get(23)))
 				.map(row -> (String) row.get(2)).collect(Collectors.toList());
 		log.info("Found {} emails by course name: {}", emailList.size(), courseName);
 		System.err.println("emailList ; "+emailList);
 		return emailList;
 	}
 
-	public synchronized void processAndBulkUpdate(String spreadsheetId, String courseName) throws IOException {
+	public void processAndBulkUpdate(String spreadsheetId, String courseName) throws IOException {
 		List<List<Object>> readData = repo.readData(spreadsheetId);
 		List<String> emailsToUpdate = readData.stream().filter(row -> row.size() > 2 && row.get(9) instanceof String)
 				.filter(row -> courseName.equalsIgnoreCase((String) row.get(9))
-						&& "No".equalsIgnoreCase((String) row.get(23)))
+						&& Status.NO.toString().equalsIgnoreCase((String) row.get(23)))
 				.map(row -> (String) row.get(2)).collect(Collectors.toList());
 
 		if (!emailsToUpdate.isEmpty()) {
@@ -145,10 +148,10 @@ public class WhatsAppServiceImpl implements WhatsAppService {
 						List<Object> modifiedValues = new ArrayList<>(values.get(0).subList(1, values.get(0).size()));
 						values.set(0, modifiedValues);
 					}
-					System.err.println("values in whats app link update :    " + values);
 					ValueRange valueRange = new ValueRange();
 					valueRange.setValues(values);
 					UpdateValuesResponse updated = repo.update(spreadsheetId, range, valueRange);
+					cacheService.getCacheDataByEmail("sheetsData", "listOfTraineeData", email, dto);
 					if (updated != null && !updated.isEmpty()) {
 						return ResponseEntity.ok("Updated Successfully");
 					} else {

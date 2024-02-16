@@ -380,6 +380,31 @@ public class FollowUpServiceImpl implements FollowUpService {
 	private Predicate<FollowUpDto> predicateByStatus(String status, String courseName, String date, String collegeName,
 			DateTimeFormatter dateFormatter, StatusList statusList) {
 		Predicate<FollowUpDto> predicate = null;
+
+		if (!courseName.equals("null") && status.equals("null") && date.equals("null") && collegeName.equals("null")) {
+			predicate = followUpData -> followUpData.getCourseName().equalsIgnoreCase(courseName);
+		}
+		if (!date.equals("null") && status.equals("null") && collegeName.equals("null") && courseName.equals("null")) {
+			predicate = followUpData -> followUpData.getCallback().equalsIgnoreCase(date);
+		}
+
+		if (!collegeName.equals("null") && date.equals("null") && status.equals("null") && courseName.equals("null")) {
+			predicate = followUpData -> followUpData.getCollegeName().equalsIgnoreCase(collegeName);
+		}
+
+		if (!collegeName.equals("null") && !date.equals("null") && status.equals("null") && courseName.equals("null")) {
+			predicate = followUpData -> followUpData.getCollegeName().equalsIgnoreCase(collegeName)
+					&& followUpData.getCallback().equalsIgnoreCase(date);
+		}
+		if (!courseName.equals("null") && !date.equals("null") && status.equals("null") && collegeName.equals("null")) {
+			predicate = followUpData -> followUpData.getCourseName().equalsIgnoreCase(courseName)
+					&& followUpData.getCallback().equalsIgnoreCase(date);
+		}
+		if (!courseName.equals("null") && !collegeName.equals("null") && status.equals("null") && date.equals("null")) {
+			predicate = followUpData -> followUpData.getCourseName().equalsIgnoreCase(courseName)
+					&& followUpData.getCollegeName().equalsIgnoreCase(collegeName);
+		}
+
 		predicate = followUpUtil.byStatus(status, courseName, date, collegeName, dateFormatter, statusList, predicate);
 		predicate = followUpUtil.byStatusAndCourseName(status, courseName, date, collegeName, dateFormatter, statusList,
 				predicate);
