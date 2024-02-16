@@ -151,7 +151,7 @@ public class AttendanceRepositoryImpl implements AttendanceRepository {
 	}
 
 	@Override
-	public List<List<Object>> getNamesAndCourseName(String spreadsheetId, String range, String value) {
+	public List<List<Object>> getNamesAndCourseName(String spreadsheetId, String range,String value) {
 		log.info("Reading names and courseName from sheet for spreadsheetId: {}", spreadsheetId);
 		ValueRange response;
 		try {
