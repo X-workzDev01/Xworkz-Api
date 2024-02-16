@@ -60,7 +60,6 @@ public class EnquiryServiceImpl implements EnquiryService {
 
 			repo.writeData(spreadsheetId, list);
 			cacheService.updateCache("sheetsData", "listOfTraineeData", list);
-			System.out.println("Enquiry:" + list);
 			if (dto.getBasicInfo().getEmail() != null) {
 				cacheService.addEmailToCache("emailData", spreadsheetId, dto.getBasicInfo().getEmail());
 

@@ -347,7 +347,7 @@ public class RegistrationServiceImpl implements RegistrationService {
 					followUpService.updateFollowUp(spreadsheetId, email, dto);
 					cacheService.getCacheDataByEmail("sheetsData", "listOfTraineeData", email, dto);
 					log.info("Updated Successfully. Email: {}", email);
-					cacheService.getCacheDataByEmail("emailData", spreadsheetId, email, dto.getBasicInfo().getEmail());
+					cacheService.getCacheDataByEmail("emailData",spreadsheetId, email, dto.getBasicInfo().getEmail());
 					return ResponseEntity.ok("Updated Successfully");
 				} else {
 					log.error("Error updating data. Email: {}", email);
