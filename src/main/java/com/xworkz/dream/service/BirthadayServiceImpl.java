@@ -10,8 +10,6 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-import javax.servlet.http.HttpServletRequest;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -49,7 +47,7 @@ public class BirthadayServiceImpl implements BirthadayService {
 	private static final Logger log = LoggerFactory.getLogger(BirthadayServiceImpl.class);
 
 	@Override
-	public ResponseEntity<String> saveBirthDayInfo(String spreadsheetId, TraineeDto dto, HttpServletRequest request)
+	public ResponseEntity<String> saveBirthDayInfo(String spreadsheetId, TraineeDto dto)
 			throws IllegalAccessException, IOException {
 		BirthDayInfoDto birthday = assignToBirthDayDto(dto);
 		List<Object> list = wrapper.extractDtoDetails(birthday);

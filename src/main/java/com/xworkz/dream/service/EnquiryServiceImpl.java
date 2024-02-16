@@ -2,13 +2,9 @@ package com.xworkz.dream.service;
 
 import java.util.List;
 
-import javax.mail.MessagingException;
-import javax.servlet.http.HttpServletRequest;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import com.xworkz.dream.constants.ServiceConstant;
@@ -20,8 +16,6 @@ import com.xworkz.dream.dto.TraineeDto;
 import com.xworkz.dream.repository.RegisterRepository;
 import com.xworkz.dream.util.DreamUtil;
 import com.xworkz.dream.wrapper.DreamWrapper;
-
-import freemarker.template.TemplateException;
 
 @Service
 public class EnquiryServiceImpl implements EnquiryService {
@@ -44,8 +38,7 @@ public class EnquiryServiceImpl implements EnquiryService {
 	private static final Logger log = LoggerFactory.getLogger(DreamServiceImpl.class);
 
 	@Override
-	public ResponseEntity<String> writeDataEnquiry(String spreadsheetId, TraineeDto dto, HttpServletRequest request)
-			throws MessagingException, TemplateException {
+	public String writeDataEnquiry(String spreadsheetId, TraineeDto dto) {
 		try {
 			log.info("Writing data for TraineeDto: {}", dto);
 			String uniqueId = csrService.generateUniqueID();
@@ -78,7 +71,7 @@ public class EnquiryServiceImpl implements EnquiryService {
 
 			}
 			log.info("Saving birth details: {}", dto);
-			service.saveBirthDayInfo(spreadsheetId, dto, request);
+			service.saveBirthDayInfo(spreadsheetId, dto);
 
 			boolean status = followUpService.addToFollowUpEnquiry(dto, spreadsheetId);
 
@@ -92,21 +85,21 @@ public class EnquiryServiceImpl implements EnquiryService {
 				}
 
 				if (sent) {
-					return ResponseEntity.ok("Data written successfully, Added to follow Up, sent course content");
+					return "Data written successfully, Added to follow Up, sent course content";
 				}
 			} else {
-				return ResponseEntity.ok("Email not sent, Data written successfully, Added to follow Up");
+				return "Email not sent, Data written successfully, Added to follow Up";
 			}
-			return ResponseEntity.ok("Data written successfully, not added to Follow Up");
+			return "Data written successfully, not added to Follow Up";
 		} catch (Exception e) {
 			log.error("Error processing request:{} ", e.getMessage());
-			return ResponseEntity.ok("Failed to process the request");
+			return "Failed to process the request";
 		}
 
 	}
 
 	@Override
-	public boolean addEnquiry(EnquiryDto enquiryDto, String spreadsheetId, HttpServletRequest request) {
+	public String addEnquiry(EnquiryDto enquiryDto, String spreadsheetId) {
 		wrapper.validateEnquiry(enquiryDto);
 		TraineeDto traineeDto = new TraineeDto();
 		traineeDto.setCourseInfo(new CourseDto(ServiceConstant.NA.toString()));
@@ -114,13 +107,8 @@ public class EnquiryServiceImpl implements EnquiryService {
 		traineeDto.setBasicInfo(enquiryDto.getBasicInfo());
 		traineeDto.setEducationInfo(enquiryDto.getEducationInfo());
 		traineeDto.setAdminDto(enquiryDto.getAdminDto());
-
-		try {
-			writeDataEnquiry(spreadsheetId, traineeDto, request);
-		} catch (MessagingException | TemplateException e) {
-			log.error("Error Writing enquiry data to sheet:{} ", e.getMessage());
-		}
-		return true;
+		return writeDataEnquiry(spreadsheetId, traineeDto);
+		
 
 	}
 

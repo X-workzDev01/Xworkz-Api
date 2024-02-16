@@ -1,6 +1,5 @@
 package com.xworkz.dream.resource;
 
-import java.io.IOException;
 import java.util.List;
 
 import org.slf4j.Logger;
@@ -31,8 +30,7 @@ public class ClientHrInformationController {
 
 	@ApiOperation("To save Client information")
 	@PostMapping("/registerclienthr")
-	public String saveClientHrInformation(@RequestBody ClientHrDto clientHrDto)
-			throws IllegalAccessException, IOException {
+	public String saveClientHrInformation(@RequestBody ClientHrDto clientHrDto){
 		log.info("client Hr controller {}", clientHrDto);
 		return clientHrService.saveClientHrInformation(clientHrDto);
 	}
@@ -57,7 +55,7 @@ public class ClientHrInformationController {
 	
 	@ApiOperation("To check Whether CompanyName is exists or not")
 	@GetMapping("/hrcontactnumbercheck")
-	public String checkHrContactNumberCheck(@RequestParam Long contactNumber) throws IOException {
+	public String checkHrContactNumberCheck(@RequestParam Long contactNumber) {
 		log.info("checking company is already exist or not  {}", contactNumber);
 		if (clientHrService.hrContactNumberCheck(contactNumber)) {
 			return "Contact Number Already exist.";
@@ -69,21 +67,21 @@ public class ClientHrInformationController {
 	
 	@ApiOperation("To get the HR name based on the companyID")
 	@GetMapping("/gethrdetails")
-	public List<ClientHrDto> getHrNameByCompanyId(@RequestParam int companyId) throws IOException{
+	public List<ClientHrDto> getHrNameByCompanyId(@RequestParam int companyId){
 		log.info("get HR name by companyId, {}",companyId);
 		return clientHrService.getHrDetailsByCompanyId(companyId);
 	}
 	
 	@ApiOperation("To get the HR details by HR ID")
 	@GetMapping("/getdetailsbyhrid")
-	public ClientHrDto getHRDetailsByHrId(@RequestParam int hrId) throws IOException {
+	public ClientHrDto getHRDetailsByHrId(@RequestParam int hrId) {
 		log.info("get details by Hr Id: {}",hrId);
 		return clientHrService.getHRDetailsByHrId(hrId);
 	}
 	
 	@ApiOperation("Update the HR details by Id")
 	@PutMapping("/updatebyId")
-	public String updateHrDetails(@RequestParam int hrId,@RequestBody ClientHrDto clientHrDto) throws IllegalAccessException, IOException {
+	public String updateHrDetails(@RequestParam int hrId,@RequestBody ClientHrDto clientHrDto) {
 		log.info("updating Hr details by id, {}",hrId);
 		return clientHrService.updateHrDetails(hrId,clientHrDto);
 	}

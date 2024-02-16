@@ -52,25 +52,22 @@ public class ClientInformationServiceImpl implements ClientInformationService {
 	public String writeClientInformation(ClientDto dto) {
 		if (dto != null) {
 			clientInformationUtil.setValuesToClientDto(dto);
-			List<Object> list = null;
 			try {
-				list = dreamWrapper.extractDtoDetails(dto);
+				List<Object> list = dreamWrapper.extractDtoDetails(dto);
+
+				log.info("in client service, Extracted values: {}", list);
+				if (clientRepository.writeClientInformation(list)) {
+					log.debug("adding newly added data to the cache, clientInformation :{}", list);
+
+					clientCacheService.addNewDtoToCache("clientInformation", "listOfClientDto", list);
+					return "Client Information saved successfully";
+				}
 			} catch (IllegalAccessException e) {
 				log.error("Exception in writeClient,{}", e.getMessage());
+				return "Client Information not saved successfully";
 			}
-			log.info("in client service, Extracted values: {}", list);
-			if (clientRepository.writeClientInformation(list)) {
-				log.debug("adding newly added data to the cache, clientInformation :{}", list);
-
-				clientCacheService.addNewDtoToCache("clientInformation", "ListOfClientDto", list);
-				return "Client Information saved successfully";
-			} else {
-				return "Client Information not saved";
-			}
-		} else {
-			return "client information not saved";
 		}
-
+		return "Client Information not saved successfully";
 	}
 
 	@Override
@@ -94,7 +91,7 @@ public class ClientInformationServiceImpl implements ClientInformationService {
 
 	@Override
 	public boolean checkComanyName(String companyName) {
-		log.info("checkComanyName service class " + companyName);
+		log.info("checkComanyName service class {} ",companyName);
 
 		List<List<Object>> listOfData = clientRepository.readData();
 		if (companyName != null) {
@@ -221,7 +218,7 @@ public class ClientInformationServiceImpl implements ClientInformationService {
 				log.info("update response is :{}", updated);
 				if (updated != null) {
 					List<List<Object>> listOfItems = Arrays.asList(dreamWrapper.extractDtoDetails(clientDto));
-					clientCacheService.updateClientDetailsInCache("clientInformation", "ListOfClientDto", listOfItems);
+					clientCacheService.updateClientDetailsInCache("clientInformation", "listOfClientDto", listOfItems);
 					return "updated Successfully";
 				} else {
 					return "not updated successfully";
@@ -230,7 +227,7 @@ public class ClientInformationServiceImpl implements ClientInformationService {
 				log.error("Exception in updateClientDto,{}", e.getMessage());
 			}
 		}
-		return null;
+		return "not updated successfully";
 	}
 
 }

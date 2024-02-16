@@ -8,8 +8,6 @@ import java.util.List;
 import java.util.ListIterator;
 import java.util.stream.Collectors;
 
-import javax.servlet.http.HttpServletRequest;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -57,7 +55,7 @@ public class RegistrationServiceImpl implements RegistrationService {
 	private static final Logger log = LoggerFactory.getLogger(DreamServiceImpl.class);
 
 	@Override
-	public ResponseEntity<String> writeData(String spreadsheetId, TraineeDto dto, HttpServletRequest request) {
+	public ResponseEntity<String> writeData(String spreadsheetId, TraineeDto dto) {
 		try {
 			log.info("Writing data for TraineeDto: {}", dto);
 			assignCsrDto(dto);
@@ -82,7 +80,7 @@ public class RegistrationServiceImpl implements RegistrationService {
 			if (status) {
 				log.info("Data written successfully to spreadsheetId and Added to Follow Up: {}");
 				log.info("saving birthday information", dto);
-				service.saveBirthDayInfo(spreadsheetId, dto, request);
+				service.saveBirthDayInfo(spreadsheetId, dto);
 				boolean sent = util.sendCourseContent(dto.getBasicInfo().getEmail(),
 						dto.getBasicInfo().getTraineeName());
 
@@ -116,7 +114,7 @@ public class RegistrationServiceImpl implements RegistrationService {
 	}
 
 	@Override
-	public ResponseEntity<String> emailCheck(String spreadsheetId, String email, HttpServletRequest request) {
+	public ResponseEntity<String> emailCheck(String spreadsheetId, String email) {
 
 		try {
 			List<List<Object>> values = repo.getEmails(spreadsheetId, email);
@@ -138,8 +136,7 @@ public class RegistrationServiceImpl implements RegistrationService {
 	}
 
 	@Override
-	public ResponseEntity<String> contactNumberCheck(String spreadsheetId, Long contactNumber,
-			HttpServletRequest request) {
+	public ResponseEntity<String> contactNumberCheck(String spreadsheetId, Long contactNumber) {
 		try {
 			List<List<Object>> values = repo.getContactNumbers(spreadsheetId);
 			for (List<Object> row : values) {
@@ -204,7 +201,7 @@ public class RegistrationServiceImpl implements RegistrationService {
 			traineeData.setSize(sortedByDate.size());
 			return ResponseEntity.ok(traineeData);
 		}
-		return null;
+		 return ResponseEntity.ok(traineeData);
 	}
 
 	@Override

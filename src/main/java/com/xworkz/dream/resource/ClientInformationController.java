@@ -32,9 +32,7 @@ public class ClientInformationController {
 
 	@ApiOperation("To save client data")
 	@PostMapping("/registerclient")
-	public ResponseEntity<String> writeClientInformation(@RequestBody ClientDto clientDto)
-			throws IOException, IllegalAccessException {
-		log.debug("client information: {}", clientDto);
+	public ResponseEntity<String> writeClientInformation(@RequestBody ClientDto clientDto){
 		String response = clientInformationService.writeClientInformation(clientDto);
 		return ResponseEntity.ok(response);
 	}

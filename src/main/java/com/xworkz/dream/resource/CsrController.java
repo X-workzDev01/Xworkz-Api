@@ -2,8 +2,6 @@ package com.xworkz.dream.resource;
 
 import java.io.IOException;
 
-import javax.servlet.http.HttpServletRequest;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,22 +30,18 @@ public class CsrController {
 
 	@ApiOperation(value = "To Register Csr details")
 	@PostMapping("/register")
-	public ResponseEntity<String> register(@RequestBody CsrDto csrDto, HttpServletRequest request) throws IOException {
-		log.info("Registering CSR Details: {}", csrDto);
-		boolean saved = service.registerCsr(csrDto, request);
-
+	public ResponseEntity<String> register(@RequestBody CsrDto csrDto){
+		boolean saved = service.registerCsr(csrDto);
 		if (saved) {
-			log.info("Registered Successfully");
 			return ResponseEntity.ok().body("Registered Successfully");
 		} else {
-			log.error("Failed to Register");
 			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to Register");
 		}
 	}
 
 	@ApiOperation("To Check Contact number check")
 	@GetMapping("/checkcontactNumber")
-	public ResponseEntity<String> checkContactNumber(@RequestParam Long contactNumber) throws IOException {
+	public ResponseEntity<String> checkContactNumber(@RequestParam Long contactNumber) {
 		log.info("Contact number is : {}", contactNumber);
 		if (service.checkContactNumber(contactNumber)) {
 			return ResponseEntity.ok().body("Contact Number Already Exists");
@@ -58,7 +52,7 @@ public class CsrController {
 
 	@ApiOperation("To check USN Number is Exists")
 	@GetMapping("/checkUsn")
-	public ResponseEntity<String> checkUsnNumber(@RequestParam String usnNumber) throws IOException {
+	public ResponseEntity<String> checkUsnNumber(@RequestParam String usnNumber){
 		log.info("checking USN number, {}", usnNumber);
 		if (service.checkUsnNumber(usnNumber)) {
 			return ResponseEntity.ok().body("Usn Number Already Exists");

@@ -1,11 +1,7 @@
 
 package com.xworkz.dream.repository;
 
-import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
-import java.security.GeneralSecurityException;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -16,20 +12,13 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cache.annotation.Cacheable;
-import org.springframework.core.io.Resource;
-import org.springframework.core.io.ResourceLoader;
 import org.springframework.stereotype.Repository;
 
-import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
-import com.google.api.client.http.HttpRequestInitializer;
-import com.google.api.client.json.JsonFactory;
-import com.google.api.client.json.gson.GsonFactory;
 import com.google.api.services.sheets.v4.Sheets;
-import com.google.api.services.sheets.v4.SheetsScopes;
 import com.google.api.services.sheets.v4.model.UpdateValuesResponse;
 import com.google.api.services.sheets.v4.model.ValueRange;
-import com.google.auth.http.HttpCredentialsAdapter;
-import com.google.auth.oauth2.GoogleCredentials;
+import com.xworkz.dream.constants.RepositoryConstant;
+import com.xworkz.dream.dto.utils.SheetSaveOpration;
 
 /**
  * @author vinoda
@@ -41,94 +30,66 @@ public class ClientHrRepositoryImpl implements ClientHrRepository {
 	private String applicationName;
 	@Value("${sheets.credentialsPath}")
 	private String credentialsPath;
-	private static final JsonFactory JSON_FACTORY = GsonFactory.getDefaultInstance();
-	private static final List<String> SCOPES = Collections.singletonList(SheetsScopes.SPREADSHEETS);
 	private Sheets sheetsService;
-
 	@Value("${sheets.clientHrInformationRange}")
 	private String clientHrInformationRange;
 	@Value("${sheets.clientHrInformationReadRange}")
 	private String clientHrInformationReadRange;
 	@Value("${login.sheetId}")
 	public String sheetId;
-
 	@Autowired
-	private ResourceLoader resourceLoader;
+	private SheetSaveOpration saveOperation;
 	private static final Logger log = LoggerFactory.getLogger(ClientHrRepositoryImpl.class);
 
 	@Override
 	@PostConstruct
 	public void setSheetsService() {
-
-		Resource resource = resourceLoader.getResource(credentialsPath);
-		File file;
 		try {
-			file = resource.getFile();
-
-			GoogleCredentials credentials;
-			credentials = GoogleCredentials.fromStream(new FileInputStream(file)).createScoped(SCOPES);
-			HttpRequestInitializer requestInitializer = new HttpCredentialsAdapter(credentials);
-			sheetsService = new Sheets.Builder(GoogleNetHttpTransport.newTrustedTransport(), JSON_FACTORY,
-					requestInitializer).setApplicationName(applicationName).build();
-		} catch (GeneralSecurityException | IOException e) {
-			log.error("Exception in setSheetsService from clientHr,{}", e.getMessage());
+			sheetsService = saveOperation.ConnsetSheetService();
+		} catch (Exception e) {
+			log.error("Exception while connecting to sheet,{}", e.getMessage());
 		}
+
 	}
 
 	@Override
 	public boolean saveClientHrInformation(List<Object> row) {
-		List<List<Object>> values = new ArrayList<>();
-		List<Object> rowData = new ArrayList<>();
-		ValueRange valueRange = null;
 		try {
-			valueRange = sheetsService.spreadsheets().values().get(sheetId, clientHrInformationRange).execute();
-			if (valueRange.getValues() != null && valueRange.getValues().size() >= 1) {
-				log.debug("if sheet doesn't contain any data:{}", valueRange);
-				rowData.add("");
-				rowData.addAll(row.subList(1, row.size()));
-				values.add(rowData);
-				ValueRange body = new ValueRange().setValues(values);
-				sheetsService.spreadsheets().values().append(sheetId, clientHrInformationRange, body)
-						.setValueInputOption("USER_ENTERED").execute();
+			ValueRange value = sheetsService.spreadsheets().values().get(sheetId, clientHrInformationRange).execute();
+			if (value.getValues() != null && value.getValues().size() >= 1) {
+				return saveOperation.saveDetilesWithDataSize(row, clientHrInformationRange);
 			} else {
-				log.debug("if sheet doesn't contain any data:{}", valueRange);
-				rowData.addAll(row.subList(1, row.size()));
-				values.add(rowData);
-				ValueRange body = new ValueRange().setValues(values);
-				sheetsService.spreadsheets().values().append(sheetId, clientHrInformationRange, body)
-						.setValueInputOption("USER_ENTERED").execute();
+				return saveOperation.saveDetilesWithoutSize(row, clientHrInformationRange);
 			}
 		} catch (IOException e) {
-			log.error("Exception in saveClientHrInformation from clientHr,{}", e.getMessage());
+			log.error("Exception while saving data to sheet,{}", e.getMessage());
+			return false;
 		}
-		return true;
 
 	}
 
 	@Override
 	@Cacheable(value = "hrDetails", key = "'listofHRDetails'")
 	public List<List<Object>> readData() {
-		List<List<Object>> values = null;
 		try {
-			values = sheetsService.spreadsheets().values().get(sheetId, clientHrInformationReadRange).execute()
+			return sheetsService.spreadsheets().values().get(sheetId, clientHrInformationReadRange).execute()
 					.getValues();
 		} catch (IOException e) {
 			log.error("Exception in readData repository,{}", e.getMessage());
+			return Collections.emptyList();
 		}
-		return values;
 	}
 
 	@Override
 	public UpdateValuesResponse updateHrDetails(String range, ValueRange valueRange) {
-		log.info("updating the HR details ,{}", range);
-		UpdateValuesResponse response = null;
+		log.info("updating the HR details ,{}", valueRange);
 		try {
-			response = sheetsService.spreadsheets().values().update(sheetId, range, valueRange)
-					.setValueInputOption("RAW").execute();
+			return sheetsService.spreadsheets().values().update(sheetId, range, valueRange).setValueInputOption(RepositoryConstant.RAW.toString())
+					.execute();
 		} catch (IOException e) {
 			log.error("Exception in updateHrDetails repository,{}", e.getMessage());
 		}
-		return response;
+		return null;
 	}
 
 }

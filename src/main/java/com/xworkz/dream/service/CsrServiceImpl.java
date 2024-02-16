@@ -7,8 +7,6 @@ import java.util.List;
 import java.util.Random;
 import java.util.Set;
 
-import javax.servlet.http.HttpServletRequest;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -49,13 +47,13 @@ public class CsrServiceImpl implements CsrService {
 	private static final Logger log = LoggerFactory.getLogger(DreamServiceImpl.class);
 
 	@Override
-	public ResponseEntity<String> validateAndRegister(TraineeDto dto, HttpServletRequest request) {
+	public ResponseEntity<String> validateAndRegister(TraineeDto dto) {
 		try {
 			log.info("Writing data for TraineeDto: {}", dto);
 			wrapper.setValuesForCSRDto(dto);
 			List<Object> list = wrapper.extractDtoDetails(dto);
 			repo.writeData(spreadsheetId, list);
-			addToCache(dto, request, list);
+			addToCache(dto,list);
 			boolean status = followUpService.addCsrToFollowUp(dto, spreadsheetId);
 
 			if (status) {
@@ -79,7 +77,7 @@ public class CsrServiceImpl implements CsrService {
  
 	}
 
-	public void addToCache(TraineeDto dto, HttpServletRequest request, List<Object> list)
+	public void addToCache(TraineeDto dto, List<Object> list)
 			 {
 		cacheService.updateCache("sheetsData", "listOfTraineeData", list);
 		if (dto.getBasicInfo().getEmail() != null) {
@@ -90,7 +88,7 @@ public class CsrServiceImpl implements CsrService {
 		}
 		log.info("Saving birth details: {}", dto);
 		try {
-			service.saveBirthDayInfo(spreadsheetId, dto, request);
+			service.saveBirthDayInfo(spreadsheetId, dto);
 		} catch (IllegalAccessException|IOException  e) {
 	
 			log.error("Exception in addToCache: {}",e.getMessage());
@@ -100,8 +98,8 @@ public class CsrServiceImpl implements CsrService {
 		cacheService.addEmailToCache("usnNumber", "listOfUsnNumbers", dto.getCsrDto().getUsnNumber());
 		cacheService.addEmailToCache("uniqueNumber", "listofUniqueNumbers", dto.getCsrDto().getUniqueId());
 	}
-
-	public boolean registerCsr(CsrDto csrDto, HttpServletRequest request) {
+	@Override
+	public boolean registerCsr(CsrDto csrDto) {
 		TraineeDto traineeDto = new TraineeDto();
 		CSR csr = new CSR();
 		traineeDto.setCourseInfo(new CourseDto(ServiceConstant.NA.toString()));
@@ -118,8 +116,7 @@ public class CsrServiceImpl implements CsrService {
 		csr.setUniqueId(traineeDto.getCourseInfo().getOfferedAs().equalsIgnoreCase(ServiceConstant.CSR.toString()) ? uniqueId : ServiceConstant.NA.toString());
 		csr.setUsnNumber(csrDto.getUsnNumber());
 		traineeDto.setCsrDto(csr);
-		validateAndRegister(traineeDto, request);
-
+		validateAndRegister(traineeDto);
 		return true;
 	}
 
@@ -145,7 +142,7 @@ public class CsrServiceImpl implements CsrService {
 
 	@Override
 	public boolean checkUsnNumber(String usnNumber) {
-		log.info("check Usn Number ");
+		log.info("check Usn Number,{} ",usnNumber);
 		if (usnNumber != null) {
 			List<List<Object>> listOfUsn = repo.getUsnNumber(spreadsheetId);
 			return listOfUsn != null
@@ -180,7 +177,7 @@ public class CsrServiceImpl implements CsrService {
 	@Override
 	public boolean checkUniqueNumber(String uniqueNumber) {
 		if (uniqueNumber != null) {
-			log.info("checking unique number");
+			log.info("checking unique number,{}",uniqueNumber);
 			List<List<Object>> listOfUniqueNumber = repo.getUniqueNumbers(spreadsheetId);
 			return listOfUniqueNumber != null && listOfUniqueNumber.stream()
 					.filter(list -> list != null && !list.isEmpty() && list.get(0) != null)

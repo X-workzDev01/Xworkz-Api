@@ -49,9 +49,7 @@ public class ClientHrServiceImpl implements ClientHrService {
 
 	@Override
 	public String saveClientHrInformation(ClientHrDto clientHrDto) {
-		log.info("ClientHr Service");
 		if (clientHrDto != null) {
-
 			clientInformationUtil.setValuesToClientHrDto(clientHrDto);
 			log.debug("Received ClientHrDto: {}", clientHrDto);
 			List<Object> listItem = null;
