@@ -71,7 +71,7 @@ public class DreamWrapper {
 
 	public FollowUpDto listToFollowUpDTO(List<Object> row) {
 		FollowUpDto followUpDto = new FollowUpDto(0, new BasicInfoDto(), null, null, null, null, null, null, null, null,
-				null,null,null);
+				null, null, null);
 		int rowSize = row.size();
 
 		if (rowSize > 0 && row.get(0) != null && !row.get(0).toString().isEmpty()) {
@@ -221,7 +221,6 @@ public class DreamWrapper {
 
 		if (row.size() > RegistrationConstant.COLUMN_ID.getIndex() && validateCell(RegistrationConstant.COLUMN_ID)) {
 			traineeDto.setId(Integer.valueOf(row.get(RegistrationConstant.COLUMN_ID.getIndex()).toString()));
-
 		}
 		if (row.size() > RegistrationConstant.COLUMN_TRAINEE_NAME.getIndex()
 				&& validateCell(RegistrationConstant.COLUMN_TRAINEE_NAME)) {

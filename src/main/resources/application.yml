@@ -23,7 +23,7 @@ sheets:
   idRange: xworkzApi!A3:A    
   followUpRowCurrentStartRange: G
   followUpRowCurrentEndRange: H
-  emailAndNameRange: xworkzApi!A2:J
+  emailAndNameRange: xworkzApi!A3:J
   batchDetailsSheetName: batchDetails!
   batchDetailsStartRange: B
   batchDetailsEndRange: K

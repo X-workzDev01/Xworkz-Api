@@ -1,6 +1,5 @@
 package com.xworkz.dream.service;
 
-import java.io.IOException;
 import java.util.List;
 
 import com.xworkz.dream.dto.ClientDataDto;
@@ -8,24 +7,24 @@ import com.xworkz.dream.dto.ClientDto;
 
 public interface ClientInformationService {
 
-	String writeClientInformation(ClientDto dto) throws IOException, IllegalAccessException;
+	String writeClientInformation(ClientDto dto);
 
-	ClientDataDto readClientData(int startingIndex, int maxRows) throws IOException;
+	ClientDataDto readClientData(int startingIndex, int maxRows);
 
-	boolean checkComanyName(String companyName) throws IOException;
+	boolean checkComanyName(String companyName);
 
-	ClientDto getClientDtoById(int companyId) throws IOException;
+	ClientDto getClientDtoById(int companyId);
 
-	boolean checkEmail(String companyEmail) throws IOException;
+	boolean checkEmail(String companyEmail);
 
-	boolean checkContactNumber(String contactNumber) throws IOException;
+	boolean checkContactNumber(String contactNumber);
 
-	boolean checkCompanyWebsite(String companyWebsite) throws IOException;
+	boolean checkCompanyWebsite(String companyWebsite);
 
-	List<ClientDto> getSuggestionDetails(String companyName) throws IOException;
+	List<ClientDto> getSuggestionDetails(String companyName);
 
-	String updateClientDto(int companyId, ClientDto clientDto) throws IOException, IllegalAccessException;
+	String updateClientDto(int companyId, ClientDto clientDto);
 
-	List<ClientDto> getDetailsbyCompanyName(String companyName) throws IOException;
+	List<ClientDto> getDetailsbyCompanyName(String companyName);
 
 }
