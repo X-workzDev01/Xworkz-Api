@@ -1,9 +1,5 @@
 package com.xworkz.dream.service;
 
-import java.io.IOException;
-
-import javax.servlet.http.HttpServletRequest;
-
 import org.springframework.http.ResponseEntity;
 
 import com.xworkz.dream.dto.CsrDto;
@@ -11,15 +7,15 @@ import com.xworkz.dream.dto.TraineeDto;
 
 public interface CsrService {
 
-	ResponseEntity<String> validateAndRegister(TraineeDto csrDto, HttpServletRequest request);
+	ResponseEntity<String> validateAndRegister(TraineeDto csrDto);
 
-	boolean registerCsr(CsrDto csrDto, HttpServletRequest request) throws IOException;
+	boolean registerCsr(CsrDto csrDto);
 
-	boolean checkContactNumber(Long contactNumber) throws IOException;
+	boolean checkContactNumber(Long contactNumber) ;
 
-	boolean checkUsnNumber(String usnNumber) throws IOException;
+	boolean checkUsnNumber(String usnNumber);
 
-	boolean checkUniqueNumber(String uniqueNumber) throws IOException;
+	boolean checkUniqueNumber(String uniqueNumber);
 
 	String generateUniqueID();
 

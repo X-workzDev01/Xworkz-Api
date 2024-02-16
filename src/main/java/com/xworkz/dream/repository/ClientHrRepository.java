@@ -1,18 +1,16 @@
 package com.xworkz.dream.repository;
 
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.security.GeneralSecurityException;
 import java.util.List;
 
 import com.google.api.services.sheets.v4.model.UpdateValuesResponse;
 import com.google.api.services.sheets.v4.model.ValueRange;
 
 public interface ClientHrRepository {
-	void setSheetsService() throws IOException, FileNotFoundException, GeneralSecurityException;
+	void setSheetsService();
 
-	 boolean saveClientHrInformation(List<Object> row) throws IOException;
-	 List<List<Object>> readData() throws IOException;
+	boolean saveClientHrInformation(List<Object> row);
 
-	UpdateValuesResponse updateHrDetails(String range, ValueRange valueRange) throws IOException;
+	List<List<Object>> readData();
+
+	UpdateValuesResponse updateHrDetails(String range, ValueRange valueRange);
 }

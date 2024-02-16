@@ -164,7 +164,7 @@ public class WhatsAppServiceImpl implements WhatsAppService {
 					return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Email not found");
 				}
 
-			} catch (IOException | IllegalAccessException e) {
+			} catch (IllegalAccessException e) {
 				log.error("An error occurred while updating data. Email: {}", email, e);
 				return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("An error occurred ");
 			}
@@ -173,8 +173,7 @@ public class WhatsAppServiceImpl implements WhatsAppService {
 
 	}
 
-	private int findRowIndexByEmail(String spreadsheetId, String email) throws IOException {
-		try {
+	private int findRowIndexByEmail(String spreadsheetId, String email) {
 			log.info("Finding row index by email in spreadsheetId: {} for email: {}", spreadsheetId, email);
 			List<List<Object>> data = repo.getEmails(spreadsheetId, email);
 			List<List<Object>> values = data;
@@ -189,10 +188,6 @@ public class WhatsAppServiceImpl implements WhatsAppService {
 			}
 			log.info("Email {} not found in the spreadsheet.", email);
 			return -1;
-		} catch (IOException e) {
-			log.error("An error occurred while finding row index by email in spreadsheetId: {}", spreadsheetId, e);
-			throw e;
-		}
 	}
 
 	@Override
