@@ -1,6 +1,5 @@
 package com.xworkz.dream.service;
 
-import java.io.IOException;
 import java.util.List;
 
 import com.xworkz.dream.dto.ClientHrData;
@@ -8,19 +7,18 @@ import com.xworkz.dream.dto.ClientHrDto;
 
 public interface ClientHrService {
 
-	String saveClientHrInformation(ClientHrDto clientHrDto) throws IllegalAccessException, IOException;
+	String saveClientHrInformation(ClientHrDto clientHrDto);
 
-	ClientHrData readData(int startingIndex, int maxRows, int companyId) throws IOException;
+	ClientHrData readData(int startingIndex, int maxRows, int companyId);
 
-	boolean hrEmailcheck(String companyName) throws IOException;
+	boolean hrEmailcheck(String companyName);
 
-	List<ClientHrDto> getHrDetailsByCompanyId(int companyId) throws IOException;
+	List<ClientHrDto> getHrDetailsByCompanyId(int companyId);
 
-	ClientHrDto getHRDetailsByHrId(int hrId) throws IOException;
+	ClientHrDto getHRDetailsByHrId(int hrId);
 
-	String updateHrDetails(int hrId, ClientHrDto clientHrDto) throws IllegalAccessException, IOException;
+	String updateHrDetails(int hrId, ClientHrDto clientHrDto);
 
-	boolean hrContactNumberCheck(Long contactNumber) throws IOException;
-	
+	boolean hrContactNumberCheck(Long contactNumber);
 
 }

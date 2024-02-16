@@ -31,7 +31,7 @@ public class BirthdayController {
 	public ResponseEntity<String> updateBirthDayInfo(@RequestHeader String spreadsheetId, @RequestBody TraineeDto dto,
 			HttpServletRequest request) throws IllegalAccessException, IOException {
 		log.info("Request received for updateBirthDayInfo. SpreadsheetId: {}", spreadsheetId);
-		return service.saveBirthDayInfo(spreadsheetId, dto, request);
+		return service.saveBirthDayInfo(spreadsheetId, dto);
 	}
 
 }
