@@ -94,9 +94,9 @@ public class FeesRepositoryImpl implements FeesRepository {
 	@Override
 	public boolean updateDetilesToFollowUp(String followup, List<Object> list) {
 		log.info("update fees followUp detiles form the sheet   " + list);
-		ValueRange value;
+
 		try {
-			value = sheetsRepository.spreadsheets().values().get(spreadSheetId, followup).execute();
+			ValueRange value = sheetsRepository.spreadsheets().values().get(spreadSheetId, followup).execute();
 
 			if (value.getValues() != null && value.getValues().size() >= 1) {
 				return saveOpration.saveDetilesWithDataSize(list, followup);
