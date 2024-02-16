@@ -1,8 +1,7 @@
 package com.xworkz.dream.repository;
 
-import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.security.GeneralSecurityException;
+import java.util.Collections;
 import java.util.List;
 
 import javax.annotation.PostConstruct;
@@ -11,12 +10,12 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Repository;
 
 import com.google.api.services.sheets.v4.Sheets;
 import com.google.api.services.sheets.v4.model.ValueRange;
+import com.xworkz.dream.constants.RepositoryConstant;
 import com.xworkz.dream.dto.utils.SheetSaveOpration;
 
 @Repository
@@ -31,67 +30,91 @@ public class FeesRepositoryImpl implements FeesRepository {
 	private Logger log = LoggerFactory.getLogger(FeesRepositoryImpl.class);
 
 	@PostConstruct
-	private void setsheetsRepository() throws IOException, FileNotFoundException, GeneralSecurityException {
+	private void setsheetsRepository() {
 		sheetsRepository = saveOpration.ConnsetSheetService();
 	}
 
 	@Override
-	public boolean writeFeesDetiles(List<Object> list) throws IOException {
-		log.info("Running fees repository  {}", list);
+	public boolean writeFeesDetails(List<Object> list) {
+		try {
+			ValueRange value = sheetsRepository.spreadsheets().values().get(spreadSheetId, feesRegisterRange).execute();
 
-		ValueRange value = sheetsRepository.spreadsheets().values().get(spreadSheetId, feesRegisterRange).execute();
-		if (value.getValues() != null && value.getValues().size() >= 1) {
-			log.info("Fees register sucessfully");
-			return saveOpration.saveDetilesWithDataSize(list, feesRegisterRange);
+			if (value.getValues() != null && value.getValues().size() >= 1) {
+				return saveOpration.saveDetilesWithDataSize(list, feesRegisterRange);
 
-		} else {
-			log.info("Fees register sucessfully");
-			return saveOpration.saveDetilesWithoutSize(list, feesRegisterRange);
+			} else {
+				return saveOpration.saveDetilesWithoutSize(list, feesRegisterRange);
+			}
+		} catch (IOException e) {
+			log.error("error fetching data  {}  ", e);
+			return false;
 		}
 
 	}
 
 	@Override
-
-	public List<List<Object>> getAllFeesDetiles(String getFeesDetilesRange) throws IOException {
-		log.info("get fees detiles form the sheet");
-		return sheetsRepository.spreadsheets().values().get(spreadSheetId, getFeesDetilesRange).execute().getValues();
+	@Cacheable(value = "getFeesDetails", key = "'allDetails'")
+	public List<List<Object>> getAllFeesDetiles(String getFeesDetilesRange) {
+		try {
+			return sheetsRepository.spreadsheets().values().get(spreadSheetId, getFeesDetilesRange).execute()
+					.getValues();
+		} catch (IOException e) {
+			log.error("error fetching data  {}  ", e);
+			return Collections.emptyList();
+		}
 	}
 
 	@Override
-	public List<List<Object>> getFeesDetilesByemailInFollowup(String getFeesDetilesfollowupRange) throws IOException {
-		log.info("get fees followUp detiles form the sheet");
-		return sheetsRepository.spreadsheets().values().get(spreadSheetId, getFeesDetilesfollowupRange).execute()
-				.getValues();
+	@Cacheable(value = "getFeesFolllowUpdata", key = "'feesfollowUpData'")
+	public List<List<Object>> getFeesDetilesByemailInFollowup(String getFeesDetilesfollowupRange) {
+		try {
+			return sheetsRepository.spreadsheets().values().get(spreadSheetId, getFeesDetilesfollowupRange).execute()
+					.getValues();
+		} catch (IOException e) {
+			log.error("error fetching data  {}  ", e);
+			return Collections.emptyList();
+		}
 	}
 
 	@Override
-	public String updateFeesDetiles(String getFeesDetilesfollowupRange, List<Object> list) throws IOException {
-		log.info("update Fees Detiles is Running");
-		log.error(getFeesDetilesfollowupRange); 
-		log.error(""+list);
+	public String updateFeesDetiles(String getFeesDetilesfollowupRange, List<Object> list) {
 		ValueRange body = saveOpration.updateDetilesToSheet(list);
-		return sheetsRepository.spreadsheets().values().update(spreadSheetId, getFeesDetilesfollowupRange, body)
-				.setValueInputOption("RAW").execute().setSpreadsheetId(spreadSheetId).getUpdatedRange();
-	}
-
-	@Override
-	public boolean updateDetilesToFollowUp(String followup, List<Object> list) throws IOException {
-		log.info("update fees followUp detiles form the sheet   " + list);
-		ValueRange value = sheetsRepository.spreadsheets().values().get(spreadSheetId, followup).execute();
-		if (value.getValues() != null && value.getValues().size() >= 1) {
-			log.info("Fees register sucessfully");
-			return saveOpration.saveDetilesWithDataSize(list, followup);
-
-		} else {
-			log.info("Fees register sucessfully");
-			return saveOpration.saveDetilesWithoutSize(list, followup);
+		try {
+			return sheetsRepository.spreadsheets().values().update(spreadSheetId, getFeesDetilesfollowupRange, body)
+					.setValueInputOption(RepositoryConstant.RAW.toString()).execute().setSpreadsheetId(spreadSheetId)
+					.getUpdatedRange();
+		} catch (IOException e) {
+			log.error("Error updating data {}     ", e);
+			return "data Update Error";
 		}
 	}
 
 	@Override
-	public ValueRange getEmailList(String feesEmailRange) throws IOException {
-		ValueRange response = sheetsRepository.spreadsheets().values().get(spreadSheetId, feesEmailRange).execute();
-		return response;
+	public boolean updateDetilesToFollowUp(String followup, List<Object> list) {
+
+		try {
+			ValueRange value = sheetsRepository.spreadsheets().values().get(spreadSheetId, followup).execute();
+			if (value.getValues() != null && value.getValues().size() >= 1) {
+				return saveOpration.saveDetilesWithDataSize(list, followup);
+
+			} else {
+				return saveOpration.saveDetilesWithoutSize(list, followup);
+			}
+		} catch (IOException e) {
+			log.error("error update data  {}  ", e);
+			return false;
+		}
+	}
+
+	@Override
+	@Cacheable(value = "getFeesEmail", key = "'email'")
+	public List<List<Object>> getEmailList(String feesEmailRange) {
+		try {
+			return sheetsRepository.spreadsheets().values().get(spreadSheetId, feesEmailRange).execute().getValues();
+		} catch (IOException e) {
+			log.error("error fetching data  {}  ", e);
+			return Collections.emptyList();
+		}
+
 	}
 }

@@ -1,8 +1,6 @@
 package com.xworkz.dream.resource;
 
-import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -20,7 +18,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.xworkz.dream.dto.ClientDto;
 import com.xworkz.dream.service.CacheServiceImpl;
 
 @RestController
@@ -52,7 +49,7 @@ public class CacheController {
 		}
 	}
 
-	@GetMapping("/getByCacheName")
+	@GetMapping("/getByCacheName") 
 	public ResponseEntity<List<List<Object>>> getByCacheName(String cacheName, @RequestHeader String spreadsheetId) {
 		Cache cache = cacheManager.getCache(cacheName);
 

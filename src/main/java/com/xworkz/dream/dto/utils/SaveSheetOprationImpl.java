@@ -2,9 +2,7 @@ package com.xworkz.dream.dto.utils;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.security.GeneralSecurityException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -43,47 +41,62 @@ public class SaveSheetOprationImpl implements SheetSaveOpration {
 	private String spreadSheetId;
 
 	@Override
-	public boolean saveDetilesWithoutSize(List<Object> list, String feesRegisterRange) throws IOException {
+	public boolean saveDetilesWithoutSize(List<Object> list, String feesRegisterRange) {
 
 		List<List<Object>> values = new ArrayList<>();
 		List<Object> rowData = new ArrayList<>();
 		rowData.addAll(list.subList(1, list.size()));
 		values.add(rowData);
 		ValueRange body = new ValueRange().setValues(values);
-		sheetsService.spreadsheets().values().append(spreadSheetId, feesRegisterRange, body)
-				.setValueInputOption("USER_ENTERED").execute();
+		try {
+			sheetsService.spreadsheets().values().append(spreadSheetId, feesRegisterRange, body)
+					.setValueInputOption("USER_ENTERED").execute();
+		} catch (IOException e) {
+			log.error("error connection ", e);
+		}
 		log.debug("registering fees repository data list is : {}", body);
 		return true;
 
 	}
 
 	@Override
-	public Sheets ConnsetSheetService() throws IOException, FileNotFoundException, GeneralSecurityException {
-		Resource resource = resourceLoader.getResource(credentialsPath);
-		File file = resource.getFile();
+	public Sheets ConnsetSheetService() {
 
-		GoogleCredentials credentials = GoogleCredentials.fromStream(new FileInputStream(file)).createScoped(SCOPES);
+		try {
+			GoogleCredentials credentials;
+			Resource resource = resourceLoader.getResource(credentialsPath);
+			File file = resource.getFile();
+			credentials = GoogleCredentials.fromStream(new FileInputStream(file)).createScoped(SCOPES);
 
-		HttpRequestInitializer requestInitializer = new HttpCredentialsAdapter(credentials);
-		sheetsService = new Sheets.Builder(GoogleNetHttpTransport.newTrustedTransport(), JSON_FACTORY,
-				requestInitializer).setApplicationName(applicationName).build();
-		return sheetsService;
+			HttpRequestInitializer requestInitializer = new HttpCredentialsAdapter(credentials);
+			sheetsService = new Sheets.Builder(GoogleNetHttpTransport.newTrustedTransport(), JSON_FACTORY,
+					requestInitializer).setApplicationName(applicationName).build();
+			return sheetsService;
+		} catch (Exception e) {
+			log.info("Error connection Sheet {} ", e);
+			return null;
+		}
 	}
 
 	@Override
-	public boolean saveDetilesWithDataSize(List<Object> list, String feesRegisterRange) throws IOException {
+	public boolean saveDetilesWithDataSize(List<Object> list, String feesRegisterRange) {
 		List<List<Object>> values = new ArrayList<>();
 		List<Object> rowData = new ArrayList<>();
 		rowData.add("");
 		rowData.addAll(list.subList(1, list.size()));
 		values.add(rowData);
 		ValueRange body = new ValueRange().setValues(values);
-		sheetsService.spreadsheets().values().append(spreadSheetId, feesRegisterRange, body)
-				.setValueInputOption("USER_ENTERED").execute();
-		log.debug("registering fees repository data list is : {}", body);
+		try {
+			log.debug("registering fees repository data list is : {}", body);
+			sheetsService.spreadsheets().values().append(spreadSheetId, feesRegisterRange, body)
+					.setValueInputOption("USER_ENTERED").execute();
+			return true;
+		} catch (IOException e) {
+			log.error("Error writing data {}   ", e);
+			return false;
 
-		return true;
- 
+		}
+
 	}
 
 	@Override
@@ -97,8 +110,5 @@ public class SaveSheetOprationImpl implements SheetSaveOpration {
 		ValueRange body = new ValueRange().setValues(values);
 		return body;
 	}
-	
-
-
 
 }
