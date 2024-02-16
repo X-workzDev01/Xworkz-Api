@@ -54,7 +54,7 @@ public class FeesUtils {
 
 	}
 
-	public String getTraineeDetiles(String email) throws IOException {
+	public String getTraineeDetiles(String email) {
 		TraineeDto traineeDto = registrationService.getDetailsByEmail(spreadSheetId, email);
 		if (traineeDto.getCourseInfo().getOfferedAs()
 				.equalsIgnoreCase(FeesConstant.CSR_OFFERED.toString().replace('_', ' '))) {
@@ -65,15 +65,17 @@ public class FeesUtils {
 
 	public SheetFeesDetiles getDataByselectedItems(String minIndex, String maxIndex, String date, String courseName,
 			String paymentMode, List<FeesDto> convertingListToDto) {
-		if (!courseName.equals(ServiceConstant.NULL.toString()) && date.equals(ServiceConstant.NULL.toString())
-				&& paymentMode.equals(ServiceConstant.NULL.toString())) {
+		if (!courseName.equalsIgnoreCase(ServiceConstant.NULL.toString())
+				&& date.equalsIgnoreCase(ServiceConstant.NULL.toString())
+				&& paymentMode.equalsIgnoreCase(ServiceConstant.NULL.toString())) {
 			List<FeesDto> listDto = convertingListToDto.stream()
 					.filter(items -> items.getCourseName().equalsIgnoreCase(courseName)).collect(Collectors.toList());
 			List<FeesDto> listDtos = listDto.stream().skip(Integer.parseInt(minIndex)).limit(Integer.parseInt(maxIndex))
 					.sorted(Comparator.comparing(FeesDto::getId).reversed()).collect(Collectors.toList());
 			return new SheetFeesDetiles(listDtos, listDto.size());
-		} else if (!courseName.equals(ServiceConstant.NULL.toString()) && !date.equals(ServiceConstant.NULL.toString())
-				&& paymentMode.equals(ServiceConstant.NULL.toString())) {
+		} else if (!courseName.equalsIgnoreCase(ServiceConstant.NULL.toString())
+				&& !date.equalsIgnoreCase(ServiceConstant.NULL.toString())
+				&& paymentMode.equalsIgnoreCase(ServiceConstant.NULL.toString())) {
 			List<FeesDto> listDtos = convertingListToDto.stream()
 					.filter(items -> !items.getFeesHistoryDto().getFeesfollowupDate().toString()
 							.equalsIgnoreCase(ServiceConstant.NA.toString())
@@ -84,8 +86,9 @@ public class FeesUtils {
 			List<FeesDto> listDto = listDtos.stream().skip(Integer.parseInt(minIndex)).limit(Integer.parseInt(maxIndex))
 					.sorted(Comparator.comparing(FeesDto::getId).reversed()).collect(Collectors.toList());
 			return new SheetFeesDetiles(listDto, listDtos.size());
-		} else if (courseName.equals(ServiceConstant.NULL.toString()) && !date.equals(ServiceConstant.NULL.toString())
-				&& paymentMode.equals(ServiceConstant.NULL.toString())) {
+		} else if (courseName.equalsIgnoreCase(ServiceConstant.NULL.toString())
+				&& !date.equalsIgnoreCase(ServiceConstant.NULL.toString())
+				&& paymentMode.equalsIgnoreCase(ServiceConstant.NULL.toString())) {
 			List<FeesDto> listDtos = convertingListToDto.stream()
 					.filter(items -> !items.getFeesHistoryDto().getFeesfollowupDate().toString()
 							.equalsIgnoreCase(ServiceConstant.NA.toString())
@@ -95,8 +98,9 @@ public class FeesUtils {
 			List<FeesDto> listDto = listDtos.stream().skip(Integer.parseInt(minIndex)).limit(Integer.parseInt(maxIndex))
 					.sorted(Comparator.comparing(FeesDto::getId).reversed()).collect(Collectors.toList());
 			return new SheetFeesDetiles(listDto, listDtos.size());
-		} else if (courseName.equals(ServiceConstant.NULL.toString()) && !date.equals(ServiceConstant.NULL.toString())
-				&& !paymentMode.equals(ServiceConstant.NULL.toString())) {
+		} else if (courseName.equalsIgnoreCase(ServiceConstant.NULL.toString())
+				&& !date.equalsIgnoreCase(ServiceConstant.NULL.toString())
+				&& !paymentMode.equalsIgnoreCase(ServiceConstant.NULL.toString())) {
 			List<FeesDto> listDtos = convertingListToDto.stream()
 					.filter(items -> !items.getFeesHistoryDto().getFeesfollowupDate().toString()
 							.equalsIgnoreCase(ServiceConstant.NA.toString())
@@ -107,8 +111,9 @@ public class FeesUtils {
 			List<FeesDto> listDto = listDtos.stream().skip(Integer.parseInt(minIndex)).limit(Integer.parseInt(maxIndex))
 					.sorted(Comparator.comparing(FeesDto::getId).reversed()).collect(Collectors.toList());
 			return new SheetFeesDetiles(listDto, listDtos.size());
-		} else if (!courseName.equals(ServiceConstant.NULL.toString()) && date.equals(ServiceConstant.NULL.toString())
-				&& !paymentMode.equals(ServiceConstant.NULL.toString())) {
+		} else if (!courseName.equalsIgnoreCase(ServiceConstant.NULL.toString())
+				&& date.equalsIgnoreCase(ServiceConstant.NULL.toString())
+				&& !paymentMode.equalsIgnoreCase(ServiceConstant.NULL.toString())) {
 			List<FeesDto> listDtos = convertingListToDto.stream()
 					.filter(items -> !items.getFeesHistoryDto().getFeesfollowupDate().toString()
 							.equalsIgnoreCase(ServiceConstant.NA.toString())
@@ -118,16 +123,18 @@ public class FeesUtils {
 			List<FeesDto> listDto = listDtos.stream().skip(Integer.parseInt(minIndex)).limit(Integer.parseInt(maxIndex))
 					.sorted(Comparator.comparing(FeesDto::getId).reversed()).collect(Collectors.toList());
 			return new SheetFeesDetiles(listDto, listDtos.size());
-		} else if (courseName.equals(ServiceConstant.NULL.toString()) && date.equals(ServiceConstant.NULL.toString())
-				&& !paymentMode.equals(ServiceConstant.NULL.toString())) {
+		} else if (courseName.equalsIgnoreCase(ServiceConstant.NULL.toString())
+				&& date.equalsIgnoreCase(ServiceConstant.NULL.toString())
+				&& !paymentMode.equalsIgnoreCase(ServiceConstant.NULL.toString())) {
 			List<FeesDto> listDtos = convertingListToDto.stream()
 					.filter(items -> items.getFeesHistoryDto().getPaymentMode().equalsIgnoreCase(paymentMode))
 					.collect(Collectors.toList());
 			List<FeesDto> listDto = listDtos.stream().skip(Integer.parseInt(minIndex)).limit(Integer.parseInt(maxIndex))
 					.sorted(Comparator.comparing(FeesDto::getId).reversed()).collect(Collectors.toList());
 			return new SheetFeesDetiles(listDto, listDtos.size());
-		} else if (!courseName.equals(ServiceConstant.NULL.toString()) && !date.equals(ServiceConstant.NULL.toString())
-				&& !paymentMode.equals(ServiceConstant.NULL.toString())) {
+		} else if (!courseName.equalsIgnoreCase(ServiceConstant.NULL.toString())
+				&& !date.equalsIgnoreCase(ServiceConstant.NULL.toString())
+				&& !paymentMode.equalsIgnoreCase(ServiceConstant.NULL.toString())) {
 			List<FeesDto> listDtos = convertingListToDto.stream()
 					.filter(items -> !items.getFeesHistoryDto().getFeesfollowupDate().toString()
 							.equalsIgnoreCase(ServiceConstant.NA.toString())
@@ -139,8 +146,9 @@ public class FeesUtils {
 			List<FeesDto> listDto = listDtos.stream().sorted(Comparator.comparing(FeesDto::getId).reversed())
 					.skip(Integer.parseInt(minIndex)).limit(Integer.parseInt(maxIndex)).collect(Collectors.toList());
 			return new SheetFeesDetiles(listDto, listDtos.size());
-		} else if (courseName.equals(ServiceConstant.NULL.toString()) && date.equals(ServiceConstant.NULL.toString())
-				&& paymentMode.equals(ServiceConstant.NULL.toString())) {
+		} else if (courseName.equalsIgnoreCase(ServiceConstant.NULL.toString())
+				&& date.equalsIgnoreCase(ServiceConstant.NULL.toString())
+				&& paymentMode.equalsIgnoreCase(ServiceConstant.NULL.toString())) {
 			List<FeesDto> listDto = convertingListToDto.stream().sorted(Comparator.comparing(FeesDto::getId).reversed())
 					.skip(Integer.parseInt(minIndex)).limit(Integer.parseInt(maxIndex)).collect(Collectors.toList());
 			return new SheetFeesDetiles(listDto, convertingListToDto.size());

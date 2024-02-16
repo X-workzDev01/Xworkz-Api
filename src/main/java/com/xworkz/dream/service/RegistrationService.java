@@ -13,7 +13,7 @@ import com.xworkz.dream.dto.TraineeDto;
 
 import freemarker.template.TemplateException;
 
- public interface RegistrationService {
+public interface RegistrationService {
 
 	ResponseEntity<String> writeData(String spreadsheetId, TraineeDto dto, HttpServletRequest request)
 			throws MessagingException, TemplateException;
@@ -31,9 +31,8 @@ import freemarker.template.TemplateException;
 
 	ResponseEntity<String> update(String spreadsheetId, String email, TraineeDto dto);
 
-	TraineeDto getDetailsByEmail(String spreadsheetId, String email) throws IOException;
+	TraineeDto getDetailsByEmail(String spreadsheetId, String email);
 
 	ResponseEntity<List<TraineeDto>> getSearchSuggestion(String spreadsheetId, String value, String courseName);
-
 
 }
