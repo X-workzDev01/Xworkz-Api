@@ -19,15 +19,15 @@ public class FollowUpStatusCheck {
 			Status.Joining.toString(), Status.Interested.toString()));
 
 	private List<String> notInterested = new ArrayList<String>(Arrays.asList(
-			Status.Not_interested.toString().replace('_', ' '), Status.Drop_After_Course.toString().replace('_', ' '),
-			Status.Drop_After_Placement.toString().replace('_', ' '),
-			Status.Higher_studies.toString().replace('_', ' '),
+			Status.Not_interested.toString().replace('_', ' '), Status.Drop_after_free_course.toString().replace('_', ' '),
+			Status.Drop_after_placement.toString().replace('_', ' '),
+			Status.Higher_Studies.toString().replace('_', ' '),
 			Status.Joined_other_institute.toString().replace('_', ' '), Status.Not_joining.toString().replace('_', ' '),
-			Status.Wrong_number.toString().replace('_', ' ')));
+			Status.Wrong_Number.toString().replace('_', ' ')));
 
 	private List<String> rnr = new ArrayList<String>(Arrays.asList(Status.Busy.toString(),
-			Status.Incomingcall_not_available.toString().replace('_', ' ').toString(),
-			Status.Not_reachable.toString().replace('_', ' '), Status.RNR.toString(),
+			Status.Incoming_call_not_available.toString().replace('_', ' ').toString(),
+			Status.Not_Reachable.toString().replace('_', ' '), Status.RNR.toString(),
 			Status.Call_Drop.toString().replace('_', ' ')));
 
 }

@@ -17,6 +17,8 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import com.xworkz.dream.constants.ServiceConstant;
+import com.xworkz.dream.constants.Status;
 import com.xworkz.dream.dto.BatchDetailsDto;
 import com.xworkz.dream.dto.TraineeDto;
 import com.xworkz.dream.repository.BatchRepository;
@@ -87,12 +89,11 @@ public class BatchServiceImpl implements BatchService {
 	@Override
 	public BatchDetailsDto getBatchDetailsByCourseName(String spreadsheetId, String courseName) throws IOException {
 		List<List<Object>> detailsByCourseName = repository.getCourseDetails(spreadsheetId);
-		batch = null;
-		List<List<Object>> filter = detailsByCourseName.stream()
-				.filter(e -> e.contains(courseName) && e.contains("Active")).collect(Collectors.toList());
-		filter.stream().forEach(item -> {
-			this.batch = wrapper.batchDetailsToDto(item);
-		});
+		BatchDetailsDto batch = detailsByCourseName.stream().map(wrapper::batchDetailsToDto)
+				.filter(dto -> dto.getCourseName().equalsIgnoreCase(courseName)
+						&& dto.getBatchStatus().equalsIgnoreCase(ServiceConstant.ACTIVE.toString()))
+				.findFirst().orElse(null);
+
 		if (batch != null) {
 			return batch;
 
@@ -155,17 +156,14 @@ public class BatchServiceImpl implements BatchService {
 
 		List<List<Object>> courseDetails = repository.getCourseDetails(sheetId);
 
-	    courseDetails.stream()
-	            .map(wrapper::batchDetailsToDto)
-	            .filter(dto -> dto.getCourseName().equalsIgnoreCase(courseName))
-	            .findFirst()
-	            .ifPresent(dto -> {
-	                try {
-	                    batchWrapper.updateBatchValueSet(details, dto);
-	                } catch (Exception e) {
-	                    log.error(e.getMessage());
-	                }
-	            });
+		courseDetails.stream().map(wrapper::batchDetailsToDto)
+				.filter(dto -> dto.getCourseName().equalsIgnoreCase(courseName)).findFirst().ifPresent(dto -> {
+					try {
+						batchWrapper.updateBatchValueSet(details, dto);
+					} catch (Exception e) {
+						log.error(e.getMessage());
+					}
+				});
 	}
 
 	@Override

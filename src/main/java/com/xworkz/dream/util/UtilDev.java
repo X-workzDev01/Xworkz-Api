@@ -2,6 +2,7 @@ package com.xworkz.dream.util;
 
 import java.io.IOException;
 import java.security.SecureRandom;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Base64;
 import java.util.List;
@@ -178,8 +179,6 @@ public class UtilDev implements DreamUtil {
 		sendBirthadyEmailChimp(traineeEmail, subject, name);
 	}
 
-	// ================================================================================================
-	// this is mail chimp if use below code send mail through contact@xworkz.in
 	private boolean otpMailService(String email, int otp, String subject) {
 		Context context = new Context();
 
@@ -321,5 +320,37 @@ public class UtilDev implements DreamUtil {
 		logger.info("SMS sent to {} with contact number {}", name, contactNo);
 		csrSmsService.csrSMSSent(name, contactNo);
 		return false;
+	}
+
+	private void sendAbsentEmailChimp(String traineeEmail, String name, String reason) {
+		Context context = new Context();
+		context.setVariable("name", name);
+		context.setVariable("date", LocalDate.now());
+		context.setVariable("reason", reason);
+		String content = templateEngine.process("Absence", context);
+
+		MimeMessagePreparator messagePreparator = mimeMessage -> {
+
+			MimeMessageHelper messageHelper = new MimeMessageHelper(mimeMessage);
+			messageHelper.setFrom("hareeshahr.xworkz@gmail.com");
+			messageHelper.addCc("hr@x-workz.in");
+			messageHelper.setTo(traineeEmail);
+
+			messageHelper.setSubject("Absent Mail");
+			messageHelper.setText(content, true);
+		};
+		chimpMailService.validateAndSendMail(messagePreparator);
+	}
+
+	@Override
+	public Boolean sendAbsentMail(String email, String name, String reason) {
+		System.err.println("email and name : " + email + ":" + name);
+		if (email != null && name != null) {
+			this.sendAbsentEmailChimp(email, name, reason);
+			return true;
+		} else {
+			logger.warn("Email or name is null");
+			return false;
+		}
 	}
 }
