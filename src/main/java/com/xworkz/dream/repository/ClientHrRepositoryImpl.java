@@ -84,8 +84,8 @@ public class ClientHrRepositoryImpl implements ClientHrRepository {
 	public UpdateValuesResponse updateHrDetails(String range, ValueRange valueRange) {
 		log.info("updating the HR details ,{}", valueRange);
 		try {
-			return sheetsService.spreadsheets().values().update(sheetId, range, valueRange).setValueInputOption(RepositoryConstant.RAW.toString())
-					.execute();
+			return sheetsService.spreadsheets().values().update(sheetId, range, valueRange)
+					.setValueInputOption(RepositoryConstant.RAW.toString()).execute();
 		} catch (IOException e) {
 			log.error("Exception in updateHrDetails repository,{}", e.getMessage());
 		}

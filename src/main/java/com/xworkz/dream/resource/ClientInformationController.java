@@ -57,14 +57,14 @@ public class ClientInformationController {
 
 	@ApiOperation("To get the client details by Id")
 	@GetMapping("/getdetailsbyid")
-	public ClientDto getClientDtoById(@RequestParam int companyId) throws IOException {
+	public ClientDto getClientDtoById(@RequestParam int companyId){
 		log.info("get client details by id {}:", companyId);
 		return clientInformationService.getClientDtoById(companyId);
 	}
 
 	@ApiOperation("To check the email Id of Company")
 	@GetMapping("/checkcompanyemail")
-	public String checkEmail(@RequestParam String companyEmail) throws IOException {
+	public String checkEmail(@RequestParam String companyEmail)  {
 		log.info("checking company Email exist of not email is:{}", companyEmail);
 		if (clientInformationService.checkEmail(companyEmail)) {
 			return "Company Email Already Exists";
@@ -75,7 +75,7 @@ public class ClientInformationController {
 	
 	@ApiOperation("To check the contactNumber of Company")
 	@GetMapping("/checkContactNumber")
-	public String checkContactNumber(@RequestParam String contactNumber) throws IOException {
+	public String checkContactNumber(@RequestParam String contactNumber) {
 		log.info("checking company contactNumber exist of not contactNumber is:{}", contactNumber);
 		if (clientInformationService.checkContactNumber(contactNumber)) {
 			return "Company ContactNumber Already Exists";
@@ -86,7 +86,7 @@ public class ClientInformationController {
 
 	@ApiOperation("To check the CompanyWebsite")
 	@GetMapping("/checkCompanyWebsite")
-	public String checkCompanyWebsite(@RequestParam String companyWebsite) throws IOException {
+	public String checkCompanyWebsite(@RequestParam String companyWebsite) {
 		log.info("checking company CompanyWebsite exist of not CompanyWebsite is:{}", companyWebsite);
 		if (clientInformationService.checkCompanyWebsite(companyWebsite)) {
 			return "CompanyWebsite Already Exists";
@@ -98,14 +98,14 @@ public class ClientInformationController {
 
 	@ApiOperation("get suggestiong by name")
 	@GetMapping("/client/suggestions")
-	public List<ClientDto> getSuggestion(@RequestParam String companyName) throws IOException {
+	public List<ClientDto> getSuggestion(@RequestParam String companyName){
 		log.info("getting suggestion by company name,  {}", companyName);
 		return clientInformationService.getSuggestionDetails(companyName);
 	}
 
 	@ApiOperation("get details by companyname")
 	@GetMapping("/getdetailsbycompanyname")
-	public List<ClientDto> getDetailsByCompanyName(@RequestParam String companyName) throws IOException {
+	public List<ClientDto> getDetailsByCompanyName(@RequestParam String companyName)  {
 		log.info("get details by company name,{}", companyName);
 		return clientInformationService.getDetailsbyCompanyName(companyName);
 	}

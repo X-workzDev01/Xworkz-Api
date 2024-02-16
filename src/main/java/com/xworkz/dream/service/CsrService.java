@@ -7,7 +7,7 @@ import com.xworkz.dream.dto.TraineeDto;
 
 public interface CsrService {
 
-	ResponseEntity<String> validateAndRegister(TraineeDto csrDt);
+	ResponseEntity<String> validateAndRegister(TraineeDto csrDto);
 
 	boolean registerCsr(CsrDto csrDto);
 
