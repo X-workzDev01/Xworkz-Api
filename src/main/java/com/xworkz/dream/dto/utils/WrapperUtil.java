@@ -104,7 +104,6 @@ public class WrapperUtil {
 				int index = findIndex(feesDto.getFeesHistoryDto().getEmail());
 				String followupRanges = feesFinalDtoRanges.getFeesUpdateStartRange() + index
 						+ feesFinalDtoRanges.getFeesUpdateEndRange() + index;
-				System.err.println(updateDto);
 				feesRepository.updateFeesDetiles(followupRanges, extractDtoDetails(updateDto));
 				feesCacheService.updateCacheIntoFeesDetils(CacheConstant.getFeesDetils.toString(),
 						CacheConstant.allDetils.toString(), updateDto.getFeesHistoryDto().getEmail(),
