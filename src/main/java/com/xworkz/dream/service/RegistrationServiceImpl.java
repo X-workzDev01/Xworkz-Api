@@ -336,15 +336,22 @@ public class RegistrationServiceImpl implements RegistrationService {
 	}
 
 	@Override
-	public TraineeDto getDetailsByEmail(String spreadsheetId, String email) throws IOException {
-		List<List<Object>> data = repo.readData(spreadsheetId);
-		TraineeDto trainee = data.stream().filter(list -> list.get(2).toString().contentEquals(email)).findFirst()
-				.map(wrapper::listToDto).orElse(null);
-		if (trainee != null) {
-			return trainee;
-		} else {
-			return null;
+	public TraineeDto getDetailsByEmail(String spreadsheetId, String email) {
+		List<List<Object>> data;
+		try {
+			data = repo.readData(spreadsheetId);
 
+			TraineeDto trainee = data.stream().filter(list -> list.get(2).toString().contentEquals(email)).findFirst()
+					.map(wrapper::listToDto).orElse(null);
+			if (trainee != null) {
+				return trainee;
+			} else {
+				return null;
+
+			}
+		} catch (IOException e) {
+			log.error(" error fetching data", e);
+			return null;
 		}
 	}
 
