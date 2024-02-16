@@ -5,7 +5,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import javax.mail.MessagingException;
 import javax.servlet.http.HttpServletRequest;
 
 import org.slf4j.Logger;
@@ -18,7 +17,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -29,12 +27,9 @@ import com.xworkz.dream.dto.AbsenteesDto;
 import com.xworkz.dream.dto.AttendanceDataDto;
 import com.xworkz.dream.dto.AttendanceDto;
 import com.xworkz.dream.dto.AttendanceTrainee;
-import com.xworkz.dream.dto.SheetsDto;
-import com.xworkz.dream.dto.TraineeDto;
 import com.xworkz.dream.service.AttendanceService;
 import com.xworkz.dream.service.BatchService;
 
-import freemarker.template.TemplateException;
 import io.swagger.annotations.ApiOperation;
 
 @RestController
@@ -50,22 +45,19 @@ public class AttendanceController {
 
 	@ApiOperation(value = "To register attendance details in the google sheets")
 	@PostMapping("/register")
-	public ResponseEntity<String> registerAttendance(@RequestBody AttendanceDto values, HttpServletRequest request)
-			throws IOException, MessagingException, TemplateException, IllegalAccessException {
-		log.info("Received request to register attendance.");
+	public ResponseEntity<String> registerAttendance(@RequestBody AttendanceDto values, HttpServletRequest request) {
 		ResponseEntity<String> response = attendanceService.writeAttendance(spreadsheetId, values, request);
-
-		log.info("Attendance registration completed.");
 		return response;
 	}
 
 	@ApiOperation(value = "Everyday mark absentees by batch")
 	@PostMapping("/absentees")
-	public void markAttendance(@RequestBody List<AbsenteesDto> absentDtoList, @RequestParam String batch)
-			throws IOException, IllegalAccessException {
-		log.info("Received request to mark attendance for multiple users.");
-		attendanceService.markAndSaveAbsentDetails(absentDtoList, batch);
-		log.info("Attendance marking completed.");
+	public List<String> markAttendance(@RequestBody List<AbsenteesDto> absentDtoList, @RequestParam String batch) {
+		List<String> markAndSaveAbsentDetails = attendanceService.markAndSaveAbsentDetails(absentDtoList, batch);
+		if (markAndSaveAbsentDetails != null) {
+			return markAndSaveAbsentDetails;
+		}
+		return null;
 
 	}
 
@@ -89,7 +81,7 @@ public class AttendanceController {
 	}
 
 	@GetMapping("/batch")
-	public ResponseEntity<List<AttendanceDto>> getAbsentDataByBatch(@RequestParam String batch) throws IOException {
+	public ResponseEntity<List<AttendanceDto>> getAbsentDataByBatch(@RequestParam String batch) {
 		List<AttendanceDto> attendanceByBatch = attendanceService.getAbsentListByBatch(batch);
 		ResponseEntity<List<AttendanceDto>> attendanceList = new ResponseEntity<List<AttendanceDto>>(attendanceByBatch,
 				HttpStatus.OK);
@@ -97,8 +89,7 @@ public class AttendanceController {
 	}
 
 	@PostMapping("/batchAttendance")
-	public String markBatchAttendance(@RequestParam String courseName, @RequestParam Boolean batchAttendanceStatus)
-			throws IOException, IllegalAccessException {
+	public String markBatchAttendance(@RequestParam String courseName, @RequestParam Boolean batchAttendanceStatus) {
 		Boolean markTraineeAttendance = attendanceService.markTraineeAttendance(courseName, batchAttendanceStatus);
 		if (markTraineeAttendance == true) {
 			return "Batch Attendance Update successfully";
@@ -108,15 +99,12 @@ public class AttendanceController {
 	}
 
 	@PostMapping("/addTrainee")
-	public ResponseEntity<Map<Integer, String>> addTraineeToJoined(@RequestParam String courseName)
-			throws IOException, IllegalAccessException {
+	public ResponseEntity<Map<Integer, String>> addTraineeToJoined(@RequestParam String courseName) {
 		List<AttendanceDto> addJoined = attendanceService.addJoined(courseName);
 		Map<Integer, String> traineeNameAndCourseNameMap = new HashMap<>();
-
 		for (AttendanceDto attendanceDto : addJoined) {
 			traineeNameAndCourseNameMap.put(attendanceDto.getId(), attendanceDto.getTraineeName());
 		}
-
 		return new ResponseEntity<>(traineeNameAndCourseNameMap, HttpStatus.OK);
 	}
 

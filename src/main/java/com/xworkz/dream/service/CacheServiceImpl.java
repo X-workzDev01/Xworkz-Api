@@ -180,7 +180,6 @@ public class CacheServiceImpl implements CacheService {
 				// adding single list to the cache
 				int size = (((List<List<Object>>) valueWrapper.get()).size());
 				data.set(0, size + 1);
-
 				((List<List<Object>>) valueWrapper.get()).add(data);
 				log.info("Updated cache for key: {}", key);
 			}
