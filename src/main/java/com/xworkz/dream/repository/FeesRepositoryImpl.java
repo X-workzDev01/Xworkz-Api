@@ -15,6 +15,7 @@ import org.springframework.stereotype.Repository;
 
 import com.google.api.services.sheets.v4.Sheets;
 import com.google.api.services.sheets.v4.model.ValueRange;
+import com.xworkz.dream.constants.RepositoryConstant;
 import com.xworkz.dream.dto.utils.SheetSaveOpration;
 
 @Repository
@@ -80,7 +81,8 @@ public class FeesRepositoryImpl implements FeesRepository {
 		ValueRange body = saveOpration.updateDetilesToSheet(list);
 		try {
 			return sheetsRepository.spreadsheets().values().update(spreadSheetId, getFeesDetilesfollowupRange, body)
-					.setValueInputOption("RAW").execute().setSpreadsheetId(spreadSheetId).getUpdatedRange();
+					.setValueInputOption(RepositoryConstant.RAW.toString()).execute().setSpreadsheetId(spreadSheetId)
+					.getUpdatedRange();
 		} catch (IOException e) {
 			log.error("Error updating data {}     ", e);
 			return "data Update Error";
@@ -93,7 +95,6 @@ public class FeesRepositoryImpl implements FeesRepository {
 
 		try {
 			ValueRange value = sheetsRepository.spreadsheets().values().get(spreadSheetId, followup).execute();
-
 			if (value.getValues() != null && value.getValues().size() >= 1) {
 				return saveOpration.saveDetilesWithDataSize(list, followup);
 

@@ -39,7 +39,7 @@ public class FollowUpUtil {
 					.filter(dto -> dto.getFlagSheet().equalsIgnoreCase(ServiceConstant.ACTIVE.toString()))
 					.forEach(followupDto -> {
 
-						TraineeDto traineeDto = getTraineeDtoByEmail(traineeData, 
+						TraineeDto traineeDto = getTraineeDtoByEmail(traineeData,
 								followupDto.getBasicInfo().getEmail());
 						if (traineeDto != null) {
 							followupDto.setCourseName(traineeDto.getCourseInfo().getCourse());
@@ -55,8 +55,9 @@ public class FollowUpUtil {
 	public Predicate<FollowUpDto> byStatusAndDateAndCollegeName(String status, String courseName, String date,
 			String collegeName, DateTimeFormatter dateFormatter, StatusList statusList,
 			Predicate<FollowUpDto> predicate) {
-		if (!status.equals("null") && courseName.equals("null") && !date.equals("null")
-				&& !collegeName.equals("null")) {
+		if (!status.equals(ServiceConstant.NULL.toString()) && courseName.equals(ServiceConstant.NULL.toString())
+				&& !date.equals(ServiceConstant.NULL.toString())
+				&& !collegeName.equals(ServiceConstant.NULL.toString())) {
 			if (status.equalsIgnoreCase(Status.Interested.toString())) {
 				predicate = followUpData -> FollowUpStatusCheck.getInterested().contains(
 						followUpData.getCurrentStatus()) && followUpData.getCollegeName().equalsIgnoreCase(collegeName)
@@ -76,7 +77,7 @@ public class FollowUpUtil {
 			} else if (status.equalsIgnoreCase(Status.Past_followup.toString().replace('_', ' '))) {
 				predicate = followUpData -> statusList.getStatusCheck().contains(followUpData.getCurrentStatus())
 						&& followUpData.getAdminDto().getUpdatedBy() != null
-						&& !followUpData.getAdminDto().getUpdatedBy().equalsIgnoreCase("NA")
+						&& !followUpData.getAdminDto().getUpdatedBy().equalsIgnoreCase(ServiceConstant.NA.toString())
 						&& (LocalDate.parse(LocalDate.parse(followUpData.getCallback()).format(dateFormatter)))
 								.isBefore(LocalDate.now().minusDays(2))
 						&& followUpData.getCollegeName().equalsIgnoreCase(collegeName)
@@ -93,7 +94,9 @@ public class FollowUpUtil {
 	public Predicate<FollowUpDto> byStatusAndCourseName(String status, String courseName, String date,
 			String collegeName, DateTimeFormatter dateFormatter, StatusList statusList,
 			Predicate<FollowUpDto> predicate) {
-		if (!status.equals("null") && !courseName.equals("null") && date.equals("null") && collegeName.equals("null")) {
+		if (!status.equals(ServiceConstant.NULL.toString()) && !courseName.equals(ServiceConstant.NULL.toString())
+				&& date.equals(ServiceConstant.NULL.toString())
+				&& collegeName.equals(ServiceConstant.NULL.toString())) {
 			if (status.equalsIgnoreCase(Status.Interested.toString())) {
 				predicate = followUpData -> FollowUpStatusCheck.getInterested().contains(
 						followUpData.getCurrentStatus()) && followUpData.getCourseName().equalsIgnoreCase(courseName);
@@ -109,7 +112,7 @@ public class FollowUpUtil {
 			} else if (status.equalsIgnoreCase(Status.Past_followup.toString().replace('_', ' '))) {
 				predicate = followUpData -> statusList.getStatusCheck().contains(followUpData.getCurrentStatus())
 						&& followUpData.getAdminDto().getUpdatedBy() != null
-						&& !followUpData.getAdminDto().getUpdatedBy().equalsIgnoreCase("NA")
+						&& !followUpData.getAdminDto().getUpdatedBy().equalsIgnoreCase(ServiceConstant.NULL.toString())
 						&& (LocalDate.parse(LocalDate.parse(followUpData.getCallback()).format(dateFormatter)))
 								.isBefore(LocalDate.now().minusDays(2))
 						&& followUpData.getCourseName().equalsIgnoreCase(courseName);
@@ -125,8 +128,9 @@ public class FollowUpUtil {
 	public Predicate<FollowUpDto> byStatusCourseNameAndDateAndCollegeName(String status, String courseName, String date,
 			String collegeName, DateTimeFormatter dateFormatter, StatusList statusList,
 			Predicate<FollowUpDto> predicate) {
-		if (!status.equals("null") && !courseName.equals("null") && !date.equals("null")
-				&& !collegeName.equals("null")) {
+		if (!status.equals(ServiceConstant.NULL.toString()) && !courseName.equals(ServiceConstant.NULL.toString())
+				&& !date.equals(ServiceConstant.NULL.toString())
+				&& !collegeName.equals(ServiceConstant.NULL.toString())) {
 			if (status.equalsIgnoreCase(Status.Interested.toString())) {
 				predicate = followUpData -> FollowUpStatusCheck.getInterested().contains(
 						followUpData.getCurrentStatus()) && followUpData.getCollegeName().equalsIgnoreCase(collegeName)
@@ -150,8 +154,7 @@ public class FollowUpUtil {
 			} else if (status.equalsIgnoreCase(Status.Past_followup.toString().replace('_', ' '))) {
 				predicate = followUpData -> statusList.getStatusCheck().contains(followUpData.getCurrentStatus())
 						&& followUpData.getAdminDto().getUpdatedBy() != null
-						&& !followUpData.getAdminDto().getUpdatedBy().equalsIgnoreCase(
-								"NA")
+						&& !followUpData.getAdminDto().getUpdatedBy().equalsIgnoreCase(ServiceConstant.NA.toString())
 						&& (LocalDate.parse(LocalDate.parse(followUpData.getCallback()).format(dateFormatter)))
 								.isBefore(LocalDate.now().minusDays(2))
 						&& followUpData.getCollegeName().equalsIgnoreCase(collegeName)
@@ -170,8 +173,9 @@ public class FollowUpUtil {
 	public Predicate<FollowUpDto> byStatusAndCourseNameAndCollegeName(String status, String courseName, String date,
 			String collegeName, DateTimeFormatter dateFormatter, StatusList statusList,
 			Predicate<FollowUpDto> predicate) {
-		if (!status.equals("null") && !courseName.equals("null") && date.equals("null")
-				&& !collegeName.equals("null")) {
+		if (!status.equals(ServiceConstant.NULL.toString()) && !courseName.equals(ServiceConstant.NULL.toString())
+				&& date.equals(ServiceConstant.NULL.toString())
+				&& !collegeName.equals(ServiceConstant.NULL.toString())) {
 			if (status.equalsIgnoreCase(Status.Interested.toString())) {
 				predicate = followUpData -> FollowUpStatusCheck.getInterested().contains(
 						followUpData.getCurrentStatus()) && followUpData.getCollegeName().equalsIgnoreCase(collegeName)
@@ -191,7 +195,7 @@ public class FollowUpUtil {
 			} else if (status.equalsIgnoreCase(Status.Past_followup.toString().replace('_', ' '))) {
 				predicate = followUpData -> statusList.getStatusCheck().contains(followUpData.getCurrentStatus())
 						&& followUpData.getAdminDto().getUpdatedBy() != null
-						&& !followUpData.getAdminDto().getUpdatedBy().equalsIgnoreCase("NA")
+						&& !followUpData.getAdminDto().getUpdatedBy().equalsIgnoreCase(ServiceConstant.NA.toString())
 						&& (LocalDate.parse(LocalDate.parse(followUpData.getCallback()).format(dateFormatter)))
 								.isBefore(LocalDate.now().minusDays(2))
 						&& followUpData.getCollegeName().equalsIgnoreCase(collegeName)
@@ -208,7 +212,9 @@ public class FollowUpUtil {
 	public Predicate<FollowUpDto> byStatusAndCollegeName(String status, String courseName, String date,
 			String collegeName, DateTimeFormatter dateFormatter, StatusList statusList,
 			Predicate<FollowUpDto> predicate) {
-		if (!status.equals("null") && courseName.equals("null") && date.equals("null") && !collegeName.equals("null")) {
+		if (!status.equals(ServiceConstant.NULL.toString()) && courseName.equals(ServiceConstant.NULL.toString())
+				&& date.equals(ServiceConstant.NULL.toString())
+				&& !collegeName.equals(ServiceConstant.NULL.toString())) {
 			if (status.equalsIgnoreCase(Status.Interested.toString())) {
 				predicate = followUpData -> FollowUpStatusCheck.getInterested().contains(
 						followUpData.getCurrentStatus()) && followUpData.getCollegeName().equalsIgnoreCase(collegeName);
@@ -224,7 +230,7 @@ public class FollowUpUtil {
 			} else if (status.equalsIgnoreCase(Status.Past_followup.toString().replace('_', ' '))) {
 				predicate = followUpData -> statusList.getStatusCheck().contains(followUpData.getCurrentStatus())
 						&& followUpData.getAdminDto().getUpdatedBy() != null
-						&& !followUpData.getAdminDto().getUpdatedBy().equalsIgnoreCase("NA")
+						&& !followUpData.getAdminDto().getUpdatedBy().equalsIgnoreCase(ServiceConstant.NA.toString())
 						&& (LocalDate.parse(LocalDate.parse(followUpData.getCallback()).format(dateFormatter)))
 								.isBefore(LocalDate.now().minusDays(2))
 						&& followUpData.getCollegeName().equalsIgnoreCase(collegeName);
@@ -238,7 +244,9 @@ public class FollowUpUtil {
 
 	public Predicate<FollowUpDto> byStatus(String status, String courseName, String date, String collegeName,
 			DateTimeFormatter dateFormatter, StatusList statusList, Predicate<FollowUpDto> predicate) {
-		if (!status.equals("null") && courseName.equals("null") && date.equals("null") && collegeName.equals("null")) {
+		if (!status.equals(ServiceConstant.NULL.toString()) && courseName.equals(ServiceConstant.NULL.toString())
+				&& date.equals(ServiceConstant.NULL.toString())
+				&& collegeName.equals(ServiceConstant.NULL.toString())) {
 			if (status.equalsIgnoreCase(Status.Interested.toString())) {
 				predicate = followUpData -> FollowUpStatusCheck.getInterested()
 						.contains(followUpData.getCurrentStatus());
@@ -253,7 +261,7 @@ public class FollowUpUtil {
 			} else if (status.equalsIgnoreCase(Status.Past_followup.toString().replace('_', ' '))) {
 				predicate = followUpData -> statusList.getStatusCheck().contains(followUpData.getCurrentStatus())
 						&& followUpData.getAdminDto().getUpdatedBy() != null
-						&& !followUpData.getAdminDto().getUpdatedBy().equalsIgnoreCase("NA")
+						&& !followUpData.getAdminDto().getUpdatedBy().equalsIgnoreCase(ServiceConstant.NA.toString())
 						&& (LocalDate.parse(LocalDate.parse(followUpData.getCallback()).format(dateFormatter)))
 								.isBefore(LocalDate.now().minusDays(2));
 			} else {
@@ -266,8 +274,9 @@ public class FollowUpUtil {
 	public Predicate<FollowUpDto> byStatusAndCourseAndDate(String status, String courseName, String date,
 			String collegeName, DateTimeFormatter dateFormatter, StatusList statusList,
 			Predicate<FollowUpDto> predicate) {
-		if (!status.equals("null") && !courseName.equals("null") && !date.equals("null")
-				&& collegeName.equals("null")) {
+		if (!status.equals(ServiceConstant.NULL.toString()) && !courseName.equals(ServiceConstant.NULL.toString())
+				&& !date.equals(ServiceConstant.NULL.toString())
+				&& collegeName.equals(ServiceConstant.NULL.toString())) {
 			if (status.equalsIgnoreCase(Status.Interested.toString())) {
 				predicate = followUpData -> FollowUpStatusCheck.getInterested()
 						.contains(followUpData.getCurrentStatus()) && followUpData.getCallback().equalsIgnoreCase(date)
@@ -287,7 +296,7 @@ public class FollowUpUtil {
 			} else if (status.equalsIgnoreCase(Status.Past_followup.toString().replace('_', ' '))) {
 				predicate = followUpData -> statusList.getStatusCheck().contains(followUpData.getCurrentStatus())
 						&& followUpData.getAdminDto().getUpdatedBy() != null
-						&& !followUpData.getAdminDto().getUpdatedBy().equalsIgnoreCase("NA")
+						&& !followUpData.getAdminDto().getUpdatedBy().equalsIgnoreCase(ServiceConstant.NA.toString())
 						&& (LocalDate.parse(LocalDate.parse(followUpData.getCallback()).format(dateFormatter)))
 								.isBefore(LocalDate.now().minusDays(2))
 						&& followUpData.getCallback().equalsIgnoreCase(date)
@@ -303,7 +312,9 @@ public class FollowUpUtil {
 
 	public Predicate<FollowUpDto> byStatusAndDate(String status, String courseName, String date, String collegeName,
 			DateTimeFormatter dateFormatter, StatusList statusList, Predicate<FollowUpDto> predicate) {
-		if (!status.equals("null") && courseName.equals("null") && !date.equals("null") && collegeName.equals("null")) {
+		if (!status.equals(ServiceConstant.NULL.toString()) && courseName.equals(ServiceConstant.NULL.toString())
+				&& !date.equals(ServiceConstant.NULL.toString())
+				&& collegeName.equals(ServiceConstant.NULL.toString())) {
 			if (status.equalsIgnoreCase(Status.Interested.toString())) {
 				predicate = followUpData -> FollowUpStatusCheck.getInterested()
 						.contains(followUpData.getCurrentStatus()) && followUpData.getCallback().equalsIgnoreCase(date);
@@ -319,7 +330,7 @@ public class FollowUpUtil {
 			} else if (status.equalsIgnoreCase(Status.Past_followup.toString().replace('_', ' '))) {
 				predicate = followUpData -> statusList.getStatusCheck().contains(followUpData.getCurrentStatus())
 						&& followUpData.getAdminDto().getUpdatedBy() != null
-						&& !followUpData.getAdminDto().getUpdatedBy().equalsIgnoreCase("NA")
+						&& !followUpData.getAdminDto().getUpdatedBy().equalsIgnoreCase(ServiceConstant.NA.toString())
 						&& (LocalDate.parse(LocalDate.parse(followUpData.getCallback()).format(dateFormatter)))
 								.isBefore(LocalDate.now().minusDays(2))
 						&& followUpData.getCallback().equalsIgnoreCase(date);
