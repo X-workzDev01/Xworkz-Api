@@ -70,7 +70,6 @@ public class CacheServiceImpl implements CacheService {
 					}
 				}
 				List<Object> list = wrapper.extractDtoDetails(dto);
-
 				if (matchingIndex >= 0) {
 
 					listOfItems.set(matchingIndex, list);

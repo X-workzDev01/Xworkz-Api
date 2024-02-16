@@ -112,7 +112,6 @@ public class RegistrationController {
 
 	@ApiOperation(value = "To get Registration details by email")
 	@GetMapping("/readByEmail")
-
 	public ResponseEntity<?> getDataByEmail(@RequestHeader String spreadsheetId, @RequestParam String email)
 			throws IOException {
 		log.info("Getting details by email - SpreadsheetId: {}, Email: {}", spreadsheetId, email);
