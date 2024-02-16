@@ -31,7 +31,6 @@ public class NotificationSchedulerImpl implements NotificationScheduler {
 
 	@Override
 	public SheetNotificationDto setNotification(String email) {
-		log.info("running set Notification ");
 		this.email = email;
 		notification();
 		return sheetDto;
@@ -39,7 +38,6 @@ public class NotificationSchedulerImpl implements NotificationScheduler {
 
 	@Scheduled(fixedRate = 30 * 60 * 1000) // 1000 milliseconds = 1 seconds
 	public void notification() {
-		log.info("Notification Schudulur is Running");
 
 		try {
 			List<Team> teamList = team.getTeam();
@@ -49,7 +47,7 @@ public class NotificationSchedulerImpl implements NotificationScheduler {
 			}
 
 		} catch (IOException e) {
-			throw new RuntimeException("Exception occurred: " + e.getMessage(), e);
+			throw new RuntimeException("Exception occurred:   {} " + e);
 		}
 
 	}

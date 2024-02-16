@@ -1,6 +1,5 @@
 package com.xworkz.dream.wrapper;
 
-import java.io.IOException;
 import java.util.List;
 
 import com.xworkz.dream.feesDtos.EmailList;
@@ -12,6 +11,6 @@ public interface FeesDetilesWrapper {
 
 	FeesHistoryDto getListToFeesHistoryDto(List<Object> row);
 
-	public EmailList listToEmail(List<Object> list);
+	EmailList listToEmail(List<Object> list);
 
 }

@@ -25,6 +25,8 @@ import com.xworkz.dream.wrapper.FeesDetilesWrapper;
 @Service
 public class FeesSchedulerImpl implements FeesScheduler {
 	@Autowired
+	private FeesFinalDto finalDtoRanges;
+	@Autowired
 	private FeesFinalDto feesFinalDtoRanges;
 	@Autowired
 	private FeesUtils feesUtil;
@@ -41,7 +43,6 @@ public class FeesSchedulerImpl implements FeesScheduler {
 	@Override
 	@Scheduled(fixedRate = 12 * 60 * 60 * 1000)
 	public String afterFreeCourseCompletedChengeFeesStatus() {
-		log.info("Scheduler running After free Course");
 		feesRepository.getAllFeesDetiles(feesFinalDtoRanges.getGetFeesDetilesRange()).stream()
 				.filter(items -> items != null && items.size() > 2 && items.get(2) != null
 						&& items.contains(ServiceConstant.ACTIVE.toString()))
@@ -60,7 +61,7 @@ public class FeesSchedulerImpl implements FeesScheduler {
 							return null;
 						}
 					} catch (Exception e) {
-						log.error("Fetching Detiles is not Found");
+						log.error("Fetching Detiles is not Found {} ", e);
 						return null;
 					}
 				}).collect(Collectors.toList());
@@ -69,14 +70,15 @@ public class FeesSchedulerImpl implements FeesScheduler {
 	}
 
 	private FeesDto afterAMonthChangeStatusAutometically(FeesDto dto, BatchDetailsDto detiles) {
-		if (dto.getFeesStatus().equalsIgnoreCase("FREE") && LocalDate.parse(detiles.getStartDate()).plusDays(29)
-				.isAfter(LocalDate.parse(detiles.getStartDate()))) {
-			dto.setFeesStatus("FEES_DUE");
+		if (dto.getFeesStatus().equalsIgnoreCase(FeesConstant.FREE.toString()) && LocalDate
+				.parse(detiles.getStartDate()).plusDays(29).isAfter(LocalDate.parse(detiles.getStartDate()))) {
+			dto.setFeesStatus(FeesConstant.FEES_DUE.toString());
 			int index;
 			try {
 				index = util.findIndex(dto.getFeesHistoryDto().getEmail());
 
-				String followupRanges = "FeesDetiles!B" + index + ":AB" + index;
+				String followupRanges = finalDtoRanges.getFeesUpdateStartRange() + index
+						+ finalDtoRanges.getFeesUpdateEndRange() + index;
 				List<Object> list = util.extractDtoDetails(dto);
 				list.remove(2);
 				list.remove(11);

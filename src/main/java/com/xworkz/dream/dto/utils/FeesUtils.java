@@ -57,7 +57,7 @@ public class FeesUtils {
 	public String getTraineeDetiles(String email) throws IOException {
 		TraineeDto traineeDto = registrationService.getDetailsByEmail(spreadSheetId, email);
 		if (traineeDto.getCourseInfo().getOfferedAs()
-				.equalsIgnoreCase(FeesConstant.CSR_Offered.toString().replace('_', ' '))) {
+				.equalsIgnoreCase(FeesConstant.CSR_OFFERED.toString().replace('_', ' '))) {
 			return traineeDto.getBasicInfo().getEmail();
 		}
 		return null;

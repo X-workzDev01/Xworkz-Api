@@ -22,7 +22,7 @@ public class FeesFollowUpCacheServiceImpl implements FeesFollowUpCacheService {
 	public void addNewFeesDetilesIntoCache(String cacheName, String key, List<Object> feesData) {
 		feesData.remove(2);
 		feesData.remove(11);
-		feesData.remove(11);
+		feesData.remove(11); 
 		feesData.remove(21);
 
 		Cache cache = cacheManager.getCache(cacheName);
@@ -54,8 +54,7 @@ public class FeesFollowUpCacheServiceImpl implements FeesFollowUpCacheService {
 		}
 	}
 
-	public void updateCacheIntoFeesDetils(String cacheName, String key, String email, List<Object> feesUpdateData)
-			throws IllegalAccessException {
+	public void updateCacheIntoFeesDetils(String cacheName, String key, String email, List<Object> feesUpdateData) {
 		feesUpdateData.remove(2);
 		feesUpdateData.remove(11);
 		feesUpdateData.remove(11);

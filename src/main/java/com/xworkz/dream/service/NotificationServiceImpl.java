@@ -1,6 +1,5 @@
 package com.xworkz.dream.service;
 
-import java.io.IOException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -35,7 +34,7 @@ public class NotificationServiceImpl implements NotificationService {
 	private DreamUtil util;
 	private static final Logger log = LoggerFactory.getLogger(NotificationServiceImpl.class);
 
-	public SheetNotificationDto notification(List<Team> teamList, String email) throws IOException {
+	public SheetNotificationDto notification(List<Team> teamList, String email) {
 
 		log.info("Notification service start for email: {}", email);
 		StatusList list = new StatusList();
@@ -90,9 +89,9 @@ public class NotificationServiceImpl implements NotificationService {
 						log.debug(
 								"After Checking All notification condition result {}---------------------------------- {} ================{}",
 								yesterday, today, afterFoureDay);
-						
+
 						SheetNotificationDto dto = new SheetNotificationDto(yesterday, today, afterFoureDay);
-						
+
 						return dto;
 					}
 
@@ -100,7 +99,8 @@ public class NotificationServiceImpl implements NotificationService {
 						FollowUpDto dto = wrapper.listToFollowUpDTO(e);
 
 						if (dto.getCallback() != null && dto.getFlag() != null
-								&& !dto.getFlag().equalsIgnoreCase("Inactive")&&statusCheck.contains(dto.getCurrentStatus())) {
+								&& !dto.getFlag().equalsIgnoreCase("Inactive")
+								&& statusCheck.contains(dto.getCurrentStatus())) {
 							if (dto.getCallback().length() > 10
 									&& LocalDateTime.now()
 											.isAfter(LocalDateTime.of(LocalDate.parse(

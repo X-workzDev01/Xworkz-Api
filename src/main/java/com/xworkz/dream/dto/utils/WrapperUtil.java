@@ -91,7 +91,7 @@ public class WrapperUtil {
 			updateDto.getFeesHistoryDto()
 					.setPaidAmount(String.valueOf(Integer.parseInt(feesDto.getFeesHistoryDto().getPaidAmount())
 							+ Integer.parseInt(dto.getFeesHistoryDto().getPaidAmount())));
-			updateDto.setFeesStatus(FeesConstant.Pending.toString());
+			updateDto.setFeesStatus(FeesConstant.PENDING.toString());
 			updateDto.getFeesHistoryDto().setId(null);
 			updateDto.setCourseName(null);
 			updateDto.setMailSendStatus(dto.getMailSendStatus());

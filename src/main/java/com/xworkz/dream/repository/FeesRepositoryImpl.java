@@ -40,15 +40,12 @@ public class FeesRepositoryImpl implements FeesRepository {
 	@Override
 	public boolean writeFeesDetiles(List<Object> list) {
 		try {
-			ValueRange value;
-			value = sheetsRepository.spreadsheets().values().get(spreadSheetId, feesRegisterRange).execute();
+			ValueRange value = sheetsRepository.spreadsheets().values().get(spreadSheetId, feesRegisterRange).execute();
 
 			if (value.getValues() != null && value.getValues().size() >= 1) {
-				log.info("Fees register sucessfully");
 				return saveOpration.saveDetilesWithDataSize(list, feesRegisterRange);
 
 			} else {
-				log.info("Fees register sucessfully");
 				return saveOpration.saveDetilesWithoutSize(list, feesRegisterRange);
 			}
 		} catch (IOException e) {
@@ -61,7 +58,6 @@ public class FeesRepositoryImpl implements FeesRepository {
 	@Override
 	@Cacheable(value = "getFeesDetils", key = "'allDetils'")
 	public List<List<Object>> getAllFeesDetiles(String getFeesDetilesRange) {
-		log.info("get fees detiles form the sheet");
 		try {
 			return sheetsRepository.spreadsheets().values().get(spreadSheetId, getFeesDetilesRange).execute()
 					.getValues();
@@ -103,11 +99,9 @@ public class FeesRepositoryImpl implements FeesRepository {
 			value = sheetsRepository.spreadsheets().values().get(spreadSheetId, followup).execute();
 
 			if (value.getValues() != null && value.getValues().size() >= 1) {
-				log.info("Fees register sucessfully");
 				return saveOpration.saveDetilesWithDataSize(list, followup);
 
 			} else {
-				log.info("Fees register sucessfully");
 				return saveOpration.saveDetilesWithoutSize(list, followup);
 			}
 		} catch (IOException e) {

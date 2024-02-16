@@ -18,7 +18,7 @@ import com.xworkz.dream.feesDtos.FeesHistoryDto;
 public class FeesDetilesWrapperImpl implements FeesDetilesWrapper {
 	@Autowired
 	private FeesUtils feesUtiles;
- 
+
 	public static boolean validateCell(SheetConstant sheetConstant) {
 		return StringUtils.hasLength(String.valueOf(sheetConstant.getIndex()));
 	}
@@ -114,11 +114,9 @@ public class FeesDetilesWrapperImpl implements FeesDetilesWrapper {
 						+ Long.parseLong(row.get(SheetConstant.LATE_FEES.getIndex()).toString()));
 				feesDto.setBalance(feesDto.getTotalAmount()
 						- Long.valueOf((String) row.get(SheetConstant.COLUMN_PAID_AMOUNT.getIndex())));
-
 			}
 		}
 		return feesDto;
-
 	}
 
 	public FeesHistoryDto getListToFeesHistoryDto(List<Object> row) {

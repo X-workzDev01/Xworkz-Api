@@ -8,8 +8,7 @@ public interface FeesFollowUpCacheService {
 
 	void addFeesFollowUpIntoCache(String cacheName, String key, List<Object> followUpData);
 
-	void updateCacheIntoFeesDetils(String cacheName, String key, String email, List<Object> feesUpdateData)
-			throws IllegalAccessException;
+	void updateCacheIntoFeesDetils(String cacheName, String key, String email, List<Object> feesUpdateData);
 
 	void addEmailToCache(String cacheName, String key, String email);
 }
