@@ -72,15 +72,14 @@ public class NotificationRepositoryImpl implements NotificationRepository {
 	public List<List<Object>> feesNotification(String spreadsheetId) {
 
 		log.info("Get all feesNotification detiles ");
-		ValueRange response;
 		try {
-			response = sheetsService.spreadsheets().values().get(spreadsheetId, getFeesDetiles).execute();
 			log.info("Fees Notification details retrieved successfully for spreadsheetId: {}", spreadsheetId);
-			return response.getValues();
+			return sheetsService.spreadsheets().values().get(spreadsheetId, getFeesDetiles).execute().getValues();
+			
 		} catch (IOException e) {
 		    log.error("Error Fees Data retrieved : {} ",e.getMessage());
+		    return Collections.emptyList();
 		}
-		return null;
 		
 	}
 
