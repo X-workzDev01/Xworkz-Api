@@ -3,7 +3,7 @@ package com.xworkz.dream.repository;
 import java.util.List;
 
 public interface FeesRepository {
-	boolean writeFeesDetiles(List<Object> list);
+	boolean writeFeesDetails(List<Object> list);
 
 	List<List<Object>> getAllFeesDetiles(String getFeesDetiles);
 

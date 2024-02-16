@@ -45,8 +45,8 @@ public class FeesServiceImpl implements FeesService {
 	private DreamWrapper dreamWrapper;
 
 	@Override
-	public String writeFeesDetiles(FeesUiDto dto, String feesEmailRange) {
-		log.info("Running service writeFeesDetiles with input: {}", dto);
+	public String writeFeesDetails(FeesUiDto dto, String feesEmailRange) {
+		log.info("Running service writeFeesDetails with input: {}", dto);
 		EmailList duplicateEntry = null;
 		List<List<Object>> emails = feesRepository.getEmailList(feesEmailRange);
 		if (emails != null) {
@@ -54,10 +54,10 @@ public class FeesServiceImpl implements FeesService {
 					.filter(email -> email.getEmail().equalsIgnoreCase(dto.getEmail())).findFirst().orElse(null);
 			if (duplicateEntry == null) {
 				boolean write;
-				write = feesRepository.writeFeesDetiles(util.extractDtoDetails(feesUtils.feesDtosetValues(dto)));
+				write = feesRepository.writeFeesDetails(util.extractDtoDetails(feesUtils.feesDtosetValues(dto)));
 				if (write == true) {
-					feesCacheService.addNewFeesDetilesIntoCache(CacheConstant.getFeesDetils.toString(),
-							CacheConstant.allDetils.toString(),
+					feesCacheService.addNewFeesDetilesIntoCache(CacheConstant.getFeesDetails.toString(),
+							CacheConstant.allDetails.toString(),
 							util.extractDtoDetails(feesUtils.feesDtosetValues(dto)));
 					feesCacheService.addEmailToCache(CacheConstant.getFeesEmail.toString(),
 							CacheConstant.email.toString(), dto.getEmail());
@@ -71,11 +71,11 @@ public class FeesServiceImpl implements FeesService {
 
 		} else {
 			boolean write;
-			write = feesRepository.writeFeesDetiles(util.extractDtoDetails(feesUtils.feesDtosetValues(dto)));
+			write = feesRepository.writeFeesDetails(util.extractDtoDetails(feesUtils.feesDtosetValues(dto)));
 
 			if (write == true) {
-				feesCacheService.addNewFeesDetilesIntoCache(CacheConstant.getFeesDetils.toString(),
-						CacheConstant.allDetils.toString(), util.extractDtoDetails(feesUtils.feesDtosetValues(dto)));
+				feesCacheService.addNewFeesDetilesIntoCache(CacheConstant.getFeesDetails.toString(),
+						CacheConstant.allDetails.toString(), util.extractDtoDetails(feesUtils.feesDtosetValues(dto)));
 				feesCacheService.addEmailToCache(CacheConstant.getFeesEmail.toString(), CacheConstant.email.toString(),
 						dto.getEmail());
 				log.info("Fees details saved successfully: {}", dto);
@@ -91,7 +91,7 @@ public class FeesServiceImpl implements FeesService {
 	}
 
 	@Override
-	public SheetFeesDetiles getAllFeesDetiles(String getFeesDetilesRange, String minIndex, String maxIndex, String date,
+	public SheetFeesDetiles getAllFeesDetails(String getFeesDetilesRange, String minIndex, String maxIndex, String date,
 			String courseName, String paymentMode) {
 		List<FeesDto> convertingListToDto = feesRepository.getAllFeesDetiles(getFeesDetilesRange).stream()
 				.map(feesWrapper::listToFeesDTO)
@@ -102,9 +102,9 @@ public class FeesServiceImpl implements FeesService {
 	}
 
 	@Override
-	public FeesWithHistoryDto getDetilesByEmail(String email, String getFeesDetilesRange,
+	public FeesWithHistoryDto getDetailsByEmail(String email, String getFeesDetilesRange,
 			String getFeesDetilesfollowupRange) {
-		List<FeesDto> filteredDtos = getFeesDetilesByemail(email, getFeesDetilesRange);
+		List<FeesDto> filteredDtos = getFeesDetailsByemail(email, getFeesDetilesRange);
 
 		List<FeesHistoryDto> filteredData = feesRepository.getFeesDetilesByemailInFollowup(getFeesDetilesfollowupRange)
 				.stream()
@@ -116,7 +116,7 @@ public class FeesServiceImpl implements FeesService {
 
 	@Override
 	public String updateFeesFollowUp(FeesDto feesDto, String getFeesDetilesRange) {
-		List<FeesDto> feesDtos = getFeesDetilesByemail(feesDto.getFeesHistoryDto().getEmail(), getFeesDetilesRange);
+		List<FeesDto> feesDtos = getFeesDetailsByemail(feesDto.getFeesHistoryDto().getEmail(), getFeesDetilesRange);
 		log.debug("Update Dto is {}", feesDto);
 		if (0L != feesDtos.get(0).getBalance()) {
 			if ((int) Long.parseLong(feesDtos.get(0).getFeesHistoryDto().getPaidAmount())
@@ -137,7 +137,7 @@ public class FeesServiceImpl implements FeesService {
 		return "Update data Error";
 	}
 
-	public List<FeesDto> getFeesDetilesByemail(String email, String getFeesDetilesRange) {
+	public List<FeesDto> getFeesDetailsByemail(String email, String getFeesDetilesRange) {
 		List<FeesDto> filteredDtos = feesRepository.getAllFeesDetiles(getFeesDetilesRange).stream()
 				.map(feesWrapper::listToFeesDTO)
 				.filter(dto -> dto.getFeesHistoryDto().getEmail().equalsIgnoreCase(email)).collect(Collectors.toList());
@@ -157,7 +157,7 @@ public class FeesServiceImpl implements FeesService {
 					uiDto.setName(dto.getBasicInfo().getTraineeName());
 					uiDto.setStatus(dto.getCurrentStatus());
 					uiDto.setLateFees(0L);
-					writeFeesDetiles(uiDto, feesEmailRange);
+					writeFeesDetails(uiDto, feesEmailRange);
 
 				});
 

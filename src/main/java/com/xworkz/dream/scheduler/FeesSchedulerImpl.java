@@ -87,8 +87,8 @@ public class FeesSchedulerImpl implements FeesScheduler {
 				list.remove(20);
 				list.add(ServiceConstant.ACTIVE.toString());
 				feesRepository.updateFeesDetiles(followupRanges, list);
-				feesCacheService.updateCacheIntoFeesDetils(CacheConstant.getFeesDetils.toString(),
-						CacheConstant.allDetils.toString(), dto.getFeesHistoryDto().getEmail(), list);
+				feesCacheService.updateCacheIntoFeesDetils(CacheConstant.getFeesDetails.toString(),
+						CacheConstant.allDetails.toString(), dto.getFeesHistoryDto().getEmail(), list);
 				return dto;
 			} catch (Exception e) {
 				log.error("Error Updatind data {} ", e);
@@ -115,8 +115,8 @@ public class FeesSchedulerImpl implements FeesScheduler {
 				list.remove(20);
 				list.add(ServiceConstant.ACTIVE.toString());
 				feesRepository.updateFeesDetiles(followupRanges, list);
-				feesCacheService.updateCacheIntoFeesDetils(CacheConstant.getFeesDetils.toString(),
-						CacheConstant.allDetils.toString(), dto.getFeesHistoryDto().getEmail(), list);
+				feesCacheService.updateCacheIntoFeesDetils(CacheConstant.getFeesDetails.toString(),
+						CacheConstant.allDetails.toString(), dto.getFeesHistoryDto().getEmail(), list);
 				return dto;
 			} catch (Exception e) {
 				log.error("Error Updating data to csr after free training {}  ", e);

@@ -30,15 +30,11 @@ public class FeesRepositoryImpl implements FeesRepository {
 
 	@PostConstruct
 	private void setsheetsRepository() {
-		try {
-			sheetsRepository = saveOpration.ConnsetSheetService();
-		} catch (Exception e) {
-			log.error("Sheet Connection is Failed  {} ", e);
-		}
+		sheetsRepository = saveOpration.ConnsetSheetService();
 	}
 
 	@Override
-	public boolean writeFeesDetiles(List<Object> list) {
+	public boolean writeFeesDetails(List<Object> list) {
 		try {
 			ValueRange value = sheetsRepository.spreadsheets().values().get(spreadSheetId, feesRegisterRange).execute();
 
@@ -56,7 +52,7 @@ public class FeesRepositoryImpl implements FeesRepository {
 	}
 
 	@Override
-	@Cacheable(value = "getFeesDetils", key = "'allDetils'")
+	@Cacheable(value = "getFeesDetails", key = "'allDetails'")
 	public List<List<Object>> getAllFeesDetiles(String getFeesDetilesRange) {
 		try {
 			return sheetsRepository.spreadsheets().values().get(spreadSheetId, getFeesDetilesRange).execute()
@@ -68,7 +64,7 @@ public class FeesRepositoryImpl implements FeesRepository {
 	}
 
 	@Override
-	@Cacheable(value = "getFolllowUpdata", key = "'feesfollowUpData'")
+	@Cacheable(value = "getFeesFolllowUpdata", key = "'feesfollowUpData'")
 	public List<List<Object>> getFeesDetilesByemailInFollowup(String getFeesDetilesfollowupRange) {
 		try {
 			return sheetsRepository.spreadsheets().values().get(spreadSheetId, getFeesDetilesfollowupRange).execute()

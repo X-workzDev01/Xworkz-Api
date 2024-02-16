@@ -1,34 +1,31 @@
 package com.xworkz.dream.repository;
 
-import java.io.IOException;
 import java.util.List;
 
 import com.google.api.services.sheets.v4.model.UpdateValuesResponse;
 import com.google.api.services.sheets.v4.model.ValueRange;
 
 public interface FollowUpRepository {
-	public boolean saveToFollowUp(String spreadsheetId, List<Object> row) throws IOException;
+	boolean saveToFollowUp(String spreadsheetId, List<Object> row);
 
-	public boolean updateFollowUpStatus(String spreadsheetId, List<Object> statusData) throws IOException;
+	boolean updateFollowUpStatus(String spreadsheetId, List<Object> statusData);
 
-	public List<List<Object>> getFollowUpDetails(String spreadsheetId);
+	List<List<Object>> getFollowUpDetails(String spreadsheetId);
 
-	public boolean updateCurrentFollowUpStatus(String spreadsheetId, String currentFollowRange, List<Object> data)
-			throws IOException;
+	boolean updateCurrentFollowUpStatus(String spreadsheetId, String currentFollowRange, List<Object> data);
 
-	public ValueRange getStatusId(String spreadsheetId) throws IOException;
+	ValueRange getStatusId(String spreadsheetId);
 
-	public ValueRange getEmailList(String spreadsheetId) throws IOException;
+	ValueRange getEmailList(String spreadsheetId);
 
-	public List<List<Object>> getEmailsAndNames(String spreadsheetId, String value) throws IOException;
+	List<List<Object>> getEmailsAndNames(String spreadsheetId, String value);
 
-	public List<List<Object>> getFollowUpStatusDetails(String spreadsheetId) throws IOException;
+	List<List<Object>> getFollowUpStatusDetails(String spreadsheetId);
 
-	public List<List<Object>> getFollowUpDetailsByid(String spreadsheetId) throws IOException;
+	List<List<Object>> getFollowUpDetailsByid(String spreadsheetId);
 
-	public List<List<Object>> getFollowupStatusByDate(String spreadsheetId) throws IOException;
+	List<List<Object>> getFollowupStatusByDate(String spreadsheetId);
 
-	public UpdateValuesResponse updateFollow(String spreadsheetId, String range2, ValueRange valueRange)
-			throws IOException;
+	UpdateValuesResponse updateFollow(String spreadsheetId, String range2, ValueRange valueRange);
 
 }
