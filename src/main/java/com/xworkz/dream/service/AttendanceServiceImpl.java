@@ -375,7 +375,6 @@ public class AttendanceServiceImpl implements AttendanceService {
 	private List<List<Object>> filterTraineeDetails() {
 		List<List<Object>> followUpDetails;
 		List<List<Object>> readData;
-		try {
 			followUpDetails = repository.getFollowUpDetails(sheetId);
 			readData = registerRepository.readData(sheetId);
 			List<List<Object>> traineeDetails = followUpDetails.stream().filter(followUpDetail -> {
@@ -389,17 +388,11 @@ public class AttendanceServiceImpl implements AttendanceService {
 
 			return traineeDetails;
 
-		} catch (IOException e) {
-			log.error("Error retrieving the trainees : {} ", e.getMessage());
-		}
-		return null;
-
 	}
 
 	@Override
 	public List<AttendanceDto> addJoined(String courseName) {
 		List<List<Object>> followUpDetails;
-		try {
 			followUpDetails = repository.getFollowUpDetails(sheetId);
 			List<List<Object>> readData = registerRepository.readData(sheetId);
 			List<AttendanceDto> attendanceDto = new ArrayList<AttendanceDto>();
@@ -428,13 +421,8 @@ public class AttendanceServiceImpl implements AttendanceService {
 					});
 					return attendanceDto;
 				}
-				return Collections.emptyList();
 			}
-		} catch (IOException e1) {
-			log.error("Error adding joined trainee: {}", e1.getMessage());
-		}
-
-		return null;
+			return Collections.emptyList();
 
 	}
 
@@ -477,12 +465,7 @@ public class AttendanceServiceImpl implements AttendanceService {
 				log.info("Returning response for spreadsheetId: {}", sheetId);
 				return ResponseEntity.ok(dto);
 			}
-
-		} catch (Exception e) {
-			log.error("An error occurred while reading in spreadsheetId: {}", sheetId, e);
-
 		}
-
 		return null;
 
 	}

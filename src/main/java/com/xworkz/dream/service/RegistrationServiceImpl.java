@@ -201,7 +201,7 @@ public class RegistrationServiceImpl implements RegistrationService {
 			traineeData.setSize(sortedByDate.size());
 			return ResponseEntity.ok(traineeData);
 		}
-		 return ResponseEntity.ok(traineeData);
+		return ResponseEntity.ok(traineeData);
 	}
 
 	@Override
@@ -300,20 +300,20 @@ public class RegistrationServiceImpl implements RegistrationService {
 	}
 
 	private int findRowIndexByEmail(String spreadsheetId, String email) {
-			log.info("Finding row index by email in spreadsheetId: {} for email: {}", spreadsheetId, email);
-			List<List<Object>> data = repo.getEmails(spreadsheetId, email);
-			List<List<Object>> values = data;
-			if (values != null) {
-				for (int i = 0; i < values.size(); i++) {
-					List<Object> row = values.get(i);
-					if (row.size() > 0 && row.get(0).toString().equalsIgnoreCase(email)) {
-						log.info("Found row index {} for email: {}", i + 3, email);
-						return i + 3;
-					}
+		log.info("Finding row index by email in spreadsheetId: {} for email: {}", spreadsheetId, email);
+		List<List<Object>> data = repo.getEmails(spreadsheetId, email);
+		List<List<Object>> values = data;
+		if (values != null) {
+			for (int i = 0; i < values.size(); i++) {
+				List<Object> row = values.get(i);
+				if (row.size() > 0 && row.get(0).toString().equalsIgnoreCase(email)) {
+					log.info("Found row index {} for email: {}", i + 3, email);
+					return i + 3;
 				}
 			}
-			log.info("Email {} not found in the spreadsheet.", email);
-			return -1;
+		}
+		log.info("Email {} not found in the spreadsheet.", email);
+		return -1;
 	}
 
 	@Override
@@ -347,7 +347,7 @@ public class RegistrationServiceImpl implements RegistrationService {
 					followUpService.updateFollowUp(spreadsheetId, email, dto);
 					cacheService.getCacheDataByEmail("sheetsData", "listOfTraineeData", email, dto);
 					log.info("Updated Successfully. Email: {}", email);
-					cacheService.getCacheDataByEmail("emailData",spreadsheetId, email, dto.getBasicInfo().getEmail());
+					cacheService.getCacheDataByEmail("emailData", spreadsheetId, email, dto.getBasicInfo().getEmail());
 					return ResponseEntity.ok("Updated Successfully");
 				} else {
 					log.error("Error updating data. Email: {}", email);
@@ -373,11 +373,6 @@ public class RegistrationServiceImpl implements RegistrationService {
 		if (trainee != null) {
 			return trainee;
 		} else {
-			return null;
-
-			}
-		} catch (IOException e) {
-			log.error(" error fetching data", e);
 			return null;
 		}
 	}

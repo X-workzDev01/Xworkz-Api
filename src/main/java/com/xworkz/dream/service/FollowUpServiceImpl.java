@@ -555,7 +555,7 @@ public class FollowUpServiceImpl implements FollowUpService {
 				+ "StartingIndex: {}, MaxIndex: {}", spreadsheetId, courseName, startingIndex, maxIndex);
 
 		FollowUpDataDto followUpDataDto = new FollowUpDataDto(Collections.emptyList(), 0);
-		try {
+		
 			List<List<Object>> followUpData = repo.getFollowUpDetails(spreadsheetId);
 			List<List<Object>> traineeData = repository.readData(spreadsheetId);
 			log.debug("Null check for all the data: {}", followUpDataDto);
@@ -564,10 +564,6 @@ public class FollowUpServiceImpl implements FollowUpService {
 				return followUpDataDto;
 			}
 			return getDataByCourseName(spreadsheetId, courseName, traineeData, startingIndex, maxIndex);
-		} catch (IOException e) {
-			log.error("An IOException occurred: " + e.getMessage(), e);
-			return followUpDataDto;
-		}
 	}
 
 	private FollowUpDto assignValuesToFollowUp(TraineeDto dto, FollowUpDto followUp) {
