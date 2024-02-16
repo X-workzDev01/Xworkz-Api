@@ -4,17 +4,17 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-
 import javax.annotation.PostConstruct;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Repository;
+
 import com.google.api.services.sheets.v4.Sheets;
 import com.google.api.services.sheets.v4.model.UpdateValuesResponse;
 import com.google.api.services.sheets.v4.model.ValueRange;
+import com.xworkz.dream.constants.RepositoryConstant;
 import com.xworkz.dream.dto.utils.SheetSaveOpration;
 
 @Repository
@@ -49,13 +49,13 @@ public class FollowUpRepositoryImpl implements FollowUpRepository {
 	public boolean saveToFollowUp(String spreadsheetId, List<Object> row) {
 		List<List<Object>> list = new ArrayList<List<Object>>();
 		List<Object> rowData = new ArrayList<>();
-		rowData.add(""); // Placeholder for A column
-		rowData.addAll(row.subList(1, row.size())); // Start from the second element (B column)
+		rowData.add("");
+		rowData.addAll(row.subList(1, row.size()));
 		list.add(rowData);
 		ValueRange body = new ValueRange().setValues(list);
 		try {
 			sheetsService.spreadsheets().values().append(spreadsheetId, followUpRange, body)
-					.setValueInputOption("USER_ENTERED").execute();
+					.setValueInputOption(RepositoryConstant.USER_ENTERED.toString()).execute();
 			return true;
 		} catch (IOException e) {
 			log.error("error getting data {} ", e);
@@ -75,12 +75,12 @@ public class FollowUpRepositoryImpl implements FollowUpRepository {
 		ValueRange body = new ValueRange().setValues(list);
 		try {
 			sheetsService.spreadsheets().values().append(spreadsheetId, followUpStatus, body)
-					.setValueInputOption("USER_ENTERED").execute();
+					.setValueInputOption(RepositoryConstant.USER_ENTERED.toString()).execute();
+			return true;
 		} catch (IOException e) {
-			e.printStackTrace();
+			log.error("error update data {} ", e);
+			return false;
 		}
-		log.info("FollowUp status updated successfully for spreadsheetId: {}", spreadsheetId);
-		return true;
 	}
 
 	@Override
@@ -90,6 +90,7 @@ public class FollowUpRepositoryImpl implements FollowUpRepository {
 			log.info("FollowUp details retrieved successfully for spreadsheetId: {}", spreadsheetId);
 			return sheetsService.spreadsheets().values().get(spreadsheetId, followUpRange).execute().getValues();
 		} catch (IOException e) {
+			log.error("error getting data {} ", e);
 			return Collections.emptyList();
 		}
 
@@ -102,7 +103,7 @@ public class FollowUpRepositoryImpl implements FollowUpRepository {
 		ValueRange body = new ValueRange().setValues(list);
 		try {
 			sheetsService.spreadsheets().values().update(spreadsheetId, currentFollowRange, body)
-					.setValueInputOption("USER_ENTERED").execute();
+					.setValueInputOption(RepositoryConstant.USER_ENTERED.toString()).execute();
 			return true;
 		} catch (IOException e) {
 			log.error("error updating data {} ", e);
@@ -179,7 +180,7 @@ public class FollowUpRepositoryImpl implements FollowUpRepository {
 		log.info("FollowUp updated successfully for spreadsheetId: {}", spreadsheetId);
 		try {
 			return sheetsService.spreadsheets().values().update(spreadsheetId, range2, valueRange)
-					.setValueInputOption("RAW").execute();
+					.setValueInputOption(RepositoryConstant.RAW.toString()).execute();
 		} catch (IOException e) {
 			log.error("error updating data {} ", e);
 			return null;
