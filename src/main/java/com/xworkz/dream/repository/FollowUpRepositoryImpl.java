@@ -4,15 +4,14 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+
 import javax.annotation.PostConstruct;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-
 import org.springframework.cache.annotation.Cacheable;
-import org.springframework.core.io.Resource;
-import org.springframework.core.io.ResourceLoader;
 import org.springframework.stereotype.Repository;
 
 import com.google.api.services.sheets.v4.Sheets;
@@ -88,6 +87,7 @@ public class FollowUpRepositoryImpl implements FollowUpRepository {
 	}
 
 	@Override
+	@Cacheable(value="getFollowUpDetails",key="'listOfFollowUpDetails'")
 	public List<List<Object>> getFollowUpDetails(String spreadsheetId) {
 		try {
 
@@ -97,7 +97,6 @@ public class FollowUpRepositoryImpl implements FollowUpRepository {
 			log.error("error getting data {} ", e);
 			return Collections.emptyList();
 		}
-
 	}
 
 	@Override
@@ -127,26 +126,7 @@ public class FollowUpRepositoryImpl implements FollowUpRepository {
 	}
 
 	@Override
-	public ValueRange getStatusId(String spreadsheetId) {
-		try {
-			return sheetsService.spreadsheets().values().get(spreadsheetId, followUpStatusIdRange).execute();
-		} catch (IOException e) {
-			log.error("error getting data {} ", e);
-			return null;
-		}
-	}
-
-	@Override
-	public List<List<Object>> getEmailsAndNames(String spreadsheetId, String value) {
-		try {
-			return sheetsService.spreadsheets().values().get(spreadsheetId, emailAndNameRange).execute().getValues();
-		} catch (IOException e) {
-			log.error("error getting data {} ", e);
-			return Collections.emptyList();
-		}
-	}
-
-	@Override
+	//@Cacheable(value="getFollowUpStatusDetails",key="'followupstatusdetails'")
 	public List<List<Object>> getFollowUpStatusDetails(String spreadsheetId) {
 		log.info("FollowUp Status Details retrieved successfully for spreadsheetId: {}", spreadsheetId);
 		try {
@@ -157,27 +137,6 @@ public class FollowUpRepositoryImpl implements FollowUpRepository {
 		}
 	}
 
-	@Override
-	public List<List<Object>> getFollowUpDetailsByid(String spreadsheetId) {
-		try {
-
-			return sheetsService.spreadsheets().values().get(spreadsheetId, followUpRange).execute().getValues();
-		} catch (IOException e) {
-			log.error("error getting data {} ", e);
-			return Collections.emptyList();
-		}
-	}
-
-	@Override
-	public List<List<Object>> getFollowupStatusByDate(String spreadsheetId) {
-		try {
-			return sheetsService.spreadsheets().values().get(spreadsheetId, followUpRange).execute().getValues();
-
-		} catch (IOException e) {
-			log.error("error getting data {} ", e);
-			return Collections.emptyList();
-		}
-	}
 
 	@Override
 	public UpdateValuesResponse updateFollow(String spreadsheetId, String range2, ValueRange valueRange) {

@@ -152,6 +152,7 @@ public class CacheServiceImpl implements CacheService {
 	@SuppressWarnings("unchecked")
 	public void updateFollowUpStatusInCache(String cacheName, String key, List<Object> data) {
 		Cache cache = cacheManager.getCache(cacheName);
+		System.out.println("cache:"+data);
 		if (cache != null) {
 			ValueWrapper valueWrapper = cache.get(key);
 			if (valueWrapper != null && valueWrapper.get() instanceof List) {
@@ -162,7 +163,7 @@ public class CacheServiceImpl implements CacheService {
 				}
 				if (data.size() > 4) {
 					data.remove(4); // Removes the element at index 4
-				}
+				}	
 				((List<List<Object>>) valueWrapper.get()).add(data);
 				log.info("Updated cache for key: {}", key);
 			}
@@ -197,7 +198,6 @@ public class CacheServiceImpl implements CacheService {
 				int size = (((List<List<Object>>) valueWrapper.get()).size());
 				data.set(0, size + 1);
 				data.remove(4);
-
 				((List<List<Object>>) valueWrapper.get()).add(data);
 				log.info("Updated cache for key: {}", key);
 			}

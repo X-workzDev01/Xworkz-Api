@@ -28,12 +28,9 @@ public class CacheConfig {
 		caches.add(new ConcurrentMapCache("contactData"));
 		caches.add(new ConcurrentMapCache("getDropdowns"));
 		caches.add(new ConcurrentMapCache("getFeesEmail"));
-		// caches.add(new ConcurrentMapCache("getFollowUpData"));
 		caches.add(new ConcurrentMapCache("getFeesDetails"));
 		caches.add(new ConcurrentMapCache("getFeesFolllowUpdata"));
 		caches.add(new ConcurrentMapCache("batchDetails"));
-		caches.add(new ConcurrentMapCache("followUpDetails"));
-		caches.add(new ConcurrentMapCache("followUpStatusDetails"));
 		caches.add(new ConcurrentMapCache("clientInformation"));
 		caches.add(new ConcurrentMapCache("hrDetails"));
 		caches.add(new ConcurrentMapCache("hrFollowUpDetails"));
@@ -42,6 +39,9 @@ public class CacheConfig {
 		caches.add(new ConcurrentMapCache("usnNumber"));
 		caches.add(new ConcurrentMapCache("alternativeNumber"));
 		caches.add(new ConcurrentMapCache("uniqueNumber"));
+		caches.add(new ConcurrentMapCache("getFollowUpDetails"));
+		caches.add(new ConcurrentMapCache("getFollowUpStatusDetails"));
+		
 		cacheManager.setCaches(caches);
 		return cacheManager;
 	}
