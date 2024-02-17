@@ -36,20 +36,26 @@ public class FeesRepositoryImpl implements FeesRepository {
 
 	@Override
 	public boolean writeFeesDetails(List<Object> list) {
-		try {
-			ValueRange value = sheetsRepository.spreadsheets().values().get(spreadSheetId, feesRegisterRange).execute();
+		ValueRange value = getReadFirstSheet();
 
-			if (value.getValues() != null && value.getValues().size() >= 1) {
-				return saveOpration.saveDetilesWithDataSize(list, feesRegisterRange);
+		if (value.getValues() != null && value.getValues().size() >= 1) {
+			return saveOpration.saveDetilesWithDataSize(list, feesRegisterRange);
 
-			} else {
-				return saveOpration.saveDetilesWithoutSize(list, feesRegisterRange);
-			}
-		} catch (IOException e) {
-			log.error("error fetching data  {}  ", e);
-			return false;
+		} else {
+			return saveOpration.saveDetilesWithoutSize(list, feesRegisterRange);
 		}
 
+	}
+
+	@Cacheable(cacheNames = "readFirst")
+	private ValueRange getReadFirstSheet() {
+		try {
+			return sheetsRepository.spreadsheets().values().get(spreadSheetId, feesRegisterRange).execute();
+		} catch (IOException e) {
+			log.error("error sheet connection {} ", e);
+			return new ValueRange();
+
+		}
 	}
 
 	@Override

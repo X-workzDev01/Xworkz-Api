@@ -1,6 +1,7 @@
 package com.xworkz.dream.scheduler;
 
 public interface FeesScheduler {
-	String afterFreeCourseCompletedChengeFeesStatus() ;
+	String afterFreeCourseCompletedChengeFeesStatus();
 
+	void changeStatusAutometically();
 }

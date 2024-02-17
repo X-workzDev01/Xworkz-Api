@@ -58,10 +58,6 @@ public class FollowUpController {
 		log.info(
 				"Fetching follow-up details: spreadsheetId={}, startingIndex={}, maxRows={}, status={}, courseName={}, date={}",
 				spreadsheetId, startingIndex, maxRows, status, courseName, date);
-		;
-		if (status.equals("null") && courseName.equals("null") && date.equals("null") && collegeName.equals("null")) {
-			return  new FollowUpDataDto( new ArrayList<FollowUpDto>() , 0);
-		}
 		return service.getFollowUpDetails(spreadsheetId, startingIndex, maxRows, status, courseName, date, collegeName);
 	}
 

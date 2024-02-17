@@ -88,9 +88,13 @@ public class WrapperUtil {
 			updateDto.setId(dto.getId());
 			updateDto.getFeesHistoryDto().setFeesfollowupDate(LocalDate.now().toString());
 			updateDto.setBalance(null);
-			updateDto.getFeesHistoryDto()
-					.setPaidAmount(String.valueOf(Integer.parseInt(feesDto.getFeesHistoryDto().getPaidAmount())
-							+ Integer.parseInt(dto.getFeesHistoryDto().getPaidAmount())));
+			if (feesDto.getFeesHistoryDto().getPaidAmount() != null) {
+				updateDto.getFeesHistoryDto()
+						.setPaidAmount(String.valueOf(Integer.parseInt(feesDto.getFeesHistoryDto().getPaidAmount())
+								+ Integer.parseInt(dto.getFeesHistoryDto().getPaidAmount())));
+			} else {
+				updateDto.getFeesHistoryDto().setPaidAmount(dto.getFeesHistoryDto().getPaidAmount());
+			}
 			updateDto.setFeesStatus(FeesConstant.PENDING.toString());
 			updateDto.getFeesHistoryDto().setId(null);
 			updateDto.setCourseName(null);
