@@ -152,7 +152,6 @@ public class CacheServiceImpl implements CacheService {
 	@SuppressWarnings("unchecked")
 	public void updateFollowUpStatusInCache(String cacheName, String key, List<Object> data) {
 		Cache cache = cacheManager.getCache(cacheName);
-		System.out.println("cache:"+data);
 		if (cache != null) {
 			ValueWrapper valueWrapper = cache.get(key);
 			if (valueWrapper != null && valueWrapper.get() instanceof List) {
