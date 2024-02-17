@@ -338,7 +338,7 @@ public class FollowUpServiceImpl implements FollowUpService {
 				log.info("Follow-up details not found for email: {}", email);
 				return ResponseEntity.ok(followUp);
 			}
-		} catch (IOException e) {
+		} catch (Exception e) {
 			log.error("error fetching data from repo {} ", e);
 			return null;
 		}
@@ -380,6 +380,31 @@ public class FollowUpServiceImpl implements FollowUpService {
 	private Predicate<FollowUpDto> predicateByStatus(String status, String courseName, String date, String collegeName,
 			DateTimeFormatter dateFormatter, StatusList statusList) {
 		Predicate<FollowUpDto> predicate = null;
+
+		if (!courseName.equals("null") && status.equals("null") && date.equals("null") && collegeName.equals("null")) {
+			predicate = followUpData -> followUpData.getCourseName().equalsIgnoreCase(courseName);
+		}
+		if (!date.equals("null") && status.equals("null") && collegeName.equals("null") && courseName.equals("null")) {
+			predicate = followUpData -> followUpData.getCallback().equalsIgnoreCase(date);
+		}
+
+		if (!collegeName.equals("null") && date.equals("null") && status.equals("null") && courseName.equals("null")) {
+			predicate = followUpData -> followUpData.getCollegeName().equalsIgnoreCase(collegeName);
+		}
+
+		if (!collegeName.equals("null") && !date.equals("null") && status.equals("null") && courseName.equals("null")) {
+			predicate = followUpData -> followUpData.getCollegeName().equalsIgnoreCase(collegeName)
+					&& followUpData.getCallback().equalsIgnoreCase(date);
+		}
+		if (!courseName.equals("null") && !date.equals("null") && status.equals("null") && collegeName.equals("null")) {
+			predicate = followUpData -> followUpData.getCourseName().equalsIgnoreCase(courseName)
+					&& followUpData.getCallback().equalsIgnoreCase(date);
+		}
+		if (!courseName.equals("null") && !collegeName.equals("null") && status.equals("null") && date.equals("null")) {
+			predicate = followUpData -> followUpData.getCourseName().equalsIgnoreCase(courseName)
+					&& followUpData.getCollegeName().equalsIgnoreCase(collegeName);
+		}
+
 		predicate = followUpUtil.byStatus(status, courseName, date, collegeName, dateFormatter, statusList, predicate);
 		predicate = followUpUtil.byStatusAndCourseName(status, courseName, date, collegeName, dateFormatter, statusList,
 				predicate);
@@ -428,19 +453,15 @@ public class FollowUpServiceImpl implements FollowUpService {
 				spreadsheetId, startingIndex, maxRows, email);
 		List<StatusDto> statusDto = new ArrayList<>();
 		List<List<Object>> dataList;
-		try {
-			dataList = repo.getFollowUpStatusDetails(spreadsheetId);
+		dataList = repo.getFollowUpStatusDetails(spreadsheetId);
 
-			List<List<Object>> data = dataList.stream()
-					.filter(list -> list.stream().anyMatch(value -> value.toString().equalsIgnoreCase(email)))
-					.collect(Collectors.toList());
-			statusDto = getFollowUpStatusData(data, startingIndex, maxRows);
-			log.debug("Status details: {}", statusDto);
-			return statusDto;
-		} catch (IOException e) {
-			log.error("error getting status  {} ", e);
-			return new ArrayList<StatusDto>();
-		}
+		List<List<Object>> data = dataList.stream()
+				.filter(list -> list.stream().anyMatch(value -> value.toString().equalsIgnoreCase(email)))
+				.collect(Collectors.toList());
+		statusDto = getFollowUpStatusData(data, startingIndex, maxRows);
+		log.debug("Status details: {}", statusDto);
+		return statusDto;
+
 	}
 
 	@Override
@@ -534,7 +555,7 @@ public class FollowUpServiceImpl implements FollowUpService {
 				+ "StartingIndex: {}, MaxIndex: {}", spreadsheetId, courseName, startingIndex, maxIndex);
 
 		FollowUpDataDto followUpDataDto = new FollowUpDataDto(Collections.emptyList(), 0);
-		try {
+		
 			List<List<Object>> followUpData = repo.getFollowUpDetails(spreadsheetId);
 			List<List<Object>> traineeData = repository.readData(spreadsheetId);
 			log.debug("Null check for all the data: {}", followUpDataDto);
@@ -543,10 +564,6 @@ public class FollowUpServiceImpl implements FollowUpService {
 				return followUpDataDto;
 			}
 			return getDataByCourseName(spreadsheetId, courseName, traineeData, startingIndex, maxIndex);
-		} catch (IOException e) {
-			log.error("An IOException occurred: " + e.getMessage(), e);
-			return followUpDataDto;
-		}
 	}
 
 	private FollowUpDto assignValuesToFollowUp(TraineeDto dto, FollowUpDto followUp) {

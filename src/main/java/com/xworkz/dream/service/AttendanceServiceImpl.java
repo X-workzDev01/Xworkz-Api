@@ -84,6 +84,7 @@ public class AttendanceServiceImpl implements AttendanceService {
 	private AttendanceRepository attendanceRepository;
 	@Autowired
 	private RegisterRepository registerRepository;
+
 	@Autowired
 	private DreamUtil dreamUtil;
 
@@ -118,7 +119,7 @@ public class AttendanceServiceImpl implements AttendanceService {
 				}
 
 			}
-		} catch (IllegalAccessException e) {
+		} catch (Exception e) {
 			log.error("Error accessing traineeAlreadyAdded method: {}", e.getMessage());
 		}
 		return ResponseEntity.ok("Attendance detiles does not added ");
@@ -226,9 +227,10 @@ public class AttendanceServiceImpl implements AttendanceService {
 		LocalDate localDate = LocalDate.now();
 		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 		String newAbsentDate = localDate.format(formatter);
-		String updatedAbsentDates = !currentAbsentDates.equals(null) && currentAbsentDates.equals(Status.NA.toString())
-				? newAbsentDate
-				: currentAbsentDates + "," + newAbsentDate;
+		String updatedAbsentDates = !currentAbsentDates.equals(null)
+				&& currentAbsentDates.contains(Status.NA.toString()) ? newAbsentDate
+						: currentAbsentDates + "," + newAbsentDate;
+
 		attendanceDto.setAbsentDate(updatedAbsentDates);
 
 		String currentReason = attendanceDto.getReason();
@@ -270,20 +272,22 @@ public class AttendanceServiceImpl implements AttendanceService {
 	public List<AttendanceTrainee> getTrainee(String batch) {
 		List<AttendanceTrainee> traineeInfoList = new ArrayList<>();
 		List<List<Object>> list = attendanceRepository.getAttendanceData(sheetId, attendanceInfoIDRange);
-		List<List<Object>> traineeDetails = this.filterTraineeDetails();
-		List<TraineeDto> traineData = traineeDetails.stream()
-				.filter(dtos -> dtos.get(9).toString().equalsIgnoreCase(batch)).map(wrapper::listToDto)
-				.collect(Collectors.toList());
-		List<AttendanceDto> collect = list.stream().filter(items -> items.get(3).toString().equalsIgnoreCase(batch))
-				.map(wrapper::attendanceListToDto).collect(Collectors.toList());
-		collect.stream().forEach(item -> {
-			traineData.stream().filter(dto -> item.getId().equals(dto.getId())).forEach(dto -> {
-				traineeInfoList.add(new AttendanceTrainee(dto.getId(), dto.getBasicInfo().getTraineeName(),
-						dto.getBasicInfo().getEmail()));
+		List<List<Object>> traineeDetails = this.filterTraineeDetails(batch);
+		if (traineeDetails != null) {
+			List<TraineeDto> traineData = traineeDetails.stream().map(wrapper::listToDto).collect(Collectors.toList());
+			List<AttendanceDto> collect = list.stream().filter(items -> items.get(3).toString().equalsIgnoreCase(batch))
+					.map(wrapper::attendanceListToDto).collect(Collectors.toList());
+			collect.stream().forEach(item -> {
+				traineData.stream().filter(dto -> item.getId().equals(dto.getId())).forEach(dto -> {
+					traineeInfoList.add(new AttendanceTrainee(dto.getId(), dto.getBasicInfo().getTraineeName(),
+							dto.getBasicInfo().getEmail()));
+				});
 			});
-		});
 
-		return traineeInfoList;
+			return traineeInfoList;
+		} else {
+			return traineeInfoList;
+		}
 
 	}
 
@@ -370,69 +374,60 @@ public class AttendanceServiceImpl implements AttendanceService {
 		return false;
 	}
 
-	private List<List<Object>> filterTraineeDetails() {
+	private List<List<Object>> filterTraineeDetails(String courseName) {
 		List<List<Object>> followUpDetails;
 		List<List<Object>> readData;
-		try {
-			followUpDetails = repository.getFollowUpDetails(sheetId);
-			readData = registerRepository.readData(sheetId);
-			List<List<Object>> traineeDetails = followUpDetails.stream().filter(followUpDetail -> {
-				return Status.Joined.toString().equalsIgnoreCase(followUpDetail.get(8).toString())
-						&& followUpDetail.get(15).toString().equalsIgnoreCase(ServiceConstant.ACTIVE.toString());
-			}).map(followUpDetail -> {
-				return readData.stream()
-						.filter(data -> data.get(2).toString().equalsIgnoreCase(followUpDetail.get(2).toString()))
-						.findFirst().orElse(null);
-			}).collect(Collectors.toList());
+		followUpDetails = repository.getFollowUpDetails(sheetId);
+		readData = registerRepository.readData(sheetId);
+		List<List<Object>> traineeDetails = followUpDetails.stream().filter(followUpDetail -> {
+			return Status.Joined.toString().equalsIgnoreCase(followUpDetail.get(8).toString())
+					&& followUpDetail.get(15).toString().equalsIgnoreCase(ServiceConstant.ACTIVE.toString());
+		}).map(followUpDetail -> {
+			return readData.stream()
+					.filter(data -> data.get(2).toString().equalsIgnoreCase(followUpDetail.get(2).toString()))
+					.findFirst().orElse(null);
+		}).collect(Collectors.toList());
+		List<List<Object>> collect = traineeDetails.stream()
+				.filter(dtos -> dtos != null && dtos.get(9).toString().equalsIgnoreCase(courseName))
+				.collect(Collectors.toList());
 
-			return traineeDetails;
-
-		} catch (IOException e) {
-			log.error("Error retrieving the trainees : {} ", e.getMessage());
-		}
-		return null;
+		return collect;
 
 	}
 
 	@Override
 	public List<AttendanceDto> addJoined(String courseName) {
 		List<List<Object>> followUpDetails;
-		try {
-			followUpDetails = repository.getFollowUpDetails(sheetId);
-			List<List<Object>> readData = registerRepository.readData(sheetId);
-			List<AttendanceDto> attendanceDto = new ArrayList<AttendanceDto>();
+		followUpDetails = repository.getFollowUpDetails(sheetId);
+		List<List<Object>> readData = registerRepository.readData(sheetId);
+		List<AttendanceDto> attendanceDto = new ArrayList<AttendanceDto>();
 
-			if (followUpDetails != null && !followUpDetails.isEmpty()) {
-				List<FollowUpDto> optionalFollowupDto = followUpDetails(followUpDetails);
-				List<TraineeDto> filterTraineDetails = filterTraineDetails(courseName, readData);
-				if (!optionalFollowupDto.isEmpty()) {
-					optionalFollowupDto.stream().forEach(followUpDto -> {
-						filterTraineDetails.stream().filter(dto -> dto.getBasicInfo().getEmail()
-								.equalsIgnoreCase(followUpDto.getBasicInfo().getEmail())).forEach(dto -> {
-									try {
-										AttendanceDto saveAttendance = wrapper.saveAttendance(dto);
-										log.info("Created AttendanceDto: {}", saveAttendance);
+		if (followUpDetails != null && !followUpDetails.isEmpty()) {
+			List<FollowUpDto> optionalFollowupDto = followUpDetails(followUpDetails);
+			List<TraineeDto> filterTraineDetails = filterTraineDetails(courseName, readData);
+			if (!optionalFollowupDto.isEmpty()) {
+				optionalFollowupDto.stream().forEach(followUpDto -> {
+					filterTraineDetails.stream().filter(dto -> dto.getBasicInfo().getEmail()
+							.equalsIgnoreCase(followUpDto.getBasicInfo().getEmail())).forEach(dto -> {
+								try {
+									AttendanceDto saveAttendance = wrapper.saveAttendance(dto);
+									log.info("Created AttendanceDto: {}", saveAttendance);
 
-										if (!this.traineeAlreadyAdded(courseName, saveAttendance.getId())) {
-											processAttendance(saveAttendance, courseName);
-											attendanceDto.add(saveAttendance);
-										}
-
-									} catch (IllegalAccessException | IOException e) {
-										log.error("Error adding joined trainee: {}", e.getMessage());
+									if (!this.traineeAlreadyAdded(courseName, saveAttendance.getId())) {
+										processAttendance(saveAttendance, courseName);
+										attendanceDto.add(saveAttendance);
 									}
 
-								});
-					});
-					return attendanceDto;
-				}
-				return Collections.emptyList();
-			}
-		} catch (IOException e1) {
-			log.error("Error adding joined trainee: {}", e1.getMessage());
-		}
+								} catch (IllegalAccessException | IOException e) {
+									log.error("Error adding joined trainee: {}", e.getMessage());
+								}
 
-		return null;
+							});
+				});
+				return attendanceDto;
+			}
+		}
+		return Collections.emptyList();
 
 	}
 
@@ -453,7 +448,7 @@ public class AttendanceServiceImpl implements AttendanceService {
 	@Override
 	public ResponseEntity<AttendanceDataDto> attendanceReadData(Integer startingIndex, Integer maxRows,
 			String courseName) {
-		List<List<Object>> traineeDetails = filterTraineeDetails();
+		List<List<Object>> traineeDetails = filterTraineeDetails(courseName);
 		List<List<Object>> traineData = traineeDetails.stream()
 				.filter(dtos -> dtos.get(9).toString().equals(courseName)).collect(Collectors.toList());
 		List<List<Object>> attendanceData = attendanceRepository.getAttendanceData(sheetId, attendanceInfoIDRange);
@@ -475,9 +470,7 @@ public class AttendanceServiceImpl implements AttendanceService {
 				log.info("Returning response for spreadsheetId: {}", sheetId);
 				return ResponseEntity.ok(dto);
 			}
-
 		}
-
 		return null;
 
 	}
@@ -537,7 +530,7 @@ public class AttendanceServiceImpl implements AttendanceService {
 
 			if (!courseName.equalsIgnoreCase(ServiceConstant.NULL.toString())) {
 				List<List<Object>> dataList = attendanceRepository
-						.getNamesAndCourseName(sheetId, attandenceNameAndCourseRange,value).stream()
+						.getNamesAndCourseName(sheetId, attandenceNameAndCourseRange, value).stream()
 						.filter(list -> list.get(1) != null && list.get(1).toString().equalsIgnoreCase(courseName))
 						.collect(Collectors.toList());
 				List<List<Object>> filteredData = dataList.stream().filter(list -> list.stream().anyMatch(val -> {
@@ -549,7 +542,7 @@ public class AttendanceServiceImpl implements AttendanceService {
 				}
 			} else {
 				List<List<Object>> dataList = attendanceRepository.getNamesAndCourseName(sheetId,
-						attandenceNameAndCourseRange,value);
+						attandenceNameAndCourseRange, value);
 				List<List<Object>> filteredData = dataList.stream().filter(list -> list.stream().anyMatch(val -> {
 					return val.toString().toLowerCase().startsWith(value.toLowerCase());
 				})).collect(Collectors.toList());
@@ -578,7 +571,7 @@ public class AttendanceServiceImpl implements AttendanceService {
 	}
 
 	private void sendAbsentMail(Integer id, String courseName, String reason) {
-		List<List<Object>> traineeDetails = this.filterTraineeDetails();
+		List<List<Object>> traineeDetails = this.filterTraineeDetails(courseName);
 		List<TraineeDto> collect = traineeDetails.stream().map(wrapper::listToDto).collect(Collectors.toList());
 		collect.stream().filter(dto -> dto.getId().equals(id)).forEach(dto -> {
 			dreamUtil.sendAbsentMail(dto.getBasicInfo().getEmail(), dto.getBasicInfo().getTraineeName(), reason);

@@ -1,12 +1,6 @@
 package com.xworkz.dream.resource;
 
-import java.io.IOException;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.cache.annotation.Cacheable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -18,6 +12,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.xworkz.dream.dto.utils.FeesWithHistoryDto;
 import com.xworkz.dream.feesDtos.FeesDto;
+import com.xworkz.dream.feesDtos.FeesFinalDto;
 import com.xworkz.dream.feesDtos.FeesUiDto;
 import com.xworkz.dream.feesDtos.SheetFeesDetiles;
 import com.xworkz.dream.service.FeesService;
@@ -27,48 +22,45 @@ import io.swagger.annotations.ApiOperation;
 @RequestMapping("/api")
 @RestController
 public class FeesController {
-
 	@Autowired
 	private FeesService feesService;
-	@Value("${sheets.feesEmailRange}")
-	private String feesEmailRange;
-	private Logger log = LoggerFactory.getLogger(FeesController.class);
-	@Value("${sheets.getFeesDetiles}")
-	private String getFeesDetilesRange;
-	private String range;
-	@Value("${sheets.getFeesDetilesfollowupRange}")
-	private String getFeesDetilesfollowupRange;
+	@Autowired
+	private FeesFinalDto feesFinalDtoRanges;
 
 	@ApiOperation("Saving feesDetiles")
 	@PostMapping("/saveFees")
-	public ResponseEntity<String> writeFeesSaveOpration(@RequestBody FeesUiDto dto)
-			throws IOException, IllegalAccessException {
-		log.info("Running save Fees detiles controller ");
-		return ResponseEntity.ok(feesService.writeFeesDetiles(dto, feesEmailRange));
+	public ResponseEntity<String> writeFeesSaveOpration(@RequestBody FeesUiDto dto) {
+		return ResponseEntity.ok(feesService.writeFeesDetails(dto, feesFinalDtoRanges.getFeesEmailRange()));
 
 	}
 
 	@ApiOperation("Update feesDetiles")
 
 	@PutMapping("/updateFeesDeties")
-	public ResponseEntity<String> updateFeesFollowUp(@RequestBody FeesDto dto) throws IOException {
-		return ResponseEntity.ok(feesService.updateFeesFollowUp(dto, getFeesDetilesRange, range));
+	public ResponseEntity<String> updateFeesFollowUp(@RequestBody FeesDto dto) {
+		return ResponseEntity.ok(feesService.updateFeesFollowUp(dto, feesFinalDtoRanges.getGetFeesDetilesRange()));
 	}
 
 	@ApiOperation("get FeesDetiles by Email")
 	@GetMapping("/getFeesDetilesByEmail/{email}")
-	public ResponseEntity<FeesWithHistoryDto> getDetilesByEmail(@PathVariable String email) throws IOException {
-		return ResponseEntity
-				.ok(feesService.getDetilesByEmail(email, getFeesDetilesRange, getFeesDetilesfollowupRange));
+	public ResponseEntity<FeesWithHistoryDto> getDetilesByEmail(@PathVariable String email) {
+		return ResponseEntity.ok(feesService.getDetailsByEmail(email, feesFinalDtoRanges.getGetFeesDetilesRange(),
+				feesFinalDtoRanges.getGetFeesDetilesfollowupRange()));
 	}
 
 	@ApiOperation("Get All feesDetiles By Selected Option")
 	@GetMapping("/getFeesDetilesBySelectedOption/{minIndex}/{maxIndex}/{date}/{batch}/{paymentMode}")
 	public ResponseEntity<SheetFeesDetiles> getFeesDetilesBySelectedOption(@PathVariable String minIndex,
 			@PathVariable String maxIndex, @PathVariable String date, @PathVariable String batch,
-			@PathVariable String paymentMode) throws IOException {
-		return ResponseEntity
-				.ok(feesService.getAllFeesDetiles(getFeesDetilesRange, minIndex, maxIndex, date, batch, paymentMode));
+			@PathVariable String paymentMode) {
+		return ResponseEntity.ok(feesService.getAllFeesDetails(feesFinalDtoRanges.getGetFeesDetilesRange(), minIndex,
+				maxIndex, date, batch, paymentMode));
+	}
+
+	@ApiOperation("transforFeesDetilesExistingRecords")
+	@PostMapping("/transforFeesDetilesExistingRecords")
+	public String transforDataTraineeInto() {
+		return feesService.transForData(feesFinalDtoRanges.getId(), feesFinalDtoRanges.getFeesEmailRange());
 	}
 
 }

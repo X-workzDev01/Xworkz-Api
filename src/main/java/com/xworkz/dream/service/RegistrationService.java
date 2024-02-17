@@ -26,6 +26,7 @@ public interface RegistrationService {
 
 	TraineeDto getDetailsByEmail(String spreadsheetId, String email);
 
+
 	ResponseEntity<List<TraineeDto>> getSearchSuggestion(String spreadsheetId, String value, String courseName,
 			String collegeName);
 
