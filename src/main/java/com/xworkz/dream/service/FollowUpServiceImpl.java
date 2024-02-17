@@ -359,9 +359,16 @@ public class FollowUpServiceImpl implements FollowUpService {
 			Predicate<FollowUpDto> predicate = predicateByStatus(status, courseName, date, collegeName, dateFormatter,
 					statusList);
 			try {
-				List<FollowUpDto> dto = followUpUtil.getFollowupList(followUpList, traineeData).stream()
-						.filter(predicate).sorted(Comparator.comparing(FollowUpDto::getRegistrationDate).reversed())
-						.collect(Collectors.toList());
+				List<FollowUpDto> dto;
+				if (predicate != null) {
+					dto = followUpUtil.getFollowupList(followUpList, traineeData).stream().filter(predicate)
+							.sorted(Comparator.comparing(FollowUpDto::getRegistrationDate).reversed())
+							.collect(Collectors.toList());
+				} else {
+					dto = followUpUtil.getFollowupList(followUpList, traineeData).stream()
+							.sorted(Comparator.comparing(FollowUpDto::getRegistrationDate).reversed())
+							.collect(Collectors.toList());
+				}
 				List<FollowUpDto> limitedRows = dto.stream().skip(startingIndex).limit(maxRows)
 						.collect(Collectors.toList());
 
@@ -555,15 +562,14 @@ public class FollowUpServiceImpl implements FollowUpService {
 				+ "StartingIndex: {}, MaxIndex: {}", spreadsheetId, courseName, startingIndex, maxIndex);
 
 		FollowUpDataDto followUpDataDto = new FollowUpDataDto(Collections.emptyList(), 0);
-		
-			List<List<Object>> followUpData = repo.getFollowUpDetails(spreadsheetId);
-			List<List<Object>> traineeData = repository.readData(spreadsheetId);
-			log.debug("Null check for all the data: {}", followUpDataDto);
-			if (Stream.of(followUpData, traineeData, spreadsheetId, courseName, repo, wrapper)
-					.anyMatch(Objects::isNull)) {
-				return followUpDataDto;
-			}
-			return getDataByCourseName(spreadsheetId, courseName, traineeData, startingIndex, maxIndex);
+
+		List<List<Object>> followUpData = repo.getFollowUpDetails(spreadsheetId);
+		List<List<Object>> traineeData = repository.readData(spreadsheetId);
+		log.debug("Null check for all the data: {}", followUpDataDto);
+		if (Stream.of(followUpData, traineeData, spreadsheetId, courseName, repo, wrapper).anyMatch(Objects::isNull)) {
+			return followUpDataDto;
+		}
+		return getDataByCourseName(spreadsheetId, courseName, traineeData, startingIndex, maxIndex);
 	}
 
 	private FollowUpDto assignValuesToFollowUp(TraineeDto dto, FollowUpDto followUp) {
@@ -625,7 +631,6 @@ public class FollowUpServiceImpl implements FollowUpService {
 
 		if (values != null) {
 			int endIndex = Math.min(startingIndex + maxRows, values.size());
-
 			dto = values.subList(startingIndex, endIndex).stream()
 					.sorted(Comparator.comparing(FollowUpDto::getRegistrationDate)).collect(Collectors.toList());
 		}

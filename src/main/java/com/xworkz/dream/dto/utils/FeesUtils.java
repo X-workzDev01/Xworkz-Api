@@ -185,14 +185,19 @@ public class FeesUtils {
 				feesDtos.getFeesHistoryDto().setPaymentMode(FeesConstant.NA.toString());
 				feesDtos.setMailSendStatus(FeesConstant.NO.toString());
 				feesDtos.setComments(FeesConstant.NA.toString());
-				feesDtos.setReminderDate(LocalDate.parse(details.getStartDate()).plusDays(28).toString());
-				feesDtos.getFeesHistoryDto().setPaidTo(FeesConstant.NA.toString());
-				feesDtos.getFeesHistoryDto()
-						.setFollowupCallbackDate(LocalDate.parse(details.getStartDate()).plusDays(1).toString());
+				if (details != null) {
+					feesDtos.setReminderDate(LocalDate.parse(details.getStartDate()).plusDays(28).toString());
+					feesDtos.getFeesHistoryDto().setPaidTo(FeesConstant.NA.toString());
+					feesDtos.getFeesHistoryDto()
+							.setFollowupCallbackDate(LocalDate.parse(details.getStartDate()).plusDays(1).toString());
+				}
+				log.debug("After setting Followup dto is {}", feesDtos);
+				return feesDtos;
 			}
+
 		}
-		log.debug("After setting Followup dto is {}", feesDtos);
-		return feesDtos;
+		return new FeesDto();
+
 	}
 
 }

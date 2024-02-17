@@ -43,30 +43,29 @@ public class FeesSchedulerImpl implements FeesScheduler {
 	@Override
 	@Scheduled(fixedRate = 12 * 60 * 60 * 1000)
 	public String afterFreeCourseCompletedChengeFeesStatus() {
+		changeStatusAutometically();
+		return null;
+	}
+
+	public void changeStatusAutometically() {
 		feesRepository.getAllFeesDetiles(feesFinalDtoRanges.getGetFeesDetilesRange()).stream()
 				.filter(items -> items != null && items.size() > 2 && items.get(2) != null
 						&& items.contains(ServiceConstant.ACTIVE.toString()))
 				.map(items -> {
-					try {
-						FeesDto dto = feesWrapper.listToFeesDTO(items);
-						if (dto.getFeesHistoryDto().getEmail()
-								.equalsIgnoreCase(feesUtil.getTraineeDetiles(dto.getFeesHistoryDto().getEmail()))) {
-							BatchDetailsDto detiles = feesUtil.getBatchDetiles(dto.getFeesHistoryDto().getEmail());
-							updateCSRofferedAfterFreeTraining(dto, detiles);
-							return null;
-						} else {
-							BatchDetailsDto detiles = feesUtil.getBatchDetiles(dto.getFeesHistoryDto().getEmail());
-							afterAMonthChangeStatusAutometically(dto, detiles);
+					FeesDto dto = feesWrapper.listToFeesDTO(items);
+					if (dto.getFeesHistoryDto().getEmail()
+							.equalsIgnoreCase(feesUtil.getTraineeDetiles(dto.getFeesHistoryDto().getEmail()))) {
+						BatchDetailsDto detiles = feesUtil.getBatchDetiles(dto.getFeesHistoryDto().getEmail());
+						updateCSRofferedAfterFreeTraining(dto, detiles);
+						return null;
+					} else {
+						BatchDetailsDto detiles = feesUtil.getBatchDetiles(dto.getFeesHistoryDto().getEmail());
+						afterAMonthChangeStatusAutometically(dto, detiles);
 
-							return null;
-						}
-					} catch (Exception e) {
-						log.error("Fetching Detiles is not Found {} ", e);
 						return null;
 					}
-				}).collect(Collectors.toList());
 
-		return null;
+				}).collect(Collectors.toList());
 	}
 
 	private FeesDto afterAMonthChangeStatusAutometically(FeesDto dto, BatchDetailsDto detiles) {

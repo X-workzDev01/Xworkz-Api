@@ -63,4 +63,10 @@ public class FeesController {
 		return feesService.transForData(feesFinalDtoRanges.getId(), feesFinalDtoRanges.getFeesEmailRange());
 	}
 
+	@PostMapping("/update")
+	public String updatefeesEmailAndName(String name, String oldEmail, String newEmail, String updatedBy) {
+		feesService.updateNameAndEmail(name, oldEmail, newEmail, updatedBy);
+		return "Updated sucessfully";
+	}
+
 }
