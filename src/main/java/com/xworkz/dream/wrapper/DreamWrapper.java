@@ -683,14 +683,12 @@ public class DreamWrapper {
 		dto.setAdminDto(admin);
 	}
 
-	public StatusDto setFollowUpStatus(StatusDto statusDto, List<List<Object>> data) {
-		int size = data != null ? data.size() : 0;
+	public StatusDto setFollowUpStatus(StatusDto statusDto) {
 		BasicInfoDto basicInfo = new BasicInfoDto();
 		basicInfo.setTraineeName(statusDto.getBasicInfo().getTraineeName());
 		basicInfo.setEmail(statusDto.getBasicInfo().getEmail());
 		basicInfo.setContactNumber(statusDto.getBasicInfo().getContactNumber());
 		StatusDto sdto = new StatusDto();
-		sdto.setId(size += 1);
 		sdto.setBasicInfo(basicInfo);
 		sdto.setAttemptedOn(LocalDateTime.now().toString());
 		sdto.setAttemptedBy(statusDto.getAttemptedBy());

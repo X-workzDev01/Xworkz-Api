@@ -162,7 +162,7 @@ public class CacheServiceImpl implements CacheService {
 				}
 				if (data.size() > 4) {
 					data.remove(4); // Removes the element at index 4
-				}
+				}	
 				((List<List<Object>>) valueWrapper.get()).add(data);
 				log.info("Updated cache for key: {}", key);
 			}
@@ -197,7 +197,6 @@ public class CacheServiceImpl implements CacheService {
 				int size = (((List<List<Object>>) valueWrapper.get()).size());
 				data.set(0, size + 1);
 				data.remove(4);
-
 				((List<List<Object>>) valueWrapper.get()).add(data);
 				log.info("Updated cache for key: {}", key);
 			}

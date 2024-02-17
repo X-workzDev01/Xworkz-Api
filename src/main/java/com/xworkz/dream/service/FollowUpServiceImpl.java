@@ -27,6 +27,7 @@ import org.springframework.stereotype.Service;
 
 import com.google.api.services.sheets.v4.model.UpdateValuesResponse;
 import com.google.api.services.sheets.v4.model.ValueRange;
+import com.xworkz.dream.constants.ServiceConstant;
 import com.xworkz.dream.dto.AuditDto;
 import com.xworkz.dream.dto.FollowUpDataDto;
 import com.xworkz.dream.dto.FollowUpDto;
@@ -95,7 +96,7 @@ public class FollowUpServiceImpl implements FollowUpService {
 		log.info("Saving data to the follow-up sheet: {}", data);
 		repo.saveToFollowUp(spreadSheetId, data);
 		log.info("Adding FollowUp details to Cache: {}", data);
-		cacheService.addFollowUpToCache("followUpDetails", spreadSheetId, data);
+		cacheService.addFollowUpToCache("getFollowUpDetails", "listOfFollowUpDetails", data);
 		log.info("Follow-up service completed successfully");
 		return true;
 	}
@@ -122,7 +123,7 @@ public class FollowUpServiceImpl implements FollowUpService {
 			return false;
 		}
 		boolean save = repo.saveToFollowUp(spreadSheetId, data);
-		cacheService.addFollowUpToCache("followUpDetails", spreadSheetId, data);
+		cacheService.addFollowUpToCache("getFollowUpDetails", "listOfFollowUpDetails", data);
 		log.info("Follow-up Enquiry service completed successfully");
 		return save;
 
@@ -150,7 +151,7 @@ public class FollowUpServiceImpl implements FollowUpService {
 			return false;
 		}
 		boolean save = repo.saveToFollowUp(spreadSheetId, data);
-		cacheService.addFollowUpToCache("followUpDetails", spreadSheetId, data);
+		cacheService.addFollowUpToCache("getFollowUpDetails", "listOfFollowUpDetails", data);
 		log.info("CSR Follow-up  service completed successfully");
 		return save;
 
@@ -176,7 +177,7 @@ public class FollowUpServiceImpl implements FollowUpService {
 	@Override
 	public boolean updateFollowUp(String spreadsheetId, String email, TraineeDto dto)
 			throws IOException, IllegalAccessException {
-		log.info("Update follow-up service running. SpreadsheetId: {}, Email: {}", spreadsheetId, email);
+		log.info("Update follow-up service running. Email: {}", email);
 		FollowUpDto followUpDto = getFollowUpDetailsByEmail(spreadsheetId, email);
 		if (followUpDto == null) {
 			log.warn("FollowUpDto is null. Update follow-up service aborted.");
@@ -199,7 +200,7 @@ public class FollowUpServiceImpl implements FollowUpService {
 			}
 			valueRange.setValues(values);
 			UpdateValuesResponse updated = repo.updateFollow(spreadsheetId, range, valueRange);
-			cacheService.updateCacheFollowUp("followUpDetails", spreadsheetId, email, followUpDto);
+			cacheService.updateCacheFollowUp("getFollowUpDetails", "listOfFollowUpDetails", email, followUpDto);
 
 			if (updated != null && !updated.isEmpty()) {
 				log.info("Follow-up details updated successfully");
@@ -225,7 +226,7 @@ public class FollowUpServiceImpl implements FollowUpService {
 			String range = followUpSheetName + followUprowStartRange + rowIndex + ":" + followUprowEndRange + rowIndex;
 			UpdateValuesResponse updated = setFollowUpDto(calBack, spreadsheetId, currentStatus, currentlyFollowedBy,
 					followUpDto, joiningDate, range);
-			cacheService.updateCacheFollowUp("followUpDetails", spreadsheetId, email, followUpDto);
+			cacheService.updateCacheFollowUp("getFollowUpDetails", "listOfFollowUpDetails", email, followUpDto);
 			if (updated != null && !updated.isEmpty()) {
 				log.info("Current follow-up details updated successfully");
 				return true;
@@ -251,33 +252,33 @@ public class FollowUpServiceImpl implements FollowUpService {
 			adminDto.setCreatedOn(existingAdminDto.getCreatedOn());
 		}
 		followUpDto.setCurrentlyFollowedBy(currentlyFollowedBy);
-		if (currentStatus != null && !currentStatus.equals("NA")) {
+		if (currentStatus != null && !currentStatus.equals(ServiceConstant.NA.toString())) {
 			followUpDto.setCurrentStatus(currentStatus);
 		}
-		if (joiningDate != null && !joiningDate.equals("NA")) {
+		if (joiningDate != null && !joiningDate.equals(ServiceConstant.NA.toString())) {
 			followUpDto.setJoiningDate(joiningDate);
 		}
 
 		adminDto.setUpdatedBy(currentlyFollowedBy);
 		adminDto.setUpdatedOn(LocalDateTime.now().toString());
-		if (callBack != null && !callBack.equals("NA")) {
+		if (callBack != null && !callBack.equals(ServiceConstant.NA.toString())) {
 			if (LocalDate.now().isEqual(LocalDate.parse(callBack))) {
 				followUpDto.setCallback(callBack);
-				followUpDto.setFlag("InActive");
+				followUpDto.setFlag(ServiceConstant.INACTIVE.toString());
 
 			} else {
 				followUpDto.setCallback(callBack);
-				followUpDto.setFlag("Active");
+				followUpDto.setFlag(ServiceConstant.ACTIVE.toString());
 
 			}
 		}
-		if (callBack != null && callBack.equals("NA")) {
+		if (callBack != null && callBack.equals(ServiceConstant.NA.toString())) {
 			followUpDto.setCallback(LocalDate.now().plusDays(1).toString());
-			followUpDto.setFlag("Active");
+			followUpDto.setFlag(ServiceConstant.ACTIVE.toString());
 
 		}
 		followUpDto.setAdminDto(adminDto);
-		followUpDto.setCourseName("NA");
+		followUpDto.setCourseName(ServiceConstant.NA.toString());
 		List<List<Object>> values = Arrays.asList(wrapper.extractDtoDetails(followUpDto));
 
 		if (!values.isEmpty()) {
@@ -287,10 +288,9 @@ public class FollowUpServiceImpl implements FollowUpService {
 		}
 		ValueRange valueRange = new ValueRange();
 		valueRange.setValues(values);
-		log.error(values + "                                " + range);
 		UpdateValuesResponse updated = repo.updateFollow(spreadsheetId, range, valueRange);
-		cacheService.updateCacheFollowUp("followUpDetails", spreadsheetId, followUpDto.getBasicInfo().getEmail(),
-				followUpDto);
+		cacheService.updateCacheFollowUp("getFollowUpDetails", "listOfFollowUpDetails",
+				followUpDto.getBasicInfo().getEmail(), followUpDto);
 		log.info("Follow-up DTO set successfully");
 		return updated;
 	}
@@ -300,17 +300,16 @@ public class FollowUpServiceImpl implements FollowUpService {
 		try {
 			log.info("Update follow-up status service start. SpreadsheetId: {}, StatusDto: {}", spreadsheetId,
 					statusDto);
-			List<List<Object>> data = repo.getStatusId(spreadsheetId).getValues();
-			StatusDto sdto = wrapper.setFollowUpStatus(statusDto, data);
+			StatusDto sdto = wrapper.setFollowUpStatus(statusDto);
 
 			List<Object> statusData = wrapper.extractDtoDetails(sdto);
 			boolean status = repo.updateFollowUpStatus(spreadsheetId, statusData);
-			cacheService.updateFollowUpStatusInCache("followUpStatusDetails", spreadsheetId, statusData);
+			cacheService.updateFollowUpStatusInCache("getFollowUpStatusDetails", "followupstatusdetails", statusData);
 
 			if (status == true) {
 				updateCurrentFollowUp(statusDto.getCallBack(), spreadsheetId, statusDto.getBasicInfo().getEmail(),
 						statusDto.getAttemptStatus(), statusDto.getAttemptedBy(), statusDto.getJoiningDate());
-				cacheService.updateFollowUpStatus("followUpDetails", spreadsheetId, statusDto);
+				cacheService.updateFollowUpStatus("getFollowUpStatusDetails", "followupstatusdetails", statusDto);
 			}
 			log.info("Follow-up status updated successfully for ID: {}", statusDto.getId());
 			return ResponseEntity.ok("Follow Status Updated for ID :  " + statusDto.getId());
@@ -478,14 +477,9 @@ public class FollowUpServiceImpl implements FollowUpService {
 		List<StatusDto> statusDto = new ArrayList<>();
 		List<List<Object>> dataList = repo.getFollowUpStatusDetails(spreadsheetId);
 		if (email != null && dataList != null && !dataList.isEmpty()) {
-			List<List<Object>> data = dataList.stream()
-					.filter(list -> list.stream().anyMatch(value -> value.toString().equalsIgnoreCase(email)))
-					.collect(Collectors.toList());
-			Collections.reverse(data);
-			for (List<Object> row : data) {
-				StatusDto dto = wrapper.listToStatusDto(row);
-				statusDto.add(dto);
-			}
+			statusDto = dataList.stream().map(wrapper::listToStatusDto)
+					.filter(dto -> dto!=null&&dto.getBasicInfo().getEmail().equalsIgnoreCase(email)).collect(Collectors.toList());
+			Collections.reverse(statusDto);
 		}
 		log.debug("Status details by email: {}", statusDto);
 		return statusDto;
@@ -521,7 +515,7 @@ public class FollowUpServiceImpl implements FollowUpService {
 
 			if (!lists.isEmpty()) {
 				List<List<Object>> data = lists.stream()
-						.filter(items -> items.get(15).toString().equalsIgnoreCase("Active")
+						.filter(items -> items.get(15).toString().equalsIgnoreCase(ServiceConstant.ACTIVE.toString())
 								&& items.get(2).toString().equalsIgnoreCase(email))
 						.collect(Collectors.toList());
 
@@ -606,7 +600,7 @@ public class FollowUpServiceImpl implements FollowUpService {
 						followUp = getFollowUpDetailsByEmail(spreadsheetId, email);
 
 					} catch (IOException e) {
-						log.error("An IOException occurred: " + e.getMessage(), e);
+						log.error("An IOException occurred: ", e.getMessage(), e);
 					}
 					if (followUp == null) {
 						return null;
