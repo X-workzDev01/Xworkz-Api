@@ -25,7 +25,6 @@ import com.xworkz.dream.feesDtos.FeesUiDto;
 import com.xworkz.dream.feesDtos.SheetFeesDetiles;
 import com.xworkz.dream.repository.FeesRepository;
 import com.xworkz.dream.repository.FollowUpRepository;
-import com.xworkz.dream.scheduler.FeesScheduler;
 import com.xworkz.dream.wrapper.DreamWrapper;
 import com.xworkz.dream.wrapper.FeesDetilesWrapper;
 
