@@ -10,7 +10,7 @@ public interface FeesService {
 	String writeFeesDetails(FeesUiDto dto, String feesEmailRange);
 
 	SheetFeesDetiles getAllFeesDetails(String getFeesDetiles, String minIndex, String maxIndex, String date,
-			String batch, String paymentMode);
+			String batch, String paymentMode,String status);
 
 	FeesWithHistoryDto getDetailsByEmail(String email, String getFeesDetilesRange, String getFeesDetilesfollowupRange);
 

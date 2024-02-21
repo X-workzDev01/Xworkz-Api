@@ -102,13 +102,14 @@ public class RegistrationServiceImpl implements RegistrationService {
 	private void assignCsrDto(TraineeDto dto) {
 		String uniqueId = csrService.generateUniqueID();
 		CSR csr = new CSR();
-		log.info("set {} if offeredAs a CSR",
-				dto.getCourseInfo().getOfferedAs().equalsIgnoreCase(ServiceConstant.CSR.toString()) ? "1" : "0");
-		csr.setCsrFlag(dto.getCourseInfo().getOfferedAs().equalsIgnoreCase("CSR Offered") ? "1" : "0");
+		log.info("set {} if offeredAs a CSR", dto.getCourseInfo().getOfferedAs()
+				.equalsIgnoreCase(ServiceConstant.CSR_Offered.toString().replace('_', ' ')) ? "1" : "0");
+		csr.setCsrFlag(dto.getCourseInfo().getOfferedAs()
+				.equalsIgnoreCase(ServiceConstant.CSR_Offered.toString().replace('_', ' ')) ? "1" : "0");
 		csr.setActiveFlag(ServiceConstant.ACTIVE.toString());
 		csr.setAlternateContactNumber(0l);
-		csr.setUniqueId(dto.getCourseInfo().getOfferedAs().equalsIgnoreCase("CSR Offered") ? uniqueId
-				: ServiceConstant.NA.toString());
+		csr.setUniqueId(dto.getCourseInfo().getOfferedAs().equalsIgnoreCase(
+				ServiceConstant.CSR_Offered.toString().replace('_', ' ')) ? uniqueId : ServiceConstant.NA.toString());
 		csr.setUsnNumber(ServiceConstant.NA.toString());
 		dto.setCsrDto(csr);
 	}

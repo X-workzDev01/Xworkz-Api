@@ -71,14 +71,14 @@ public class FeesServiceImpl implements FeesService {
 
 	@Override
 	public SheetFeesDetiles getAllFeesDetails(String getFeesDetilesRange, String minIndex, String maxIndex, String date,
-			String courseName, String paymentMode) {
+			String courseName, String paymentMode,String status) {
 		List<FeesDto> convertingListToDto;
 		convertingListToDto = feesRepository.getAllFeesDetiles(getFeesDetilesRange).stream()
 				.map(feesWrapper::listToFeesDTO)
 				.filter(dto -> dto.getSoftFlag() != null
 						&& dto.getSoftFlag().equalsIgnoreCase(ServiceConstant.ACTIVE.toString()))
 				.collect(Collectors.toList());
-		return feesUtils.getDataByselectedItems(minIndex, maxIndex, date, courseName, paymentMode, convertingListToDto);
+		return feesUtils.getDataByselectedItems(minIndex, maxIndex, date, courseName, paymentMode, convertingListToDto,status);
 
 	}
 

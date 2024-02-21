@@ -49,12 +49,12 @@ public class FeesController {
 	}
 
 	@ApiOperation("Get All feesDetiles By Selected Option")
-	@GetMapping("/getFeesDetilesBySelectedOption/{minIndex}/{maxIndex}/{date}/{batch}/{paymentMode}")
+	@GetMapping("/getFeesDetilesBySelectedOption/{minIndex}/{maxIndex}/{date}/{batch}/{paymentMode}/{status}")
 	public ResponseEntity<SheetFeesDetiles> getFeesDetilesBySelectedOption(@PathVariable String minIndex,
 			@PathVariable String maxIndex, @PathVariable String date, @PathVariable String batch,
-			@PathVariable String paymentMode) {
+			@PathVariable String paymentMode, @PathVariable String status) {
 		return ResponseEntity.ok(feesService.getAllFeesDetails(feesFinalDtoRanges.getGetFeesDetilesRange(), minIndex,
-				maxIndex, date, batch, paymentMode));
+				maxIndex, date, batch, paymentMode, status));
 	}
 
 	@ApiOperation("transforFeesDetilesExistingRecords")
