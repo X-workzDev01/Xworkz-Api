@@ -763,7 +763,9 @@ public class DreamWrapper {
 		dto.getAdminDto().setCreatedOn(LocalDateTime.now().toString());
 		dto.getAdminDto().setUpdatedBy(ServiceConstant.NA.toString());
 		dto.getAdminDto().setUpdatedOn(ServiceConstant.NA.toString());
-
+		if (dto.getCourseInfo().getOfferedAs().equalsIgnoreCase(ServiceConstant.NA.toString())) {
+			dto.getCourseInfo().setOfferedAs(ServiceConstant.Non_CSR_Offered.toString().replace('_', ' '));
+		}
 		if (dto.getOthersDto().getReferalName() == null) {
 			dto.getOthersDto().setReferalName(Status.NA.toString());
 

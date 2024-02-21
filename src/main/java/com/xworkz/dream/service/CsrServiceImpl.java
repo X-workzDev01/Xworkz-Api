@@ -53,7 +53,7 @@ public class CsrServiceImpl implements CsrService {
 			wrapper.setValuesForCSRDto(dto);
 			List<Object> list = wrapper.extractDtoDetails(dto);
 			repo.writeData(spreadsheetId, list);
-			addToCache(dto,list);
+			addToCache(dto, list);
 			boolean status = followUpService.addCsrToFollowUp(dto, spreadsheetId);
 
 			if (status) {
@@ -71,14 +71,13 @@ public class CsrServiceImpl implements CsrService {
 			}
 			return ResponseEntity.ok("Data written successfully, not added to Follow Up");
 		} catch (Exception e) {
-			log.error("Error processing request: {}",e);
+			log.error("Error processing request: {}", e);
 			return ResponseEntity.ok("Failed to process the request");
 		}
- 
+
 	}
 
-	public void addToCache(TraineeDto dto, List<Object> list)
-			 {
+	public void addToCache(TraineeDto dto, List<Object> list) {
 		cacheService.updateCache("sheetsData", "listOfTraineeData", list);
 		if (dto.getBasicInfo().getEmail() != null) {
 			cacheService.addEmailToCache("emailData", spreadsheetId, dto.getBasicInfo().getEmail());
@@ -89,15 +88,16 @@ public class CsrServiceImpl implements CsrService {
 		log.info("Saving birth details: {}", dto);
 		try {
 			service.saveBirthDayInfo(spreadsheetId, dto);
-		} catch (IllegalAccessException|IOException  e) {
-	
-			log.error("Exception in addToCache: {}",e.getMessage());
+		} catch (IllegalAccessException | IOException e) {
+
+			log.error("Exception in addToCache: {}", e.getMessage());
 		}
 		cacheService.addContactNumberToCache("alternativeNumber", "listOfAlternativeContactNumbers",
 				dto.getCsrDto().getAlternateContactNumber());
 		cacheService.addEmailToCache("usnNumber", "listOfUsnNumbers", dto.getCsrDto().getUsnNumber());
 		cacheService.addEmailToCache("uniqueNumber", "listofUniqueNumbers", dto.getCsrDto().getUniqueId());
 	}
+
 	@Override
 	public boolean registerCsr(CsrDto csrDto) {
 		TraineeDto traineeDto = new TraineeDto();
@@ -108,12 +108,14 @@ public class CsrServiceImpl implements CsrService {
 		traineeDto.setEducationInfo(csrDto.getEducationInfo());
 		traineeDto.getCourseInfo().setOfferedAs(csrDto.getOfferedAs());
 		String uniqueId = generateUniqueID();
-		log.info("set {} if offeredAs a CSR",
-				traineeDto.getCourseInfo().getOfferedAs().equalsIgnoreCase(ServiceConstant.CSR.toString()) ? "1" : "0");
-		csr.setCsrFlag(traineeDto.getCourseInfo().getOfferedAs().equalsIgnoreCase(ServiceConstant.CSR.toString()) ? "1" : "0");
+		log.info("set {} if offeredAs a CSR", traineeDto.getCourseInfo().getOfferedAs()
+				.equalsIgnoreCase(ServiceConstant.CSR_Offered.toString().replace('_', ' ')) ? "1" : "0");
+		csr.setCsrFlag(traineeDto.getCourseInfo().getOfferedAs()
+				.equalsIgnoreCase(ServiceConstant.CSR_Offered.toString().replace('_', ' ')) ? "1" : "0");
 		csr.setActiveFlag(ServiceConstant.ACTIVE.toString());
 		csr.setAlternateContactNumber(csrDto.getAlternateContactNumber());
-		csr.setUniqueId(traineeDto.getCourseInfo().getOfferedAs().equalsIgnoreCase(ServiceConstant.CSR.toString()) ? uniqueId : ServiceConstant.NA.toString());
+		csr.setUniqueId(traineeDto.getCourseInfo().getOfferedAs().equalsIgnoreCase(
+				ServiceConstant.CSR_Offered.toString().replace('_', ' ')) ? uniqueId : ServiceConstant.NA.toString());
 		csr.setUsnNumber(csrDto.getUsnNumber());
 		traineeDto.setCsrDto(csr);
 		validateAndRegister(traineeDto);
@@ -128,7 +130,7 @@ public class CsrServiceImpl implements CsrService {
 			List<List<Object>> listOfA_number = repo.getAlternativeNumber(spreadsheetId);
 			log.info("checking contact number is sheet {}", contactNumber);
 			isExists = containsContactNumber(listOfC_number, contactNumber)
-					|| containsContactNumber(listOfA_number, contactNumber);
+					|| containsContactNumber(listOfA_number, contactNumber); 
 		}
 		return isExists;
 	}
@@ -142,7 +144,7 @@ public class CsrServiceImpl implements CsrService {
 
 	@Override
 	public boolean checkUsnNumber(String usnNumber) {
-		log.info("check Usn Number,{} ",usnNumber);
+		log.info("check Usn Number,{} ", usnNumber);
 		if (usnNumber != null) {
 			List<List<Object>> listOfUsn = repo.getUsnNumber(spreadsheetId);
 			return listOfUsn != null
@@ -177,7 +179,7 @@ public class CsrServiceImpl implements CsrService {
 	@Override
 	public boolean checkUniqueNumber(String uniqueNumber) {
 		if (uniqueNumber != null) {
-			log.info("checking unique number,{}",uniqueNumber);
+			log.info("checking unique number,{}", uniqueNumber);
 			List<List<Object>> listOfUniqueNumber = repo.getUniqueNumbers(spreadsheetId);
 			return listOfUniqueNumber != null && listOfUniqueNumber.stream()
 					.filter(list -> list != null && !list.isEmpty() && list.get(0) != null)
