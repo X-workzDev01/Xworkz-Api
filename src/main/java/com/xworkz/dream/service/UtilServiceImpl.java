@@ -10,6 +10,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.xworkz.dream.dto.utils.ClientDropDown;
 import com.xworkz.dream.dto.utils.Dropdown;
 import com.xworkz.dream.repository.DreamRepository;
 
@@ -99,6 +100,42 @@ public class UtilServiceImpl implements UtilService {
 		});
 		log.info("Dropdown data sorted successfully");
 
+	}
+
+	@Override
+	public ClientDropDown getClientDropDown() {
+		List<List<Object>> listOfClientDropDown = repo.getClientDropDown();
+		if (listOfClientDropDown == null) {
+			return null;
+		}
+		ClientDropDown dropdown = new ClientDropDown();
+		List<String> clientType = dropdown.getClientType();
+		List<String> callingStatus = dropdown.getCallingStatus();
+		List<String> hrDesignation = dropdown.getHrDesignation();
+		List<String> sourceOfConnection = dropdown.getSourceOfConnection();
+		List<String> sourceOfLocation = dropdown.getSourceOfLocation();
+
+		for (List<Object> list : listOfClientDropDown) {
+			if (list != null) {
+				if (list.size() > 0 && !list.get(0).toString().isEmpty()) {
+					clientType.add(list.get(0).toString());
+				}
+				if (list.size() > 1 && !list.get(1).toString().isEmpty()) {
+					sourceOfConnection.add(list.get(1).toString());
+				}
+				if (list.size() > 2 && !list.get(2).toString().isEmpty()) {
+					sourceOfLocation.add(list.get(2).toString());
+				}
+				if (list.size() > 3 && !list.get(3).toString().isEmpty()) {
+					hrDesignation.add(list.get(3).toString());
+				}
+				if (list.size() > 4 && !list.get(4).toString().isEmpty()) {
+					callingStatus.add(list.get(4).toString());
+				}
+			}
+		}
+		sortingDropDownData(clientType, callingStatus, hrDesignation, sourceOfConnection, sourceOfLocation);
+		return dropdown;
 	}
 
 }

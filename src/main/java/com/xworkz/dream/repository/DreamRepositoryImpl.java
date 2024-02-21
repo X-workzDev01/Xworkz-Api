@@ -46,7 +46,10 @@ public class DreamRepositoryImpl implements DreamRepository {
 	private String idRange;
 	@Value("${sheets.loginInfoRange}")
 	private String loginInfoRange;
-
+	@Value("${login.sheetId}")
+	private String sheetId;
+	@Value("${sheets.clientDropDownRange}")
+	private String clientDropDownRange;
 	@Autowired
 	private ResourceLoader resourceLoader;
 
@@ -63,13 +66,6 @@ public class DreamRepositoryImpl implements DreamRepository {
 		HttpRequestInitializer requestInitializer = new HttpCredentialsAdapter(credentials);
 		sheetsService = new Sheets.Builder(GoogleNetHttpTransport.newTrustedTransport(), JSON_FACTORY,
 				requestInitializer).setApplicationName(applicationName).build();
-	}
-
-	@Override
-	public ValueRange getIds(String spreadsheetId) throws IOException {
-		ValueRange response = sheetsService.spreadsheets().values().get(spreadsheetId, idRange).execute();
-		log.info("IDs retrieved successfully for spreadsheetId: {}", spreadsheetId);
-		return response;
 	}
 
 	@Override
@@ -91,6 +87,17 @@ public class DreamRepositoryImpl implements DreamRepository {
 		log.info("Login information updated successfully for spreadsheetId: {}", spreadsheetId);
 		return true;
 
+	}
+
+	@Override
+	@Cacheable(value="getClientDropDown",key="'listOfClientDropDown'", unless = "#result == null")
+	public List<List<Object>> getClientDropDown() {
+		try {
+			return sheetsService.spreadsheets().values().get(sheetId, clientDropDownRange).execute().getValues();
+		} catch (IOException e) {
+			log.error("Exception while reading client dropdown:{}", e.getMessage());
+			return Collections.emptyList();
+		}
 	}
 
 }

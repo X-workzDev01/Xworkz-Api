@@ -39,9 +39,9 @@ public class ClientInformationController {
 
 	@ApiOperation("Read client data with pagination")
 	@GetMapping("/readclientinfomation")
-	public ClientDataDto readClientData(@RequestParam int startingIndex, @RequestParam int maxRows){
+	public ClientDataDto readClientData(@RequestParam int startingIndex, @RequestParam int maxRows,@RequestParam String callBackDate,@RequestParam String clientType){
 		log.info("read client data controller, start index {} and ending  index  {}", startingIndex, maxRows);
-		return clientInformationService.readClientData(startingIndex, maxRows);
+		return clientInformationService.readClientData(startingIndex, maxRows,callBackDate,clientType);
 	}
 
 	@ApiOperation("To check Whether CompanyName is exists or not")
@@ -98,16 +98,16 @@ public class ClientInformationController {
 
 	@ApiOperation("get suggestiong by name")
 	@GetMapping("/client/suggestions")
-	public List<ClientDto> getSuggestion(@RequestParam String companyName){
-		log.info("getting suggestion by company name,  {}", companyName);
-		return clientInformationService.getSuggestionDetails(companyName);
+	public List<ClientDto> getSuggestion(@RequestParam String companyName,@RequestParam String callBackDate,@RequestParam String clientType){
+		log.info("getting suggestion by company name,  {},clientType:{},callBackDate:{}", companyName,clientType,callBackDate);
+		return clientInformationService.getSuggestionDetails(companyName,callBackDate,clientType);
 	}
 
 	@ApiOperation("get details by companyname")
 	@GetMapping("/getdetailsbycompanyname")
-	public List<ClientDto> getDetailsByCompanyName(@RequestParam String companyName)  {
-		log.info("get details by company name,{}", companyName);
-		return clientInformationService.getDetailsbyCompanyName(companyName);
+	public List<ClientDto> getDetailsByCompanyName(@RequestParam String companyName,@RequestParam  String callBackDate,@RequestParam String clientType)  {
+		log.info("get details by company name,{},callBackDate:{},clientType:{}", companyName,callBackDate,clientType);
+		return clientInformationService.getDetailsbyCompanyName(companyName,callBackDate,clientType);
 	}
 
 	@ApiOperation("updating client data by id")

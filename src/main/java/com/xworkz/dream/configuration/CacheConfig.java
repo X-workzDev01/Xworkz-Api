@@ -41,7 +41,8 @@ public class CacheConfig {
 		caches.add(new ConcurrentMapCache("uniqueNumber"));
 		caches.add(new ConcurrentMapCache("getFollowUpDetails"));
 		caches.add(new ConcurrentMapCache("getFollowUpStatusDetails"));
-		
+		caches.add(new ConcurrentMapCache("getClientDropDown"));
+
 		cacheManager.setCaches(caches);
 		return cacheManager;
 	}

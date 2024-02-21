@@ -14,11 +14,12 @@ import com.xworkz.dream.wrapper.DreamWrapper;
 
 @Component
 public class RegistrationUtil {
-	private static final Logger log = LoggerFactory.getLogger(RegistrationUtil.class);
 
 	@Autowired
 	private DreamWrapper wrapper;
 
+	private static final Logger log = LoggerFactory.getLogger(RegistrationUtil.class);
+	
 	public List<TraineeDto> readOnlyActiveData(List<List<Object>> listOfData) {
 		List<TraineeDto> traineeDtos = listOfData.stream().map(wrapper::listToDto)
 				.filter(traineeDto -> traineeDto != null && traineeDto.getCsrDto().getActiveFlag() != null
