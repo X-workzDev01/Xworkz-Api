@@ -10,6 +10,4 @@ public interface DreamRepository {
 	
 	List<List<Object>> getClientDropDown();
 
-	void setSheetsService();
-
 }

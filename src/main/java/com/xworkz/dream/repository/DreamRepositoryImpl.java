@@ -42,7 +42,6 @@ public class DreamRepositoryImpl implements DreamRepository {
 
 	private static final Logger log = LoggerFactory.getLogger(DreamRepositoryImpl.class);
 
-	@Override
 	@PostConstruct
 	public void setSheetsService() {
 		try {

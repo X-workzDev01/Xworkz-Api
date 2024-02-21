@@ -22,7 +22,6 @@ public class OptionController {
 
 	@GetMapping("/dropdown")
 	public Dropdown getDropDowns(@RequestHeader String spreadsheetId) {
-		log.info("Request received to fetch dropdown data for spreadsheetId: {}", spreadsheetId);
 		Dropdown body = service.getDropdown(spreadsheetId);
 		return body;
 	}

@@ -25,7 +25,6 @@ public class HrFollowUpRepositoryImpl implements HrFollowUpRepository {
 	@Value("${sheets.credentialsPath}")
 	private String credentialsPath;
 	private Sheets sheetsService;
-
 	@Value("${sheets.hrFollowUpInformationRange}")
 	private String hrFollowUpInformationRange;
 	@Value("${sheets.hrFollowUpInformationReadRange}")
@@ -37,7 +36,6 @@ public class HrFollowUpRepositoryImpl implements HrFollowUpRepository {
 
 	private static final Logger log = LoggerFactory.getLogger(HrFollowUpRepositoryImpl.class);
 
-	@Override
 	@PostConstruct
 	public void setSheetsService() {
 		try {

@@ -7,7 +7,6 @@ import com.google.api.services.sheets.v4.model.ValueRange;
 
 public interface ClientRepository {
 
-	void setSheetsService();
 
 	boolean writeClientInformation(List<Object> row);
 

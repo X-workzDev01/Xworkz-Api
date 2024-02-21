@@ -37,7 +37,6 @@ public class ClientRepositoryImpl implements ClientRepository {
 	private SheetSaveOpration saveOperation;
 	private static final Logger log = LoggerFactory.getLogger(ClientRepositoryImpl.class);
 
-	@Override
 	@PostConstruct
 	public void setSheetsService() {
 		try {
