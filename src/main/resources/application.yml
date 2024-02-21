@@ -5,7 +5,7 @@ spring:
     template-loader-path: classpath:/templates/
 sheets:
   appName: Dream Api
-  range: A3:AH 
+  range: A3:Ak 
   emailRange: C3:C
   contactNumberRange: D3:D
   dropdownRange: dropDowns!A2:I
