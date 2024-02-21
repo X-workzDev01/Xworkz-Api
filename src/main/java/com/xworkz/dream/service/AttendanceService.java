@@ -26,7 +26,7 @@ public interface AttendanceService {
 
 	List<AttendanceDto> getAbsentListByBatch(String batch);
 
-	Boolean markTraineeAttendance(String courseName, Boolean batchAttendanceStatus);
+	Boolean markTrainerAttendance(String courseName, Boolean batchAttendanceStatus);
 
 	List<AttendanceDto> addJoined(String courseName);
 
