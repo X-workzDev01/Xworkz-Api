@@ -1,6 +1,5 @@
 spring:
    profiles:
-
       active: dev
    freemarker:
     template-loader-path: classpath:/templates/
@@ -72,6 +71,7 @@ sheets:
   hrSheetName: clientHRdetails!
   hrFollowUpInformationRange: ClientHRFollowUpStatus!B2:I
   hrFollowUpInformationReadRange: ClientHRFollowUpStatus!A2:I
+  clientDropDownRange: dropDowns!J2:N
   
 mailChimp:
   userName: 7FzbzzHIVQSVJVz5r4n/bGa/lhNWJCXUq6oqBxBCTYQ=

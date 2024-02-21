@@ -1,6 +1,5 @@
 package com.xworkz.dream.service;
 
-import java.io.IOException;
 import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -38,23 +37,27 @@ public class HrFollowUpServiceImpl implements HrFollowUpService {
 	private static final Logger log = LoggerFactory.getLogger(HrFollowUpServiceImpl.class);
 
 	@Override
-	public String saveHrFollowUpDetails(HrFollowUpDto dto) throws IllegalAccessException, IOException {
+	public String saveHrFollowUpDetails(HrFollowUpDto dto) {
 		log.info("saveHrFollowUpDetails hr follow Up Dto: {}", dto);
 		clientInformationUtil.settingNaValues(dto);
-		List<Object> list = dreamWrapper.extractDtoDetails(dto);
-		if (dto != null) {
-			if (hrFollowUpRepository.saveHrFollowUpDetails(list)) {
-				clientCacheService.addHRDetailsToCache("hrFollowUpDetails","hrFollowUp",list);
-				return "Hr Follow up details saved successfully";
-			} else {
-				return "Hr Follow up details not saved";
+		try {
+			List<Object> list = dreamWrapper.extractDtoDetails(dto);
+			if (dto != null) {
+				if (hrFollowUpRepository.saveHrFollowUpDetails(list)) {
+					clientCacheService.addHRDetailsToCache("hrFollowUpDetails", "hrFollowUp", list);
+					return "Hr Follow up details saved successfully";
+				} else {
+					return "Hr Follow up details not saved";
+				}
 			}
+		} catch (IllegalAccessException e) {
+			log.error("exception while saving client follow up:{}", e.getMessage());
 		}
 		return "Hr Follow up details not saved";
 	}
 
 	@Override
-	public List<HrFollowUpDto> getHrFollowUpDetailsBy(int hrId) throws IOException {
+	public List<HrFollowUpDto> getHrFollowUpDetailsBy(int hrId){
 		List<List<Object>> listOfData = hrFollowUpRepository.readFollowUpDetailsById();
 		if (listOfData != null) {
 			List<HrFollowUpDto> listOfHrFollowUpDto = listOfData.stream().map(clientWrapper::listToHrFollowUpDto)
@@ -67,7 +70,7 @@ public class HrFollowUpServiceImpl implements HrFollowUpService {
 	}
 
 	@Override
-	public List<HrFollowUpDto> getFollowUpDetails(Integer companyId) throws IOException {
+	public List<HrFollowUpDto> getFollowUpDetails(Integer companyId){
 		log.info("get follow up details in service");
 		if (companyId != null) {
 			List<List<Object>> listOfHr = clientHrRepository.readData();
@@ -77,15 +80,12 @@ public class HrFollowUpServiceImpl implements HrFollowUpService {
 				List<ClientHrDto> listOfHrDto = listOfHr.stream().map(clientWrapper::listToClientHrDto)
 						.filter(hrDetails -> hrDetails.getCompanyId().equals(companyId)).collect(Collectors.toList());
 
-				  List<HrFollowUpDto> hrFollowUpList = listOfFollowUpData.stream()
-		                    .map(clientWrapper::listToHrFollowUpDto)
-		                    .filter(followUpDto ->
-		                            listOfHrDto.stream()
-		                                    .anyMatch(dto -> followUpDto.getHrId().equals(dto.getId())))
-		                    .sorted(Comparator.comparing(HrFollowUpDto::getId).reversed())
-		                    .collect(Collectors.toList());
-		            return hrFollowUpList;
-				}
+				List<HrFollowUpDto> hrFollowUpList = listOfFollowUpData.stream().map(clientWrapper::listToHrFollowUpDto)
+						.filter(followUpDto -> listOfHrDto.stream()
+								.anyMatch(dto -> followUpDto.getHrId().equals(dto.getId())))
+						.sorted(Comparator.comparing(HrFollowUpDto::getId).reversed()).collect(Collectors.toList());
+				return hrFollowUpList;
+			}
 		}
 		return null;
 	}
