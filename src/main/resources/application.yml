@@ -44,7 +44,7 @@ sheets:
   attendanceInfoStartRange : B
   attendanceInfoEndRange : K
   attandanceInfoSheetName: attendanceInfo!
-  attandenceNameAndCourseRange : attendanceInfo!C2:D
+  attandenceNameAndCourseRange : attendanceInfo!A2:D
   batchAttendanceInfoSheetName: batchAttendanceInfo!
   batchAttendanceInfoRange: batchAttendanceInfo!A2:D 
   batchAttendanceInfoStartRange: B

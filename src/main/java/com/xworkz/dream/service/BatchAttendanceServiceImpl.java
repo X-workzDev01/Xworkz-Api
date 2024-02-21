@@ -2,7 +2,9 @@ package com.xworkz.dream.service;
 
 import java.io.IOException;
 import java.time.LocalDate;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -10,6 +12,7 @@ import javax.validation.ConstraintViolation;
 import javax.validation.Validation;
 import javax.validation.ValidatorFactory;
 
+import org.aspectj.weaver.patterns.HasMemberTypePatternForPerThisMatching;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
@@ -18,6 +21,7 @@ import org.springframework.stereotype.Service;
 import com.xworkz.dream.dto.BatchAttendanceDto;
 import com.xworkz.dream.dto.utils.WrapperUtil;
 import com.xworkz.dream.repository.BatchAttendanceRepository;
+import com.xworkz.dream.wrapper.BatchWrapper;
 
 @Service
 public class BatchAttendanceServiceImpl implements BatchAttendanceService {
@@ -32,6 +36,8 @@ public class BatchAttendanceServiceImpl implements BatchAttendanceService {
 	private BatchAttendanceRepository repository;
 	@Autowired
 	private WrapperUtil util;
+	@Autowired
+	private BatchWrapper wrapper;
 
 	@Override
 	public ResponseEntity<String> writeBatchAttendance(BatchAttendanceDto batchAttendanceDto)
@@ -64,6 +70,28 @@ public class BatchAttendanceServiceImpl implements BatchAttendanceService {
 
 		}
 		return false;
+	}
+
+	@Override
+	public Map<Integer, Boolean> getBatchAttendanceDetails(String courseName) {
+		List<List<Object>> batchAttendanceData;
+		Map<Integer, Boolean> attendanceDetails = new HashMap<Integer, Boolean>();
+		try {
+			batchAttendanceData = repository.getBatchAttendanceData(batchAttendanceInfoRange);
+			Integer totalAttendanceForCourse = (int) batchAttendanceData.stream()
+					.filter(attendanceRecord -> attendanceRecord.get(1).equals(courseName)).count();
+			Boolean isTodayPresent = batchAttendanceData.stream()
+					.filter(attendanceRecord -> attendanceRecord.get(1).toString().equalsIgnoreCase(courseName))
+					.map(attendanceRecord -> attendanceRecord.get(3))
+					.anyMatch(attendanceDate -> attendanceDate.equals(LocalDate.now().toString()));
+			attendanceDetails.put(totalAttendanceForCourse, isTodayPresent);
+
+			return attendanceDetails;
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		return attendanceDetails;
+
 	}
 
 }

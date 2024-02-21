@@ -11,6 +11,7 @@ import java.util.List;
 import java.util.ListIterator;
 import java.util.Set;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.ConstraintViolation;
@@ -24,8 +25,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestParam;
 
 import com.google.api.services.sheets.v4.model.UpdateValuesResponse;
 import com.google.api.services.sheets.v4.model.ValueRange;
@@ -146,15 +145,14 @@ public class AttendanceServiceImpl implements AttendanceService {
 	}
 
 	@Override
-	public List<String> markAndSaveAbsentDetails(@RequestBody List<AbsenteesDto> absentDtoList,
-			@RequestParam String batch) {
+	public List<String> markAndSaveAbsentDetails(List<AbsenteesDto> absentDtoList, String batch) {
 		List<String> name = new ArrayList<String>();
 		try {
 
 			List<List<Object>> attendanceList = attendanceRepository.getAttendanceData(sheetId, attendanceInfoIDRange);
 			List<List<Object>> filteredList = attendanceList.stream().filter(entry -> batch.equals(entry.get(3)))
 					.collect(Collectors.toList());
-			this.markTraineeAttendance(batch, true);
+			this.markTrainerAttendance(batch, true);
 			for (List<Object> values : filteredList) {
 				AttendanceDto attendanceDto = wrapper.attendanceListToDto(values);
 				Boolean checkAbsentDate = this.checkAbsentDate(attendanceDto);
@@ -278,16 +276,19 @@ public class AttendanceServiceImpl implements AttendanceService {
 			List<AttendanceDto> collect = list.stream().filter(items -> items.get(3).toString().equalsIgnoreCase(batch))
 					.map(wrapper::attendanceListToDto).collect(Collectors.toList());
 			collect.stream().forEach(item -> {
-				traineData.stream().filter(dto -> item.getId().equals(dto.getId())).forEach(dto -> {
-					traineeInfoList.add(new AttendanceTrainee(dto.getId(), dto.getBasicInfo().getTraineeName(),
-							dto.getBasicInfo().getEmail()));
-				});
+				Boolean checkAbsentDate = this.checkAbsentDate(item);
+				if (checkAbsentDate == false) {
+					traineData.stream().filter(dto -> item.getId().equals(dto.getId())).forEach(dto -> {
+						traineeInfoList.add(new AttendanceTrainee(dto.getId(), dto.getBasicInfo().getTraineeName(),
+								dto.getBasicInfo().getEmail()));
+					});
+				}
 			});
 
 			return traineeInfoList;
-		} else {
-			return traineeInfoList;
 		}
+
+		return traineeInfoList;
 
 	}
 
@@ -344,7 +345,7 @@ public class AttendanceServiceImpl implements AttendanceService {
 	}
 
 	@Override
-	public Boolean markTraineeAttendance(String courseName, Boolean batchAttendanceStatus) {
+	public Boolean markTrainerAttendance(String courseName, Boolean batchAttendanceStatus) {
 		if (courseName != null && !batchAttendanceStatus.equals(false)) {
 			BatchDetailsDto batchDetailsByCourseName;
 			try {
@@ -527,37 +528,26 @@ public class AttendanceServiceImpl implements AttendanceService {
 	public ResponseEntity<List<AttendanceDto>> getSearchSuggestion(String value, String courseName) {
 		List<AttendanceDto> suggestion = new ArrayList<>();
 		if (value != null) {
-
+			List<List<Object>> dataList = attendanceRepository.getNamesAndCourseName(sheetId,
+					attandenceNameAndCourseRange, value);
+			List<AttendanceDto> attedaceData = dataList.stream().map(wrapper::attendanceListToDto)
+					.collect(Collectors.toList());
 			if (!courseName.equalsIgnoreCase(ServiceConstant.NULL.toString())) {
-				List<List<Object>> dataList = attendanceRepository
-						.getNamesAndCourseName(sheetId, attandenceNameAndCourseRange, value).stream()
-						.filter(list -> list.get(1) != null && list.get(1).toString().equalsIgnoreCase(courseName))
+				suggestion = attedaceData.stream().filter(dto -> dto.getCourse().equalsIgnoreCase(courseName))
+						.filter(dto -> dto.getTraineeName().toLowerCase().startsWith(value.toLowerCase()))
 						.collect(Collectors.toList());
-				List<List<Object>> filteredData = dataList.stream().filter(list -> list.stream().anyMatch(val -> {
-					return val.toString().toLowerCase().startsWith(value.toLowerCase());
-				})).collect(Collectors.toList());
-				for (List<Object> list : filteredData) {
-					AttendanceDto dto = wrapper.attendanceListToDto(list);
-					suggestion.add(dto);
-				}
-			} else {
-				List<List<Object>> dataList = attendanceRepository.getNamesAndCourseName(sheetId,
-						attandenceNameAndCourseRange, value);
-				List<List<Object>> filteredData = dataList.stream().filter(list -> list.stream().anyMatch(val -> {
-					return val.toString().toLowerCase().startsWith(value.toLowerCase());
-				})).collect(Collectors.toList());
-				for (List<Object> list : filteredData) {
-					AttendanceDto dto = wrapper.attendanceListToDto(list);
-					suggestion.add(dto);
-				}
-
-				log.debug("Returning {} search suggestions", suggestion.size());
 				return ResponseEntity.ok(suggestion);
-
+			} else {
+				suggestion = attedaceData.stream()
+						.filter(dto -> dto.getTraineeName().toLowerCase().startsWith(value.toLowerCase()))
+						.collect(Collectors.toList());
+				return ResponseEntity.ok(suggestion);
 			}
+
 		}
 		log.warn("Null value provided for search suggestion");
 		return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ArrayList<>());
+
 	}
 
 	private List<FollowUpDto> followUpDetails(List<List<Object>> followUpDetails) {
