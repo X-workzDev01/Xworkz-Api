@@ -12,7 +12,7 @@ sheets:
   loginInfoRange: loginInfo!A2:B 
   followUpRange: followUp!A2:Q
   followUpStatus: followUpStatus!A2:L
-  rowStartRange: B
+  rowStartRange: B 
   rowEndRange: AH  
   traineeSheetName: xworkzApi!
   followUpSheetName: followUp!

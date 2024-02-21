@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
+import com.xworkz.dream.constants.FeesConstant;
 import com.xworkz.dream.constants.SheetConstant;
 import com.xworkz.dream.dto.AuditDto;
 import com.xworkz.dream.dto.BatchDetailsDto;
@@ -79,9 +80,7 @@ public class FeesDetilesWrapperImpl implements FeesDetilesWrapper {
 				feesDto.setFeeConcession(
 						Integer.valueOf(row.get(SheetConstant.COLUMN_FEES_CONCESSION.getIndex()).toString()));
 			}
-			if (validateCell(SheetConstant.COLUMN_FEES_STATUS)) {
-				feesDto.setFeesStatus((String) row.get(SheetConstant.COLUMN_FEES_STATUS.getIndex()));
-			}
+
 			if (validateCell(SheetConstant.COLUMN_MAIL_SEND_STATUS)) {
 				feesDto.setMailSendStatus((String) row.get(SheetConstant.COLUMN_MAIL_SEND_STATUS.getIndex()));
 			}
@@ -118,6 +117,11 @@ public class FeesDetilesWrapperImpl implements FeesDetilesWrapper {
 							+ Long.parseLong(row.get(SheetConstant.LATE_FEES.getIndex()).toString()));
 					feesDto.setBalance(feesDto.getTotalAmount()
 							- Long.valueOf((String) row.get(SheetConstant.COLUMN_PAID_AMOUNT.getIndex())));
+					if (feesDto.getBalance() == 0L) {
+						feesDto.setFeesStatus(FeesConstant.COMPLETED.toString());
+					} else {
+						feesDto.setFeesStatus((String) row.get(SheetConstant.COLUMN_FEES_STATUS.getIndex()));
+					}
 				}
 			}
 			return feesDto;
