@@ -158,7 +158,6 @@ public class RegistrationServiceImpl implements RegistrationService {
 	@Override
 	public ResponseEntity<SheetsDto> readData(String spreadsheetId, int startingIndex, int maxRows, String courseName,
 			String collegeName) {
-		long endRows = startingIndex + maxRows;
 		SheetsDto traineeData = new SheetsDto();
 		List<List<Object>> dataList = repo.readData(spreadsheetId);
 		if (dataList != null) {
@@ -167,21 +166,21 @@ public class RegistrationServiceImpl implements RegistrationService {
 							list -> list != null && !list.isEmpty() && list.size() > 24 ? list.get(24).toString() : "",
 							Comparator.reverseOrder()))
 					.collect(Collectors.toList());
-			if (!courseName.equalsIgnoreCase(ServiceConstant.NULL.toString())
+			if (!courseName.equalsIgnoreCase("null")
 					&& !collegeName.equalsIgnoreCase(ServiceConstant.NULL.toString())) {
 				List<TraineeDto> sortedData = sortedByDate.stream()
 						.filter(items -> items != null && items.size() > 9 && items.contains(courseName))
 						.filter(items -> items != null && items.size() > 8 && items.contains(collegeName))
 						.map(wrapper::listToDto).collect(Collectors.toList());
 				traineeData.setSheetsData(
-						sortedData.stream().skip(startingIndex).limit(endRows).collect(Collectors.toList()));
+						sortedData.stream().skip(startingIndex).limit(maxRows).collect(Collectors.toList()));
 				traineeData.setSize(sortedData.size());
 				return ResponseEntity.ok(traineeData);
 			} else if (!courseName.equalsIgnoreCase(ServiceConstant.NULL.toString())) {
 				List<List<Object>> sortedCourse = sortedByDate.stream()
 						.filter(items -> items != null && items.size() > 9 && items.contains(courseName))
 						.collect(Collectors.toList());
-				traineeData.setSheetsData(sortedCourse.stream().skip(startingIndex).limit(endRows)
+				traineeData.setSheetsData(sortedCourse.stream().skip(startingIndex).limit(maxRows)
 						.map(wrapper::listToDto).collect(Collectors.toList()));
 				traineeData.setSize(sortedCourse.size());
 				log.info("Returning response for course: {}", courseName);
@@ -190,14 +189,14 @@ public class RegistrationServiceImpl implements RegistrationService {
 				List<List<Object>> sortedByCollege = sortedByDate.stream()
 						.filter(items -> items != null && items.size() > 8 && items.contains(collegeName))
 						.collect(Collectors.toList());
-				traineeData.setSheetsData(sortedByCollege.stream().skip(startingIndex).limit(endRows)
+				traineeData.setSheetsData(sortedByCollege.stream().skip(startingIndex).limit(maxRows)
 						.map(wrapper::listToDto).collect(Collectors.toList()));
 				traineeData.setSize(sortedByCollege.size());
 				log.info("Returning response for college Name: {}", collegeName);
 				return ResponseEntity.ok(traineeData);
 			}
 			log.info("Returning response for spreadsheetId: {}", spreadsheetId);
-			traineeData.setSheetsData(sortedByDate.stream().skip(startingIndex).limit(endRows).map(wrapper::listToDto)
+			traineeData.setSheetsData(sortedByDate.stream().skip(startingIndex).limit(maxRows).map(wrapper::listToDto)
 					.collect(Collectors.toList()));
 			traineeData.setSize(sortedByDate.size());
 			return ResponseEntity.ok(traineeData);

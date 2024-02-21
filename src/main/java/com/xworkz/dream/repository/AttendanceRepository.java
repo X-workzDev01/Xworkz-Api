@@ -18,4 +18,6 @@ public interface AttendanceRepository {
 
 	List<List<Object>> getNamesAndCourseName(String spreadsheetId, String range, String value);
 
+	
+
 }

@@ -3,7 +3,6 @@ package com.xworkz.dream.service;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -16,10 +15,14 @@ import org.springframework.stereotype.Service;
 import com.google.api.services.sheets.v4.model.UpdateValuesResponse;
 import com.google.api.services.sheets.v4.model.ValueRange;
 import com.xworkz.dream.cache.ClientCacheService;
+import com.xworkz.dream.constants.ServiceConstant;
 import com.xworkz.dream.dto.AuditDto;
 import com.xworkz.dream.dto.ClientDataDto;
 import com.xworkz.dream.dto.ClientDto;
+import com.xworkz.dream.dto.ClientHrDto;
+import com.xworkz.dream.dto.HrFollowUpDto;
 import com.xworkz.dream.repository.ClientRepository;
+import com.xworkz.dream.service.util.ClientUtil;
 import com.xworkz.dream.util.ClientInformationUtil;
 import com.xworkz.dream.wrapper.ClientWrapper;
 import com.xworkz.dream.wrapper.DreamWrapper;
@@ -35,7 +38,8 @@ public class ClientInformationServiceImpl implements ClientInformationService {
 	private ClientWrapper clientWrapper;
 	@Autowired
 	private ClientCacheService clientCacheService;
-
+	@Autowired
+	private ClientUtil clientUtil;
 	@Value("${sheets.clientStartRow}")
 	private String clientStartRow;
 	@Value("${sheets.clientEndRow}")
@@ -71,27 +75,64 @@ public class ClientInformationServiceImpl implements ClientInformationService {
 	}
 
 	@Override
-	public ClientDataDto readClientData(int startingIndex, int maxRows) {
+	public ClientDataDto readClientData(int startingIndex, int maxRows, String callBackDate, String clientType) {
 		log.debug("start index {} and end index {}", startingIndex, maxRows);
-		List<List<Object>> listOfData = clientRepository.readData();
+		ClientDataDto dataDto = new ClientDataDto();
+		List<ClientDto> listOfClient = clientUtil.getActiveClientRecords();
+		List<ClientHrDto> listOfHr = clientUtil.readHrDetails();
+		List<HrFollowUpDto> listOfFollowUp = clientUtil.readClientFollowUp();
+		if (listOfClient != null) {
+			if (!callBackDate.equalsIgnoreCase(ServiceConstant.NULL.toString())
+					&& !clientType.equalsIgnoreCase(ServiceConstant.NULL.toString())) {
+				List<ClientDto> listOfDetails = findDetails(callBackDate, listOfClient, listOfHr, listOfFollowUp);
+				List<ClientDto> listOfClientDto = listOfDetails.stream().filter(
+						clientDto -> clientDto != null && clientDto.getCompanyType().equalsIgnoreCase(clientType))
+						.collect(Collectors.toList());
+				return clientPagination(startingIndex, maxRows, dataDto, listOfClientDto);
 
-		if (listOfData != null) {
-			List<ClientDto> ListOfClientDto = listOfData.stream().map(clientWrapper::listToClientDto)
-					.filter(dto -> dto.getStatus() != null && !dto.getStatus().equalsIgnoreCase("InActive"))
-					.sorted(Comparator.comparing(ClientDto::getId, Comparator.reverseOrder()))
-					.collect(Collectors.toList());
-			List<ClientDto> clientData = ListOfClientDto.stream().skip(startingIndex).limit(maxRows)
-					.collect(Collectors.toList());
-			return new ClientDataDto(clientData, listOfData.size());
-		} else {
-
-			return new ClientDataDto(null, 0);
+			} else if (!clientType.equalsIgnoreCase(ServiceConstant.NULL.toString())) {
+				List<ClientDto> sortedData = listOfClient.stream().filter(
+						clientDto -> clientDto != null && clientDto.getCompanyType().equalsIgnoreCase(clientType))
+						.collect(Collectors.toList());
+				return clientPagination(startingIndex, maxRows, dataDto, sortedData);
+			} else if (!callBackDate.equalsIgnoreCase(ServiceConstant.NULL.toString())) {
+				List<ClientDto> listOfDetails = findDetails(callBackDate, listOfClient, listOfHr, listOfFollowUp);
+				return clientPagination(startingIndex, maxRows, dataDto, listOfDetails);
+			} else {
+				return clientPagination(startingIndex, maxRows, dataDto, listOfClient);
+			}
 		}
+		return dataDto;
+	}
+
+	private ClientDataDto clientPagination(int startingIndex, int maxRows, ClientDataDto dataDto,
+			List<ClientDto> listOfClientDto) {
+		List<ClientDto> paginationData = listOfClientDto.stream().skip(startingIndex).limit(maxRows)
+				.collect(Collectors.toList());
+		dataDto.setSize(listOfClientDto.size());
+		dataDto.setClientData(paginationData);
+		return dataDto;
+	}
+
+	private List<ClientDto> findDetails(String callBackDate, List<ClientDto> listOfClient, List<ClientHrDto> listOfHr,
+			List<HrFollowUpDto> listOfFollowUp) {
+		List<HrFollowUpDto> followUp = listOfFollowUp.stream()
+				.filter(hrFollowUpDto -> hrFollowUpDto.getCallBackDate().equalsIgnoreCase(callBackDate))
+				.collect(Collectors.toList());
+		List<ClientHrDto> listOfHrDetails = listOfHr.stream()
+				.filter(hrDto -> hrDto != null && followUp.stream().anyMatch(
+						hrFollowUpDto -> hrFollowUpDto != null && hrFollowUpDto.getHrId().equals(hrDto.getId())))
+				.collect(Collectors.toList());
+		List<ClientDto> listOfDetails = listOfClient.stream()
+				.filter(clientDto -> clientDto != null && listOfHrDetails.stream()
+						.anyMatch(hrDto -> hrDto != null && hrDto.getCompanyId().equals(clientDto.getId())))
+				.collect(Collectors.toList());
+		return listOfDetails;
 	}
 
 	@Override
 	public boolean checkComanyName(String companyName) {
-		log.info("checkComanyName service class {} ",companyName);
+		log.info("checkComanyName service class {} ", companyName);
 
 		List<List<Object>> listOfData = clientRepository.readData();
 		if (companyName != null) {
@@ -158,39 +199,81 @@ public class ClientInformationServiceImpl implements ClientInformationService {
 	}
 
 	@Override
-	public List<ClientDto> getSuggestionDetails(String companyName) {
+	public List<ClientDto> getSuggestionDetails(String companyName, String callBackDate, String clientType) {
 		log.info("get the suggestion details by companyName :{}", companyName);
 		List<ClientDto> suggestionList = new ArrayList<ClientDto>();
-		List<List<Object>> listOfData = clientRepository.readData();
-		if (companyName != null) {
-			if (listOfData != null) {
+		List<ClientDto> listOfClient = clientUtil.getActiveClientRecords();
+		List<ClientHrDto> listOfHr = clientUtil.readHrDetails();
+		List<HrFollowUpDto> listOfFollowUp = clientUtil.readClientFollowUp();
+		if (companyName != null && !companyName.isEmpty()) {
+			if (!callBackDate.equalsIgnoreCase(ServiceConstant.NULL.toString())
+					&& !clientType.equalsIgnoreCase(ServiceConstant.NULL.toString())) {
+				List<ClientDto> listOfDetails = findDetails(callBackDate, listOfClient, listOfHr, listOfFollowUp);
+				suggestionList = listOfDetails.stream().filter(
+						clientDto -> clientDto != null && clientDto.getCompanyType().equalsIgnoreCase(clientType))
+						.filter(clientDto -> clientDto.getCompanyName().toLowerCase()
+								.contains(companyName.toLowerCase()))
+						.collect(Collectors.toList());
 
-				return suggestionList = listOfData.stream().map(clientWrapper::listToClientDto).filter(
+			} else if (!callBackDate.equalsIgnoreCase(ServiceConstant.NULL.toString())) {
+
+				List<ClientDto> listOfDetails = findDetails(callBackDate, listOfClient, listOfHr, listOfFollowUp);
+				suggestionList = listOfDetails.stream().filter(
+						clientDto -> clientDto.getCompanyName().toLowerCase().contains(companyName.toLowerCase()))
+						.collect(Collectors.toList());
+
+			} else if (!clientType.equalsIgnoreCase(ServiceConstant.NULL.toString())) {
+				List<ClientDto> sortedData = listOfClient.stream().filter(
+						clientDto -> clientDto != null && clientDto.getCompanyType().equalsIgnoreCase(clientType))
+						.collect(Collectors.toList());
+				suggestionList = sortedData.stream().filter(
+						clientDto -> clientDto.getCompanyName().toLowerCase().contains(companyName.toLowerCase()))
+						.collect(Collectors.toList());
+			} else {
+				suggestionList = listOfClient.stream().filter(
 						clientDto -> clientDto.getCompanyName().toLowerCase().contains(companyName.toLowerCase()))
 						.collect(Collectors.toList());
 			}
-			log.info("suggestionList is, {}", suggestionList);
 		}
 		return suggestionList;
 	}
 
 	@Override
-	public List<ClientDto> getDetailsbyCompanyName(String companyName) {
-		List<ClientDto> clientDto = null;
-		List<List<Object>> listofDtos = clientRepository.readData();
-		if (companyName != null) {
-			if (listofDtos != null) {
-				clientDto = listofDtos.stream().map(clientWrapper::listToClientDto)
-						.filter(ClientDto -> ClientDto.getCompanyName().equalsIgnoreCase(companyName))
+	public List<ClientDto> getDetailsbyCompanyName(String companyName, String callBackDate, String clientType) {
+		List<ClientDto> clientDtos = new ArrayList<ClientDto>();
+		List<ClientDto> listOfClient = clientUtil.getActiveClientRecords();
+		List<ClientHrDto> listOfHr = clientUtil.readHrDetails();
+		List<HrFollowUpDto> listOfFollowUp = clientUtil.readClientFollowUp();
+		if (companyName != null && !companyName.isEmpty()) {
+			if (!callBackDate.equalsIgnoreCase(ServiceConstant.NULL.toString())
+					&& !clientType.equalsIgnoreCase(ServiceConstant.NULL.toString())) {
+				List<ClientDto> listOfDetails = findDetails(callBackDate, listOfClient, listOfHr, listOfFollowUp);
+				clientDtos = listOfDetails.stream().filter(
+						clientDto -> clientDto != null && clientDto.getCompanyType().equalsIgnoreCase(clientType))
+						.filter(clientDto -> clientDto.getCompanyName().toLowerCase().equals(companyName.toLowerCase()))
 						.collect(Collectors.toList());
-				log.info("returned company dto is, {}", clientDto);
+
+			} else if (!callBackDate.equalsIgnoreCase(ServiceConstant.NULL.toString())) {
+
+				List<ClientDto> listOfDetails = findDetails(callBackDate, listOfClient, listOfHr, listOfFollowUp);
+				clientDtos = listOfDetails.stream()
+						.filter(clientDto -> clientDto.getCompanyName().toLowerCase().equals(companyName.toLowerCase()))
+						.collect(Collectors.toList());
+
+			} else if (!clientType.equalsIgnoreCase(ServiceConstant.NULL.toString())) {
+				List<ClientDto> sortedData = listOfClient.stream().filter(
+						clientDto -> clientDto != null && clientDto.getCompanyType().equalsIgnoreCase(clientType))
+						.collect(Collectors.toList());
+				clientDtos = sortedData.stream()
+						.filter(clientDto -> clientDto.getCompanyName().toLowerCase().equals(companyName.toLowerCase()))
+						.collect(Collectors.toList());
+			} else {
+				clientDtos = listOfClient.stream()
+						.filter(clientDto -> clientDto.getCompanyName().toLowerCase().equals(companyName.toLowerCase()))
+						.collect(Collectors.toList());
 			}
 		}
-		if (clientDto != null) {
-			return clientDto;
-		} else {
-			return clientDto;
-		}
+		return clientDtos;
 	}
 
 	@Override

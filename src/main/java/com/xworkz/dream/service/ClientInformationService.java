@@ -9,7 +9,7 @@ public interface ClientInformationService {
 
 	String writeClientInformation(ClientDto dto);
 
-	ClientDataDto readClientData(int startingIndex, int maxRows);
+	ClientDataDto readClientData(int startingIndex, int maxRows,String callBackDate,String clientType);
 
 	boolean checkComanyName(String companyName);
 
@@ -21,10 +21,10 @@ public interface ClientInformationService {
 
 	boolean checkCompanyWebsite(String companyWebsite);
 
-	List<ClientDto> getSuggestionDetails(String companyName);
+	List<ClientDto> getSuggestionDetails(String companyName,String callBackDate,String clientType);
 
 	String updateClientDto(int companyId, ClientDto clientDto);
 
-	List<ClientDto> getDetailsbyCompanyName(String companyName);
+	List<ClientDto> getDetailsbyCompanyName(String companyName, String callBackDate, String clientType);
 
 }
