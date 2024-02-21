@@ -182,14 +182,7 @@ public class LoginServiceImpl implements LoginService {
 	    user.setLoginTime(LocalDateTime.now().toString());
 	    List<Object> list = DreamWrapper.userToList(user);
 
-	    try {
-	        boolean status = repo.updateLoginInfo(spreadsheetId, list);
-	        return status;
-	    } catch (IOException e) {
-	        log.error("Failed to update login info for user: {}", user.getEmail(), e);
-	        e.printStackTrace();
-	    }
-	    return false;
+	    return repo.updateLoginInfo(spreadsheetId, list);
 	}
 
 

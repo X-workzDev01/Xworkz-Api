@@ -1,10 +1,6 @@
 package com.xworkz.dream.repository;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.security.GeneralSecurityException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -16,19 +12,12 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cache.annotation.Cacheable;
-import org.springframework.core.io.Resource;
-import org.springframework.core.io.ResourceLoader;
 import org.springframework.stereotype.Repository;
 
-import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
-import com.google.api.client.http.HttpRequestInitializer;
-import com.google.api.client.json.JsonFactory;
-import com.google.api.client.json.gson.GsonFactory;
 import com.google.api.services.sheets.v4.Sheets;
-import com.google.api.services.sheets.v4.SheetsScopes;
 import com.google.api.services.sheets.v4.model.ValueRange;
-import com.google.auth.http.HttpCredentialsAdapter;
-import com.google.auth.oauth2.GoogleCredentials;
+import com.xworkz.dream.constants.RepositoryConstant;
+import com.xworkz.dream.dto.utils.SheetSaveOpration;
 
 @Repository
 public class DreamRepositoryImpl implements DreamRepository {
@@ -37,8 +26,6 @@ public class DreamRepositoryImpl implements DreamRepository {
 	private String applicationName;
 	@Value("${sheets.credentialsPath}")
 	private String credentialsPath;
-	private static final JsonFactory JSON_FACTORY = GsonFactory.getDefaultInstance();
-	private static final List<String> SCOPES = Collections.singletonList(SheetsScopes.SPREADSHEETS);
 	private Sheets sheetsService;
 	@Value("${sheets.dropdownRange}")
 	private String dropdownRange;
@@ -51,41 +38,45 @@ public class DreamRepositoryImpl implements DreamRepository {
 	@Value("${sheets.clientDropDownRange}")
 	private String clientDropDownRange;
 	@Autowired
-	private ResourceLoader resourceLoader;
+	private SheetSaveOpration saveOperation;
 
 	private static final Logger log = LoggerFactory.getLogger(DreamRepositoryImpl.class);
 
+	@Override
 	@PostConstruct
-	private void setSheetsService() throws IOException, FileNotFoundException, GeneralSecurityException {
-
-		Resource resource = resourceLoader.getResource(credentialsPath);
-		File file = resource.getFile();
-
-		GoogleCredentials credentials = GoogleCredentials.fromStream(new FileInputStream(file)).createScoped(SCOPES);
-
-		HttpRequestInitializer requestInitializer = new HttpCredentialsAdapter(credentials);
-		sheetsService = new Sheets.Builder(GoogleNetHttpTransport.newTrustedTransport(), JSON_FACTORY,
-				requestInitializer).setApplicationName(applicationName).build();
+	public void setSheetsService() {
+		try {
+			sheetsService=saveOperation.ConnsetSheetService();
+		} catch (Exception e) {
+			log.error("Exception while connecting to sheet,{}",e.getMessage());
+		}
 	}
 
 	@Override
 	@Cacheable(value = "getDropdowns", key = "#spreadsheetId", unless = "#result == null")
-	public List<List<Object>> getDropdown(String spreadsheetId) throws IOException {
-		ValueRange response = sheetsService.spreadsheets().values().get(spreadsheetId, dropdownRange).execute();
-		log.info("Dropdown values retrieved successfully for spreadsheetId: {}", spreadsheetId);
-		return response.getValues();
+	public List<List<Object>> getDropdown(String spreadsheetId) {
+		try {
+		return sheetsService.spreadsheets().values().get(spreadsheetId, dropdownRange).execute().getValues();
+		} catch (IOException e) {
+			log.error("Exception while reading dropdown :{}",e.getMessage());
+			return Collections.emptyList();
+		}
 	}
 
 	@Override
-	public boolean updateLoginInfo(String spreadsheetId, List<Object> row) throws IOException {
+	public boolean updateLoginInfo(String spreadsheetId, List<Object> row) {
 		List<List<Object>> values = new ArrayList<>();
 		values.add(row);
 		ValueRange body = new ValueRange().setValues(values);
-
-		sheetsService.spreadsheets().values().append(spreadsheetId, loginInfoRange, body)
-				.setValueInputOption("USER_ENTERED").execute();
-		log.info("Login information updated successfully for spreadsheetId: {}", spreadsheetId);
-		return true;
+		try {
+			sheetsService.spreadsheets().values().append(spreadsheetId, loginInfoRange, body)
+					.setValueInputOption(RepositoryConstant.USER_ENTERED.toString()).execute();
+			return true;
+		} catch (IOException e) {
+			log.error("Exception while updating login info:{}",e.getMessage());
+			return false;
+		}
+		
 
 	}
 

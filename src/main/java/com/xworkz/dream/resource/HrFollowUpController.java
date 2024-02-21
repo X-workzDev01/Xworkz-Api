@@ -30,7 +30,6 @@ public class HrFollowUpController {
 	@PostMapping("/hrfollowup")
 	public String saveHrFollowUpDetails(@RequestBody HrFollowUpDto dto) {
 		log.info("Saving hr follow up details {} ", dto);
-		System.err.println(dto);
 		return hrFollowUpService.saveHrFollowUpDetails(dto);
 	}
 

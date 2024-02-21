@@ -1,6 +1,5 @@
 package com.xworkz.dream.service;
 
-import java.io.IOException;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -10,6 +9,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.xworkz.dream.constants.ServiceConstant;
 import com.xworkz.dream.dto.utils.ClientDropDown;
 import com.xworkz.dream.dto.utils.Dropdown;
 import com.xworkz.dream.repository.DreamRepository;
@@ -25,34 +25,28 @@ public class UtilServiceImpl implements UtilService {
 	@SuppressWarnings("unchecked")
 	@Override
 	public Dropdown getDropdown(String spreadsheetId) {
-		try {
-			List<List<Object>> data = repo.getDropdown(spreadsheetId);
-			if (data == null) {
-				log.warn("Dropdown data is null for spreadsheetId: {}", spreadsheetId);
-				return null;
-			}
-
-			Dropdown dropdown = new Dropdown();
-			List<String> course = dropdown.getCourse();
-			List<String> qualifications = dropdown.getQualification();
-			List<String> batch = dropdown.getBatch();
-			List<String> stream = dropdown.getStream();
-			List<String> college = dropdown.getCollege();
-			List<String> yearofpass = dropdown.getYearofpass();
-			List<String> offered = dropdown.getOffered();
-			List<String> branchname = dropdown.getBranchname();
-			List<String> status = dropdown.getStatus();
-			checkAndAssignValues(data, course, qualifications, batch, stream, college, yearofpass, offered, branchname,
-					status);
-			sortingDropDownData(course, qualifications, batch, stream, college, yearofpass, offered, branchname,
-					status);
-			log.info("Dropdown data fetched successfully for spreadsheetId: {}", spreadsheetId);
-			return dropdown;
-
-		} catch (IOException e) {
-			log.error("Error loading dropdowns for spreadsheetId: {}", spreadsheetId, e);
+		List<List<Object>> data = repo.getDropdown(spreadsheetId);
+		if (data == null) {
+			log.warn("Dropdown data is null for spreadsheetId: {}", spreadsheetId);
+			return null;
 		}
-		return null;
+
+		Dropdown dropdown = new Dropdown();
+		List<String> course = dropdown.getCourse();
+		List<String> qualifications = dropdown.getQualification();
+		List<String> batch = dropdown.getBatch();
+		List<String> stream = dropdown.getStream();
+		List<String> college = dropdown.getCollege();
+		List<String> yearofpass = dropdown.getYearofpass();
+		List<String> offered = dropdown.getOffered();
+		List<String> branchname = dropdown.getBranchname();
+		List<String> status = dropdown.getStatus();
+		checkAndAssignValues(data, course, qualifications, batch, stream, college, yearofpass, offered, branchname,
+				status);
+		sortingDropDownData(course, qualifications, batch, stream, college, yearofpass, offered, branchname,
+				status);
+		log.info("Dropdown data fetched successfully for spreadsheetId: {}", spreadsheetId);
+		return dropdown;
 	}
 
 	private void checkAndAssignValues(List<List<Object>> data, List<String> course, List<String> qualifications,
@@ -96,7 +90,7 @@ public class UtilServiceImpl implements UtilService {
 	private void sortingDropDownData(List<String>... lists) {
 		Arrays.stream(lists).forEach(list -> {
 			Collections.sort(list);
-			list.add("Others");
+			list.add(ServiceConstant.OTHERS.toString());
 		});
 		log.info("Dropdown data sorted successfully");
 
