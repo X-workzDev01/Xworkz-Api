@@ -162,10 +162,12 @@ public class RegistrationServiceImpl implements RegistrationService {
 		List<List<Object>> dataList = repo.readData(spreadsheetId);
 		if (dataList != null) {
 			List<List<Object>> sortedByDate = dataList.stream()
+					.filter(item -> item.get(33) != null
+							&& item.get(33).toString().equalsIgnoreCase(ServiceConstant.ACTIVE.toString()))
 					.sorted(Comparator.comparing(
 							list -> list != null && !list.isEmpty() && list.size() > 24 ? list.get(24).toString() : "",
 							Comparator.reverseOrder()))
-					.collect(Collectors.toList());
+					.collect(Collectors.toList()); 
 			if (!courseName.equalsIgnoreCase("null")
 					&& !collegeName.equalsIgnoreCase(ServiceConstant.NULL.toString())) {
 				List<TraineeDto> sortedData = sortedByDate.stream()

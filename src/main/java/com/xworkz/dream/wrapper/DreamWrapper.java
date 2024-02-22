@@ -753,7 +753,7 @@ public class DreamWrapper {
 		if (dto.getOthersDto().getReferalName() == null) {
 			dto.getOthersDto().setReferalName(Status.NA.toString());
 
-		}
+		} 
 		if (dto.getOthersDto().getComments() == null) {
 			dto.getOthersDto().setComments(Status.NA.toString());
 		}

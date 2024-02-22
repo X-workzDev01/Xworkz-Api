@@ -53,7 +53,7 @@ public class FeesServiceImpl implements FeesService {
 	public String writeFeesDetails(FeesUiDto dto, String feesEmailRange) {
 		log.info("Running service writeFeesDetails with input: {}", dto);
 		EmailList duplicateEntry = emailExistsOrNot(dto.getEmail(), feesEmailRange);
-		if (dto.getStatus().equalsIgnoreCase(Status.Joined.toString()) && duplicateEntry == null) {
+		if (dto.getStatus()!=null&&dto.getStatus().equalsIgnoreCase(Status.Joined.toString()) && duplicateEntry == null) {
 			boolean write = feesRepository.writeFeesDetails(util.extractDtoDetails(feesUtils.feesDtosetValues(dto)));
 			if (write == true) {
 				feesCacheService.addNewFeesDetilesIntoCache(CacheConstant.getFeesDetails.toString(),
@@ -64,7 +64,7 @@ public class FeesServiceImpl implements FeesService {
 				return "feesDetiles Saved sucessfully";
 			}
 
-		}
+		} 
 		log.error("Failed to save fees details: {}", dto);
 		return "feesDetiles already exists";
 	}
@@ -80,7 +80,7 @@ public class FeesServiceImpl implements FeesService {
 				.collect(Collectors.toList());
 		return feesUtils.getDataByselectedItems(minIndex, maxIndex, date, courseName, paymentMode, convertingListToDto,status);
 
-	}
+	} 
 
 	@Override
 	public FeesWithHistoryDto getDetailsByEmail(String email, String getFeesDetilesRange,

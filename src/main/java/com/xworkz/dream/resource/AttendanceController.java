@@ -61,7 +61,7 @@ public class AttendanceController {
 			return markAndSaveAbsentDetails;
 		}
 		return null;
-
+ 
 	}
 
 	@ApiOperation(value = "Get trainees joined by batch")

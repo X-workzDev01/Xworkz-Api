@@ -13,7 +13,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
-
+ 
 import com.xworkz.dream.constants.FeesConstant;
 import com.xworkz.dream.constants.ServiceConstant;
 import com.xworkz.dream.constants.Status;
@@ -167,6 +167,14 @@ public class FeesUtils {
 				&& !paymentMode.equalsIgnoreCase(ServiceConstant.NULL.toString())) {
 			predicate = feesDto -> feesDto.getFeesHistoryDto().getPaymentMode().equalsIgnoreCase(paymentMode)
 					&& feesDto.getFeesHistoryDto().getFollowupCallbackDate().equalsIgnoreCase(date);
+
+		}
+		if (status.equalsIgnoreCase(ServiceConstant.NULL.toString())
+				& date.equalsIgnoreCase(ServiceConstant.NULL.toString())
+				&&!courseName.equalsIgnoreCase(ServiceConstant.NULL.toString())
+				&& !paymentMode.equalsIgnoreCase(ServiceConstant.NULL.toString())) {
+			predicate = feesDto -> feesDto.getFeesHistoryDto().getPaymentMode().equalsIgnoreCase(paymentMode)
+					&& feesDto.getCourseName().equalsIgnoreCase(courseName);
 
 		}
 		if (predicate != null) {
