@@ -404,8 +404,7 @@ public class DreamWrapper {
 			traineeDto.getPercentageDto()
 					.setSslcPercentage(row.get(RegistrationConstant.COLUMN_SSLC.getIndex()).toString());
 		}
-		if (row.size() > RegistrationConstant.COLUMN_PUC.getIndex()
-				&& validateCell(RegistrationConstant.COLUMN_PUC)) {
+		if (row.size() > RegistrationConstant.COLUMN_PUC.getIndex() && validateCell(RegistrationConstant.COLUMN_PUC)) {
 			traineeDto.getPercentageDto()
 					.setPucPercentage(row.get(RegistrationConstant.COLUMN_PUC.getIndex()).toString());
 		}
@@ -770,6 +769,12 @@ public class DreamWrapper {
 			dto.getOthersDto().setReferalContactNumber(0L);
 		}
 
+		if(dto.getPercentageDto()==null) {
+			dto.setPercentageDto(new PercentageDto());
+			dto.getPercentageDto().setSslcPercentage(Status.NA.toString());
+			dto.getPercentageDto().setPucPercentage(Status.NA.toString());	
+			dto.getPercentageDto().setDegreePercentage(Status.NA.toString());
+		}
 	}
 
 	public void setValuesForCSRDto(TraineeDto dto) {
@@ -807,7 +812,13 @@ public class DreamWrapper {
 			admin.setUpdatedOn(ServiceConstant.NA.toString());
 			dto.setAdminDto(admin);
 		}
-
+		
+		if(dto.getPercentageDto()==null) {
+			dto.setPercentageDto(new PercentageDto());
+			dto.getPercentageDto().setSslcPercentage(Status.NA.toString());
+			dto.getPercentageDto().setPucPercentage(Status.NA.toString());	
+			dto.getPercentageDto().setDegreePercentage(Status.NA.toString());
+		}
 	}
 
 	public AttendanceDto saveAttendance(TraineeDto dto) {
