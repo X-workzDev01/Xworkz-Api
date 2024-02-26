@@ -81,7 +81,7 @@ public class FeesFollowUpCacheServiceImpl implements FeesFollowUpCacheService {
 				if (matchingIndex >= 0) {
 					ListOfItems.set(matchingIndex, feesUpdateData);
 					log.info("Updated cache data for email: {}", email);
-				}
+				} 
 
 			} else {
 				log.debug("Data not found in the cache for the specified email: {}", email);
@@ -104,5 +104,65 @@ public class FeesFollowUpCacheServiceImpl implements FeesFollowUpCacheService {
 		}
 
 	}
+
+	public void updateFeesCacheIntoEmail(String cacheName, String key, String oldEmail, String newEmail) {
+
+		Cache cache = cacheManager.getCache(cacheName);
+		if (cache != null) {
+			ValueWrapper valueWrapper = cache.get(key);
+			if (valueWrapper != null && valueWrapper.get() instanceof List) {
+				@SuppressWarnings("unchecked")
+				List<List<Object>> ListOfItems = (List<List<Object>>) valueWrapper.get();
+				int matchingIndex = -1;
+				for (int i = 0; i < ListOfItems.size(); i++) {
+					List<Object> items = ListOfItems.get(i);
+					if (items.get(0).equals(oldEmail)) {
+						matchingIndex = i;
+						break;
+					}
+				}
+				if (matchingIndex >= 0) {
+					ListOfItems.set(matchingIndex, Arrays.asList(newEmail));
+					log.info("Updated cache data for email: {}", newEmail);
+				}
+			} else {
+				log.debug("Data not found in the cache for the specified email: {}", oldEmail);
+			}
+		}
+	}
+	
+	public void updateCacheIntoFeesFollowUp(String cacheName, String key, String email, List<Object> feesUpdateData) {
+		Cache cache = cacheManager.getCache(cacheName);
+		if (cache != null) {
+			ValueWrapper valueWrapper = cache.get(key);
+			if (valueWrapper != null && valueWrapper.get() instanceof List) {
+
+				@SuppressWarnings("unchecked")
+				List<List<Object>> ListOfItems = (List<List<Object>>) valueWrapper.get();
+				int matchingIndex = -1;
+
+				for (int i = 0; i < ListOfItems.size(); i++) {
+					List<Object> items = ListOfItems.get(i);
+					if (items.get(1).equals(email)) {
+						matchingIndex = i; 
+						break;
+					}
+				}
+				if (matchingIndex >= 0) {
+					ListOfItems.set(matchingIndex, feesUpdateData);
+					log.info("Updated cache data for email: {}", email);
+				}
+
+			} else {
+				log.debug("Data not found in the cache for the specified email: {}", email);
+			}
+		}
+	}
+
+	
+	
+	
+	
+	
 
 }

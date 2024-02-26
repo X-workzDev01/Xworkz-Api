@@ -66,6 +66,20 @@ public class WrapperUtil {
 		return -1;
 	}
 
+	public int findIndexFollowUp(String email) {
+		List<List<Object>> values = feesRepository.getFollowupEmailList();
+		System.out.println(values);
+		if (values != null) {
+			for (int i = 0; i < values.size(); i++) {
+				List<Object> row = values.get(i);
+				if (row.size() > 0 && row.get(0).toString().equalsIgnoreCase(email)) {
+					return i + 2;
+				}
+			}
+		}
+		return -1;
+	}
+
 	public String upateValuesSet(FeesDto feesDto, FeesDto dto) {
 		if (dto.getFeesHistoryDto().getEmail().equalsIgnoreCase(feesDto.getFeesHistoryDto().getEmail())) {
 			setToFeesHistory(feesDto.getFeesHistoryDto().getPaidAmount(), feesDto);
@@ -75,6 +89,7 @@ public class WrapperUtil {
 			updateDto.getAdmin().setCreatedBy(dto.getAdmin().getCreatedBy());
 			updateDto.getAdmin().setCreatedOn(dto.getAdmin().getCreatedOn());
 			updateDto.getAdmin().setUpdatedOn(LocalDate.now().toString());
+			updateDto.setFeeConcession(dto.getFeeConcession());
 			if (feesDto.getComments() != null) {
 				updateDto.setComments(feesDto.getComments());
 			} else {
@@ -122,7 +137,7 @@ public class WrapperUtil {
 		}
 		return "Email is miss matching data could not be updated ";
 	}
-
+ 
 	private void setToFeesHistory(String fees, FeesDto dto) {
 		FeesHistoryDto feesHistoryDto = new FeesHistoryDto();
 		feesHistoryDto.setFeesfollowupDate(LocalDate.now().toString());

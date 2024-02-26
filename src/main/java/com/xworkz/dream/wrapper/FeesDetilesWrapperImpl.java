@@ -108,7 +108,7 @@ public class FeesDetilesWrapperImpl implements FeesDetilesWrapper {
 			if (validateCell(SheetConstant.COLUMN_EMAIL)) {
 				BatchDetailsDto details = feesUtiles
 						.getBatchDetiles(row.get(SheetConstant.COLUMN_EMAIL.getIndex()).toString());
-				if (details != null) {
+				if (details != null && details.getTotalAmount() != null) {
 					feesDto.setCourseName((String) details.getCourseName());
 
 					feesDto.setTotalAmount(details.getTotalAmount()

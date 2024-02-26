@@ -59,14 +59,13 @@ public class FeesUtils {
 		TraineeDto traineeDto = registrationService.getDetailsByEmail(spreadSheetId, email);
 		if (traineeDto.getCourseInfo().getOfferedAs()
 				.equalsIgnoreCase(FeesConstant.CSR_OFFERED.toString().replace('_', ' '))) {
-			return traineeDto.getBasicInfo().getEmail();
+			return traineeDto.getBasicInfo().getEmail(); 
 		}
-		return null;
+		return null; 
 	}
 
 	public SheetFeesDetiles getDataByselectedItems(String minIndex, String maxIndex, String date, String courseName,
 			String paymentMode, List<FeesDto> convertingListToDto, String status) {
-		System.err.println(status + courseName);
 		Predicate<FeesDto> predicate = null;
 		if (!status.equalsIgnoreCase(ServiceConstant.NULL.toString()) && date.equals("null")
 				&& courseName.equals("null") && paymentMode.equals("null")) {
