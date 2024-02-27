@@ -18,6 +18,6 @@ public interface FeesService {
 
 	String transForData(String id, String feesEmailRange);
 
-	String updateNameAndEmail(String name, String oldEmail, String newEmail, String updatedBy);
+	String updateNameAndEmail(Integer feesConcession,String traineeName, String oldEmail, String newEmail, String updatedBy);
 
 }

@@ -29,6 +29,7 @@ import com.xworkz.dream.wrapper.DreamWrapper;
 
 @Service
 public class RegistrationServiceImpl implements RegistrationService {
+
 	@Autowired
 	private RegisterRepository repo;
 	@Autowired
@@ -51,6 +52,7 @@ public class RegistrationServiceImpl implements RegistrationService {
 	private CsrService csrService;
 	@Autowired
 	private RegistrationUtil registrationUtil;
+
 
 	private static final Logger log = LoggerFactory.getLogger(DreamServiceImpl.class);
 
@@ -167,7 +169,7 @@ public class RegistrationServiceImpl implements RegistrationService {
 					.sorted(Comparator.comparing(
 							list -> list != null && !list.isEmpty() && list.size() > 24 ? list.get(24).toString() : "",
 							Comparator.reverseOrder()))
-					.collect(Collectors.toList()); 
+					.collect(Collectors.toList());
 			if (!courseName.equalsIgnoreCase("null")
 					&& !collegeName.equalsIgnoreCase(ServiceConstant.NULL.toString())) {
 				List<TraineeDto> sortedData = sortedByDate.stream()
@@ -344,6 +346,7 @@ public class RegistrationServiceImpl implements RegistrationService {
 
 				UpdateValuesResponse updated = repo.update(spreadsheetId, range, valueRange);
 				boolean updateDob = service.updateDob(dto);
+
 				log.info("updated DOB in Sheet,{}", updateDob);
 				if (updated != null && !updated.isEmpty()) {
 					followUpService.updateFollowUp(spreadsheetId, email, dto);

@@ -17,17 +17,18 @@ import com.google.api.services.sheets.v4.Sheets;
 import com.google.api.services.sheets.v4.model.ValueRange;
 import com.xworkz.dream.constants.RepositoryConstant;
 import com.xworkz.dream.dto.utils.SheetSaveOpration;
+import com.xworkz.dream.feesDtos.FeesFinalDto;
 
 @Repository
 public class FeesRepositoryImpl implements FeesRepository {
-	@Value("${sheets.feesRegister}")
-	private String feesRegisterRange;
 	@Value("${login.sheetId}")
 	private String spreadSheetId;
 	private Sheets sheetsRepository;
 	@Autowired
 	private SheetSaveOpration saveOpration;
 	private Logger log = LoggerFactory.getLogger(FeesRepositoryImpl.class);
+	@Autowired
+	private FeesFinalDto feesFinalDtoRanges;
 
 	@PostConstruct
 	private void setsheetsRepository() {
@@ -39,10 +40,10 @@ public class FeesRepositoryImpl implements FeesRepository {
 		ValueRange value = getReadFirstSheet();
 
 		if (value.getValues() != null && value.getValues().size() >= 1) {
-			return saveOpration.saveDetilesWithDataSize(list, feesRegisterRange);
+			return saveOpration.saveDetilesWithDataSize(list, feesFinalDtoRanges.getFeesRegisterRange());
 
 		} else {
-			return saveOpration.saveDetilesWithoutSize(list, feesRegisterRange);
+			return saveOpration.saveDetilesWithoutSize(list, feesFinalDtoRanges.getFeesRegisterRange());
 		}
 
 	}
@@ -50,7 +51,8 @@ public class FeesRepositoryImpl implements FeesRepository {
 	@Cacheable(cacheNames = "readFirst")
 	private ValueRange getReadFirstSheet() {
 		try {
-			return sheetsRepository.spreadsheets().values().get(spreadSheetId, feesRegisterRange).execute();
+			return sheetsRepository.spreadsheets().values()
+					.get(spreadSheetId, feesFinalDtoRanges.getFeesRegisterRange()).execute();
 		} catch (IOException e) {
 			log.error("error sheet connection {} ", e);
 			return new ValueRange();
@@ -72,7 +74,7 @@ public class FeesRepositoryImpl implements FeesRepository {
 
 	@Override
 	@Cacheable(value = "getFeesFolllowUpdata", key = "'feesfollowUpData'")
-	public List<List<Object>> getFeesDetilesByemailInFollowup(String getFeesDetilesfollowupRange) {
+	public List<List<Object>> getFeesDetilesByEmailInFollowup(String getFeesDetilesfollowupRange) {
 		try {
 			return sheetsRepository.spreadsheets().values().get(spreadSheetId, getFeesDetilesfollowupRange).execute()
 					.getValues();
@@ -123,4 +125,30 @@ public class FeesRepositoryImpl implements FeesRepository {
 		}
 
 	}
+
+	@Cacheable(value = "followUpEmailRange", key = "'followUpEmail'")
+	@Override
+	public List<List<Object>> getFollowupEmailList() {
+		try {
+			return sheetsRepository.spreadsheets().values()
+					.get(spreadSheetId, feesFinalDtoRanges.getFeesFollowUpEmailRange()).execute().getValues();
+		} catch (IOException e) {
+			log.error("Error fetching  data  {}  ", e);
+		}
+
+		return Collections.emptyList();
+	}
+	@Override
+	public String updateFeesFollowUpByEmail(String getFeesDetilesfollowupRange, List<Object> list) {
+		ValueRange body = saveOpration.updateDetilesToSheet(list);
+		try {
+			return sheetsRepository.spreadsheets().values().update(spreadSheetId, getFeesDetilesfollowupRange, body)
+					.setValueInputOption(RepositoryConstant.RAW.toString()).execute().setSpreadsheetId(spreadSheetId)
+					.getUpdatedRange();
+		} catch (IOException e) {
+			log.error("Error updating data {}     ", e);
+			return "data Update Error";
+		}
+	}
+
 }

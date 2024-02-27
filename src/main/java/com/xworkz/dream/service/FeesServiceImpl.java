@@ -13,7 +13,7 @@ import com.xworkz.dream.cache.FeesFollowUpCacheService;
 import com.xworkz.dream.constants.CacheConstant;
 import com.xworkz.dream.constants.ServiceConstant;
 import com.xworkz.dream.constants.Status;
-import com.xworkz.dream.dto.AuditDto;
+import com.xworkz.dream.dto.utils.FeesUpdateUtil;
 import com.xworkz.dream.dto.utils.FeesUtils;
 import com.xworkz.dream.dto.utils.FeesWithHistoryDto;
 import com.xworkz.dream.dto.utils.WrapperUtil;
@@ -29,7 +29,6 @@ import com.xworkz.dream.wrapper.DreamWrapper;
 import com.xworkz.dream.wrapper.FeesDetilesWrapper;
 
 @Service
-
 public class FeesServiceImpl implements FeesService {
 	@Autowired
 	private WrapperUtil util;
@@ -48,12 +47,15 @@ public class FeesServiceImpl implements FeesService {
 	private DreamWrapper dreamWrapper;
 	@Autowired
 	private FeesFinalDto feesFinalDtoRanges;
+	@Autowired
+	private FeesUpdateUtil updateUtil;
 
 	@Override
 	public String writeFeesDetails(FeesUiDto dto, String feesEmailRange) {
 		log.info("Running service writeFeesDetails with input: {}", dto);
 		EmailList duplicateEntry = emailExistsOrNot(dto.getEmail(), feesEmailRange);
-		if (dto.getStatus()!=null&&dto.getStatus().equalsIgnoreCase(Status.Joined.toString()) && duplicateEntry == null) {
+		if (dto.getStatus() != null && dto.getStatus().equalsIgnoreCase(Status.Joined.toString())
+				&& duplicateEntry == null) {
 			boolean write = feesRepository.writeFeesDetails(util.extractDtoDetails(feesUtils.feesDtosetValues(dto)));
 			if (write == true) {
 				feesCacheService.addNewFeesDetilesIntoCache(CacheConstant.getFeesDetails.toString(),
@@ -64,35 +66,41 @@ public class FeesServiceImpl implements FeesService {
 				return "feesDetiles Saved sucessfully";
 			}
 
-		} 
+		}
 		log.error("Failed to save fees details: {}", dto);
 		return "feesDetiles already exists";
 	}
 
 	@Override
 	public SheetFeesDetiles getAllFeesDetails(String getFeesDetilesRange, String minIndex, String maxIndex, String date,
-			String courseName, String paymentMode,String status) {
+			String courseName, String paymentMode, String status) {
 		List<FeesDto> convertingListToDto;
 		convertingListToDto = feesRepository.getAllFeesDetiles(getFeesDetilesRange).stream()
 				.map(feesWrapper::listToFeesDTO)
 				.filter(dto -> dto.getSoftFlag() != null
 						&& dto.getSoftFlag().equalsIgnoreCase(ServiceConstant.ACTIVE.toString()))
 				.collect(Collectors.toList());
-		return feesUtils.getDataByselectedItems(minIndex, maxIndex, date, courseName, paymentMode, convertingListToDto,status);
+		return feesUtils.getDataByselectedItems(minIndex, maxIndex, date, courseName, paymentMode, convertingListToDto,
+				status);
 
-	} 
+	}
 
 	@Override
 	public FeesWithHistoryDto getDetailsByEmail(String email, String getFeesDetilesRange,
 			String getFeesDetilesfollowupRange) {
 		List<FeesDto> filteredDtos = getFeesDetailsByemail(email, getFeesDetilesRange);
 
-		List<FeesHistoryDto> filteredData = feesRepository.getFeesDetilesByemailInFollowup(getFeesDetilesfollowupRange)
+		List<FeesHistoryDto> filteredData = getFeesDetailsList(email, getFeesDetilesfollowupRange);
+		return new FeesWithHistoryDto(filteredDtos, filteredData);
+	}
+
+	private List<FeesHistoryDto> getFeesDetailsList(String email, String getFeesDetilesfollowupRange) {
+		List<FeesHistoryDto> filteredData = feesRepository.getFeesDetilesByEmailInFollowup(getFeesDetilesfollowupRange)
 				.stream()
 				.filter(items -> items != null && !items.isEmpty() && items.size() > 1 && items.get(1) != null
 						&& items.get(1).toString().equalsIgnoreCase(email))
 				.map(items -> feesWrapper.getListToFeesHistoryDto(items)).collect(Collectors.toList());
-		return new FeesWithHistoryDto(filteredDtos, filteredData);
+		return filteredData;
 	}
 
 	@Override
@@ -157,14 +165,16 @@ public class FeesServiceImpl implements FeesService {
 
 	}
 
-	public String updateNameAndEmail(String name, String oldEmail, String newEmail, String updatedBy) {
-		FeesDto dto = new FeesDto(new FeesHistoryDto(), new AuditDto());
-		dto.getFeesHistoryDto().setEmail(oldEmail);
-		dto.setName(name);
-		dto.getAdmin().setUpdatedBy(updatedBy);
-		FeesWithHistoryDto dtos = getDetailsByEmail(dto.getFeesHistoryDto().getEmail(),
-				feesFinalDtoRanges.getGetFeesDetilesRange(), feesFinalDtoRanges.getGetFeesDetilesfollowupRange());
-		util.upateValuesSet(dto, dtos.getFeesDto().get(0));
+	public String updateNameAndEmail(Integer feesConcession, String traineeName, String oldEmail, String newEmail,
+			String updatedBy) {
+		List<FeesDto> feesDetailsByemail = getFeesDetailsByemail(oldEmail, feesFinalDtoRanges.getFeesEmailRange());
+		List<FeesHistoryDto> filteredData = getFeesDetailsList(oldEmail,
+				feesFinalDtoRanges.getGetFeesDetilesfollowupRange());
+		feesDetailsByemail.stream().forEach(existingDto -> {
+			updateUtil.updateBasedOnEditEmail(feesConcession, traineeName, oldEmail, newEmail, updatedBy, existingDto,
+					filteredData);
+		});
+
 		return "Updated Sucessfully";
 	}
 

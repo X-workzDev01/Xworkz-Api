@@ -1,7 +1,6 @@
 package com.xworkz.dream.feesDtos;
 
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
 import lombok.AllArgsConstructor;
@@ -33,5 +32,7 @@ public class FeesFinalDto {
 	private String getFeesDetilesRange;
 	@Value("${sheets.getFeesDetilesfollowupRange}")
 	private String getFeesDetilesfollowupRange;
+	@Value("${sheets.feesFollowUpEmailRange}")
+	private String feesFollowUpEmailRange;
 
 }
