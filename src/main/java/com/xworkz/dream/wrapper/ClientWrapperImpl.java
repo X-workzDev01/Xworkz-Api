@@ -42,7 +42,7 @@ public class ClientWrapperImpl implements ClientWrapper {
 			clientDto.setCompanyFounder((String) row.get(6).toString());
 		}
 		if (rowSize > 7 && row.get(7) != null && !row.get(7).toString().isEmpty()) {
-			clientDto.setSourceOfConnetion((String) row.get(7).toString());
+			clientDto.setSourceOfConnection((String) row.get(7).toString());
 		}
 		if (rowSize > 8 && row.get(8) != null && !row.get(8).toString().isEmpty()) {
 			clientDto.setCompanyType((String) row.get(8).toString());
@@ -130,7 +130,7 @@ public class ClientWrapperImpl implements ClientWrapper {
 			dto.setCompanyId(Integer.valueOf(row.get(1).toString()));
 		}
 		if (rowSize > 2 && row.get(2) != null && !row.get(2).toString().isEmpty()) {
-			dto.setHrScopName((String) row.get(2));
+			dto.setHrSpocName((String) row.get(2));
 		}
 		if (rowSize > 3 && row.get(3) != null && !row.get(3).toString().isEmpty()) {
 			dto.setHrEmail((String) row.get(3));
