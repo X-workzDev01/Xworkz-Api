@@ -27,6 +27,7 @@ import com.xworkz.dream.dto.AbsenteesDto;
 import com.xworkz.dream.dto.AttendanceDataDto;
 import com.xworkz.dream.dto.AttendanceDto;
 import com.xworkz.dream.dto.AttendanceTrainee;
+import com.xworkz.dream.dto.AttendanceViewDto;
 import com.xworkz.dream.service.AttendanceService;
 import com.xworkz.dream.service.BatchAttendanceService;
 import com.xworkz.dream.service.BatchService;
@@ -120,7 +121,7 @@ public class AttendanceController {
 	}
 
 	@GetMapping("/filterData/{courseName}")
-	public List<AttendanceDto> filterData(@PathVariable String courseName, @RequestParam String searchValue) {
+	public List<AttendanceViewDto> filterData(@PathVariable String courseName, @RequestParam String searchValue) {
 
 		log.info("Filtering data with parameters - SpreadsheetId: {}, Search Value: {}", spreadsheetId, searchValue);
 		return attendanceService.filterData(searchValue, courseName);
