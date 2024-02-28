@@ -28,6 +28,7 @@ import com.xworkz.dream.dto.AttendanceDataDto;
 import com.xworkz.dream.dto.AttendanceDto;
 import com.xworkz.dream.dto.AttendanceTrainee;
 import com.xworkz.dream.service.AttendanceService;
+import com.xworkz.dream.service.BatchAttendanceService;
 import com.xworkz.dream.service.BatchService;
 
 import io.swagger.annotations.ApiOperation;
@@ -39,6 +40,8 @@ public class AttendanceController {
 	private AttendanceService attendanceService;
 	@Autowired
 	private BatchService batchService;
+	@Autowired
+	private BatchAttendanceService batchAttendanceService;
 	@Value("${login.sheetId}")
 	private String spreadsheetId;
 	private static final Logger log = LoggerFactory.getLogger(AttendanceController.class);
@@ -58,7 +61,7 @@ public class AttendanceController {
 			return markAndSaveAbsentDetails;
 		}
 		return null;
-
+ 
 	}
 
 	@ApiOperation(value = "Get trainees joined by batch")
@@ -90,7 +93,7 @@ public class AttendanceController {
 
 	@PostMapping("/batchAttendance")
 	public String markBatchAttendance(@RequestParam String courseName, @RequestParam Boolean batchAttendanceStatus) {
-		Boolean markTraineeAttendance = attendanceService.markTraineeAttendance(courseName, batchAttendanceStatus);
+		Boolean markTraineeAttendance = attendanceService.markTrainerAttendance(courseName, batchAttendanceStatus);
 		if (markTraineeAttendance == true) {
 			return "Batch Attendance Update successfully";
 		} else {
@@ -130,6 +133,12 @@ public class AttendanceController {
 		log.info("Getting suggestions for search: {}", value);
 		return attendanceService.getSearchSuggestion(value, courseName);
 
+	}
+	
+	@GetMapping("/getBatchAttendanceCount")
+	public Map<Integer, Boolean> getBatchAttendanceCount(@RequestParam String courseName){
+		Map<Integer, Boolean> batchAttendanceDetails = batchAttendanceService.getBatchAttendanceDetails(courseName);
+		return batchAttendanceDetails;
 	}
 
 }

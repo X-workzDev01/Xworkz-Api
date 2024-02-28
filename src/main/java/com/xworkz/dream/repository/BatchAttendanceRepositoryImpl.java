@@ -76,16 +76,21 @@ public class BatchAttendanceRepositoryImpl implements BatchAttendanceRepository 
 		}
 
 	}
-	
-	
-	@Override
-	//@Cacheable(value = "batchAttendanceData", key = "'listOfBatchAttendance'")
-	public List<List<Object>> getBatchAttendanceData(String range) throws IOException {
-		 log.info("Getting data from sheet...");
-		ValueRange response = sheetsService.spreadsheets().values().get(spreadSheetId, range).execute();
-		log.info("Data retrieved successfully.");
-		return response.getValues();
-	}
 
+	@Override
+	// @Cacheable(value = "batchAttendanceData", key = "'listOfBatchAttendance'")
+	public List<List<Object>> getBatchAttendanceData(String range) {
+		log.info("Getting data from sheet...");
+		ValueRange response;
+		try {
+			response = sheetsService.spreadsheets().values().get(spreadSheetId, range).execute();
+			log.info("Data retrieved successfully.");
+			return response.getValues();
+		} catch (IOException e) {
+			log.error("Read Batchattendance Data not working : {} ", e.getMessage());
+		}
+		return null;
+
+	}
 
 }

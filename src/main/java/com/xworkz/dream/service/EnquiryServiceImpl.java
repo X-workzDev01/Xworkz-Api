@@ -7,7 +7,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-
 import com.xworkz.dream.constants.ServiceConstant;
 import com.xworkz.dream.dto.CSR;
 import com.xworkz.dream.dto.CourseDto;
@@ -44,17 +43,18 @@ public class EnquiryServiceImpl implements EnquiryService {
 			log.info("Writing data for TraineeDto: {}", dto);
 			String uniqueId = csrService.generateUniqueID();
 			CSR csr = new CSR();
-			log.info("set {} if offeredAs a CSR",
-					dto.getCourseInfo().getOfferedAs().equalsIgnoreCase(ServiceConstant.CSR.toString()) ? "1" : "0");
-			csr.setCsrFlag(
-					dto.getCourseInfo().getOfferedAs().equalsIgnoreCase(ServiceConstant.CSR.toString()) ? "1" : "0");
+			log.info("set {} if offeredAs a CSR", dto.getCourseInfo().getOfferedAs()
+					.equalsIgnoreCase(ServiceConstant.CSR_Offered.toString().replace('_', ' ')) ? "1" : "0");
+			csr.setCsrFlag(dto.getCourseInfo().getOfferedAs()
+					.equalsIgnoreCase(ServiceConstant.CSR_Offered.toString().replace('_', ' ')) ? "1" : "0");
 			csr.setActiveFlag(ServiceConstant.ACTIVE.toString());
 			csr.setAlternateContactNumber(0l);
-			csr.setUniqueId(
-					dto.getCourseInfo().getOfferedAs().equalsIgnoreCase(ServiceConstant.CSR.toString()) ? uniqueId
+			csr.setUniqueId(dto.getCourseInfo().getOfferedAs()
+					.equalsIgnoreCase(ServiceConstant.CSR_Offered.toString().replace('_', ' ')) ? uniqueId
 							: ServiceConstant.NA.toString());
 			csr.setUsnNumber(ServiceConstant.NA.toString());
 			dto.setCsrDto(csr);
+
 			wrapper.setValuesForTraineeDto(dto);
 
 			List<Object> list = wrapper.extractDtoDetails(dto);
@@ -108,7 +108,6 @@ public class EnquiryServiceImpl implements EnquiryService {
 		traineeDto.setEducationInfo(enquiryDto.getEducationInfo());
 		traineeDto.setAdminDto(enquiryDto.getAdminDto());
 		return writeDataEnquiry(spreadsheetId, traineeDto);
-		
 
 	}
 

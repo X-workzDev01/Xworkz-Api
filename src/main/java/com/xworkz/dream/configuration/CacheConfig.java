@@ -23,6 +23,7 @@ public class CacheConfig {
 
 		List<Cache> caches = new ArrayList<>();
 		caches.add(new ConcurrentMapCache("sheetsData"));
+		caches.add(new ConcurrentMapCache("followUpEmailRange"));
 		caches.add(new ConcurrentMapCache("emailData"));
 		caches.add(new ConcurrentMapCache("register"));
 		caches.add(new ConcurrentMapCache("contactData"));
@@ -41,7 +42,8 @@ public class CacheConfig {
 		caches.add(new ConcurrentMapCache("uniqueNumber"));
 		caches.add(new ConcurrentMapCache("getFollowUpDetails"));
 		caches.add(new ConcurrentMapCache("getFollowUpStatusDetails"));
-		
+		caches.add(new ConcurrentMapCache("getClientDropDown"));
+
 		cacheManager.setCaches(caches);
 		return cacheManager;
 	}

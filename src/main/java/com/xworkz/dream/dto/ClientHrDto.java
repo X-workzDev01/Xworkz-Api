@@ -16,8 +16,8 @@ public class ClientHrDto {
 	private Integer id;
 	@JsonProperty("companyId")
 	private Integer companyId;
-	@JsonProperty("hrScopName")
-	private String hrScopName;
+	@JsonProperty("hrSpocName")
+	private String hrSpocName;
 	@JsonProperty("hrEmail")
 	private String hrEmail;
 	@JsonProperty("hrContactNumber")

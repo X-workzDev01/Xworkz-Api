@@ -7,7 +7,6 @@ import com.google.api.services.sheets.v4.model.ValueRange;
 
 public interface RegisterRepository {
 
-	void setSheetsService();
 
 	boolean writeData(String spreadsheetId, List<Object> row) ;
 

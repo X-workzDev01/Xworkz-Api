@@ -13,6 +13,8 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import com.google.api.services.sheets.v4.model.ValueRange;
+import com.xworkz.dream.dto.AttendanceDto;
+import com.xworkz.dream.dto.AuditDto;
 import com.xworkz.dream.dto.BatchAttendanceDto;
 import com.xworkz.dream.dto.BatchDetailsDto;
 import com.xworkz.dream.repository.BatchRepository;
@@ -92,7 +94,7 @@ public class BatchWrapper {
 			} else {
 				dto.setTotalClass(detailsDto.getTotalClass());
 			}
-			
+
 			try {
 				int rowIndex = findIndex(updateBatchValue.getCourseName());
 				String range = batchDetailsSheetName + batchDetailsStartRange + rowIndex + ":" + batchDetailsEndRange
@@ -107,7 +109,7 @@ public class BatchWrapper {
 					log.debug("values {}", values);
 				}
 				valueRange.setValues(values);
-				cacheService.updateCacheBatch("batchDetails", "listOfBatch",dto.getCourseName(), dto);
+				cacheService.updateCacheBatch("batchDetails", "listOfBatch", dto.getCourseName(), dto);
 				repository.updateBatchDetails(sheetId, range, valueRange);
 
 			} catch (IllegalAccessException | IOException e) {
@@ -115,9 +117,8 @@ public class BatchWrapper {
 			}
 		}
 		return "Batch Details updated successfully";
-		
+
 	}
-	
 
 	private int findIndex(String courseName) throws IOException {
 		List<List<Object>> data = repository.getCourseDetails(sheetId);
@@ -133,14 +134,32 @@ public class BatchWrapper {
 		}
 		return -1;
 	}
-	
+
 	public BatchAttendanceDto setBatchValues(BatchDetailsDto batchDetailsDto) {
-		BatchAttendanceDto dto=new BatchAttendanceDto();
+		BatchAttendanceDto dto = new BatchAttendanceDto();
 		dto.setBatchName(batchDetailsDto.getCourseName());
 		dto.setTrainerName(batchDetailsDto.getTrainerName());
 		dto.setPresentDate(LocalDate.now().toString());
 		return dto;
-		
+
+	}
+
+	public BatchAttendanceDto batchAttendanceDto(List<Object> row) {
+		BatchAttendanceDto batchAttendanceDto = new BatchAttendanceDto(null, null, null, null);
+		int rowSize = row.size();
+		if (rowSize > 0 && row.get(0) != null && !row.get(0).toString().isEmpty()) {
+			batchAttendanceDto.setId(Integer.valueOf(row.get(0).toString()));
+		}
+		if (rowSize > 2 && row.get(2) != null && !row.get(2).toString().isEmpty()) {
+			batchAttendanceDto.setTrainerName(String.valueOf(row.get(2).toString()));
+		}
+		if (rowSize > 3 && row.get(3) != null && !row.get(3).toString().isEmpty()) {
+			batchAttendanceDto.setBatchName(String.valueOf(row.get(3).toString()));
+		}
+		if (rowSize > 1 && row.get(1) != null && !row.get(1).toString().isEmpty()) {
+			batchAttendanceDto.setPresentDate(String.valueOf(row.get(1).toString()));
+		}
+		return batchAttendanceDto;
 	}
 
 }

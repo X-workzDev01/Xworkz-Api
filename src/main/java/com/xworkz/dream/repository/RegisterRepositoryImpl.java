@@ -45,7 +45,7 @@ public class RegisterRepositoryImpl implements RegisterRepository {
 	private SheetSaveOpration saveOperation;
 	private static final Logger log = LoggerFactory.getLogger(RegisterRepositoryImpl.class);
 
-	@Override
+
 	@PostConstruct
 	public void setSheetsService() {
 		try {

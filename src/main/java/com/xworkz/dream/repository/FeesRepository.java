@@ -7,7 +7,7 @@ public interface FeesRepository {
 
 	List<List<Object>> getAllFeesDetiles(String getFeesDetiles);
 
-	List<List<Object>> getFeesDetilesByemailInFollowup(String getFeesDetiles);
+	List<List<Object>> getFeesDetilesByEmailInFollowup(String getFeesDetiles);
 
 	String updateFeesDetiles(String getFeesDetilesfollowupRange, List<Object> values);
 
@@ -15,5 +15,8 @@ public interface FeesRepository {
 
 	boolean updateDetilesToFollowUp(String getFeesDetilesfollowupRange, List<Object> list);
 
+	public String updateFeesFollowUpByEmail(String getFeesDetilesfollowupRange, List<Object> list);
+
+	List<List<Object>> getFollowupEmailList();
 
 }

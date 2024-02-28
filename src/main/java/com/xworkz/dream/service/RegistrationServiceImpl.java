@@ -29,6 +29,7 @@ import com.xworkz.dream.wrapper.DreamWrapper;
 
 @Service
 public class RegistrationServiceImpl implements RegistrationService {
+
 	@Autowired
 	private RegisterRepository repo;
 	@Autowired
@@ -51,6 +52,7 @@ public class RegistrationServiceImpl implements RegistrationService {
 	private CsrService csrService;
 	@Autowired
 	private RegistrationUtil registrationUtil;
+
 
 	private static final Logger log = LoggerFactory.getLogger(DreamServiceImpl.class);
 
@@ -102,13 +104,14 @@ public class RegistrationServiceImpl implements RegistrationService {
 	private void assignCsrDto(TraineeDto dto) {
 		String uniqueId = csrService.generateUniqueID();
 		CSR csr = new CSR();
-		log.info("set {} if offeredAs a CSR",
-				dto.getCourseInfo().getOfferedAs().equalsIgnoreCase(ServiceConstant.CSR.toString()) ? "1" : "0");
-		csr.setCsrFlag(dto.getCourseInfo().getOfferedAs().equalsIgnoreCase("CSR Offered") ? "1" : "0");
+		log.info("set {} if offeredAs a CSR", dto.getCourseInfo().getOfferedAs()
+				.equalsIgnoreCase(ServiceConstant.CSR_Offered.toString().replace('_', ' ')) ? "1" : "0");
+		csr.setCsrFlag(dto.getCourseInfo().getOfferedAs()
+				.equalsIgnoreCase(ServiceConstant.CSR_Offered.toString().replace('_', ' ')) ? "1" : "0");
 		csr.setActiveFlag(ServiceConstant.ACTIVE.toString());
 		csr.setAlternateContactNumber(0l);
-		csr.setUniqueId(dto.getCourseInfo().getOfferedAs().equalsIgnoreCase("CSR Offered") ? uniqueId
-				: ServiceConstant.NA.toString());
+		csr.setUniqueId(dto.getCourseInfo().getOfferedAs().equalsIgnoreCase(
+				ServiceConstant.CSR_Offered.toString().replace('_', ' ')) ? uniqueId : ServiceConstant.NA.toString());
 		csr.setUsnNumber(ServiceConstant.NA.toString());
 		dto.setCsrDto(csr);
 	}
@@ -157,30 +160,31 @@ public class RegistrationServiceImpl implements RegistrationService {
 	@Override
 	public ResponseEntity<SheetsDto> readData(String spreadsheetId, int startingIndex, int maxRows, String courseName,
 			String collegeName) {
-		long endRows = startingIndex + maxRows;
 		SheetsDto traineeData = new SheetsDto();
 		List<List<Object>> dataList = repo.readData(spreadsheetId);
 		if (dataList != null) {
 			List<List<Object>> sortedByDate = dataList.stream()
+					.filter(item -> item.get(33) != null
+							&& item.get(33).toString().equalsIgnoreCase(ServiceConstant.ACTIVE.toString()))
 					.sorted(Comparator.comparing(
 							list -> list != null && !list.isEmpty() && list.size() > 24 ? list.get(24).toString() : "",
 							Comparator.reverseOrder()))
 					.collect(Collectors.toList());
-			if (!courseName.equalsIgnoreCase(ServiceConstant.NULL.toString())
+			if (!courseName.equalsIgnoreCase("null")
 					&& !collegeName.equalsIgnoreCase(ServiceConstant.NULL.toString())) {
 				List<TraineeDto> sortedData = sortedByDate.stream()
 						.filter(items -> items != null && items.size() > 9 && items.contains(courseName))
 						.filter(items -> items != null && items.size() > 8 && items.contains(collegeName))
 						.map(wrapper::listToDto).collect(Collectors.toList());
 				traineeData.setSheetsData(
-						sortedData.stream().skip(startingIndex).limit(endRows).collect(Collectors.toList()));
+						sortedData.stream().skip(startingIndex).limit(maxRows).collect(Collectors.toList()));
 				traineeData.setSize(sortedData.size());
 				return ResponseEntity.ok(traineeData);
 			} else if (!courseName.equalsIgnoreCase(ServiceConstant.NULL.toString())) {
 				List<List<Object>> sortedCourse = sortedByDate.stream()
 						.filter(items -> items != null && items.size() > 9 && items.contains(courseName))
 						.collect(Collectors.toList());
-				traineeData.setSheetsData(sortedCourse.stream().skip(startingIndex).limit(endRows)
+				traineeData.setSheetsData(sortedCourse.stream().skip(startingIndex).limit(maxRows)
 						.map(wrapper::listToDto).collect(Collectors.toList()));
 				traineeData.setSize(sortedCourse.size());
 				log.info("Returning response for course: {}", courseName);
@@ -189,14 +193,14 @@ public class RegistrationServiceImpl implements RegistrationService {
 				List<List<Object>> sortedByCollege = sortedByDate.stream()
 						.filter(items -> items != null && items.size() > 8 && items.contains(collegeName))
 						.collect(Collectors.toList());
-				traineeData.setSheetsData(sortedByCollege.stream().skip(startingIndex).limit(endRows)
+				traineeData.setSheetsData(sortedByCollege.stream().skip(startingIndex).limit(maxRows)
 						.map(wrapper::listToDto).collect(Collectors.toList()));
 				traineeData.setSize(sortedByCollege.size());
 				log.info("Returning response for college Name: {}", collegeName);
 				return ResponseEntity.ok(traineeData);
 			}
 			log.info("Returning response for spreadsheetId: {}", spreadsheetId);
-			traineeData.setSheetsData(sortedByDate.stream().skip(startingIndex).limit(endRows).map(wrapper::listToDto)
+			traineeData.setSheetsData(sortedByDate.stream().skip(startingIndex).limit(maxRows).map(wrapper::listToDto)
 					.collect(Collectors.toList()));
 			traineeData.setSize(sortedByDate.size());
 			return ResponseEntity.ok(traineeData);
@@ -342,6 +346,7 @@ public class RegistrationServiceImpl implements RegistrationService {
 
 				UpdateValuesResponse updated = repo.update(spreadsheetId, range, valueRange);
 				boolean updateDob = service.updateDob(dto);
+
 				log.info("updated DOB in Sheet,{}", updateDob);
 				if (updated != null && !updated.isEmpty()) {
 					followUpService.updateFollowUp(spreadsheetId, email, dto);

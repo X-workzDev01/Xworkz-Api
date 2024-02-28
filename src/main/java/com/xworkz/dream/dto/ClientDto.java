@@ -32,8 +32,8 @@ public class ClientDto implements Serializable {
 	private String companyLocation;
 	@JsonProperty("companyFounder")
 	private String companyFounder;
-	@JsonProperty("sourceOfConnetion")
-	private String sourceOfConnetion;
+	@JsonProperty("sourceOfConnection")
+	private String sourceOfConnection;
 	@JsonProperty("companyType")
 	private String companyType;
 	@JsonProperty("companyAddress")

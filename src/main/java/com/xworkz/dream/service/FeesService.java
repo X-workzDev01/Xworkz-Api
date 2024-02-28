@@ -10,7 +10,7 @@ public interface FeesService {
 	String writeFeesDetails(FeesUiDto dto, String feesEmailRange);
 
 	SheetFeesDetiles getAllFeesDetails(String getFeesDetiles, String minIndex, String maxIndex, String date,
-			String batch, String paymentMode);
+			String batch, String paymentMode,String status);
 
 	FeesWithHistoryDto getDetailsByEmail(String email, String getFeesDetilesRange, String getFeesDetilesfollowupRange);
 
@@ -18,6 +18,6 @@ public interface FeesService {
 
 	String transForData(String id, String feesEmailRange);
 
-	String updateNameAndEmail(String name, String oldEmail, String newEmail, String updatedBy);
+	String updateNameAndEmail(Integer feesConcession,String traineeName, String oldEmail, String newEmail, String updatedBy);
 
 }

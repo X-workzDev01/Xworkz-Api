@@ -6,7 +6,6 @@ import com.google.api.services.sheets.v4.model.UpdateValuesResponse;
 import com.google.api.services.sheets.v4.model.ValueRange;
 
 public interface ClientHrRepository {
-	void setSheetsService();
 
 	boolean saveClientHrInformation(List<Object> row);
 

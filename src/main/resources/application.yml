@@ -1,6 +1,6 @@
 spring:
    profiles:
-      active: local
+      active: dev
    freemarker:
     template-loader-path: classpath:/templates/
 sheets:
@@ -10,7 +10,7 @@ sheets:
   contactNumberRange: D3:D
   dropdownRange: dropDowns!A2:I
   loginInfoRange: loginInfo!A2:B 
-  followUpRange: followUp!A2:Q
+  followUpRange: followUp!A2:Q 
   followUpStatus: followUpStatus!A2:L
   rowStartRange: B
   rowEndRange: Ak 
@@ -28,7 +28,7 @@ sheets:
   batchDetailsEndRange: K
   batchDetails: batchDetails!A2:I
   batchDetailsRange: batchDetails!A2:K
-  batchIdRange: batchDetails!A2:A
+  batchIdRange: batchDetails!A2:A 
 
   dateOfBirthDetailsSheetName: dateOfBirthDetails!
   dateOfBirthDetailsRange: dateOfBirthDetails!A2:E
@@ -44,7 +44,7 @@ sheets:
   attendanceInfoStartRange : B
   attendanceInfoEndRange : K
   attandanceInfoSheetName: attendanceInfo!
-  attandenceNameAndCourseRange : attendanceInfo!C2:D
+  attandenceNameAndCourseRange : attendanceInfo!A2:D
   batchAttendanceInfoSheetName: batchAttendanceInfo!
   batchAttendanceInfoRange: batchAttendanceInfo!A2:D 
   batchAttendanceInfoStartRange: B
@@ -53,6 +53,7 @@ sheets:
   getFeesDetiles: FeesDetiles!A2:X
   getFeesDetilesfollowupRange : FeesFollowup!A2:J
   feesEmailRange: FeesDetiles!C2:C
+  feesFollowUpEmailRange: FeesFollowup!B2:B
   feesFollowUpUpdateRange: FeesFollowup!B2
   feesUpdateStartRange: FeesDetiles!B
   feesUpdateEndRange: :V
@@ -71,6 +72,7 @@ sheets:
   hrSheetName: clientHRdetails!
   hrFollowUpInformationRange: ClientHRFollowUpStatus!B2:I
   hrFollowUpInformationReadRange: ClientHRFollowUpStatus!A2:I
+  clientDropDownRange: dropDowns!J2:N
   
 mailChimp:
   userName: 7FzbzzHIVQSVJVz5r4n/bGa/lhNWJCXUq6oqBxBCTYQ=

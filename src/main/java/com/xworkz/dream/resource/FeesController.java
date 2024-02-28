@@ -35,7 +35,6 @@ public class FeesController {
 	}
 
 	@ApiOperation("Update feesDetiles")
-
 	@PutMapping("/updateFeesDeties")
 	public ResponseEntity<String> updateFeesFollowUp(@RequestBody FeesDto dto) {
 		return ResponseEntity.ok(feesService.updateFeesFollowUp(dto, feesFinalDtoRanges.getGetFeesDetilesRange()));
@@ -49,12 +48,12 @@ public class FeesController {
 	}
 
 	@ApiOperation("Get All feesDetiles By Selected Option")
-	@GetMapping("/getFeesDetilesBySelectedOption/{minIndex}/{maxIndex}/{date}/{batch}/{paymentMode}")
+	@GetMapping("/getFeesDetilesBySelectedOption/{minIndex}/{maxIndex}/{date}/{batch}/{paymentMode}/{status}")
 	public ResponseEntity<SheetFeesDetiles> getFeesDetilesBySelectedOption(@PathVariable String minIndex,
 			@PathVariable String maxIndex, @PathVariable String date, @PathVariable String batch,
-			@PathVariable String paymentMode) {
+			@PathVariable String paymentMode, @PathVariable String status) {
 		return ResponseEntity.ok(feesService.getAllFeesDetails(feesFinalDtoRanges.getGetFeesDetilesRange(), minIndex,
-				maxIndex, date, batch, paymentMode));
+				maxIndex, date, batch, paymentMode, status));
 	}
 
 	@ApiOperation("transforFeesDetilesExistingRecords")
@@ -63,9 +62,10 @@ public class FeesController {
 		return feesService.transForData(feesFinalDtoRanges.getId(), feesFinalDtoRanges.getFeesEmailRange());
 	}
 
-	@PostMapping("/update")
-	public String updatefeesEmailAndName(String name, String oldEmail, String newEmail, String updatedBy) {
-		feesService.updateNameAndEmail(name, oldEmail, newEmail, updatedBy);
+	@PutMapping("/updateFeesDetailsChangeEmailAndFeeConcession/{feesConcession}/{traineeName}/{oldEmail}/{newEmail}/{updatedBy}")
+	public String updatefeesEmailAndNameAndFeesConcession(@PathVariable Integer feesConcession, @PathVariable String traineeName,
+			@PathVariable String oldEmail, @PathVariable String newEmail, @PathVariable String updatedBy) {
+		feesService.updateNameAndEmail(feesConcession, traineeName, oldEmail, newEmail, updatedBy);
 		return "Updated sucessfully";
 	}
 
