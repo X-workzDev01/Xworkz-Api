@@ -19,8 +19,8 @@ public class ClientInformationImpl implements ClientInformationUtil {
 
 	@Override
 	public void setValuesToClientHrDto(ClientHrDto dto) {
-		if (dto.getHrScopName() == null || dto.getHrScopName().isEmpty()) {
-			dto.setHrScopName(ServiceConstant.NA.toString());
+		if (dto.getHrSpocName() == null || dto.getHrSpocName().isEmpty()) {
+			dto.setHrSpocName(ServiceConstant.NA.toString());
 		}
 		if (dto.getHrEmail() == null || dto.getHrEmail().isEmpty()) {
 			dto.setHrEmail(ServiceConstant.NA.toString());
@@ -46,7 +46,6 @@ public class ClientInformationImpl implements ClientInformationUtil {
 
 	@Override
 	public void settingNaValues(HrFollowUpDto dto) {
-
 		if (dto.getAttemptBy() == null || dto.getAttemptBy().isEmpty()) {
 			dto.setAttemptBy(ServiceConstant.NA.toString());
 		}
@@ -54,11 +53,16 @@ public class ClientInformationImpl implements ClientInformationUtil {
 		if (dto.getAttemptStatus() == null) {
 			dto.setAttemptStatus(ServiceConstant.NA.toString());
 		}
-		dto.setCallBackDate(LocalDate.now().plusDays(1).toString());
-		System.out.println(dto.getCallBackDate());
-		if (dto.getCallBackDate() == null || dto.getCallBackDate().isEmpty()
-				|| dto.getCallBackDate() == ServiceConstant.NA.toString()) {
+		if (dto.getCallBackDate() == null || dto.getCallBackDate().isEmpty()) {
 			dto.setCallBackDate(LocalDate.now().plusDays(1).toString());
+		}
+		if (dto.getCallBackDate().equals(ServiceConstant.NA.toString())) {
+			dto.setCallBackDate(LocalDate.now().plusDays(1).toString());
+		} else {
+			dto.setCallBackDate(dto.getCallBackDate());
+		}
+		if (dto.getCallBackTime() != null) {
+			dto.setCallBackTime(ServiceConstant.NA.toString());
 		}
 		if (dto.getCallDuration() == null) {
 			dto.setCallDuration(0);
@@ -69,7 +73,6 @@ public class ClientInformationImpl implements ClientInformationUtil {
 		if (dto.getCallBackTime() == null || dto.getComments().isEmpty()) {
 			dto.setCallBackTime(ServiceConstant.NA.toString());
 		}
-
 	}
 
 	@Override
@@ -100,8 +103,8 @@ public class ClientInformationImpl implements ClientInformationUtil {
 		if (dto.getCompanyType() == null || dto.getCompanyType().isEmpty()) {
 			dto.setCompanyType(ServiceConstant.NA.toString());
 		}
-		if (dto.getSourceOfConnetion() == null || dto.getSourceOfConnetion().isEmpty()) {
-			dto.setSourceOfConnetion(ServiceConstant.NA.toString());
+		if (dto.getSourceOfConnection() == null || dto.getSourceOfConnection().isEmpty()) {
+			dto.setSourceOfConnection(ServiceConstant.NA.toString());
 		}
 		if (dto.getStatus() == null || dto.getStatus().isEmpty()) {
 			dto.setStatus(ServiceConstant.NA.toString());
