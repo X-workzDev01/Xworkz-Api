@@ -812,7 +812,6 @@ public class DreamWrapper {
 			admin.setUpdatedOn(ServiceConstant.NA.toString());
 			dto.setAdminDto(admin);
 		}
-		
 		if(dto.getPercentageDto()==null) {
 			dto.setPercentageDto(new PercentageDto());
 			dto.getPercentageDto().setSslcPercentage(Status.NA.toString());
