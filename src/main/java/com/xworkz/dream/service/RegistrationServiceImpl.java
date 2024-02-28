@@ -162,6 +162,7 @@ public class RegistrationServiceImpl implements RegistrationService {
 			String collegeName) {
 		SheetsDto traineeData = new SheetsDto();
 		List<List<Object>> dataList = repo.readData(spreadsheetId);
+
 		if (dataList != null) {
 			List<List<Object>> sortedByDate = dataList.stream()
 					.filter(item -> item.get(33) != null

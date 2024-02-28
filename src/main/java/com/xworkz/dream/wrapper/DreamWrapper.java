@@ -379,7 +379,7 @@ public class DreamWrapper {
 				&& validateCell(RegistrationConstant.COLUMN_UPDATED_ON)) {
 			traineeDto.getAdminDto()
 					.setUpdatedOn(row.get(RegistrationConstant.COLUMN_UPDATED_ON.getIndex()).toString());
-		}
+		}  
 		if (row.size() > RegistrationConstant.COLUMN_USN_NUMBER.getIndex()
 				&& validateCell(RegistrationConstant.COLUMN_USN_NUMBER)) {
 			traineeDto.getCsrDto().setUsnNumber(row.get(RegistrationConstant.COLUMN_USN_NUMBER.getIndex()).toString());

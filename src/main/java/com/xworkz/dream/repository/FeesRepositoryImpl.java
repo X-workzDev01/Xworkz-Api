@@ -48,7 +48,7 @@ public class FeesRepositoryImpl implements FeesRepository {
 
 	}
 
-	@Cacheable(cacheNames = "readFirst")
+	@Cacheable(value = "readFirst")
 	private ValueRange getReadFirstSheet() {
 		try {
 			return sheetsRepository.spreadsheets().values()
