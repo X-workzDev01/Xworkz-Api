@@ -1,5 +1,8 @@
 package com.xworkz.dream.service;
 
+import java.lang.reflect.Field;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -44,7 +47,7 @@ public class HrFollowUpServiceImpl implements HrFollowUpService {
 			List<Object> list = dreamWrapper.extractDtoDetails(dto);
 			if (dto != null) {
 				if (hrFollowUpRepository.saveHrFollowUpDetails(list)) {
-					clientCacheService.addHRDetailsToCache("hrFollowUpDetails", "hrFollowUp", list);
+					clientCacheService.addHrFollowUpToCache("hrFollowUpDetails", "hrFollowUp", list);
 					return "Hr Follow up details saved successfully";
 				} else {
 					return "Hr Follow up details not saved";
@@ -57,32 +60,33 @@ public class HrFollowUpServiceImpl implements HrFollowUpService {
 	}
 
 	@Override
-	public List<HrFollowUpDto> getHrFollowUpDetailsBy(int hrId){
+	public List<HrFollowUpDto> getHrFollowUpDetailsBy(int hrId) {
 		List<List<Object>> listOfData = hrFollowUpRepository.readFollowUpDetailsById();
 		if (listOfData != null) {
 			List<HrFollowUpDto> listOfHrFollowUpDto = listOfData.stream().map(clientWrapper::listToHrFollowUpDto)
-					.filter(HrFollowUpDto -> HrFollowUpDto.getHrId().equals(hrId))
+					.filter(HrFollowUpDto -> HrFollowUpDto.getHrId() != null && HrFollowUpDto.getHrId().equals(hrId))
 					.sorted(Comparator.comparing(HrFollowUpDto::getId).reversed()).collect(Collectors.toList());
 			return listOfHrFollowUpDto;
 		} else {
-			return null;
+			return Collections.emptyList();
 		}
 	}
 
 	@Override
-	public List<HrFollowUpDto> getFollowUpDetails(Integer companyId){
+	public List<HrFollowUpDto> getFollowUpDetails(Integer companyId) {
 		log.info("get follow up details in service");
 		if (companyId != null) {
 			List<List<Object>> listOfHr = clientHrRepository.readData();
 			List<List<Object>> listOfFollowUpData = hrFollowUpRepository.readFollowUpDetailsById();
 
 			if (listOfHr != null && listOfFollowUpData != null) {
-				List<ClientHrDto> listOfHrDto = listOfHr.stream().map(clientWrapper::listToClientHrDto)
-						.filter(hrDetails -> hrDetails.getCompanyId().equals(companyId)).collect(Collectors.toList());
+				List<ClientHrDto> listOfHrDto = listOfHr.stream().map(clientWrapper::listToClientHrDto).filter(
+						hrDetails -> hrDetails.getCompanyId() != null && hrDetails.getCompanyId().equals(companyId))
+						.collect(Collectors.toList());
 
 				List<HrFollowUpDto> hrFollowUpList = listOfFollowUpData.stream().map(clientWrapper::listToHrFollowUpDto)
-						.filter(followUpDto -> listOfHrDto.stream()
-								.anyMatch(dto -> followUpDto.getHrId().equals(dto.getId())))
+						.filter(followUpDto -> listOfHrDto.stream().anyMatch(
+								dto -> followUpDto.getHrId() != null && followUpDto.getHrId().equals(dto.getId())))
 						.sorted(Comparator.comparing(HrFollowUpDto::getId).reversed()).collect(Collectors.toList());
 				return hrFollowUpList;
 			}

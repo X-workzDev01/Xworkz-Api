@@ -79,7 +79,6 @@ public class FollowUpServiceImpl implements FollowUpService {
 		if (traineeDto == null) {
 			return false;
 		}
-
 		FollowUpDto followUpDto = wrapper.setFollowUp(traineeDto);
 		if (followUpDto == null) {
 			log.warn("TraineeDto is null. Follow-up service aborted.");
@@ -94,11 +93,14 @@ public class FollowUpServiceImpl implements FollowUpService {
 			return false;
 		}
 		log.info("Saving data to the follow-up sheet: {}", data);
-		repo.saveToFollowUp(spreadSheetId, data);
-		log.info("Adding FollowUp details to Cache: {}", data);
-		cacheService.addFollowUpToCache("getFollowUpDetails", "listOfFollowUpDetails", data);
-		log.info("Follow-up service completed successfully");
-		return true;
+		if (repo.saveToFollowUp(spreadSheetId, data)) {
+			cacheService.addFollowUpToCache("getFollowUpDetails", "listOfFollowUpDetails", data);
+			System.out.println("Calling saveTo follow then add Cache");
+			cacheService.addEmailToCache("getEmailList", "followUpEmailList", traineeDto.getBasicInfo().getEmail());
+			return true;
+		} else {
+			return false;
+		}
 	}
 
 	@Override
@@ -122,10 +124,15 @@ public class FollowUpServiceImpl implements FollowUpService {
 			log.warn("Data is null. Follow-up Enquiry service aborted.");
 			return false;
 		}
-		boolean save = repo.saveToFollowUp(spreadSheetId, data);
-		cacheService.addFollowUpToCache("getFollowUpDetails", "listOfFollowUpDetails", data);
-		log.info("Follow-up Enquiry service completed successfully");
-		return save;
+
+		if (repo.saveToFollowUp(spreadSheetId, data)) {
+			cacheService.addFollowUpToCache("getFollowUpDetails", "listOfFollowUpDetails", data);
+			System.out.println("Calling saveTo follow then add Cache");
+			cacheService.addEmailToCache("getEmailList", "followUpEmailList", traineeDto.getBasicInfo().getEmail());
+			return true;
+		} else {
+			return false;
+		}
 
 	}
 
@@ -150,10 +157,14 @@ public class FollowUpServiceImpl implements FollowUpService {
 			log.warn("Data is null. CSR Follow-up  service aborted.");
 			return false;
 		}
-		boolean save = repo.saveToFollowUp(spreadSheetId, data);
-		cacheService.addFollowUpToCache("getFollowUpDetails", "listOfFollowUpDetails", data);
-		log.info("CSR Follow-up  service completed successfully");
-		return save;
+		if (repo.saveToFollowUp(spreadSheetId, data)) {
+			cacheService.addFollowUpToCache("getFollowUpDetails", "listOfFollowUpDetails", data);
+			System.out.println("Calling saveTo follow then add Cache");
+			cacheService.addEmailToCache("getEmailList", "followUpEmailList", traineeDto.getBasicInfo().getEmail());
+			return true;
+		} else {
+			return false;
+		}
 
 	}
 
@@ -305,7 +316,6 @@ public class FollowUpServiceImpl implements FollowUpService {
 			List<Object> statusData = wrapper.extractDtoDetails(sdto);
 			boolean status = repo.updateFollowUpStatus(spreadsheetId, statusData);
 			cacheService.updateFollowUpStatusInCache("getFollowUpStatusDetails", "followupstatusdetails", statusData);
-
 			if (status == true) {
 				updateCurrentFollowUp(statusDto.getCallBack(), spreadsheetId, statusDto.getBasicInfo().getEmail(),
 						statusDto.getAttemptStatus(), statusDto.getAttemptedBy(), statusDto.getJoiningDate());
@@ -478,7 +488,8 @@ public class FollowUpServiceImpl implements FollowUpService {
 		List<List<Object>> dataList = repo.getFollowUpStatusDetails(spreadsheetId);
 		if (email != null && dataList != null && !dataList.isEmpty()) {
 			statusDto = dataList.stream().map(wrapper::listToStatusDto)
-					.filter(dto -> dto!=null&&dto.getBasicInfo().getEmail().equalsIgnoreCase(email)).collect(Collectors.toList());
+					.filter(dto -> dto != null && dto.getBasicInfo().getEmail().equalsIgnoreCase(email))
+					.collect(Collectors.toList());
 			Collections.reverse(statusDto);
 		}
 		log.debug("Status details by email: {}", statusDto);
