@@ -24,6 +24,7 @@ import com.xworkz.dream.dto.EducationInfoDto;
 import com.xworkz.dream.dto.EnquiryDto;
 import com.xworkz.dream.dto.FollowUpDto;
 import com.xworkz.dream.dto.OthersDto;
+import com.xworkz.dream.dto.PercentageDto;
 import com.xworkz.dream.dto.StatusDto;
 import com.xworkz.dream.dto.SuggestionDto;
 import com.xworkz.dream.dto.TraineeDto;
@@ -216,7 +217,7 @@ public class DreamWrapper {
 
 	public TraineeDto listToDto(List<Object> row) {
 		TraineeDto traineeDto = new TraineeDto(0, new BasicInfoDto(), new EducationInfoDto(), new CourseDto(),
-				new OthersDto(), new AuditDto(), new CSR());
+				new OthersDto(), new AuditDto(), new CSR(), new PercentageDto());
 		// Assuming the list follows this order: id ,traineeName, email, contactNumber,
 		// qualification, stream,
 		// yearOfPassout, collegeName, batch, branch, course, referalName,
@@ -379,7 +380,7 @@ public class DreamWrapper {
 				&& validateCell(RegistrationConstant.COLUMN_UPDATED_ON)) {
 			traineeDto.getAdminDto()
 					.setUpdatedOn(row.get(RegistrationConstant.COLUMN_UPDATED_ON.getIndex()).toString());
-		}  
+		}
 		if (row.size() > RegistrationConstant.COLUMN_USN_NUMBER.getIndex()
 				&& validateCell(RegistrationConstant.COLUMN_USN_NUMBER)) {
 			traineeDto.getCsrDto().setUsnNumber(row.get(RegistrationConstant.COLUMN_USN_NUMBER.getIndex()).toString());
@@ -402,6 +403,20 @@ public class DreamWrapper {
 				&& validateCell(RegistrationConstant.COLUMN_ACTIVE_FLAG)) {
 			traineeDto.getCsrDto()
 					.setActiveFlag(row.get(RegistrationConstant.COLUMN_ACTIVE_FLAG.getIndex()).toString());
+		}
+		if (row.size() > RegistrationConstant.COLUMN_SSLC.getIndex()
+				&& validateCell(RegistrationConstant.COLUMN_SSLC)) {
+			traineeDto.getPercentageDto()
+					.setSslcPercentage(row.get(RegistrationConstant.COLUMN_SSLC.getIndex()).toString());
+		}
+		if (row.size() > RegistrationConstant.COLUMN_PUC.getIndex() && validateCell(RegistrationConstant.COLUMN_PUC)) {
+			traineeDto.getPercentageDto()
+					.setPucPercentage(row.get(RegistrationConstant.COLUMN_PUC.getIndex()).toString());
+		}
+		if (row.size() > RegistrationConstant.COLUMN_DEGREE.getIndex()
+				&& validateCell(RegistrationConstant.COLUMN_DEGREE)) {
+			traineeDto.getPercentageDto()
+					.setDegreePercentage(row.get(RegistrationConstant.COLUMN_DEGREE.getIndex()).toString());
 		}
 		return traineeDto;
 	}
@@ -514,51 +529,61 @@ public class DreamWrapper {
 	}
 
 	public AttendanceDto attendanceListToDto(List<Object> row) {
-		AttendanceDto attendanceDto = new AttendanceDto(null, null, null, null, null, null, null, null, new AuditDto());
-		if (row.size() > AttendanceConstant.COLUMN_ATTENDANCID.getIndex()
-				&& validateCell(AttendanceConstant.COLUMN_ATTENDANCID)) {
-			attendanceDto.setAttendanceId(Integer.valueOf(row.get(AttendanceConstant.COLUMN_ATTENDANCID.getIndex()).toString()));
+		if (row.size() >= 2) {
+			AttendanceDto attendanceDto = new AttendanceDto(null, null, null, null, null, null, null, null,
+					new AuditDto());
+			if (row.size() > AttendanceConstant.COLUMN_ATTENDANCID.getIndex()
+					&& validateCell(AttendanceConstant.COLUMN_ATTENDANCID)) {
+				attendanceDto.setAttendanceId(
+						Integer.valueOf(row.get(AttendanceConstant.COLUMN_ATTENDANCID.getIndex()).toString()));
+			}
+			if (row.size() > AttendanceConstant.COLUMN_ID.getIndex() && validateCell(AttendanceConstant.COLUMN_ID)) {
+				attendanceDto.setId(Integer.valueOf(row.get(AttendanceConstant.COLUMN_ID.getIndex()).toString()));
+			}
+			if (row.size() > AttendanceConstant.COLUMN_TRAINEE_NAME.getIndex()
+					&& validateCell(AttendanceConstant.COLUMN_TRAINEE_NAME)) {
+				attendanceDto.setTraineeName(row.get(AttendanceConstant.COLUMN_TRAINEE_NAME.getIndex()).toString());
+			}
+			if (row.size() > AttendanceConstant.COLUMN_COURSE.getIndex()
+					&& validateCell(AttendanceConstant.COLUMN_COURSE)) {
+				attendanceDto.setCourse(row.get(AttendanceConstant.COLUMN_COURSE.getIndex()).toString());
+			}
+			if (row.size() > AttendanceConstant.COLUMN_TOTAL_ABSENT.getIndex()
+					&& validateCell(AttendanceConstant.COLUMN_TOTAL_ABSENT)) {
+				attendanceDto.setTotalAbsent(
+						Integer.valueOf(row.get(AttendanceConstant.COLUMN_TOTAL_ABSENT.getIndex()).toString()));
+			}
+			if (row.size() > AttendanceConstant.COLUMN_ABSENT_DATE.getIndex()
+					&& validateCell(AttendanceConstant.COLUMN_ABSENT_DATE)) {
+				attendanceDto.setAbsentDate(row.get(AttendanceConstant.COLUMN_ABSENT_DATE.getIndex()).toString());
+			}
+			if (row.size() > AttendanceConstant.COLUMN_REASON.getIndex()
+					&& validateCell(AttendanceConstant.COLUMN_REASON)) {
+				attendanceDto.setReason(row.get(AttendanceConstant.COLUMN_REASON.getIndex()).toString());
+			}
+			if (row.size() > AttendanceConstant.COLUMN_CREATED_BY.getIndex()
+					&& validateCell(AttendanceConstant.COLUMN_CREATED_BY)) {
+				attendanceDto.getAdminDto()
+						.setCreatedBy(row.get(AttendanceConstant.COLUMN_CREATED_BY.getIndex()).toString());
+			}
+			if (row.size() > AttendanceConstant.COLUMN_CREATED_ON.getIndex()
+					&& validateCell(AttendanceConstant.COLUMN_CREATED_ON)) {
+				attendanceDto.getAdminDto()
+						.setCreatedOn(row.get(AttendanceConstant.COLUMN_CREATED_ON.getIndex()).toString());
+			}
+			if (row.size() > AttendanceConstant.COLUMN_UPDATED_BY.getIndex()
+					&& validateCell(AttendanceConstant.COLUMN_UPDATED_BY)) {
+				attendanceDto.getAdminDto()
+						.setUpdatedBy(row.get(AttendanceConstant.COLUMN_UPDATED_BY.getIndex()).toString());
+			}
+			if (row.size() > AttendanceConstant.COLUMN_UPDATED_ON.getIndex()
+					&& validateCell(AttendanceConstant.COLUMN_UPDATED_ON)) {
+				attendanceDto.getAdminDto()
+						.setUpdatedOn(row.get(AttendanceConstant.COLUMN_UPDATED_ON.getIndex()).toString());
+			}
+			return attendanceDto;
 		}
-		if (row.size() > AttendanceConstant.COLUMN_ID.getIndex() && validateCell(AttendanceConstant.COLUMN_ID)) {
-			attendanceDto.setId(Integer.valueOf(row.get(AttendanceConstant.COLUMN_ID.getIndex()).toString()));
-		}
-		if (row.size() > AttendanceConstant.COLUMN_TRAINEE_NAME.getIndex()
-				&& validateCell(AttendanceConstant.COLUMN_TRAINEE_NAME)) {
-			attendanceDto.setTraineeName(row.get(AttendanceConstant.COLUMN_TRAINEE_NAME.getIndex()).toString());
-		}
-		if (row.size() > AttendanceConstant.COLUMN_COURSE.getIndex()
-				&& validateCell(AttendanceConstant.COLUMN_COURSE)) {
-			attendanceDto.setCourse(row.get(AttendanceConstant.COLUMN_COURSE.getIndex()).toString());
-		}
-		if (row.size() > AttendanceConstant.COLUMN_TOTAL_ABSENT.getIndex()
-				&& validateCell(AttendanceConstant.COLUMN_TOTAL_ABSENT)) {
-			attendanceDto.setTotalAbsent(Integer.valueOf(row.get(AttendanceConstant.COLUMN_TOTAL_ABSENT.getIndex()).toString()));
-		}
-		if (row.size() > AttendanceConstant.COLUMN_ABSENT_DATE.getIndex()
-				&& validateCell(AttendanceConstant.COLUMN_ABSENT_DATE)) {
-			attendanceDto.setAbsentDate(row.get(AttendanceConstant.COLUMN_ABSENT_DATE.getIndex()).toString());
-		}
-		if (row.size() > AttendanceConstant.COLUMN_REASON.getIndex()
-				&& validateCell(AttendanceConstant.COLUMN_REASON)) {
-			attendanceDto.setReason(row.get(AttendanceConstant.COLUMN_REASON.getIndex()).toString());
-		}
-		if (row.size() > AttendanceConstant.COLUMN_CREATED_BY.getIndex()
-				&& validateCell(AttendanceConstant.COLUMN_CREATED_BY)) {
-			attendanceDto.getAdminDto().setCreatedBy(row.get(AttendanceConstant.COLUMN_CREATED_BY.getIndex()).toString());
-		}
-		if (row.size() > AttendanceConstant.COLUMN_CREATED_ON.getIndex()
-				&& validateCell(AttendanceConstant.COLUMN_CREATED_ON)) {
-			attendanceDto.getAdminDto().setCreatedOn(row.get(AttendanceConstant.COLUMN_CREATED_ON.getIndex()).toString());
-		}
-		if (row.size() > AttendanceConstant.COLUMN_UPDATED_BY.getIndex()
-				&& validateCell(AttendanceConstant.COLUMN_UPDATED_BY)) {
-			attendanceDto.getAdminDto().setUpdatedBy(row.get(AttendanceConstant.COLUMN_UPDATED_BY.getIndex()).toString());
-		}
-		if (row.size() > AttendanceConstant.COLUMN_UPDATED_ON.getIndex()
-				&& validateCell(AttendanceConstant.COLUMN_UPDATED_ON)) {
-			attendanceDto.getAdminDto().setUpdatedOn(row.get(AttendanceConstant.COLUMN_UPDATED_ON.getIndex()).toString());
-		}
-		return attendanceDto;
+		return null;
 	}
 
 	public void setValueAttendaceDto(AttendanceDto dto) {
@@ -684,7 +709,7 @@ public class DreamWrapper {
 	}
 
 	public void setAdminDto(TraineeDto dto) {
-		AuditDto admin = new AuditDto();
+		AuditDto admin = new AuditDto(); 
 		admin.setCreatedBy(dto.getAdminDto().getCreatedBy());
 		admin.setCreatedOn(dto.getAdminDto().getCreatedOn());
 		admin.setUpdatedBy(dto.getAdminDto().getUpdatedBy());
@@ -752,7 +777,7 @@ public class DreamWrapper {
 		if (dto.getOthersDto().getReferalName() == null) {
 			dto.getOthersDto().setReferalName(Status.NA.toString());
 
-		} 
+		}
 		if (dto.getOthersDto().getComments() == null) {
 			dto.getOthersDto().setComments(Status.NA.toString());
 		}
@@ -765,6 +790,12 @@ public class DreamWrapper {
 			dto.getOthersDto().setReferalContactNumber(0L);
 		}
 
+		if(dto.getPercentageDto()==null) {
+			dto.setPercentageDto(new PercentageDto());
+			dto.getPercentageDto().setSslcPercentage(Status.NA.toString());
+			dto.getPercentageDto().setPucPercentage(Status.NA.toString());	
+			dto.getPercentageDto().setDegreePercentage(Status.NA.toString());
+		}
 	}
 
 	public void setValuesForCSRDto(TraineeDto dto) {
@@ -802,7 +833,12 @@ public class DreamWrapper {
 			admin.setUpdatedOn(ServiceConstant.NA.toString());
 			dto.setAdminDto(admin);
 		}
-
+		if(dto.getPercentageDto()==null) {
+			dto.setPercentageDto(new PercentageDto());
+			dto.getPercentageDto().setSslcPercentage(Status.NA.toString());
+			dto.getPercentageDto().setPucPercentage(Status.NA.toString());	
+			dto.getPercentageDto().setDegreePercentage(Status.NA.toString());
+		}
 	}
 
 	public AttendanceDto saveAttendance(TraineeDto dto) {

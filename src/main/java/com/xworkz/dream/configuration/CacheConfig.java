@@ -31,18 +31,19 @@ public class CacheConfig {
 		caches.add(new ConcurrentMapCache("getDropdowns"));
 		caches.add(new ConcurrentMapCache("getFeesEmail"));
 		caches.add(new ConcurrentMapCache("getEmailList"));
-		caches.add(new ConcurrentMapCache("getFeesDetails")); 
+		caches.add(new ConcurrentMapCache("getFeesDetails"));
+		caches.add(new ConcurrentMapCache("feesFollowUpEmailRange"));
 		caches.add(new ConcurrentMapCache("getFeesFolllowUpdata"));
-		caches.add(new ConcurrentMapCache("batchDetails")); 
+		caches.add(new ConcurrentMapCache("batchDetails"));
 		caches.add(new ConcurrentMapCache("clientInformation"));
 		caches.add(new ConcurrentMapCache("hrDetails"));
 		caches.add(new ConcurrentMapCache("hrFollowUpDetails"));
 		caches.add(new ConcurrentMapCache("attendanceData"));
-		caches.add(new ConcurrentMapCache("batchAttendanceData")); 
-		caches.add(new ConcurrentMapCache("usnNumber")); 
-		caches.add(new ConcurrentMapCache("alternativeNumber"));
+		caches.add(new ConcurrentMapCache("batchAttendanceData"));
+		caches.add(new ConcurrentMapCache("usnNumber"));
+		caches.add(new ConcurrentMapCache("alternativeNumber")); 
 		caches.add(new ConcurrentMapCache("uniqueNumber"));
-		caches.add(new ConcurrentMapCache("getFollowUpDetails")); 
+		caches.add(new ConcurrentMapCache("getFollowUpDetails"));
 		caches.add(new ConcurrentMapCache("getFollowUpStatusDetails"));
 		caches.add(new ConcurrentMapCache("getClientDropDown"));
 

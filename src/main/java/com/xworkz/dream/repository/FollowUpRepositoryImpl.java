@@ -44,7 +44,7 @@ public class FollowUpRepositoryImpl implements FollowUpRepository {
 	private static final Logger log = LoggerFactory.getLogger(FollowUpRepositoryImpl.class);
 
 	@PostConstruct
-	private void setsheetsRepository() {
+	private void setsheetsRepository() { 
 		sheetsService = saveOpration.ConnsetSheetService();
 	}
 
@@ -87,7 +87,7 @@ public class FollowUpRepositoryImpl implements FollowUpRepository {
 	}
 
 	@Override
-	@Cacheable(value="getFollowUpDetails",key="'listOfFollowUpDetails'")
+	@Cacheable(value = "getFollowUpDetails", key = "'listOfFollowUpDetails'")
 	public List<List<Object>> getFollowUpDetails(String spreadsheetId) {
 		try {
 
@@ -115,6 +115,7 @@ public class FollowUpRepositoryImpl implements FollowUpRepository {
 	}
 
 	@Override
+
 	@Cacheable(value = "getEmailList", key="'followUpEmailList'")
 	public ValueRange getEmailList(String spreadsheetId) {
 		try {
@@ -126,7 +127,7 @@ public class FollowUpRepositoryImpl implements FollowUpRepository {
 	}
 
 	@Override
-	//@Cacheable(value="getFollowUpStatusDetails",key="'followupstatusdetails'")
+	// @Cacheable(value="getFollowUpStatusDetails",key="'followupstatusdetails'")
 	public List<List<Object>> getFollowUpStatusDetails(String spreadsheetId) {
 		log.info("FollowUp Status Details retrieved successfully for spreadsheetId: {}", spreadsheetId);
 		try {
@@ -136,7 +137,6 @@ public class FollowUpRepositoryImpl implements FollowUpRepository {
 			return Collections.emptyList();
 		}
 	}
- 
 
 	@Override
 	public UpdateValuesResponse updateFollow(String spreadsheetId, String range2, ValueRange valueRange) {

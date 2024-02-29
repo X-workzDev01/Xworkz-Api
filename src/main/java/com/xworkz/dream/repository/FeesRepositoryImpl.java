@@ -48,7 +48,7 @@ public class FeesRepositoryImpl implements FeesRepository {
 
 	}
 
-	@Cacheable(value = "readFirst")
+	@Cacheable(cacheNames = "readFirst")
 	private ValueRange getReadFirstSheet() {
 		try {
 			return sheetsRepository.spreadsheets().values()
@@ -94,7 +94,7 @@ public class FeesRepositoryImpl implements FeesRepository {
 		} catch (IOException e) {
 			log.error("Error updating data {}     ", e);
 			return "data Update Error";
-		}
+		} 
 	}
 
 	@Override
@@ -121,12 +121,12 @@ public class FeesRepositoryImpl implements FeesRepository {
 			return sheetsRepository.spreadsheets().values().get(spreadSheetId, feesEmailRange).execute().getValues();
 		} catch (IOException e) {
 			log.error("error fetching data  {}  ", e);
-			return Collections.emptyList();
 		}
+		return Collections.emptyList();
 
 	}
 
-	@Cacheable(value = "followUpEmailRange", key = "'followUpEmail'")
+	@Cacheable(value = "feesFollowUpEmailRange", key = "'feesFollowUpEmail'")
 	@Override
 	public List<List<Object>> getFollowupEmailList() {
 		try {
@@ -137,7 +137,8 @@ public class FeesRepositoryImpl implements FeesRepository {
 		}
 
 		return Collections.emptyList();
-	}
+	} 
+
 	@Override
 	public String updateFeesFollowUpByEmail(String getFeesDetilesfollowupRange, List<Object> list) {
 		ValueRange body = saveOpration.updateDetilesToSheet(list);
