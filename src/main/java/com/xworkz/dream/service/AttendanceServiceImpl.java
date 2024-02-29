@@ -60,8 +60,6 @@ public class AttendanceServiceImpl implements AttendanceService {
 	private String attendanceEndRange;
 	@Value("${sheets.attandanceInfoSheetName}")
 	private String attandanceInfoSheetName;
-	@Value("${sheets.batchAttendanceInfoRange}")
-	private String batchAttendanceInfoRange;
 	@Value("${sheets.attandenceNameAndCourseRange}")
 	private String attandenceNameAndCourseRange;
 	@Autowired
@@ -269,7 +267,7 @@ public class AttendanceServiceImpl implements AttendanceService {
 		List<AttendanceTrainee> traineeInfoList = new ArrayList<>();
 		List<List<Object>> list = attendanceRepository.getAttendanceData(sheetId, attendanceInfoIDRange);
 		List<List<Object>> traineeDetails = this.filterTraineeDetails(batch);
-		if (traineeDetails != null) {
+		if (traineeDetails != null && !list.toString().contains("#NUM!")) {
 			List<TraineeDto> traineData = traineeDetails.stream().map(wrapper::listToDto).collect(Collectors.toList());
 			List<AttendanceDto> collect = list.stream().filter(items -> items.get(3).toString().equalsIgnoreCase(batch))
 					.map(wrapper::attendanceListToDto).collect(Collectors.toList());
@@ -451,7 +449,7 @@ public class AttendanceServiceImpl implements AttendanceService {
 		List<List<Object>> traineData = traineeDetails.stream()
 				.filter(dtos -> dtos.get(9).toString().equals(courseName)).collect(Collectors.toList());
 		List<List<Object>> attendanceData = attendanceRepository.getAttendanceData(sheetId, attendanceInfoIDRange);
-		if (attendanceData != null) {
+		if (attendanceData != null && !attendanceData.toString().contains("#NUM!")) {
 			List<List<Object>> sortedData = attendanceData.stream()
 					.sorted(Comparator.comparing(
 							list -> list != null && !list.isEmpty() && list.size() > 10 ? list.get(10).toString() : "",
@@ -528,17 +526,22 @@ public class AttendanceServiceImpl implements AttendanceService {
 		if (value != null) {
 			List<List<Object>> dataList = attendanceRepository.getNamesAndCourseName(sheetId,
 					attandenceNameAndCourseRange, value);
-			List<AttendanceDto> attedaceData = dataList.stream().map(wrapper::attendanceListToDto)
-					.collect(Collectors.toList());
-			if (!courseName.equalsIgnoreCase(ServiceConstant.NULL.toString())) {
-				suggestion = attedaceData.stream().filter(dto -> dto.getCourse().equalsIgnoreCase(courseName))
-						.filter(dto -> dto.getTraineeName().toLowerCase().startsWith(value.toLowerCase()))
+			if (dataList != null && !dataList.toString().contains("#NUM!")) {
+				List<AttendanceDto> attedaceData = dataList.stream().map(wrapper::attendanceListToDto)
 						.collect(Collectors.toList());
-				return ResponseEntity.ok(suggestion);
+
+				if (!courseName.equalsIgnoreCase(ServiceConstant.NULL.toString())) {
+					suggestion = attedaceData.stream().filter(dto -> dto.getCourse().equalsIgnoreCase(courseName))
+							.filter(dto -> dto.getTraineeName().toLowerCase().startsWith(value.toLowerCase()))
+							.collect(Collectors.toList());
+					return ResponseEntity.ok(suggestion);
+				} else {
+					suggestion = attedaceData.stream()
+							.filter(dto -> dto.getTraineeName().toLowerCase().startsWith(value.toLowerCase()))
+							.collect(Collectors.toList());
+					return ResponseEntity.ok(suggestion);
+				}
 			} else {
-				suggestion = attedaceData.stream()
-						.filter(dto -> dto.getTraineeName().toLowerCase().startsWith(value.toLowerCase()))
-						.collect(Collectors.toList());
 				return ResponseEntity.ok(suggestion);
 			}
 

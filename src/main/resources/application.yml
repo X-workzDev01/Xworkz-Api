@@ -1,6 +1,6 @@
 spring:
    profiles:
-      active: local
+      active: preProd
    freemarker:
     template-loader-path: classpath:/templates/
 sheets:
@@ -46,7 +46,8 @@ sheets:
   attandanceInfoSheetName: attendanceInfo!
   attandenceNameAndCourseRange : attendanceInfo!A2:D
   batchAttendanceInfoSheetName: batchAttendanceInfo!
-  batchAttendanceInfoRange: batchAttendanceInfo!A2:D 
+  batchAttendanceInfoRange: batchAttendanceInfo!B2:D 
+  getBatchAttendanceInfoRange: batchAttendanceInfo!A2:D
   batchAttendanceInfoStartRange: B
   batchAttendanceInfoEndRange: D
   feesRegister: FeesDetiles!B2:X

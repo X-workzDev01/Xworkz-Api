@@ -5,6 +5,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Predicate;
 
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
@@ -28,6 +29,8 @@ import com.xworkz.dream.dto.StatusDto;
 import com.xworkz.dream.dto.SuggestionDto;
 import com.xworkz.dream.dto.TraineeDto;
 import com.xworkz.dream.dto.utils.User;
+
+import io.quarkus.logging.Log;
 
 @Component
 public class DreamWrapper {
@@ -379,7 +382,7 @@ public class DreamWrapper {
 				&& validateCell(RegistrationConstant.COLUMN_UPDATED_ON)) {
 			traineeDto.getAdminDto()
 					.setUpdatedOn(row.get(RegistrationConstant.COLUMN_UPDATED_ON.getIndex()).toString());
-		}  
+		}
 		if (row.size() > RegistrationConstant.COLUMN_USN_NUMBER.getIndex()
 				&& validateCell(RegistrationConstant.COLUMN_USN_NUMBER)) {
 			traineeDto.getCsrDto().setUsnNumber(row.get(RegistrationConstant.COLUMN_USN_NUMBER.getIndex()).toString());
@@ -516,9 +519,17 @@ public class DreamWrapper {
 
 	public AttendanceDto attendanceListToDto(List<Object> row) {
 		AttendanceDto attendanceDto = new AttendanceDto(null, null, null, null, null, null, null, null, new AuditDto());
+		Predicate<Object> validateCell = cellContent -> cellContent != null && !cellContent.toString().isEmpty()
+				&& !"#NUM!".equals(cellContent.toString());
 		if (row.size() > AttendanceConstant.COLUMN_ATTENDANCID.getIndex()
-				&& validateCell(AttendanceConstant.COLUMN_ATTENDANCID)) {
-			attendanceDto.setAttendanceId(Integer.valueOf(row.get(AttendanceConstant.COLUMN_ATTENDANCID.getIndex()).toString()));
+				&& validateCell.test(row.get(AttendanceConstant.COLUMN_ATTENDANCID.getIndex()))) {
+			try {
+				attendanceDto.setAttendanceId(
+						Integer.valueOf(row.get(AttendanceConstant.COLUMN_ATTENDANCID.getIndex()).toString()));
+			} catch (NumberFormatException e) {
+				Log.error(e.getLocalizedMessage());
+			}
+
 		}
 		if (row.size() > AttendanceConstant.COLUMN_ID.getIndex() && validateCell(AttendanceConstant.COLUMN_ID)) {
 			attendanceDto.setId(Integer.valueOf(row.get(AttendanceConstant.COLUMN_ID.getIndex()).toString()));
@@ -533,7 +544,8 @@ public class DreamWrapper {
 		}
 		if (row.size() > AttendanceConstant.COLUMN_TOTAL_ABSENT.getIndex()
 				&& validateCell(AttendanceConstant.COLUMN_TOTAL_ABSENT)) {
-			attendanceDto.setTotalAbsent(Integer.valueOf(row.get(AttendanceConstant.COLUMN_TOTAL_ABSENT.getIndex()).toString()));
+			attendanceDto.setTotalAbsent(
+					Integer.valueOf(row.get(AttendanceConstant.COLUMN_TOTAL_ABSENT.getIndex()).toString()));
 		}
 		if (row.size() > AttendanceConstant.COLUMN_ABSENT_DATE.getIndex()
 				&& validateCell(AttendanceConstant.COLUMN_ABSENT_DATE)) {
@@ -545,19 +557,23 @@ public class DreamWrapper {
 		}
 		if (row.size() > AttendanceConstant.COLUMN_CREATED_BY.getIndex()
 				&& validateCell(AttendanceConstant.COLUMN_CREATED_BY)) {
-			attendanceDto.getAdminDto().setCreatedBy(row.get(AttendanceConstant.COLUMN_CREATED_BY.getIndex()).toString());
+			attendanceDto.getAdminDto()
+					.setCreatedBy(row.get(AttendanceConstant.COLUMN_CREATED_BY.getIndex()).toString());
 		}
 		if (row.size() > AttendanceConstant.COLUMN_CREATED_ON.getIndex()
 				&& validateCell(AttendanceConstant.COLUMN_CREATED_ON)) {
-			attendanceDto.getAdminDto().setCreatedOn(row.get(AttendanceConstant.COLUMN_CREATED_ON.getIndex()).toString());
+			attendanceDto.getAdminDto()
+					.setCreatedOn(row.get(AttendanceConstant.COLUMN_CREATED_ON.getIndex()).toString());
 		}
 		if (row.size() > AttendanceConstant.COLUMN_UPDATED_BY.getIndex()
 				&& validateCell(AttendanceConstant.COLUMN_UPDATED_BY)) {
-			attendanceDto.getAdminDto().setUpdatedBy(row.get(AttendanceConstant.COLUMN_UPDATED_BY.getIndex()).toString());
+			attendanceDto.getAdminDto()
+					.setUpdatedBy(row.get(AttendanceConstant.COLUMN_UPDATED_BY.getIndex()).toString());
 		}
 		if (row.size() > AttendanceConstant.COLUMN_UPDATED_ON.getIndex()
 				&& validateCell(AttendanceConstant.COLUMN_UPDATED_ON)) {
-			attendanceDto.getAdminDto().setUpdatedOn(row.get(AttendanceConstant.COLUMN_UPDATED_ON.getIndex()).toString());
+			attendanceDto.getAdminDto()
+					.setUpdatedOn(row.get(AttendanceConstant.COLUMN_UPDATED_ON.getIndex()).toString());
 		}
 		return attendanceDto;
 	}
@@ -753,7 +769,7 @@ public class DreamWrapper {
 		if (dto.getOthersDto().getReferalName() == null) {
 			dto.getOthersDto().setReferalName(Status.NA.toString());
 
-		} 
+		}
 		if (dto.getOthersDto().getComments() == null) {
 			dto.getOthersDto().setComments(Status.NA.toString());
 		}
