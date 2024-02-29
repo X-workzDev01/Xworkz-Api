@@ -25,11 +25,11 @@ import com.xworkz.dream.feesDtos.FeesUiDto;
 import com.xworkz.dream.feesDtos.SheetFeesDetiles;
 import com.xworkz.dream.repository.FeesRepository;
 import com.xworkz.dream.repository.FollowUpRepository;
-import com.xworkz.dream.wrapper.DreamWrapper;
 import com.xworkz.dream.wrapper.FeesDetilesWrapper;
 
 @Service
 public class FeesServiceImpl implements FeesService {
+
 	@Autowired
 	private WrapperUtil util;
 	@Autowired
@@ -43,8 +43,6 @@ public class FeesServiceImpl implements FeesService {
 	private FeesUtils feesUtils;
 	@Autowired
 	private FeesFollowUpCacheService feesCacheService;
-	@Autowired
-	private DreamWrapper dreamWrapper;
 	@Autowired
 	private FeesFinalDto feesFinalDtoRanges;
 	@Autowired
@@ -146,10 +144,12 @@ public class FeesServiceImpl implements FeesService {
 	}
 
 	@Override
-	public String transForData(String id, String feesEmailRange) {
-		followUpRepository.getFollowUpDetails(id).stream().map(dreamWrapper::listToFollowUpDTO)
+	public String transForData(String id, String feesEmailRange, String courseName) {
+		updateUtil.getFollowupList(followUpRepository.getFollowUpDetails(id)).stream()
 				.filter(feesDto -> feesDto.getCurrentStatus() != null
 						&& feesDto.getCurrentStatus().equalsIgnoreCase(Status.Joined.toString())
+						&& !feesDto.getCourseName().equalsIgnoreCase(ServiceConstant.NA.toString())
+						&& feesDto.getCourseName().equalsIgnoreCase(courseName)
 						&& feesDto.getFlagSheet().equalsIgnoreCase(ServiceConstant.ACTIVE.toString()))
 				.forEach(dto -> {
 					FeesUiDto uiDto = new FeesUiDto();
@@ -165,6 +165,7 @@ public class FeesServiceImpl implements FeesService {
 
 	}
 
+	@Override
 	public String updateNameAndEmail(Integer feesConcession, String traineeName, String oldEmail, String newEmail,
 			String updatedBy) {
 		List<FeesDto> feesDetailsByemail = getFeesDetailsByemail(oldEmail, feesFinalDtoRanges.getFeesEmailRange());

@@ -25,6 +25,7 @@ import com.xworkz.dream.dto.EducationInfoDto;
 import com.xworkz.dream.dto.EnquiryDto;
 import com.xworkz.dream.dto.FollowUpDto;
 import com.xworkz.dream.dto.OthersDto;
+import com.xworkz.dream.dto.PercentageDto;
 import com.xworkz.dream.dto.StatusDto;
 import com.xworkz.dream.dto.SuggestionDto;
 import com.xworkz.dream.dto.TraineeDto;
@@ -219,7 +220,7 @@ public class DreamWrapper {
 
 	public TraineeDto listToDto(List<Object> row) {
 		TraineeDto traineeDto = new TraineeDto(0, new BasicInfoDto(), new EducationInfoDto(), new CourseDto(),
-				new OthersDto(), new AuditDto(), new CSR());
+				new OthersDto(), new AuditDto(), new CSR(), new PercentageDto());
 		// Assuming the list follows this order: id ,traineeName, email, contactNumber,
 		// qualification, stream,
 		// yearOfPassout, collegeName, batch, branch, course, referalName,
@@ -406,6 +407,20 @@ public class DreamWrapper {
 			traineeDto.getCsrDto()
 					.setActiveFlag(row.get(RegistrationConstant.COLUMN_ACTIVE_FLAG.getIndex()).toString());
 		}
+		if (row.size() > RegistrationConstant.COLUMN_SSLC.getIndex()
+				&& validateCell(RegistrationConstant.COLUMN_SSLC)) {
+			traineeDto.getPercentageDto()
+					.setSslcPercentage(row.get(RegistrationConstant.COLUMN_SSLC.getIndex()).toString());
+		}
+		if (row.size() > RegistrationConstant.COLUMN_PUC.getIndex() && validateCell(RegistrationConstant.COLUMN_PUC)) {
+			traineeDto.getPercentageDto()
+					.setPucPercentage(row.get(RegistrationConstant.COLUMN_PUC.getIndex()).toString());
+		}
+		if (row.size() > RegistrationConstant.COLUMN_DEGREE.getIndex()
+				&& validateCell(RegistrationConstant.COLUMN_DEGREE)) {
+			traineeDto.getPercentageDto()
+					.setDegreePercentage(row.get(RegistrationConstant.COLUMN_DEGREE.getIndex()).toString());
+		}
 		return traineeDto;
 	}
 
@@ -441,7 +456,6 @@ public class DreamWrapper {
 				detailsList.add(fieldValue);
 			}
 		}
-
 		return detailsList;
 	}
 
@@ -518,7 +532,7 @@ public class DreamWrapper {
 	}
 
 	public AttendanceDto attendanceListToDto(List<Object> row) {
-		AttendanceDto attendanceDto = new AttendanceDto(null, null, null, null, null, null, null, null, new AuditDto());
+	AttendanceDto attendanceDto = new AttendanceDto(null, null, null, null, null, null, null, null, new AuditDto());
 		Predicate<Object> validateCell = cellContent -> cellContent != null && !cellContent.toString().isEmpty()
 				&& !"#NUM!".equals(cellContent.toString());
 		if (row.size() > AttendanceConstant.COLUMN_ATTENDANCID.getIndex()
@@ -701,7 +715,7 @@ public class DreamWrapper {
 	}
 
 	public void setAdminDto(TraineeDto dto) {
-		AuditDto admin = new AuditDto();
+		AuditDto admin = new AuditDto(); 
 		admin.setCreatedBy(dto.getAdminDto().getCreatedBy());
 		admin.setCreatedOn(dto.getAdminDto().getCreatedOn());
 		admin.setUpdatedBy(dto.getAdminDto().getUpdatedBy());
@@ -782,6 +796,12 @@ public class DreamWrapper {
 			dto.getOthersDto().setReferalContactNumber(0L);
 		}
 
+		if(dto.getPercentageDto()==null) {
+			dto.setPercentageDto(new PercentageDto());
+			dto.getPercentageDto().setSslcPercentage(Status.NA.toString());
+			dto.getPercentageDto().setPucPercentage(Status.NA.toString());	
+			dto.getPercentageDto().setDegreePercentage(Status.NA.toString());
+		}
 	}
 
 	public void setValuesForCSRDto(TraineeDto dto) {
@@ -819,7 +839,12 @@ public class DreamWrapper {
 			admin.setUpdatedOn(ServiceConstant.NA.toString());
 			dto.setAdminDto(admin);
 		}
-
+		if(dto.getPercentageDto()==null) {
+			dto.setPercentageDto(new PercentageDto());
+			dto.getPercentageDto().setSslcPercentage(Status.NA.toString());
+			dto.getPercentageDto().setPucPercentage(Status.NA.toString());	
+			dto.getPercentageDto().setDegreePercentage(Status.NA.toString());
+		}
 	}
 
 	public AttendanceDto saveAttendance(TraineeDto dto) {

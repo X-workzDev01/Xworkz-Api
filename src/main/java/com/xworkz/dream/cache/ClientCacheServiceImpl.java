@@ -27,11 +27,9 @@ public class ClientCacheServiceImpl implements ClientCacheService {
 		if (cache != null) {
 			ValueWrapper valueWrapper = cache.get(key);
 			if (valueWrapper != null && valueWrapper.get() instanceof List) {
-				// cache.put(key, existingData);
-				// adding single list to the cache
 				log.info("adding list to the cache {}:", data);
 				int size = (((List<List<Object>>) valueWrapper.get()).size());
-				data.set(0, size + 1);
+				data.set(0, size );
 				data.remove(1);
 				((List<List<Object>>) valueWrapper.get()).add(data);
 			}
@@ -46,11 +44,9 @@ public class ClientCacheServiceImpl implements ClientCacheService {
 		if (cache != null) {
 			ValueWrapper valueWrapper = cache.get(key);
 			if (valueWrapper != null && valueWrapper.get() instanceof List) {
-				// cache.put(key, existingData);
-				// adding single list to the cache
 				log.info("adding list to the cache {}:", data);
 				int size = (((List<List<Object>>) valueWrapper.get()).size());
-				data.set(0, size + 1);
+				data.set(0, size);
 				((List<List<Object>>) valueWrapper.get()).add(data);
 			}
 		}
@@ -118,6 +114,23 @@ public class ClientCacheServiceImpl implements ClientCacheService {
 			
 		}
 
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public void addHrFollowUpToCache(String cacheName, String key, List<Object> list) {
+		Cache cache = cacheManager.getCache(cacheName);
+		log.info("cache name: {}, cache key: {},", cacheName, key);
+		if (cache != null) {
+			ValueWrapper valueWrapper = cache.get(key);
+			if (valueWrapper != null && valueWrapper.get() instanceof List) {
+				log.info("adding list to the cache {}:", list);
+				int size = (((List<List<Object>>) valueWrapper.get()).size());
+				list.set(0, size);
+				((List<List<Object>>) valueWrapper.get()).add(list);
+			}
+		}
+		
 	}
 
 }

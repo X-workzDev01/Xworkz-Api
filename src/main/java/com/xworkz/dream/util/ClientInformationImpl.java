@@ -77,6 +77,7 @@ public class ClientInformationImpl implements ClientInformationUtil {
 
 	@Override
 	public void setValuesToClientDto(ClientDto dto) {
+		System.err.println(dto);
 		log.debug("client wrapper setting NA values to the fields null {}", dto);
 		if (dto.getCompanyName() == null || dto.getCompanyName().isEmpty()) {
 			dto.setCompanyName(ServiceConstant.NA.toString());

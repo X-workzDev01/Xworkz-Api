@@ -28,6 +28,8 @@ public class TraineeDto {
 	private AuditDto adminDto;
 	@JsonProperty("csrDto")
 	private CSR csrDto;
+	@JsonProperty("percentageDto")
+	private PercentageDto percentageDto;
 
 	public Integer getId() {
 		return id;

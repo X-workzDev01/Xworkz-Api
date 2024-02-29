@@ -62,7 +62,6 @@ public class ClientInformationServiceImpl implements ClientInformationService {
 				log.info("in client service, Extracted values: {}", list);
 				if (clientRepository.writeClientInformation(list)) {
 					log.debug("adding newly added data to the cache, clientInformation :{}", list);
-
 					clientCacheService.addNewDtoToCache("clientInformation", "listOfClientDto", list);
 					return "Client Information saved successfully";
 				}
@@ -150,7 +149,8 @@ public class ClientInformationServiceImpl implements ClientInformationService {
 		log.info("find the dto by id");
 		if (companyId != 0) {
 			clientDto = clientRepository.readData().stream().map(clientWrapper::listToClientDto)
-					.filter(ClientDto -> companyId == ClientDto.getId()).findFirst().orElse(null);
+					.filter(ClientDto -> ClientDto.getId() != null && ClientDto.getId() == companyId).findFirst()
+					.orElse(null);
 		}
 		if (clientDto != null) {
 			return clientDto;
