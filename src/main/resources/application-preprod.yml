@@ -1,12 +1,5 @@
 
 sheets:
-  range: A3:AC
-  emailRange: C3:C
-  contactNumberRange: D3:D
-  loginInfoRange: loginInfo!A2:B
-  attendanceInfoRange: attendanceInfo!A2:M
-  attendanceList: attendanceList!A2:J
-  attendanceListRange: attendanceList!A2:M
   credentialsPath: classpath:META-INF/credentials-pre-prod.json
   liveKey: live_d485f9b87a825393bc2f
 
@@ -25,9 +18,6 @@ mail:
     
 login: 
   teamFile: classpath:team.yml
-  
-  
-  
   sheetId: 1BBvpbYuTvqaXQ2ooVItm0MGqB5XMnNgpHc0ZUW4zqLg
   cookieDomain: ombn.in
 

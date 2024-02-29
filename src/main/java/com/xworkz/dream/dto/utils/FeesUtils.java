@@ -28,14 +28,14 @@ import com.xworkz.dream.service.BatchService;
 import com.xworkz.dream.service.RegistrationService;
 
 @Service
-public class FeesUtils {
+public class FeesUtils { 
 	@Value("${login.sheetId}")
-	private String spreadSheetId;
+	private String spreadSheetId; 
 	@Autowired
 	private RegistrationService registrationService;
 	@Autowired
 	private BatchService batchService;
-
+ 
 	private Logger log = LoggerFactory.getLogger(FeesUtils.class);
 
 	public BatchDetailsDto getBatchDetiles(String email) {
@@ -206,14 +206,14 @@ public class FeesUtils {
 				feesDtos.getAdmin().setUpdatedOn(FeesConstant.NA.toString());
 				feesDtos.setFeesStatus(FeesConstant.FREE.toString());
 				feesDtos.setLateFees(0L);
-				feesDtos.setFeeConcession(0);
+				feesDtos.setFeeConcession(0);  
 				feesDtos.getFeesHistoryDto().setFeesfollowupDate(FeesConstant.NA.toString());
 				feesDtos.getFeesHistoryDto().setPaidAmount("0");
 				feesDtos.getFeesHistoryDto().setLastFeesPaidDate(FeesConstant.NA.toString());
 				feesDtos.setSoftFlag(ServiceConstant.ACTIVE.toString());
 				feesDtos.getFeesHistoryDto().setPaymentMode(FeesConstant.NA.toString());
 				feesDtos.setMailSendStatus(FeesConstant.NO.toString());
-				feesDtos.setComments(FeesConstant.NA.toString());
+				feesDtos.setComments(FeesConstant.NA.toString()); 
 				if (details != null) {
 					feesDtos.setReminderDate(LocalDate.parse(details.getStartDate()).plusDays(28).toString());
 					feesDtos.getFeesHistoryDto().setPaidTo(FeesConstant.NA.toString());

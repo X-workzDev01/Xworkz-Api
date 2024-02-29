@@ -1,11 +1,5 @@
 
 sheets:
-  range: A3:Ak
-  emailRange: C3:C
-  contactNumberRange: D3:D
-  loginInfoRange: loginInfo!A2:B
-  attendanceInfoRange: attendanceInfo!A2:M
-  attendanceListRange: attendanceList!A2:M
   credentialsPath: classpath:META-INF/credentials-dev.json
   liveKey: live_d485f9b87a825393bc2i
 

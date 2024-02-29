@@ -57,14 +57,15 @@ public class FeesController {
 	}
 
 	@ApiOperation("transforFeesDetilesExistingRecords")
-	@PostMapping("/transforFeesDetilesExistingRecords")
-	public String transforDataTraineeInto() {
-		return feesService.transForData(feesFinalDtoRanges.getId(), feesFinalDtoRanges.getFeesEmailRange());
+	@PostMapping("/transforFeesDetilesExistingRecords/{courseName}")
+	public String transforDataTraineeInto(@PathVariable String courseName) {
+		return feesService.transForData(feesFinalDtoRanges.getId(), feesFinalDtoRanges.getFeesEmailRange(), courseName);
 	}
 
 	@PutMapping("/updateFeesDetailsChangeEmailAndFeeConcession/{feesConcession}/{traineeName}/{oldEmail}/{newEmail}/{updatedBy}")
-	public String updatefeesEmailAndNameAndFeesConcession(@PathVariable Integer feesConcession, @PathVariable String traineeName,
-			@PathVariable String oldEmail, @PathVariable String newEmail, @PathVariable String updatedBy) {
+	public String updatefeesEmailAndNameAndFeesConcession(@PathVariable Integer feesConcession,
+			@PathVariable String traineeName, @PathVariable String oldEmail, @PathVariable String newEmail,
+			@PathVariable String updatedBy) {
 		feesService.updateNameAndEmail(feesConcession, traineeName, oldEmail, newEmail, updatedBy);
 		return "Updated sucessfully";
 	}

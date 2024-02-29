@@ -11,7 +11,6 @@ import java.util.List;
 import java.util.ListIterator;
 import java.util.Set;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.ConstraintViolation;
@@ -93,9 +92,8 @@ public class AttendanceServiceImpl implements AttendanceService {
 	public ResponseEntity<String> writeAttendance(String spreadsheetId, AttendanceDto dto, HttpServletRequest request) {
 		ValidatorFactory factory = Validation.buildDefaultValidatorFactory();
 		Set<ConstraintViolation<AttendanceDto>> violation = factory.getValidator().validate(dto);
-		Boolean traineeAlreadyAdded;
 		try {
-			traineeAlreadyAdded = this.traineeAlreadyAdded(dto.getCourse(), dto.getId());
+			Boolean traineeAlreadyAdded = this.traineeAlreadyAdded(dto.getCourse(), dto.getId());
 			if (traineeAlreadyAdded == false) {
 				if (violation.isEmpty() && dto != null) {
 					if (dto.getAttemptStatus().equalsIgnoreCase(Status.Joined.toString())

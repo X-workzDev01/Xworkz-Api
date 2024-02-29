@@ -31,10 +31,14 @@ public class FeesFollowUpCacheServiceImpl implements FeesFollowUpCacheService {
 		if (cache != null) {
 			ValueWrapper valueWrapper = cache.get(key);
 			if (valueWrapper != null && valueWrapper.get() instanceof List) {
+				List<List<Object>> listOfCacheData = ((List<List<Object>>) valueWrapper.get());
 				log.info("adding list to the cache {}:", feesData);
 				int size = (((List<List<Object>>) valueWrapper.get()).size());
 				feesData.set(0, size + 1);
 				((List<List<Object>>) valueWrapper.get()).add(feesData);
+				if (listOfCacheData.get(0).size() < 2) {
+					listOfCacheData.remove(0);
+				}
 			}
 		}
 	}
@@ -48,10 +52,14 @@ public class FeesFollowUpCacheServiceImpl implements FeesFollowUpCacheService {
 			ValueWrapper valueWrapper = cache.get(key);
 			if (valueWrapper != null && valueWrapper.get() instanceof List) {
 				log.info("adding list to the cache {}:", followUpData);
+				List<List<Object>> listOfCacheData = ((List<List<Object>>) valueWrapper.get());
 				int size = (((List<List<Object>>) valueWrapper.get()).size());
 				followUpData.set(0, size + 1);
 				((List<List<Object>>) valueWrapper.get()).add(followUpData);
-			}
+				if (listOfCacheData.get(0).size() < 2) {
+					listOfCacheData.remove(0);
+				}
+			} 
 		}
 	}
 
@@ -81,7 +89,7 @@ public class FeesFollowUpCacheServiceImpl implements FeesFollowUpCacheService {
 				if (matchingIndex >= 0) {
 					ListOfItems.set(matchingIndex, feesUpdateData);
 					log.info("Updated cache data for email: {}", email);
-				} 
+				}
 
 			} else {
 				log.debug("Data not found in the cache for the specified email: {}", email);
@@ -91,18 +99,25 @@ public class FeesFollowUpCacheServiceImpl implements FeesFollowUpCacheService {
 
 	@SuppressWarnings("unchecked")
 	@Override
-	public void addEmailToCache(String cacheName, String spreadSheetId, String email) {
+	public void addEmailToCache(String cacheName, String key, String email) {
 		Cache cache = cacheManager.getCache(cacheName);
 		if (cache != null) {
 			log.info("Email added into cache {} ", email);
 
-			ValueWrapper valueWrapper = cache.get(spreadSheetId);
+			ValueWrapper valueWrapper = cache.get(key);
+
 			if (valueWrapper != null && valueWrapper.get() instanceof List) {
-				List<Object> contactNumbers = new ArrayList<Object>(Arrays.asList(email));
-				((List<List<Object>>) valueWrapper.get()).add(contactNumbers);
+				List<Object> addEmailIntoList = new ArrayList<Object>(Arrays.asList(email));
+				((List<List<Object>>) valueWrapper.get()).add(addEmailIntoList);
+			} else {
+				evictAllCacheValues(cacheName);
 			}
 		}
 
+	}
+
+	public void evictAllCacheValues(String cacheName) {
+		cacheManager.getCache(cacheName).clear();
 	}
 
 	public void updateFeesCacheIntoEmail(String cacheName, String key, String oldEmail, String newEmail) {
@@ -130,7 +145,7 @@ public class FeesFollowUpCacheServiceImpl implements FeesFollowUpCacheService {
 			}
 		}
 	}
-	
+
 	public void updateCacheIntoFeesFollowUp(String cacheName, String key, String email, List<Object> feesUpdateData) {
 		Cache cache = cacheManager.getCache(cacheName);
 		if (cache != null) {
@@ -144,7 +159,7 @@ public class FeesFollowUpCacheServiceImpl implements FeesFollowUpCacheService {
 				for (int i = 0; i < ListOfItems.size(); i++) {
 					List<Object> items = ListOfItems.get(i);
 					if (items.get(1).equals(email)) {
-						matchingIndex = i; 
+						matchingIndex = i;
 						break;
 					}
 				}
@@ -158,11 +173,5 @@ public class FeesFollowUpCacheServiceImpl implements FeesFollowUpCacheService {
 			}
 		}
 	}
-
-	
-	
-	
-	
-	
 
 }

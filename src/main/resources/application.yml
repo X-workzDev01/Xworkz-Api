@@ -1,6 +1,6 @@
 spring:
    profiles:
-      active: dev
+      active: preProd
    freemarker:
     template-loader-path: classpath:/templates/
 sheets:
@@ -38,7 +38,7 @@ sheets:
 
   followUpStatusIdRange: followUpStatus!A2:A
   batchDetailsCourseNameRange: batchDetails!B2:B
-  attendanceInfoRange: attendanceInfo!A2:K
+  attendanceInfoRange: attendanceInfo!B2:K
   attendanceInfoIDRange: attendanceInfo!A2:K
   attendanceInfoByName: attendanceInfo!A2:K
   attendanceInfoStartRange : B

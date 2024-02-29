@@ -52,7 +52,7 @@ public class ClientHrServiceImpl implements ClientHrService {
 		if (clientHrDto != null) {
 			clientInformationUtil.setValuesToClientHrDto(clientHrDto);
 			log.debug("Received ClientHrDto: {}", clientHrDto);
-			List<Object> listItem = null;
+			List<Object> listItem = new ArrayList<>();
 			try {
 				listItem = dreamWrapper.extractDtoDetails(clientHrDto);
 			} catch (IllegalAccessException e) {
@@ -107,7 +107,7 @@ public class ClientHrServiceImpl implements ClientHrService {
 	public List<ClientHrDto> getHrDetailsByCompanyId(int companyId) {
 		log.info("get details by companyId, {}", companyId);
 		List<ClientHrDto> listofClientHr = clientHrRepository.readData().stream().map(clientWrapper::listToClientHrDto)
-				.filter(clientHrDto -> clientHrDto.getCompanyId() == companyId).collect(Collectors.toList());
+				.filter(clientHrDto -> clientHrDto.getCompanyId()!=null &&clientHrDto.getCompanyId() == companyId).collect(Collectors.toList());
 		return listofClientHr;
 	}
 
