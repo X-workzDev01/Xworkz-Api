@@ -5,6 +5,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Predicate;
 
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
@@ -29,6 +30,8 @@ import com.xworkz.dream.dto.StatusDto;
 import com.xworkz.dream.dto.SuggestionDto;
 import com.xworkz.dream.dto.TraineeDto;
 import com.xworkz.dream.dto.utils.User;
+
+import io.quarkus.logging.Log;
 
 @Component
 public class DreamWrapper {
@@ -529,61 +532,64 @@ public class DreamWrapper {
 	}
 
 	public AttendanceDto attendanceListToDto(List<Object> row) {
-		if (row.size() >= 2) {
-			AttendanceDto attendanceDto = new AttendanceDto(null, null, null, null, null, null, null, null,
-					new AuditDto());
-			if (row.size() > AttendanceConstant.COLUMN_ATTENDANCID.getIndex()
-					&& validateCell(AttendanceConstant.COLUMN_ATTENDANCID)) {
+	AttendanceDto attendanceDto = new AttendanceDto(null, null, null, null, null, null, null, null, new AuditDto());
+		Predicate<Object> validateCell = cellContent -> cellContent != null && !cellContent.toString().isEmpty()
+				&& !"#NUM!".equals(cellContent.toString());
+		if (row.size() > AttendanceConstant.COLUMN_ATTENDANCID.getIndex()
+				&& validateCell.test(row.get(AttendanceConstant.COLUMN_ATTENDANCID.getIndex()))) {
+			try {
 				attendanceDto.setAttendanceId(
 						Integer.valueOf(row.get(AttendanceConstant.COLUMN_ATTENDANCID.getIndex()).toString()));
+			} catch (NumberFormatException e) {
+				Log.error(e.getLocalizedMessage());
 			}
-			if (row.size() > AttendanceConstant.COLUMN_ID.getIndex() && validateCell(AttendanceConstant.COLUMN_ID)) {
-				attendanceDto.setId(Integer.valueOf(row.get(AttendanceConstant.COLUMN_ID.getIndex()).toString()));
-			}
-			if (row.size() > AttendanceConstant.COLUMN_TRAINEE_NAME.getIndex()
-					&& validateCell(AttendanceConstant.COLUMN_TRAINEE_NAME)) {
-				attendanceDto.setTraineeName(row.get(AttendanceConstant.COLUMN_TRAINEE_NAME.getIndex()).toString());
-			}
-			if (row.size() > AttendanceConstant.COLUMN_COURSE.getIndex()
-					&& validateCell(AttendanceConstant.COLUMN_COURSE)) {
-				attendanceDto.setCourse(row.get(AttendanceConstant.COLUMN_COURSE.getIndex()).toString());
-			}
-			if (row.size() > AttendanceConstant.COLUMN_TOTAL_ABSENT.getIndex()
-					&& validateCell(AttendanceConstant.COLUMN_TOTAL_ABSENT)) {
-				attendanceDto.setTotalAbsent(
-						Integer.valueOf(row.get(AttendanceConstant.COLUMN_TOTAL_ABSENT.getIndex()).toString()));
-			}
-			if (row.size() > AttendanceConstant.COLUMN_ABSENT_DATE.getIndex()
-					&& validateCell(AttendanceConstant.COLUMN_ABSENT_DATE)) {
-				attendanceDto.setAbsentDate(row.get(AttendanceConstant.COLUMN_ABSENT_DATE.getIndex()).toString());
-			}
-			if (row.size() > AttendanceConstant.COLUMN_REASON.getIndex()
-					&& validateCell(AttendanceConstant.COLUMN_REASON)) {
-				attendanceDto.setReason(row.get(AttendanceConstant.COLUMN_REASON.getIndex()).toString());
-			}
-			if (row.size() > AttendanceConstant.COLUMN_CREATED_BY.getIndex()
-					&& validateCell(AttendanceConstant.COLUMN_CREATED_BY)) {
-				attendanceDto.getAdminDto()
-						.setCreatedBy(row.get(AttendanceConstant.COLUMN_CREATED_BY.getIndex()).toString());
-			}
-			if (row.size() > AttendanceConstant.COLUMN_CREATED_ON.getIndex()
-					&& validateCell(AttendanceConstant.COLUMN_CREATED_ON)) {
-				attendanceDto.getAdminDto()
-						.setCreatedOn(row.get(AttendanceConstant.COLUMN_CREATED_ON.getIndex()).toString());
-			}
-			if (row.size() > AttendanceConstant.COLUMN_UPDATED_BY.getIndex()
-					&& validateCell(AttendanceConstant.COLUMN_UPDATED_BY)) {
-				attendanceDto.getAdminDto()
-						.setUpdatedBy(row.get(AttendanceConstant.COLUMN_UPDATED_BY.getIndex()).toString());
-			}
-			if (row.size() > AttendanceConstant.COLUMN_UPDATED_ON.getIndex()
-					&& validateCell(AttendanceConstant.COLUMN_UPDATED_ON)) {
-				attendanceDto.getAdminDto()
-						.setUpdatedOn(row.get(AttendanceConstant.COLUMN_UPDATED_ON.getIndex()).toString());
-			}
-			return attendanceDto;
+
 		}
-		return null;
+		if (row.size() > AttendanceConstant.COLUMN_ID.getIndex() && validateCell(AttendanceConstant.COLUMN_ID)) {
+			attendanceDto.setId(Integer.valueOf(row.get(AttendanceConstant.COLUMN_ID.getIndex()).toString()));
+		}
+		if (row.size() > AttendanceConstant.COLUMN_TRAINEE_NAME.getIndex()
+				&& validateCell(AttendanceConstant.COLUMN_TRAINEE_NAME)) {
+			attendanceDto.setTraineeName(row.get(AttendanceConstant.COLUMN_TRAINEE_NAME.getIndex()).toString());
+		}
+		if (row.size() > AttendanceConstant.COLUMN_COURSE.getIndex()
+				&& validateCell(AttendanceConstant.COLUMN_COURSE)) {
+			attendanceDto.setCourse(row.get(AttendanceConstant.COLUMN_COURSE.getIndex()).toString());
+		}
+		if (row.size() > AttendanceConstant.COLUMN_TOTAL_ABSENT.getIndex()
+				&& validateCell(AttendanceConstant.COLUMN_TOTAL_ABSENT)) {
+			attendanceDto.setTotalAbsent(
+					Integer.valueOf(row.get(AttendanceConstant.COLUMN_TOTAL_ABSENT.getIndex()).toString()));
+		}
+		if (row.size() > AttendanceConstant.COLUMN_ABSENT_DATE.getIndex()
+				&& validateCell(AttendanceConstant.COLUMN_ABSENT_DATE)) {
+			attendanceDto.setAbsentDate(row.get(AttendanceConstant.COLUMN_ABSENT_DATE.getIndex()).toString());
+		}
+		if (row.size() > AttendanceConstant.COLUMN_REASON.getIndex()
+				&& validateCell(AttendanceConstant.COLUMN_REASON)) {
+			attendanceDto.setReason(row.get(AttendanceConstant.COLUMN_REASON.getIndex()).toString());
+		}
+		if (row.size() > AttendanceConstant.COLUMN_CREATED_BY.getIndex()
+				&& validateCell(AttendanceConstant.COLUMN_CREATED_BY)) {
+			attendanceDto.getAdminDto()
+					.setCreatedBy(row.get(AttendanceConstant.COLUMN_CREATED_BY.getIndex()).toString());
+		}
+		if (row.size() > AttendanceConstant.COLUMN_CREATED_ON.getIndex()
+				&& validateCell(AttendanceConstant.COLUMN_CREATED_ON)) {
+			attendanceDto.getAdminDto()
+					.setCreatedOn(row.get(AttendanceConstant.COLUMN_CREATED_ON.getIndex()).toString());
+		}
+		if (row.size() > AttendanceConstant.COLUMN_UPDATED_BY.getIndex()
+				&& validateCell(AttendanceConstant.COLUMN_UPDATED_BY)) {
+			attendanceDto.getAdminDto()
+					.setUpdatedBy(row.get(AttendanceConstant.COLUMN_UPDATED_BY.getIndex()).toString());
+		}
+		if (row.size() > AttendanceConstant.COLUMN_UPDATED_ON.getIndex()
+				&& validateCell(AttendanceConstant.COLUMN_UPDATED_ON)) {
+			attendanceDto.getAdminDto()
+					.setUpdatedOn(row.get(AttendanceConstant.COLUMN_UPDATED_ON.getIndex()).toString());
+		}
+		return attendanceDto;
 	}
 
 	public void setValueAttendaceDto(AttendanceDto dto) {

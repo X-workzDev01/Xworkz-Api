@@ -162,7 +162,7 @@ public class CacheServiceImpl implements CacheService {
 				}
 				if (data.size() > 4) {
 					data.remove(4); // Removes the element at index 4
-				}	
+				}
 				((List<List<Object>>) valueWrapper.get()).add(data);
 				log.info("Updated cache for key: {}", key);
 			}
@@ -244,12 +244,12 @@ public class CacheServiceImpl implements CacheService {
 			if (valueWrapper != null && valueWrapper.get() instanceof List) {
 
 				List<List<Object>> listOfItems = (List<List<Object>>) valueWrapper.get();
-				int matchingIndex = -1; 
+				int matchingIndex = -1;
 				for (int i = 0; i < listOfItems.size(); i++) {
 					List<Object> items = listOfItems.get(i);
 					if (items.get(0).equals(oldEmail)) {
-						matchingIndex = i; 
-						break; 
+						matchingIndex = i;
+						break;
 					}
 				}
 
@@ -271,11 +271,15 @@ public class CacheServiceImpl implements CacheService {
 		if (cache != null) {
 
 			ValueWrapper valueWrapper = cache.get(key);
-
+			List<List<Object>> list = ((List<List<Object>>) valueWrapper.get());
 			if (valueWrapper != null && valueWrapper.get() instanceof List) {
 				int size = (((List<List<Object>>) valueWrapper.get()).size());
+
 				data.set(0, size + 1);
 				((List<List<Object>>) valueWrapper.get()).add(data);
+				if (list.get(0).size() <= 1) {
+					list.remove(0);
+				}
 
 				log.info("Updated cache for key: {}", key);
 			}
@@ -292,11 +296,11 @@ public class CacheServiceImpl implements CacheService {
 
 				@SuppressWarnings("unchecked")
 				List<List<Object>> ListOfItems = (List<List<Object>>) valueWrapper.get();
-				int matchingIndex = -1; 
+				int matchingIndex = -1;
 
 				for (int i = 0; i < ListOfItems.size(); i++) {
 					List<Object> items = ListOfItems.get(i);
-					Integer getId=Integer.valueOf(items.get(1).toString());
+					Integer getId = Integer.valueOf(items.get(1).toString());
 					if (getId.equals(id)) {
 						matchingIndex = i;
 						break;
@@ -315,7 +319,7 @@ public class CacheServiceImpl implements CacheService {
 			}
 		}
 	}
-	
+
 	@Override
 	public void updateCacheBatch(String cacheName, String key, String courseName, BatchDetailsDto dto)
 			throws IllegalAccessException {
@@ -326,11 +330,11 @@ public class CacheServiceImpl implements CacheService {
 
 				@SuppressWarnings("unchecked")
 				List<List<Object>> ListOfItems = (List<List<Object>>) valueWrapper.get();
-				int matchingIndex = -1; 
+				int matchingIndex = -1;
 
 				for (int i = 0; i < ListOfItems.size(); i++) {
 					List<Object> items = ListOfItems.get(i);
-					String getCourseName=String.valueOf(items.get(1).toString());
+					String getCourseName = String.valueOf(items.get(1).toString());
 					if (getCourseName.equalsIgnoreCase(courseName)) {
 						matchingIndex = i;
 						break;

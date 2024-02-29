@@ -30,14 +30,15 @@ public class BatchAttendanceServiceImpl implements BatchAttendanceService {
 	@Autowired
 	@Value("${sheets.batchAttendanceInfoRange}")
 	private String batchAttendanceInfoRange;
+	@Value("${sheets.getBatchAttendanceInfoRange}")
+	private String getBatchAttendanceInfoRange;
 	@Value("${sheets.batchAttendanceInfoSheetName}")
 	private String batchAttendanceInfoSheetName;
 	@Autowired
 	private BatchAttendanceRepository repository;
 	@Autowired
-	private WrapperUtil util;
-	@Autowired
-	private BatchWrapper wrapper;
+    private WrapperUtil util;
+	
 
 	@Override
 	public ResponseEntity<String> writeBatchAttendance(BatchAttendanceDto batchAttendanceDto)
@@ -57,8 +58,8 @@ public class BatchAttendanceServiceImpl implements BatchAttendanceService {
 
 	@Override
 	public Boolean getPresentDate(String courseName) throws IOException {
-		List<List<Object>> batchAttendanceData = repository.getBatchAttendanceData(batchAttendanceInfoRange);
-		if (batchAttendanceData != null) {
+		List<List<Object>> batchAttendanceData = repository.getBatchAttendanceData(getBatchAttendanceInfoRange);
+		if (batchAttendanceData != null && !batchAttendanceData.toString().contains("#NUM!")) {
 			List<String> presentDates = batchAttendanceData.stream()
 					.filter(batchAttendance -> courseName.equals(batchAttendance.get(1)))
 					.map(batchAttendance -> (String) batchAttendance.get(3)).collect(Collectors.toList());
@@ -74,19 +75,20 @@ public class BatchAttendanceServiceImpl implements BatchAttendanceService {
 
 	@Override
 	public Map<Integer, Boolean> getBatchAttendanceDetails(String courseName) {
-		List<List<Object>> batchAttendanceData;
 		Map<Integer, Boolean> attendanceDetails = new HashMap<Integer, Boolean>();
 		try {
-			batchAttendanceData = repository.getBatchAttendanceData(batchAttendanceInfoRange);
-			Integer totalAttendanceForCourse = (int) batchAttendanceData.stream()
-					.filter(attendanceRecord -> attendanceRecord.get(1).equals(courseName)).count();
-			Boolean isTodayPresent = batchAttendanceData.stream()
-					.filter(attendanceRecord -> attendanceRecord.get(1).toString().equalsIgnoreCase(courseName))
-					.map(attendanceRecord -> attendanceRecord.get(3))
-					.anyMatch(attendanceDate -> attendanceDate.equals(LocalDate.now().toString()));
-			attendanceDetails.put(totalAttendanceForCourse, isTodayPresent);
+			List<List<Object>> batchAttendanceData = repository.getBatchAttendanceData(getBatchAttendanceInfoRange);
+			if (batchAttendanceData != null && !batchAttendanceData.isEmpty() && !batchAttendanceData.toString().contains("#NUM!")) {
+				Integer totalAttendanceForCourse = (int) batchAttendanceData.stream()
+						.filter(attendanceRecord -> attendanceRecord.get(1).equals(courseName)).count();
+				Boolean isTodayPresent = batchAttendanceData.stream()
+						.filter(attendanceRecord -> attendanceRecord.get(1).toString().equalsIgnoreCase(courseName))
+						.map(attendanceRecord -> attendanceRecord.get(3))
+						.anyMatch(attendanceDate -> attendanceDate.equals(LocalDate.now().toString()));
+				attendanceDetails.put(totalAttendanceForCourse, isTodayPresent);
 
-			return attendanceDetails;
+				return attendanceDetails;
+			}
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
