@@ -438,7 +438,6 @@ public class DreamWrapper {
 				detailsList.add(fieldValue);
 			}
 		}
-
 		return detailsList;
 	}
 
