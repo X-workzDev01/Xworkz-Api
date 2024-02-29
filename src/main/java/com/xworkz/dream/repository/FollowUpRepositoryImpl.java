@@ -115,7 +115,7 @@ public class FollowUpRepositoryImpl implements FollowUpRepository {
 	}
 
 	@Override
-	@Cacheable(value = "getEmailList")
+	@Cacheable(value = "getEmailList", key="'followUpEmailList'")
 	public ValueRange getEmailList(String spreadsheetId) {
 		try {
 			return sheetsService.spreadsheets().values().get(spreadsheetId, followUpEmailRange).execute();
@@ -123,7 +123,6 @@ public class FollowUpRepositoryImpl implements FollowUpRepository {
 			log.error("error getting data {} ", e);
 			return null;
 		}
-
 	}
 
 	@Override

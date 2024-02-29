@@ -85,6 +85,7 @@ public class SaveSheetOprationImpl implements SheetSaveOpration {
 		rowData.add("");
 		rowData.addAll(list.subList(1, list.size()));
 		values.add(rowData);
+		
 		ValueRange body = new ValueRange().setValues(values);
 		try {
 			log.debug("registering fees repository data list is : {}", body);

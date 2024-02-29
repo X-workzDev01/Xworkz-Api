@@ -37,8 +37,8 @@ public class ClientUtil {
 		List<List<Object>> listOfData = clientRepository.readData();
 		if (listOfData != null) {
 			return listOfData.stream().map(clientWrapper::listToClientDto)
-					.filter(clientDto -> clientDto != null
-							&& clientDto.getStatus().equalsIgnoreCase(ServiceConstant.ACTIVE.toString()))
+					.filter(clientDto -> clientDto != null&&clientDto.getId()!=null
+							&& clientDto.getStatus()!=null &&clientDto.getStatus().equalsIgnoreCase(ServiceConstant.ACTIVE.toString()))
 					.sorted(Comparator.comparing(ClientDto::getId, Comparator.reverseOrder()))
 					.collect(Collectors.toList());
 		} else {
@@ -49,7 +49,7 @@ public class ClientUtil {
 
 	public List<ClientHrDto> readHrDetails() {
 		List<List<Object>> listOfHrDetails = clientHrRepository.readData();
-		if(listOfHrDetails!=null) {
+		if(listOfHrDetails != null && !listOfHrDetails.isEmpty()) {
 		return listOfHrDetails.stream().map(clientWrapper::listToClientHrDto)
 				.sorted(Comparator.comparing(ClientHrDto::getId, Comparator.reverseOrder()))
 				.collect(Collectors.toList());
