@@ -129,7 +129,7 @@ public class AttendanceController {
 	}
 
 	@GetMapping("/suggestion/{courseName}")
-	public ResponseEntity<List<AttendanceDto>> getSearchSuggestion(@RequestParam String value,
+	public ResponseEntity<List<AttendanceViewDto>> getSearchSuggestion(@RequestParam String value,
 			@PathVariable String courseName) {
 		log.info("Getting suggestions for search: {}", value);
 		return attendanceService.getSearchSuggestion(value, courseName);
