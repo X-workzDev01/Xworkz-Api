@@ -45,27 +45,26 @@ public class RegisterRepositoryImpl implements RegisterRepository {
 	private SheetSaveOpration saveOperation;
 	private static final Logger log = LoggerFactory.getLogger(RegisterRepositoryImpl.class);
 
-
 	@PostConstruct
 	public void setSheetsService() {
 		try {
-			sheetsService=saveOperation.ConnsetSheetService();
+			sheetsService = saveOperation.ConnsetSheetService();
 		} catch (Exception e) {
-			log.error("Exception while connecting to sheet,{}",e.getMessage());
+			log.error("Exception while connecting to sheet,{}", e.getMessage());
 		}
 	}
- 
+
 	@Override
 	public boolean writeData(String spreadsheetId, List<Object> row) {
 		try {
-			ValueRange value=sheetsService.spreadsheets().values().get(spreadsheetId,range).execute();
-			if(value.getValues()!=null&&value.getValues().size()>=1) {
-				return saveOperation.saveDetilesWithDataSize(row,range);
-			}else {
+			ValueRange value = sheetsService.spreadsheets().values().get(spreadsheetId, range).execute();
+			if (value.getValues() != null && value.getValues().size() >= 1) {
+				return saveOperation.saveDetilesWithDataSize(row, range);
+			} else {
 				return saveOperation.saveDetilesWithoutSize(row, range);
 			}
-		}catch(IOException e) {
-			log.error("Exception while saving data to sheet,{}",e.getMessage());
+		} catch (IOException e) {
+			log.error("Exception while saving data to sheet,{}", e.getMessage());
 			return false;
 		}
 	}
@@ -79,13 +78,13 @@ public class RegisterRepositoryImpl implements RegisterRepository {
 			log.error("Exception in getEmails,{}", e.getMessage());
 			return Collections.emptyList();
 		}
-	}
+	} 
 
 	@Override
 	@Cacheable(value = "contactData", key = "#spreadsheetId", unless = "#result == null")
 	public List<List<Object>> getContactNumbers(String spreadsheetId) {
 		try {
-		return sheetsService.spreadsheets().values().get(spreadsheetId, contactNumberRange).execute().getValues();
+			return sheetsService.spreadsheets().values().get(spreadsheetId, contactNumberRange).execute().getValues();
 		} catch (IOException e) {
 			log.error("Exception in getContactNumber repository,{}", e.getMessage());
 			return Collections.emptyList();
@@ -96,6 +95,7 @@ public class RegisterRepositoryImpl implements RegisterRepository {
 	@Cacheable(value = "sheetsData", key = "'listOfTraineeData'", unless = "#result == null")
 	public List<List<Object>> readData(String spreadsheetId) {
 		try {
+			System.err.println(sheetsService.spreadsheets().values().get(spreadsheetId, range).execute().getValues());
 			return sheetsService.spreadsheets().values().get(spreadsheetId, range).execute().getValues();
 		} catch (IOException e) {
 			log.error("Exception in readData method, {}", e.getMessage());
@@ -112,8 +112,8 @@ public class RegisterRepositoryImpl implements RegisterRepository {
 			log.error("Exception in update method, {}", e.getMessage());
 			return null;
 		}
-		
-	}
+
+	} 
 
 	@Override
 	public List<List<Object>> getEmailsAndNames(String spreadsheetId, String value) {
@@ -123,14 +123,15 @@ public class RegisterRepositoryImpl implements RegisterRepository {
 			log.error("Exception in getEmailsAndNames method,{}", e.getMessage());
 			return Collections.emptyList();
 		}
-		
+
 	}
 
 	@Override
 	@Cacheable(value = "alternativeNumber", key = "'listOfAlternativeContactNumbers'", unless = "#result == null")
 	public List<List<Object>> getAlternativeNumber(String spreadsheetId) {
 		try {
-			return  sheetsService.spreadsheets().values().get(spreadsheetId, alternativeNumberRange).execute().getValues();
+			return sheetsService.spreadsheets().values().get(spreadsheetId, alternativeNumberRange).execute()
+					.getValues();
 		} catch (IOException e) {
 			log.error("Exception in getAlternativeNumber method, {}", e.getMessage());
 			return Collections.emptyList();

@@ -1,6 +1,7 @@
 package com.xworkz.dream.dto.utils;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.slf4j.Logger;
@@ -10,10 +11,15 @@ import org.springframework.stereotype.Service;
 
 import com.xworkz.dream.cache.FeesFollowUpCacheService;
 import com.xworkz.dream.constants.CacheConstant;
+import com.xworkz.dream.constants.ServiceConstant;
+import com.xworkz.dream.dto.FollowUpDto;
+import com.xworkz.dream.dto.TraineeDto;
 import com.xworkz.dream.feesDtos.FeesDto;
 import com.xworkz.dream.feesDtos.FeesFinalDto;
 import com.xworkz.dream.feesDtos.FeesHistoryDto;
 import com.xworkz.dream.repository.FeesRepository;
+import com.xworkz.dream.repository.RegisterRepository;
+import com.xworkz.dream.wrapper.DreamWrapper;
 
 @Service
 public class FeesUpdateUtil {
@@ -26,6 +32,10 @@ public class FeesUpdateUtil {
 	@Autowired
 	private FeesFollowUpCacheService feesCache;
 	private Logger log = LoggerFactory.getLogger(FeesUpdateUtil.class);
+	@Autowired
+	private DreamWrapper dreamWrapper;
+	@Autowired
+	private RegisterRepository registerRepository;
 
 	public void updateBasedOnEditEmail(Integer feesConcession, String traineeName, String oldEmail, String newEmail,
 			String updatedBy, FeesDto existingDto, List<FeesHistoryDto> listOfHistory) {
@@ -33,10 +43,8 @@ public class FeesUpdateUtil {
 				|| existingDto.getFeeConcession() != feesConcession
 				|| !existingDto.getName().equalsIgnoreCase(traineeName)) {
 			FeesDto updateDto = new FeesDto();
-			if (feesConcession != 0) {
-				updateDto.setFeeConcession(feesConcession);
-			}
-			updateDto.setId(existingDto.getId()); 
+			updateDto.setFeeConcession(feesConcession);
+			updateDto.setId(existingDto.getId());
 			updateDto.setFeesHistoryDto(existingDto.getFeesHistoryDto());
 			updateDto.getFeesHistoryDto().setEmail(newEmail);
 			updateDto.setName(traineeName);
@@ -76,14 +84,44 @@ public class FeesUpdateUtil {
 					+ feesFinalDtoRanges.getFeesUpdateEndRange() + followUpIndexindex;
 			feesRepository.updateFeesFollowUpByEmail(followupRange,
 					util.extractDtoDetails(updateDto.getFeesHistoryDto()));
-			feesCache.updateFeesCacheIntoEmail(CacheConstant.followUpEmailRange.toString(),
-					CacheConstant.followUpEmail.toString(), oldEmail, newEmail);
+			feesCache.updateFeesCacheIntoEmail(CacheConstant.feesFollowUpEmailRange.toString(),
+					CacheConstant.feesFollowUpEmail.toString(), oldEmail, newEmail);
 			updateDto.getFeesHistoryDto().setId(historyDto.getId());
 			feesCache.updateCacheIntoFeesFollowUp(CacheConstant.getFeesFolllowUpdata.toString(),
 					CacheConstant.feesfollowUpData.toString(), oldEmail,
 					util.extractDtoDetails(updateDto.getFeesHistoryDto()));
 
 		});
+	}
+
+	public List<FollowUpDto> getFollowupList(List<List<Object>> followUpList) {
+		List<List<Object>> traineeData = registerRepository.readData(feesFinalDtoRanges.getId());
+		List<FollowUpDto> filteredFollowUp = new ArrayList<FollowUpDto>();
+		if (filteredFollowUp != null) {
+			followUpList.stream().map(dreamWrapper::listToFollowUpDTO)
+					.filter(dto -> dto.getFlagSheet().equalsIgnoreCase(ServiceConstant.ACTIVE.toString()))
+					.forEach(followupDto -> {
+
+						TraineeDto traineeDto = getTraineeDtoByEmail(traineeData,
+								followupDto.getBasicInfo().getEmail());
+						if (traineeDto != null) {
+							followupDto.setCourseName(traineeDto.getCourseInfo().getCourse());
+							followupDto.setYear(traineeDto.getEducationInfo().getYearOfPassout());
+							followupDto.setCollegeName(traineeDto.getEducationInfo().getCollegeName());
+							filteredFollowUp.add(followupDto);
+						}
+					});
+		}
+		return filteredFollowUp;
+	}
+
+	public TraineeDto getTraineeDtoByEmail(List<List<Object>> traineeData, String email) {
+		if (traineeData == null || email == null) {
+			return null;
+		}
+		return traineeData.stream()
+				.filter(row -> row.size() > 2 && row.get(2) != null && row.get(2).toString().equalsIgnoreCase(email))
+				.map(dreamWrapper::listToDto).findFirst().orElse(null);
 	}
 
 }

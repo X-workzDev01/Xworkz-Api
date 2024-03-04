@@ -1,6 +1,6 @@
 spring:
    profiles:
-      active: dev
+      active: preProd
    freemarker:
     template-loader-path: classpath:/templates/
 sheets:
@@ -12,8 +12,8 @@ sheets:
   loginInfoRange: loginInfo!A2:B 
   followUpRange: followUp!A2:Q 
   followUpStatus: followUpStatus!A2:L
-  rowStartRange: B 
-  rowEndRange: AH  
+  rowStartRange: B
+  rowEndRange: AH 
   traineeSheetName: xworkzApi!
   followUpSheetName: followUp!
   followUprowStartRange: B2 
@@ -38,7 +38,7 @@ sheets:
 
   followUpStatusIdRange: followUpStatus!A2:A
   batchDetailsCourseNameRange: batchDetails!B2:B
-  attendanceInfoRange: attendanceInfo!A2:K
+  attendanceInfoRange: attendanceInfo!B2:K
   attendanceInfoIDRange: attendanceInfo!A2:K
   attendanceInfoByName: attendanceInfo!A2:K
   attendanceInfoStartRange : B
@@ -46,7 +46,8 @@ sheets:
   attandanceInfoSheetName: attendanceInfo!
   attandenceNameAndCourseRange : attendanceInfo!A2:D
   batchAttendanceInfoSheetName: batchAttendanceInfo!
-  batchAttendanceInfoRange: batchAttendanceInfo!A2:D 
+  batchAttendanceInfoRange: batchAttendanceInfo!B2:D 
+  getBatchAttendanceInfoRange: batchAttendanceInfo!A2:D
   batchAttendanceInfoStartRange: B
   batchAttendanceInfoEndRange: D
   feesRegister: FeesDetiles!B2:X

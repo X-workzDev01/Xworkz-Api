@@ -1,8 +1,6 @@
 
 sheets:
-  range: A3:AC
-  emailRange: C3:C
-  credentialsPath: classpath:META-INF/credentials-prod.json
+  credentialsPath: classpath:META-INF/credentials-pre-prod.json
   liveKey: live_d485f9b87a825393bc2f
 
 
@@ -20,7 +18,7 @@ mail:
     
 login: 
   teamFile: classpath:team.yml
-  sheetId: 1HI3nKYRbXNl2cu9rKwqKp3tznOZ7ziOupokU_daFZ8E
+  sheetId: 1BBvpbYuTvqaXQ2ooVItm0MGqB5XMnNgpHc0ZUW4zqLg
   cookieDomain: ombn.in
 
 
@@ -29,7 +27,7 @@ logging:
     rollingpolicy:
       max-file-size: 10MB
   file:
-    name: ../opt/tomcat1/logs/Dream-Prod-Logs/Dream.log
+    name: ../opt/tomcat1/logs/Dream-Prod-Logs/Dream-pre-prod.log
     max-size: 10MB
     total-size-cap: 10MB
 

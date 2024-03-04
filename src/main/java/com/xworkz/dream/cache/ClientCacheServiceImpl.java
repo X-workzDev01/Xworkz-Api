@@ -27,8 +27,6 @@ public class ClientCacheServiceImpl implements ClientCacheService {
 		if (cache != null) {
 			ValueWrapper valueWrapper = cache.get(key);
 			if (valueWrapper != null && valueWrapper.get() instanceof List) {
-				// cache.put(key, existingData);
-				// adding single list to the cache
 				log.info("adding list to the cache {}:", data);
 				int size = (((List<List<Object>>) valueWrapper.get()).size());
 				data.set(0, size + 1);
@@ -46,8 +44,6 @@ public class ClientCacheServiceImpl implements ClientCacheService {
 		if (cache != null) {
 			ValueWrapper valueWrapper = cache.get(key);
 			if (valueWrapper != null && valueWrapper.get() instanceof List) {
-				// cache.put(key, existingData);
-				// adding single list to the cache
 				log.info("adding list to the cache {}:", data);
 				int size = (((List<List<Object>>) valueWrapper.get()).size());
 				data.set(0, size + 1);
@@ -93,8 +89,8 @@ public class ClientCacheServiceImpl implements ClientCacheService {
 		Cache cache = cacheManager.getCache(cacheName);
 		log.info("cache name: {}, cache key: {}", cacheName, key);
 
-		log.info("{}",list);
-		if(cache!=null) {
+		log.info("{}", list);
+		if (cache != null) {
 			ValueWrapper valueWrapper = cache.get(key);
 			if (valueWrapper != null && valueWrapper.get() instanceof List) {
 				log.info("checking valuewrapper");
@@ -114,8 +110,24 @@ public class ClientCacheServiceImpl implements ClientCacheService {
 					cache.put(key, cacheItem);
 				}
 			}
-			
-			
+
+		}
+
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public void addHrFollowUpToCache(String cacheName, String key, List<Object> list) {
+		Cache cache = cacheManager.getCache(cacheName);
+		log.info("cache name: {}, cache key: {},", cacheName, key);
+		if (cache != null) {
+			ValueWrapper valueWrapper = cache.get(key);
+			if (valueWrapper != null && valueWrapper.get() instanceof List) {
+				log.info("adding list to the cache {}:", list);
+				int size = (((List<List<Object>>) valueWrapper.get()).size());
+				list.set(0, size + 1);
+				((List<List<Object>>) valueWrapper.get()).add(list);
+			}
 		}
 
 	}

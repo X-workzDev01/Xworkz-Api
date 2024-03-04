@@ -13,8 +13,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import com.google.api.services.sheets.v4.model.ValueRange;
-import com.xworkz.dream.dto.AttendanceDto;
-import com.xworkz.dream.dto.AuditDto;
 import com.xworkz.dream.dto.BatchAttendanceDto;
 import com.xworkz.dream.dto.BatchDetailsDto;
 import com.xworkz.dream.repository.BatchRepository;
@@ -162,4 +160,4 @@ public class BatchWrapper {
 		return batchAttendanceDto;
 	}
 
-}
+}  

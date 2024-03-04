@@ -49,13 +49,12 @@ public class CacheController {
 		}
 	}
 
-	@GetMapping("/getByCacheName") 
-	public ResponseEntity<List<List<Object>>> getByCacheName(String cacheName, @RequestHeader String spreadsheetId) {
+	@GetMapping("/getByCacheName")
+	public ResponseEntity<List<List<Object>>> getByCacheName(String cacheName, @RequestHeader String cacheKey) {
 		Cache cache = cacheManager.getCache(cacheName);
 
 		if (cache != null) {
-			ValueWrapper valueWrapper = cache.get(spreadsheetId);
-
+			ValueWrapper valueWrapper = cache.get(cacheKey);
 			if (valueWrapper != null) {
 				@SuppressWarnings("unchecked")
 				List<List<Object>> cachedData = (List<List<Object>>) valueWrapper.get();

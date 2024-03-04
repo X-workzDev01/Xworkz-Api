@@ -62,8 +62,6 @@ public class AttendanceServiceImpl implements AttendanceService {
 	private String attendanceEndRange;
 	@Value("${sheets.attandanceInfoSheetName}")
 	private String attandanceInfoSheetName;
-	@Value("${sheets.batchAttendanceInfoRange}")
-	private String batchAttendanceInfoRange;
 	@Value("${sheets.attandenceNameAndCourseRange}")
 	private String attandenceNameAndCourseRange;
 	@Autowired
@@ -94,9 +92,8 @@ public class AttendanceServiceImpl implements AttendanceService {
 	public ResponseEntity<String> writeAttendance(String spreadsheetId, AttendanceDto dto, HttpServletRequest request) {
 		ValidatorFactory factory = Validation.buildDefaultValidatorFactory();
 		Set<ConstraintViolation<AttendanceDto>> violation = factory.getValidator().validate(dto);
-		Boolean traineeAlreadyAdded;
 		try {
-			traineeAlreadyAdded = this.traineeAlreadyAdded(dto.getCourse(), dto.getId());
+			Boolean traineeAlreadyAdded = this.traineeAlreadyAdded(dto.getCourse(), dto.getId());
 			if (traineeAlreadyAdded == false) {
 				if (violation.isEmpty() && dto != null) {
 					if (dto.getAttemptStatus().equalsIgnoreCase(Status.Joined.toString())
@@ -272,7 +269,7 @@ public class AttendanceServiceImpl implements AttendanceService {
 		List<AttendanceTrainee> traineeInfoList = new ArrayList<>();
 		List<List<Object>> list = attendanceRepository.getAttendanceData(sheetId, attendanceInfoIDRange);
 		List<List<Object>> traineeDetails = this.filterTraineeDetails(batch);
-		if (traineeDetails != null) {
+		if (traineeDetails != null && !list.toString().contains("#NUM!")) {
 			List<TraineeDto> traineData = traineeDetails.stream().map(wrapper::listToDto).collect(Collectors.toList());
 			List<AttendanceDto> collect = list.stream().filter(items -> items.get(3).toString().equalsIgnoreCase(batch))
 					.map(wrapper::attendanceListToDto).collect(Collectors.toList());
@@ -453,6 +450,7 @@ public class AttendanceServiceImpl implements AttendanceService {
 		List<List<Object>> traineeDetails = filterTraineeDetails(courseName);
 		List<AttendanceViewDto> viewDtos = new ArrayList<AttendanceViewDto>();
 		List<List<Object>> attendanceData = attendanceRepository.getAttendanceData(sheetId, attendanceInfoIDRange);
+    
 		List<AttendanceDto> attendance = attendanceData.stream().map(wrapper::attendanceListToDto)
 				.collect(Collectors.toList());
 		List<TraineeDto> filterTraineDetails = filterTraineDetails(courseName, traineeDetails);
@@ -538,17 +536,22 @@ public class AttendanceServiceImpl implements AttendanceService {
 		if (value != null) {
 			List<List<Object>> dataList = attendanceRepository.getNamesAndCourseName(sheetId,
 					attandenceNameAndCourseRange, value);
-			List<AttendanceDto> attedaceData = dataList.stream().map(wrapper::attendanceListToDto)
-					.collect(Collectors.toList());
-			if (!courseName.equalsIgnoreCase(ServiceConstant.NULL.toString())) {
-				suggestion = attedaceData.stream().filter(dto -> dto.getCourse().equalsIgnoreCase(courseName))
-						.filter(dto -> dto.getTraineeName().toLowerCase().startsWith(value.toLowerCase()))
+			if (dataList != null && !dataList.toString().contains("#NUM!")) {
+				List<AttendanceDto> attedaceData = dataList.stream().map(wrapper::attendanceListToDto)
 						.collect(Collectors.toList());
-				return ResponseEntity.ok(suggestion);
+
+				if (!courseName.equalsIgnoreCase(ServiceConstant.NULL.toString())) {
+					suggestion = attedaceData.stream().filter(dto -> dto.getCourse().equalsIgnoreCase(courseName))
+							.filter(dto -> dto.getTraineeName().toLowerCase().startsWith(value.toLowerCase()))
+							.collect(Collectors.toList());
+					return ResponseEntity.ok(suggestion);
+				} else {
+					suggestion = attedaceData.stream()
+							.filter(dto -> dto.getTraineeName().toLowerCase().startsWith(value.toLowerCase()))
+							.collect(Collectors.toList());
+					return ResponseEntity.ok(suggestion);
+				}
 			} else {
-				suggestion = attedaceData.stream()
-						.filter(dto -> dto.getTraineeName().toLowerCase().startsWith(value.toLowerCase()))
-						.collect(Collectors.toList());
 				return ResponseEntity.ok(suggestion);
 			}
 
