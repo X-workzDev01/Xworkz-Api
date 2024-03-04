@@ -3,7 +3,7 @@ package com.xworkz.dream.service;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
-
+ 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -161,7 +161,7 @@ public class FeesServiceImpl implements FeesService {
 					writeFeesDetails(uiDto, feesEmailRange);
 
 				});
-		return "Transforred Data succesfully";
+		return "Transforred Data succesfully"; 
 
 	}
 

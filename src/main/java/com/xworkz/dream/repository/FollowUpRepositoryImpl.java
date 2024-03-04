@@ -32,7 +32,7 @@ public class FollowUpRepositoryImpl implements FollowUpRepository {
 	private String followUpStatus;
 	@Value("${sheets.emailAndNameRange}")
 	private String emailAndNameRange;
-	@Value("${sheets.followUpRange}")
+	@Value("${sheets.followUpRange}") 
 	private String followUpRange;
 	@Value("${sheets.followUpEmailRange}")
 	private String followUpEmailRange;
@@ -40,7 +40,6 @@ public class FollowUpRepositoryImpl implements FollowUpRepository {
 	private String followUpStatusIdRange;
 	@Autowired
 	private SheetSaveOpration saveOpration;
-	@Autowired
 	private static final Logger log = LoggerFactory.getLogger(FollowUpRepositoryImpl.class);
 
 	@PostConstruct
@@ -116,7 +115,7 @@ public class FollowUpRepositoryImpl implements FollowUpRepository {
 
 	@Override
 
-	@Cacheable(value = "getEmailList", key="'followUpEmailList'")
+//	@Cacheable(value = "getEmailList", key="'followUpEmailList'")
 	public ValueRange getEmailList(String spreadsheetId) {
 		try {
 			return sheetsService.spreadsheets().values().get(spreadsheetId, followUpEmailRange).execute();
