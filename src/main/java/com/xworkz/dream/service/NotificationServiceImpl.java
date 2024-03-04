@@ -13,13 +13,17 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
+import com.xworkz.dream.dto.FeesNotificationDto;
 import com.xworkz.dream.dto.FollowUpDto;
 import com.xworkz.dream.dto.SheetNotificationDto;
+import com.xworkz.dream.dto.utils.FeesStatusList;
 import com.xworkz.dream.dto.utils.StatusList;
 import com.xworkz.dream.dto.utils.Team;
+import com.xworkz.dream.feesDtos.FeesDto;
 import com.xworkz.dream.repository.NotificationRepository;
 import com.xworkz.dream.util.DreamUtil;
 import com.xworkz.dream.wrapper.DreamWrapper;
+import com.xworkz.dream.wrapper.FeesDetilesWrapper;
 
 @Service
 public class NotificationServiceImpl implements NotificationService {
@@ -28,10 +32,13 @@ public class NotificationServiceImpl implements NotificationService {
 	@Autowired
 	private NotificationRepository notificationRepository;
 	private SheetNotificationDto notificationDtos;
+	private FeesNotificationDto feesNotificationDto;
 	@Autowired
 	private DreamWrapper wrapper;
 	@Autowired
 	private DreamUtil util;
+	@Autowired
+	private FeesDetilesWrapper feesWrapper;
 	private static final Logger log = LoggerFactory.getLogger(NotificationServiceImpl.class);
 
 	public SheetNotificationDto notification(List<Team> teamList, String email) {
@@ -149,6 +156,153 @@ public class NotificationServiceImpl implements NotificationService {
 		}
 		return notificationDtos;
 
+	}
+
+	@Override
+	public FeesNotificationDto feesNotification(List<Team> teamList, String email) {
+
+		log.info("Notification service start for email: {}", email);
+		FeesStatusList list = new FeesStatusList();
+		List<String> statusCheck = list.getStatusList();
+		DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+		LocalTime time = LocalTime.of(16, 59, 01, 500_000_000);
+		List<FeesDto> notificationStatus = new ArrayList<FeesDto>();
+		List<FeesDto> today = new ArrayList<FeesDto>();
+		List<FeesDto> yesterday = new ArrayList<FeesDto>();
+		List<FeesDto> afterFoureDay = new ArrayList<FeesDto>();
+
+		if (spreadsheetId != null) {
+			List<List<Object>> listOfData = notificationRepository.feesNotification(spreadsheetId);
+			if (listOfData != null) {
+
+				if (!listOfData.isEmpty()) {
+					if (email != null) {
+						listOfData.stream().forEach(e -> {
+							FeesDto dto = feesWrapper.listToFeesDTO(e);
+							if (statusCheck.contains(dto.getFeesStatus())) {
+								if (dto.getSoftFlag() != null && !dto.getSoftFlag().equalsIgnoreCase("Inactive")) {
+									if (dto.getFeesHistoryDto().getFollowupCallbackDate().length() > 11
+											&& LocalDate.now()
+													.isEqual(LocalDate.parse(LocalDateTime
+															.parse(dto.getFeesHistoryDto().getFollowupCallbackDate())
+															.format(dateFormatter)))) {
+										System.err.println("today list : " + dto);
+										today.add(dto);
+									} else if (dto.getFeesHistoryDto().getFollowupCallbackDate().length() <= 10
+											&& LocalDate.now()
+													.isEqual(LocalDate.parse(LocalDate
+															.parse(dto.getFeesHistoryDto().getFollowupCallbackDate())
+															.format(dateFormatter)))) {
+										System.err.println("today list 3333 : " + dto);
+										today.add(dto);
+									}
+
+									if (dto.getFeesHistoryDto().getFollowupCallbackDate().length() > 11
+											&& LocalDate.now().minusDays(1)
+													.isEqual(LocalDate.parse(LocalDateTime
+															.parse(dto.getFeesHistoryDto().getFollowupCallbackDate())
+															.format(dateFormatter)))) {
+										System.err.println("yesterday list : " + dto);
+										yesterday.add(dto);
+									} else if (dto.getFeesHistoryDto().getFollowupCallbackDate().length() <= 10
+											&& LocalDate.now().minusDays(1)
+													.isEqual(LocalDate.parse(LocalDate
+															.parse(dto.getFeesHistoryDto().getFollowupCallbackDate())
+															.format(dateFormatter)))) {
+										System.err.println("yesterday list 3333 : " + dto);
+										yesterday.add(dto);
+									}
+
+									if (dto.getFeesHistoryDto().getFollowupCallbackDate().length() > 11
+											&& LocalDate.now().plusDays(4)
+													.isEqual(LocalDate.parse(LocalDateTime
+															.parse(dto.getFeesHistoryDto().getFollowupCallbackDate())
+															.format(dateFormatter)))) {
+										System.err.println("afterFoureDay list  : " + dto);
+										afterFoureDay.add(dto);
+									} else if (dto.getFeesHistoryDto().getFollowupCallbackDate().length() <= 10
+											&& LocalDate.now().plusDays(4)
+													.isEqual(LocalDate.parse(LocalDate
+															.parse(dto.getFeesHistoryDto().getFollowupCallbackDate())
+															.format(dateFormatter)))) {
+										System.err.println("afterFoureDay list 3333 : " + dto);
+										afterFoureDay.add(dto);
+
+									}
+								}
+							}
+
+						});
+						FeesNotificationDto dto = new FeesNotificationDto(yesterday, today, afterFoureDay);
+
+						return dto;
+					}
+
+					listOfData.stream().forEach(e -> {
+						FeesDto dto = feesWrapper.listToFeesDTO(e);
+
+						if (dto.getFeesHistoryDto().getFollowupCallbackDate() != null && dto.getSoftFlag() != null
+								&& !dto.getSoftFlag().equalsIgnoreCase("Inactive")
+								&& statusCheck.contains(dto.getFeesStatus())) {
+							if (dto.getFeesHistoryDto().getFollowupCallbackDate().length() > 10
+									&& LocalDateTime.now()
+											.isAfter(LocalDateTime.of(LocalDate.parse(LocalDateTime
+													.parse(dto.getFeesHistoryDto().getFollowupCallbackDate())
+													.format(dateFormatter)), time))
+									&& LocalDateTime.now()
+											.isBefore(LocalDateTime.of(LocalDate.parse(LocalDateTime
+													.parse(dto.getFeesHistoryDto().getFollowupCallbackDate())
+													.format(dateFormatter)), time.plusMinutes(29)))
+
+									|| dto.getFeesHistoryDto().getFollowupCallbackDate().length() == 10
+											&& LocalDateTime.now()
+													.isAfter(LocalDateTime.of(LocalDate.parse(LocalDate
+															.parse(dto.getFeesHistoryDto().getFollowupCallbackDate())
+															.format(dateFormatter)), time))
+											&& LocalDateTime.now()
+													.isBefore(
+															LocalDateTime.of(
+																	LocalDate.parse(LocalDate
+																			.parse(dto.getFeesHistoryDto()
+																					.getFollowupCallbackDate())
+																			.format(dateFormatter)),
+																	time.plusMinutes(26)))) {
+								if (dto.getFeesHistoryDto().getFollowupCallbackDate().length() > 11
+										&& LocalDate.now()
+												.isEqual(LocalDate.parse(LocalDateTime
+														.parse(dto.getFeesHistoryDto().getFollowupCallbackDate())
+														.format(dateFormatter)))) {
+
+									notificationStatus.add(dto);
+								} else if (dto.getFeesHistoryDto().getFollowupCallbackDate().length() == 10
+										&& LocalDate.now()
+												.isEqual(LocalDate.parse(LocalDate
+														.parse(dto.getFeesHistoryDto().getFollowupCallbackDate())
+														.format(dateFormatter)))) {
+
+									notificationStatus.add(dto);
+								}
+
+							}
+						}
+
+					});
+				}
+			}
+			if (LocalTime.now().isAfter(time) && LocalTime.now().isBefore(time.plusMinutes(26))) {
+
+				if (!notificationStatus.isEmpty()) {
+
+					boolean sendFeesNotificationToEmail = util.sendFeesNotificationToEmail(teamList,
+							notificationStatus);
+					System.err.println("sendFeesNotificationToEmail  :  " + sendFeesNotificationToEmail);
+
+				}
+
+			}
+
+		}
+		return feesNotificationDto;
 	}
 
 }
