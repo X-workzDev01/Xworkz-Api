@@ -116,7 +116,7 @@ public class ClientHrServiceImpl implements ClientHrService {
 		ClientHrDto hrDto = null;
 		if (hrId != 0) {
 			return hrDto = clientHrRepository.readData().stream().map(clientWrapper::listToClientHrDto)
-					.filter(ClientHrDto -> hrId == ClientHrDto.getId()).findFirst().orElse(hrDto);
+					.filter(ClientHrDto ->ClientHrDto.getId()!=null&& hrId == ClientHrDto.getId()).findFirst().orElse(hrDto);
 		}
 		return hrDto;
 	}
