@@ -53,11 +53,7 @@ public class ClientHrServiceImpl implements ClientHrService {
 			clientInformationUtil.setValuesToClientHrDto(clientHrDto);
 			log.debug("Received ClientHrDto: {}", clientHrDto);
 			List<Object> listItem = new ArrayList<>();
-			try {
-				listItem = dreamWrapper.extractDtoDetails(clientHrDto);
-			} catch (IllegalAccessException e) {
-				log.error("Exception in save client information,{}", e.getMessage());
-			}
+			listItem = dreamWrapper.extractDtoDetails(clientHrDto);
 
 			if (clientHrRepository.saveClientHrInformation(listItem)) {
 				clientCacheService.addHRDetailsToCache("hrDetails", "listofHRDetails", listItem);
@@ -107,7 +103,8 @@ public class ClientHrServiceImpl implements ClientHrService {
 	public List<ClientHrDto> getHrDetailsByCompanyId(int companyId) {
 		log.info("get details by companyId, {}", companyId);
 		List<ClientHrDto> listofClientHr = clientHrRepository.readData().stream().map(clientWrapper::listToClientHrDto)
-				.filter(clientHrDto -> clientHrDto.getCompanyId()!=null &&clientHrDto.getCompanyId() == companyId).collect(Collectors.toList());
+				.filter(clientHrDto -> clientHrDto.getCompanyId() != null && clientHrDto.getCompanyId() == companyId)
+				.collect(Collectors.toList());
 		return listofClientHr;
 	}
 
@@ -116,7 +113,8 @@ public class ClientHrServiceImpl implements ClientHrService {
 		ClientHrDto hrDto = null;
 		if (hrId != 0) {
 			return hrDto = clientHrRepository.readData().stream().map(clientWrapper::listToClientHrDto)
-					.filter(ClientHrDto ->ClientHrDto.getId()!=null&& hrId == ClientHrDto.getId()).findFirst().orElse(hrDto);
+					.filter(ClientHrDto -> ClientHrDto.getId() != null && hrId == ClientHrDto.getId()).findFirst()
+					.orElse(hrDto);
 		}
 		return hrDto;
 	}
@@ -143,11 +141,8 @@ public class ClientHrServiceImpl implements ClientHrService {
 			auditDto.setUpdatedOn(LocalDateTime.now().toString());
 			clientHrDto.getAdminDto().setUpdatedOn(LocalDateTime.now().toString());
 			List<List<Object>> values = null;
-			try {
-				values = Arrays.asList(dreamWrapper.extractDtoDetails(clientHrDto));
-			} catch (IllegalAccessException e) {
-				log.error("Exception update HR,{}", e.getMessage());
-			}
+	
+			values = Arrays.asList(dreamWrapper.extractDtoDetails(clientHrDto));
 
 			if (!values.isEmpty()) {
 				List<Object> modifiedValues = new ArrayList<>(values.get(0).subList(1, values.get(0).size()));

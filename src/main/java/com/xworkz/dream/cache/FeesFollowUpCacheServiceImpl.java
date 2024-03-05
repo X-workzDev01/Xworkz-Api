@@ -46,7 +46,6 @@ public class FeesFollowUpCacheServiceImpl implements FeesFollowUpCacheService {
 	@SuppressWarnings("unchecked")
 	public void addFeesFollowUpIntoCache(String cacheName, String key, List<Object> followUpData) {
 		Cache cache = cacheManager.getCache(cacheName);
-
 		log.info("cache name: {}, cache key: {},", cacheName, key);
 		if (cache != null) {
 			ValueWrapper valueWrapper = cache.get(key);
@@ -56,7 +55,7 @@ public class FeesFollowUpCacheServiceImpl implements FeesFollowUpCacheService {
 				int size = (((List<List<Object>>) valueWrapper.get()).size());
 				followUpData.set(0, size + 1);
 				((List<List<Object>>) valueWrapper.get()).add(followUpData);
-				if (listOfCacheData.get(0).size() < 2) {
+				if (listOfCacheData.get(0).size() < 2) { 
 					listOfCacheData.remove(0);
 				}
 			} 

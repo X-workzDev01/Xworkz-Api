@@ -66,14 +66,12 @@ public class BatchRepositoryImpl implements BatchRepository {
 				requestInitializer).setApplicationName(applicationName).build();
 	}
 
-	
-
 	@Override
 	public boolean saveBatchDetails(String spreadsheetId, List<Object> row) throws IOException {
 		List<List<Object>> values = new ArrayList<>();
 		List<Object> rowData = new ArrayList<>();
-		rowData.add(""); // Placeholder for A column
-		rowData.addAll(row.subList(1, row.size())); // Start from the second element (B column)
+		rowData.add("");
+		rowData.addAll(row.subList(1, row.size()));
 		values.add(rowData);
 		ValueRange body = new ValueRange().setValues(values);
 		sheetsService.spreadsheets().values().append(spreadsheetId, batchDetailsRange, body)
@@ -99,6 +97,7 @@ public class BatchRepositoryImpl implements BatchRepository {
 	}
 
 	@Override
+	@Cacheable(value = "getCourseNameList",key="'courseName")
 	public ValueRange getCourseNameList(String spreadsheetId) throws IOException {
 		log.debug("Course name list retrieved successfully for spreadsheetId: {}", spreadsheetId);
 		ValueRange response = sheetsService.spreadsheets().values().get(spreadsheetId, batchDetailsCourseNameRange)

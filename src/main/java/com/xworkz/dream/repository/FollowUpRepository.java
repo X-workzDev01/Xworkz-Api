@@ -14,10 +14,14 @@ public interface FollowUpRepository {
 
 	boolean updateCurrentFollowUpStatus(String spreadsheetId, String currentFollowRange, List<Object> data);
 
-	ValueRange getEmailList(String spreadsheetId);
+	public List<List<Object>> getFollowupStatusEmailList(String spreadsheetId);
+
+	List<List<Object>> getEmailList(String spreadsheetId);
 
 	List<List<Object>> getFollowUpStatusDetails(String spreadsheetId);
 
 	UpdateValuesResponse updateFollow(String spreadsheetId, String range2, ValueRange valueRange);
+
+	public String updateFollowUpStatus(String spreadsheetId, String range, List<Object> list);
 
 }

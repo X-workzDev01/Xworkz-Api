@@ -39,7 +39,8 @@ public class BatchServiceImpl implements BatchService {
 	private DreamWrapper wrapper;
 	@Autowired
 	private BatchWrapper batchWrapper;
-
+	@Autowired
+	private CacheService cacheService;
 	private static final Logger log = LoggerFactory.getLogger(BatchServiceImpl.class);
 
 	@Override
@@ -47,8 +48,9 @@ public class BatchServiceImpl implements BatchService {
 			throws IOException, IllegalAccessException {
 		List<Object> list = wrapper.extractDtoDetails(dto);
 		boolean save = repository.saveBatchDetails(spreadsheetId, list);
-		// adding to cache
-//		cacheService.updateCourseCache("batchDetails", spreadsheetId, list);
+		cacheService.updateCache("batchDetails", "listOfBatch", list);
+		cacheService.addEmailToCache("getCourseNameList", "courseName", dto.getCourseName());
+
 		if (save == true) {
 			log.info("Batch details added successfully");
 			return ResponseEntity.ok("Batch details added successfully");

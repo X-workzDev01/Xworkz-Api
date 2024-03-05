@@ -105,7 +105,7 @@ public class FeesDetilesWrapperImpl implements FeesDetilesWrapper {
 			if (validateCell(SheetConstant.LATE_FEES)) {
 				feesDto.setLateFees(Long.valueOf(row.get(SheetConstant.LATE_FEES.getIndex()).toString()));
 			}
-			if (validateCell(SheetConstant.COLUMN_EMAIL)) {
+			if (validateCell(SheetConstant.COLUMN_EMAIL)) { 
 				BatchDetailsDto details = feesUtiles
 						.getBatchDetiles(row.get(SheetConstant.COLUMN_EMAIL.getIndex()).toString());
 				if (details != null && details.getTotalAmount() != null) {

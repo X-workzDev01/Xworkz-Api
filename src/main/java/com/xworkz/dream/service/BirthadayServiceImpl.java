@@ -113,20 +113,17 @@ public class BirthadayServiceImpl implements BirthadayService {
 	}
 
 	@Override
-	public boolean updateDob(TraineeDto dto)  {
+	public boolean updateDob(TraineeDto dto) {
 
 		int rowNumber = dto.getId() + 1;
 		log.debug("Row Number to update,{}", rowNumber);
-		String rowRange = dobSheetName+birthDayStartRow + rowNumber + ":" + birthDayEndRow+rowNumber;
+		String rowRange = dobSheetName + birthDayStartRow + rowNumber + ":" + birthDayEndRow + rowNumber;
 		log.debug("Row Range ,{}", rowRange);
 		BirthDayInfoDto birthday = assignToBirthDayDto(dto);
 		log.info("Updating BOD details of students,{}", birthday);
 		List<List<Object>> values = null;
-		try {
-			values = Arrays.asList(wrapper.extractDtoDetails(birthday));
-		} catch (IllegalAccessException e) {
-		log.error("Exception in update DOB service,{}",e);
-		}
+		values = Arrays.asList(wrapper.extractDtoDetails(birthday));
+
 		if (!values.isEmpty()) {
 			List<Object> modifiedValues = new ArrayList<>(values.get(0).subList(1, values.get(0).size()));
 			values.set(0, modifiedValues);
@@ -142,6 +139,5 @@ public class BirthadayServiceImpl implements BirthadayService {
 			return false;
 		}
 	}
-	
 
 }

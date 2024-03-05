@@ -56,19 +56,15 @@ public class ClientInformationServiceImpl implements ClientInformationService {
 	public String writeClientInformation(ClientDto dto) {
 		if (dto != null) {
 			clientInformationUtil.setValuesToClientDto(dto);
-			try {
-				List<Object> list = dreamWrapper.extractDtoDetails(dto);
+			List<Object> list = dreamWrapper.extractDtoDetails(dto);
 
-				log.info("in client service, Extracted values: {}", list);
-				if (clientRepository.writeClientInformation(list)) {
-					log.debug("adding newly added data to the cache, clientInformation :{}", list);
-					clientCacheService.addNewDtoToCache("clientInformation", "listOfClientDto", list);
-					return "Client Information saved successfully";
-				}
-			} catch (IllegalAccessException e) {
-				log.error("Exception in writeClient,{}", e.getMessage());
-				return "Client Information not saved successfully";
+			log.info("in client service, Extracted values: {}", list);
+			if (clientRepository.writeClientInformation(list)) {
+				log.debug("adding newly added data to the cache, clientInformation :{}", list);
+				clientCacheService.addNewDtoToCache("clientInformation", "listOfClientDto", list);
+				return "Client Information saved successfully";
 			}
+
 		}
 		return "Client Information not saved successfully";
 	}

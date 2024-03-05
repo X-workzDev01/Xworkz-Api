@@ -435,7 +435,7 @@ public class DreamWrapper {
 
 	}
 
-	public List<Object> extractDtoDetails(Object dto) throws IllegalAccessException {
+	public List<Object> extractDtoDetails(Object dto) {
 		List<Object> detailsList = new ArrayList<>();
 
 		// Get all fields of the DTO class, including inherited fields
@@ -447,16 +447,22 @@ public class DreamWrapper {
 			field.setAccessible(true);
 
 			// Extract the value of the field from the DTO object
-			Object fieldValue = field.get(dto);
+			Object fieldValue;
+			try {
+				fieldValue = field.get(dto);
 
-			if (fieldValue != null && !field.getType().isPrimitive() && !field.getType().getName().startsWith("java")) {
-				// Handle association with another DTO
-				List<Object> subDtoDetails = extractDtoDetails(fieldValue);
-				detailsList.addAll(subDtoDetails);
+				if (fieldValue != null && !field.getType().isPrimitive()
+						&& !field.getType().getName().startsWith("java")) {
+					// Handle association with another DTO
+					List<Object> subDtoDetails = extractDtoDetails(fieldValue);
+					detailsList.addAll(subDtoDetails);
 
-			} else {
-				// Add the value to the list
-				detailsList.add(fieldValue);
+				} else {
+					// Add the value to the list
+					detailsList.add(fieldValue);
+				}
+			} catch (IllegalArgumentException | IllegalAccessException e) {
+				log.error("error converting data");
 			}
 		}
 		return detailsList;

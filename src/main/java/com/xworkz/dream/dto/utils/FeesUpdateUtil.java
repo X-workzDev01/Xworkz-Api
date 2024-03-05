@@ -92,7 +92,7 @@ public class FeesUpdateUtil {
 					util.extractDtoDetails(updateDto.getFeesHistoryDto()));
 
 		});
-	}
+	} 
 
 	public List<FollowUpDto> getFollowupList(List<List<Object>> followUpList) {
 		List<List<Object>> traineeData = registerRepository.readData(feesFinalDtoRanges.getId());
