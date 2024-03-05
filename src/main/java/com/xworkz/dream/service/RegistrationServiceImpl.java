@@ -359,6 +359,29 @@ public class RegistrationServiceImpl implements RegistrationService {
 					log.error("Error updating data. Email: {}", email);
 					return ResponseEntity.ok("error");
 				}
+			
+				
+				
+				
+				
+				
+				
+				
+				
+				
+				
+				
+				
+				
+				
+				
+				
+				
+				
+				
+				
+				
+				
 
 			} else {
 				log.warn("Email not found: {}", email);

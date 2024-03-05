@@ -48,11 +48,7 @@ public class ClientHrServiceImpl implements ClientHrService {
 			clientInformationUtil.setValuesToClientHrDto(clientHrDto);
 			log.debug("Received ClientHrDto: {}", clientHrDto);
 			List<Object> listItem = new ArrayList<>();
-			try {
-				listItem = dreamWrapper.extractDtoDetails(clientHrDto);
-			} catch (IllegalAccessException e) {
-				log.error("Exception in save client information,{}", e.getMessage());
-			}
+			listItem = dreamWrapper.extractDtoDetails(clientHrDto);
 
 			if (clientHrRepository.saveClientHrInformation(listItem)) {
 				clientCacheService.addHRDetailsToCache("hrDetails", "listofHRDetails", listItem);
@@ -151,6 +147,7 @@ public class ClientHrServiceImpl implements ClientHrService {
 	}
 	@Override
 	public String updateHrDetails(int hrId, ClientHrDto clientHrDto) {
+
 	    int rowNumber = hrId + 1;
 	    String range = propertiesDto.getHrSheetName() + propertiesDto.getHrStartRow() + rowNumber + ":"
 	            + propertiesDto.getHrEndRow() + rowNumber;

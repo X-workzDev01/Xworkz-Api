@@ -41,19 +41,16 @@ public class HrFollowUpServiceImpl implements HrFollowUpService {
 	public String saveHrFollowUpDetails(HrFollowUpDto dto) {
 		log.info("saveHrFollowUpDetails hr follow Up Dto: {}", dto);
 		clientInformationUtil.settingNaValues(dto);
-		try {
-			List<Object> list = dreamWrapper.extractDtoDetails(dto);
-			if (dto != null) {
-				if (hrFollowUpRepository.saveHrFollowUpDetails(list)) {
-					clientCacheService.addHrFollowUpToCache("hrFollowUpDetails", "hrFollowUp", list);
-					return "Hr Follow up details saved successfully";
-				} else {
-					return "Hr Follow up details not saved";
-				}
+		List<Object> list = dreamWrapper.extractDtoDetails(dto);
+		if (dto != null) {
+			if (hrFollowUpRepository.saveHrFollowUpDetails(list)) {
+				clientCacheService.addHrFollowUpToCache("hrFollowUpDetails", "hrFollowUp", list);
+				return "Hr Follow up details saved successfully";
+			} else {
+				return "Hr Follow up details not saved";
 			}
-		} catch (IllegalAccessException e) {
-			log.error("exception while saving client follow up:{}", e.getMessage());
 		}
+
 		return "Hr Follow up details not saved";
 	}
 

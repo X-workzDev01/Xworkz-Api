@@ -16,4 +16,4 @@ public interface FeesFollowUpCacheService {
 
 	void updateCacheIntoFeesFollowUp(String cacheName, String key, String email, List<Object> feesUpdateData);
 
-}
+} 
