@@ -48,7 +48,7 @@ public class ClientInformationController {
 	@GetMapping("/companynamecheck")
 	public String checkComanyName(@RequestParam String companyName) {
 		log.info("checking company is already exist or not  {}", companyName);
-		if (clientInformationService.checkComanyName(companyName)) {
+		if (clientInformationService.checkCompanyName(companyName)) {
 			return "Company Already Exists";
 		} else {
 			return "Company Not Exists";
@@ -65,7 +65,7 @@ public class ClientInformationController {
 	@ApiOperation("To check the email Id of Company")
 	@GetMapping("/checkcompanyemail")
 	public String checkEmail(@RequestParam String companyEmail)  {
-		log.info("checking company Email exist of not email is:{}", companyEmail);
+		log.info("checking company Email exist or not email is:{}", companyEmail);
 		if (clientInformationService.checkEmail(companyEmail)) {
 			return "Company Email Already Exists";
 		} else {
@@ -75,8 +75,8 @@ public class ClientInformationController {
 	
 	@ApiOperation("To check the contactNumber of Company")
 	@GetMapping("/checkContactNumber")
-	public String checkContactNumber(@RequestParam String contactNumber) {
-		log.info("checking company contactNumber exist of not contactNumber is:{}", contactNumber);
+	public String checkContactNumber(@RequestParam Long contactNumber) {
+		log.info("checking company contactNumber exist or not contactNumber is:{}", contactNumber);
 		if (clientInformationService.checkContactNumber(contactNumber)) {
 			return "Company ContactNumber Already Exists";
 		} else {
@@ -87,7 +87,7 @@ public class ClientInformationController {
 	@ApiOperation("To check the CompanyWebsite")
 	@GetMapping("/checkCompanyWebsite")
 	public String checkCompanyWebsite(@RequestParam String companyWebsite) {
-		log.info("checking company CompanyWebsite exist of not CompanyWebsite is:{}", companyWebsite);
+		log.info("checking company CompanyWebsite exist or not CompanyWebsite is:{}", companyWebsite);
 		if (clientInformationService.checkCompanyWebsite(companyWebsite)) {
 			return "CompanyWebsite Already Exists";
 		} else {

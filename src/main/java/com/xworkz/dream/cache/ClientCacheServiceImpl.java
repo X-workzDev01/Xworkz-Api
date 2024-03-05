@@ -1,5 +1,7 @@
 package com.xworkz.dream.cache;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import org.slf4j.Logger;
@@ -29,7 +31,7 @@ public class ClientCacheServiceImpl implements ClientCacheService {
 			if (valueWrapper != null && valueWrapper.get() instanceof List) {
 				log.info("adding list to the cache {}:", data);
 				int size = (((List<List<Object>>) valueWrapper.get()).size());
-				data.set(0, size);
+				data.set(0, size + 1);
 				data.remove(1);
 				((List<List<Object>>) valueWrapper.get()).add(data);
 			}
@@ -130,6 +132,47 @@ public class ClientCacheServiceImpl implements ClientCacheService {
 			}
 		}
 
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public void addToCache(String cacheName, String key, String value) {
+		Cache cache = cacheManager.getCache(cacheName);
+		if (cache != null) {
+			log.info("Email added into cache {} ", value);
+
+			ValueWrapper valueWrapper = cache.get(key);
+			if (valueWrapper != null && valueWrapper.get() instanceof List) {
+				List<Object> valueList = new ArrayList<Object>(Arrays.asList(value));
+				((List<List<Object>>) valueWrapper.get()).add(valueList);
+			}
+		}
+
+	}
+
+	@Override
+	public void updateCache(String cacheName, String key, String oldValue, String newValue) {
+		Cache cache = cacheManager.getCache(cacheName);
+		log.info("cache name: {}, cache key: {}", cacheName, key);
+		if (cache == null) {
+			return;
+		}
+		ValueWrapper valueWrapper = cache.get(key);
+		if (valueWrapper == null || !(valueWrapper.get() instanceof List)) {
+			return;
+		}
+		@SuppressWarnings("unchecked")
+		List<List<Object>> cacheItem = (List<List<Object>>) valueWrapper.get();
+		List<Object> valueList = new ArrayList<>(Arrays.asList(newValue));
+		log.info("{}", valueList);
+
+		for (List<Object> obj : cacheItem) {
+			if (obj.contains(oldValue)) {
+				log.info("Found in sublist: {}", obj);
+				int index = obj.indexOf(oldValue);
+				obj.set(index, newValue);
+			}
+		}
 	}
 
 }

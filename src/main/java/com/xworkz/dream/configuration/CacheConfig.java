@@ -41,12 +41,17 @@ public class CacheConfig {
 		caches.add(new ConcurrentMapCache("attendanceData"));
 		caches.add(new ConcurrentMapCache("batchAttendanceData"));
 		caches.add(new ConcurrentMapCache("usnNumber"));
-		caches.add(new ConcurrentMapCache("alternativeNumber")); 
+		caches.add(new ConcurrentMapCache("alternativeNumber"));
 		caches.add(new ConcurrentMapCache("uniqueNumber"));
 		caches.add(new ConcurrentMapCache("getFollowUpDetails"));
 		caches.add(new ConcurrentMapCache("getFollowUpStatusDetails"));
 		caches.add(new ConcurrentMapCache("getClientDropDown"));
-
+		caches.add(new ConcurrentMapCache("getClientEmail"));
+		caches.add(new ConcurrentMapCache("getClientContactNumbers"));
+		caches.add(new ConcurrentMapCache("getClientWebsite"));
+		caches.add(new ConcurrentMapCache("getClientName"));
+		caches.add(new ConcurrentMapCache("getListOfHrEmail"));
+		caches.add(new ConcurrentMapCache("getListOfContactNumber"));
 		cacheManager.setCaches(caches);
 		return cacheManager;
 	}

@@ -74,6 +74,12 @@ sheets:
   hrFollowUpInformationRange: ClientHRFollowUpStatus!B2:I
   hrFollowUpInformationReadRange: ClientHRFollowUpStatus!A2:I
   clientDropDownRange: dropDowns!J2:N
+  clientEmailRange: clientDetails!C2:C
+  clientContactNumberRange: clientDetails!D2:D
+  clientWebsiteRange: clientDetails!E2:E
+  clientNameRange: clientDetails!B2:B
+  clientHrEmailRange: clientHRdetails!D2:D
+  clientHrContactNumberRange: clientHRdetails!E2:E
   
 mailChimp:
   userName: 7FzbzzHIVQSVJVz5r4n/bGa/lhNWJCXUq6oqBxBCTYQ=
