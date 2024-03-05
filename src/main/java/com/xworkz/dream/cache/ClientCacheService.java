@@ -12,6 +12,9 @@ public interface ClientCacheService {
 			throws IllegalAccessException;
 
 	void updateHrDetailsInCache(String cacheName, String key, List<List<Object>> list) throws IllegalAccessException;
-	
-    void addHrFollowUpToCache(String cacheName,String key,List<Object> list);
+
+	void addHrFollowUpToCache(String cacheName, String key, List<Object> list);
+
+	void addToCache(String cacheName, String key, String value);
+	 void updateCache(String cacheName, String key, String oldvalue,String newValue);
 }

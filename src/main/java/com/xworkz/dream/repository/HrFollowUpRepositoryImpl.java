@@ -15,6 +15,7 @@ import org.springframework.stereotype.Repository;
 
 import com.google.api.services.sheets.v4.Sheets;
 import com.google.api.services.sheets.v4.model.ValueRange;
+import com.xworkz.dream.dto.PropertiesDto;
 import com.xworkz.dream.dto.utils.SheetSaveOpration;
 
 @Repository
@@ -25,12 +26,8 @@ public class HrFollowUpRepositoryImpl implements HrFollowUpRepository {
 	@Value("${sheets.credentialsPath}")
 	private String credentialsPath;
 	private Sheets sheetsService;
-	@Value("${sheets.hrFollowUpInformationRange}")
-	private String hrFollowUpInformationRange;
-	@Value("${sheets.hrFollowUpInformationReadRange}")
-	private String hrFollowUpInformationReadRange;
-	@Value("${login.sheetId}")
-	public String sheetId;
+	@Autowired
+	private PropertiesDto propertiesDto;
 	@Autowired
 	private SheetSaveOpration saveOperation;
 
@@ -48,11 +45,12 @@ public class HrFollowUpRepositoryImpl implements HrFollowUpRepository {
 	@Override
 	public boolean saveHrFollowUpDetails(List<Object> row) {
 		try {
-			ValueRange value = sheetsService.spreadsheets().values().get(sheetId, hrFollowUpInformationRange).execute();
+			ValueRange value = sheetsService.spreadsheets().values()
+					.get(propertiesDto.getSheetId(), propertiesDto.getHrFollowUpInformationRange()).execute();
 			if (value.getValues() != null && value.getValues().size() >= 1) {
-				return saveOperation.saveDetilesWithDataSize(row, hrFollowUpInformationRange);
+				return saveOperation.saveDetilesWithDataSize(row, propertiesDto.getHrFollowUpInformationRange());
 			} else {
-				return saveOperation.saveDetilesWithoutSize(row, hrFollowUpInformationRange);
+				return saveOperation.saveDetilesWithoutSize(row, propertiesDto.getHrFollowUpInformationRange());
 			}
 		} catch (IOException e) {
 			log.error("Exception while saving data to sheet,{}", e.getMessage());
@@ -64,7 +62,8 @@ public class HrFollowUpRepositoryImpl implements HrFollowUpRepository {
 	@Cacheable(value = "hrFollowUpDetails", key = "'hrFollowUp'")
 	public List<List<Object>> readFollowUpDetailsById() {
 		try {
-			return sheetsService.spreadsheets().values().get(sheetId, hrFollowUpInformationReadRange).execute()
+			return sheetsService.spreadsheets().values()
+					.get(propertiesDto.getSheetId(), propertiesDto.getHrFollowUpInformationReadRange()).execute()
 					.getValues();
 		} catch (IOException e) {
 			log.error("Exception in read ClientRepo,{}", e.getMessage());
