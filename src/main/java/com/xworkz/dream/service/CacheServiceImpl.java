@@ -226,7 +226,6 @@ public class CacheServiceImpl implements CacheService {
 		if (cache != null) {
 
 			log.info("Contact number added into cache: {}", contactNumber);
-			@SuppressWarnings("unchecked")
 			ValueWrapper valueWrapper = cache.get(spreadSheetId);
 			if (valueWrapper != null && valueWrapper.get() instanceof List) {
 				List<Object> contactNumbers = new ArrayList<Object>(Arrays.asList(contactNumber));
