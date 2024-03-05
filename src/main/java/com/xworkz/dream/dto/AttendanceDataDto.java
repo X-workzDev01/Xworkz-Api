@@ -9,7 +9,7 @@ import lombok.Data;
 @AllArgsConstructor
 public class AttendanceDataDto {
 	
-	private List<AttendanceDto> attendanceData;
+	private List<AttendanceViewDto> attendanceData;
 	private Integer size;
 
 }

@@ -9,18 +9,19 @@ import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import com.google.api.services.sheets.v4.model.UpdateValuesResponse;
 import com.google.api.services.sheets.v4.model.ValueRange;
 import com.xworkz.dream.cache.ClientCacheService;
+import com.xworkz.dream.clientDtos.ClientValueDto;
 import com.xworkz.dream.constants.ServiceConstant;
 import com.xworkz.dream.dto.AuditDto;
 import com.xworkz.dream.dto.ClientDataDto;
 import com.xworkz.dream.dto.ClientDto;
 import com.xworkz.dream.dto.ClientHrDto;
 import com.xworkz.dream.dto.HrFollowUpDto;
+import com.xworkz.dream.dto.PropertiesDto;
 import com.xworkz.dream.repository.ClientRepository;
 import com.xworkz.dream.service.util.ClientUtil;
 import com.xworkz.dream.util.ClientInformationUtil;
@@ -40,12 +41,8 @@ public class ClientInformationServiceImpl implements ClientInformationService {
 	private ClientCacheService clientCacheService;
 	@Autowired
 	private ClientUtil clientUtil;
-	@Value("${sheets.clientStartRow}")
-	private String clientStartRow;
-	@Value("${sheets.clientEndRow}")
-	private String clientEndRow;
-	@Value("${sheets.clientSheetName}")
-	private String clientSheetName;
+	@Autowired
+	private PropertiesDto propertiesDto;
 
 	@Autowired
 	private ClientInformationUtil clientInformationUtil;
@@ -58,11 +55,21 @@ public class ClientInformationServiceImpl implements ClientInformationService {
 			clientInformationUtil.setValuesToClientDto(dto);
 			List<Object> list = dreamWrapper.extractDtoDetails(dto);
 
-			log.info("in client service, Extracted values: {}", list);
-			if (clientRepository.writeClientInformation(list)) {
-				log.debug("adding newly added data to the cache, clientInformation :{}", list);
-				clientCacheService.addNewDtoToCache("clientInformation", "listOfClientDto", list);
-				return "Client Information saved successfully";
+
+				log.info("in client service, Extracted values: {}", list);
+				if (clientRepository.writeClientInformation(list)) {
+					log.debug("adding newly added data to the cache, clientInformation :{}", list);
+					clientCacheService.addNewDtoToCache("clientInformation", "listOfClientDto", list);
+					clientCacheService.addToCache("getClientEmail", "listOfClientEmail", dto.getCompanyEmail());
+					clientCacheService.addToCache("getClientContactNumbers", "listOfClientContactNumber",
+							dto.getCompanyLandLineNumber().toString());
+					clientCacheService.addToCache("getClientWebsite", "listOfClientWebsite", dto.getCompanyWebsite());
+					clientCacheService.addToCache("getClientName", "listOfClientName", dto.getCompanyName());
+					return "Client Information saved successfully";
+				}
+			} catch (IllegalAccessException e) {
+				log.error("Exception in writeClient,{}", e.getMessage());
+				return "Client Information not saved successfully";
 			}
 
 		}
@@ -126,17 +133,21 @@ public class ClientInformationServiceImpl implements ClientInformationService {
 	}
 
 	@Override
-	public boolean checkComanyName(String companyName) {
-		log.info("checkComanyName service class {} ", companyName);
-
-		List<List<Object>> listOfData = clientRepository.readData();
-		if (companyName != null) {
-			if (listOfData != null) {
-				return listOfData.stream().map(clientWrapper::listToClientDto)
-						.anyMatch(clientDto -> companyName.equalsIgnoreCase(clientDto.getCompanyName()));
+	public boolean checkCompanyName(String companyName) {
+		log.info("checkComanyName service {} ", companyName);
+		List<List<Object>> listOfData = clientRepository.getClientName();
+		if (listOfData != null && companyName != null) {
+			ClientValueDto filterDto = listOfData.stream().map(clientWrapper::listToClientValueDto)
+					.filter(dto -> dto.getMapValue() != null && dto.getMapValue().equalsIgnoreCase(companyName))
+					.findFirst().orElse(null);
+			if (filterDto != null) {
+				return true;
+			} else {
+				return false;
 			}
+		} else {
+			return false;
 		}
-		return false;
 	}
 
 	@Override
@@ -157,25 +168,34 @@ public class ClientInformationServiceImpl implements ClientInformationService {
 	@Override
 	public boolean checkEmail(String companyEmail) {
 		log.info("checking company Email: {}", companyEmail);
-		List<List<Object>> listOfData = clientRepository.readData();
-		if (companyEmail != null) {
+		List<List<Object>> listOfData = clientRepository.getClientListOfEmail();
+		if (companyEmail != null && !companyEmail.isEmpty()) {
 			if (listOfData != null) {
-				return listOfData.stream().map(clientWrapper::listToClientDto)
-						.anyMatch(clientDto -> companyEmail.equalsIgnoreCase(clientDto.getCompanyEmail()));
+				ClientValueDto clientValueDto = listOfData.stream().map(clientWrapper::listToClientValueDto)
+						.filter(clientDto -> clientDto != null && clientDto.getMapValue() != null
+								&& clientDto.getMapValue().equalsIgnoreCase(companyEmail))
+						.findFirst().orElse(null);
+				if (clientValueDto != null) {
+					return true;
+				} else {
+					return false;
+				}
 			}
 		}
 		return false;
 	}
 
 	@Override
-	public boolean checkContactNumber(String contactNumber) {
+	public boolean checkContactNumber(Long contactNumber) {
 		log.info("checking company contactNumber: {}", contactNumber);
-		List<List<Object>> listOfData = clientRepository.readData();
-		if (contactNumber != null) {
-			if (listOfData != null) {
-				Long companyLandLineNumber = Long.parseLong(contactNumber);
-				return listOfData.stream().map(clientWrapper::listToClientDto)
-						.anyMatch(clientDto -> companyLandLineNumber.equals(clientDto.getCompanyLandLineNumber()));
+		List<List<Object>> listOfData = clientRepository.getClientContactNumber();
+		if (listOfData != null && contactNumber != null) {
+			ClientValueDto clientValueDto = listOfData.stream().map(clientWrapper::listToClientValueDto)
+					.filter(clientDto -> clientDto != null && clientDto.getMapValue() != null
+							&& clientDto.getMapValue().equals(contactNumber.toString()))
+					.findFirst().orElse(null);
+			if (clientValueDto != null) {
+				return true;
 			}
 		}
 		return false;
@@ -184,11 +204,16 @@ public class ClientInformationServiceImpl implements ClientInformationService {
 	@Override
 	public boolean checkCompanyWebsite(String companyWebsite) {
 		log.info("checking company ompanyWebsite: {}", companyWebsite);
-		List<List<Object>> listOfData = clientRepository.readData();
-		if (companyWebsite != null) {
+		List<List<Object>> listOfData = clientRepository.getClientWebsite();
+		if (companyWebsite != null && !companyWebsite.isEmpty()) {
 			if (listOfData != null) {
-				return listOfData.stream().map(clientWrapper::listToClientDto)
-						.anyMatch(clientDto -> companyWebsite.equalsIgnoreCase(clientDto.getCompanyWebsite()));
+				ClientValueDto clientValueDto = listOfData.stream().map(clientWrapper::listToClientValueDto)
+						.filter(clientDto -> clientDto != null && clientDto.getMapValue() != null
+								&& clientDto.getMapValue().equalsIgnoreCase(companyWebsite))
+						.findFirst().orElse(null);
+				if (clientValueDto != null) {
+					return true;
+				}
 			}
 		}
 		return false;
@@ -272,18 +297,17 @@ public class ClientInformationServiceImpl implements ClientInformationService {
 		return clientDtos;
 	}
 
-	@Override
 	public String updateClientDto(int companyId, ClientDto clientDto) {
 		log.info("updating client dto {}, Id {}", clientDto, companyId);
-		String range = clientSheetName + clientStartRow + (companyId + 1) + ":" + clientEndRow + (companyId + 1);
-
+		String range = propertiesDto.getClientSheetName() + propertiesDto.getClientStartRow() + (companyId + 1) + ":"
+				+ propertiesDto.getClientEndRow() + (companyId + 1);
 		if (companyId != 0 && clientDto != null) {
+			ClientDto dto = getClientDtoById(companyId);
 			AuditDto auditDto = new AuditDto();
 			auditDto.setUpdatedOn(LocalDateTime.now().toString());
 			clientDto.getAdminDto().setUpdatedOn(auditDto.getUpdatedOn());
-			List<List<Object>> values;
 			try {
-				values = Arrays.asList(dreamWrapper.extractDtoDetails(clientDto));
+				List<List<Object>> values = Arrays.asList(dreamWrapper.extractDtoDetails(clientDto));
 
 				if (!values.isEmpty()) {
 					List<Object> modifiedValues = new ArrayList<>(values.get(0).subList(1, values.get(0).size()));
@@ -298,15 +322,40 @@ public class ClientInformationServiceImpl implements ClientInformationService {
 				if (updated != null) {
 					List<List<Object>> listOfItems = Arrays.asList(dreamWrapper.extractDtoDetails(clientDto));
 					clientCacheService.updateClientDetailsInCache("clientInformation", "listOfClientDto", listOfItems);
+					updateDataInCache(clientDto, dto);
 					return "updated Successfully";
 				} else {
 					return "not updated successfully";
 				}
 			} catch (Exception e) {
 				log.error("Exception in updateClientDto,{}", e.getMessage());
+				return "not updated successfully";
 			}
 		}
 		return "not updated successfully";
+	}
+
+	private void updateDataInCache(ClientDto clientDto, ClientDto dto) {
+		if (dto != null && clientDto != null) {
+			if (!dto.getCompanyEmail().equalsIgnoreCase(clientDto.getCompanyEmail())) {
+				clientCacheService.updateCache("getClientEmail", "listOfClientEmail", dto.getCompanyEmail(),
+						clientDto.getCompanyEmail());
+			}
+			if (!dto.getCompanyName().equalsIgnoreCase(clientDto.getCompanyName())) {
+				clientCacheService.updateCache("getClientName", "listOfClientName", dto.getCompanyName(),
+						clientDto.getCompanyName());
+
+			}
+			if (!dto.getCompanyWebsite().equalsIgnoreCase(clientDto.getCompanyWebsite())) {
+				clientCacheService.updateCache("getClientWebsite", "listOfClientWebsite",
+						dto.getCompanyWebsite(), clientDto.getCompanyWebsite());
+			}
+			if (!dto.getCompanyLandLineNumber().equals(clientDto.getCompanyLandLineNumber())) {
+				clientCacheService.updateCache("getClientContactNumbers", "listOfClientContactNumber",
+						dto.getCompanyLandLineNumber().toString(),
+						clientDto.getCompanyLandLineNumber().toString());
+			}
+		}
 	}
 
 }

@@ -16,6 +16,7 @@ import org.springframework.stereotype.Component;
 import com.xworkz.dream.dto.FollowUpDto;
 import com.xworkz.dream.dto.TraineeDto;
 import com.xworkz.dream.dto.utils.Team;
+import com.xworkz.dream.feesDtos.FeesDto;
 
 import freemarker.template.TemplateException;
 
@@ -104,6 +105,12 @@ public class UtilLocal implements DreamUtil {
 	public Boolean sendAbsentMail(String email, String name,String reason) {
 		logger.info("Absent Mail : {}  name: {}",email,name);
 		return true;
+	}
+
+	@Override
+	public boolean sendFeesNotificationToEmail(List<Team> teamList, List<FeesDto> notificationStatus) {
+		// TODO Auto-generated method stub
+		return false;
 	}
 
 }

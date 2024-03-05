@@ -233,8 +233,8 @@ public class CacheServiceImpl implements CacheService {
 
 			ValueWrapper valueWrapper = cache.get(spreadSheetId);
 			if (valueWrapper != null && valueWrapper.get() instanceof List) {
-				List<Object> contactNumbers = new ArrayList<Object>(Arrays.asList(email));
-				((List<List<Object>>) valueWrapper.get()).add(contactNumbers);
+				List<Object> EmailList = new ArrayList<Object>(Arrays.asList(email));
+				((List<List<Object>>) valueWrapper.get()).add(EmailList);
 			}
 		}
 

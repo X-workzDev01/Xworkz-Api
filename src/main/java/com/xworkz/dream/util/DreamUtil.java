@@ -8,6 +8,7 @@ import javax.mail.MessagingException;
 import com.xworkz.dream.dto.FollowUpDto;
 import com.xworkz.dream.dto.TraineeDto;
 import com.xworkz.dream.dto.utils.Team;
+import com.xworkz.dream.feesDtos.FeesDto;
 
 import freemarker.template.TemplateException;
 
@@ -16,6 +17,8 @@ public interface DreamUtil {
 	public boolean sendOtptoEmail(String email, int otp);
 
 	public boolean sendNotificationToEmail(List<Team> teamList, List<FollowUpDto> notificationStatus);
+
+	public boolean sendFeesNotificationToEmail(List<Team> teamList, List<FeesDto> notificationStatus);
 
 	public int generateOTP();
 

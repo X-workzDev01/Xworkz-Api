@@ -34,6 +34,7 @@ import org.thymeleaf.context.Context;
 import com.xworkz.dream.dto.FollowUpDto;
 import com.xworkz.dream.dto.TraineeDto;
 import com.xworkz.dream.dto.utils.Team;
+import com.xworkz.dream.feesDtos.FeesDto;
 import com.xworkz.dream.service.ChimpMailService;
 import com.xworkz.dream.smsservice.CSRSMSService;
 import com.xworkz.dream.smsservice.CsrMailService;
@@ -123,6 +124,12 @@ public class UtilProd implements DreamUtil {
 		sendBulkMailToNotification(recipients, subject, notificationStatus);
 
 		return true;
+	}
+	
+	@Override
+	public boolean sendFeesNotificationToEmail(List<Team> teamList, List<FeesDto> notificationStatus) {
+		// TODO Auto-generated method stub
+		return false;
 	}
 
 	public boolean sendEmail(String email, String subject, String body) {
@@ -234,7 +241,7 @@ public class UtilProd implements DreamUtil {
 
 			MimeMessageHelper messageHelper = new MimeMessageHelper(mimeMessage);
 			messageHelper.setFrom(helper.decrypt(chimpUserName));
-			messageHelper.addTo(recipients.get(1));
+			messageHelper.addTo(recipients.get(0));
 			for (String recepent : recipients) {
 				messageHelper.addCc(new InternetAddress(recepent));
 			}
@@ -405,5 +412,7 @@ public class UtilProd implements DreamUtil {
 		csrSmsService.csrSMSSent(name, contactNo);
 		return false;
 	}
+
+
 
 }

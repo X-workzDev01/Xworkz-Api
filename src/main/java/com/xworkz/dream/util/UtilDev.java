@@ -33,6 +33,7 @@ import org.thymeleaf.context.Context;
 import com.xworkz.dream.dto.FollowUpDto;
 import com.xworkz.dream.dto.TraineeDto;
 import com.xworkz.dream.dto.utils.Team;
+import com.xworkz.dream.feesDtos.FeesDto;
 import com.xworkz.dream.service.ChimpMailService;
 import com.xworkz.dream.smsservice.CSRSMSService;
 import com.xworkz.dream.smsservice.CsrMailService;
@@ -95,7 +96,7 @@ public class UtilDev implements DreamUtil {
 		List<String> body = new ArrayList<String>();
 		for (int i = 0; i < notificationStatus.size(); i++) {
 			body.add(" Candidate name  :" + notificationStatus.get(i).getBasicInfo().getTraineeName() + "\tEmail :"
-					+ notificationStatus.get(i).getBasicInfo().getEmail() + "Contactt No :"
+					+ notificationStatus.get(i).getBasicInfo().getEmail() + "Contact No :"
 					+ notificationStatus.get(i).getBasicInfo().getContactNumber() + "\n");
 		}
 		String subject = "Follow Up Candidate Details";
@@ -103,6 +104,26 @@ public class UtilDev implements DreamUtil {
 		List<String> recipients = new ArrayList<String>();
 		teamList.stream().filter(Objects::nonNull).forEach(e -> recipients.add(e.getEmail()));
 		sendBulkMailToNotification(recipients, subject, notificationStatus);
+
+		return true;
+	}
+	@Override
+	public boolean sendFeesNotificationToEmail(List<Team> teamList, List<FeesDto> notificationStatus){
+		if (teamList == null || notificationStatus == null) {
+			logger.warn("teamList or notificationStatus is null");
+			return false;
+		}
+
+		List<String> body = new ArrayList<String>();
+		for (int i = 0; i < notificationStatus.size(); i++) {
+			body.add(" Candidate name  :" + notificationStatus.get(i).getName() + "\tEmail :"
+					+ notificationStatus.get(i).getFeesHistoryDto().getEmail() + "\n");
+		}
+		String subject = "Fees Follow Up Candidate Details";
+		logger.debug("Sending email to {}: Subject: {},", teamList, subject);
+		List<String> recipients = new ArrayList<String>();
+		teamList.stream().filter(Objects::nonNull).forEach(e -> recipients.add(e.getEmail()));
+		sendBulkMailToFeesNotification(recipients, subject, notificationStatus);
 
 		return true;
 	}
@@ -202,6 +223,27 @@ public class UtilDev implements DreamUtil {
 
 		context.setVariable("listDto", body);
 		String content = templateEngine.process("FollowCandidateFollowupTemplete", context);
+
+		MimeMessagePreparator messagePreparator = mimeMessage -> {
+
+			MimeMessageHelper messageHelper = new MimeMessageHelper(mimeMessage);
+			messageHelper.setFrom("hareeshahr.xworkz@gmail.com");
+			messageHelper.addTo(recipients.get(0));
+			for (String recepent : recipients) {
+				messageHelper.addCc(new InternetAddress(recepent));
+			}
+			messageHelper.setSubject(subject);
+			messageHelper.setText(content, true);
+		};
+
+		return chimpMailService.validateAndSendMailByMailIdDev(messagePreparator);
+	}
+	
+	private boolean sendBulkMailToFeesNotification(List<String> recipients, String subject, List<FeesDto> body) {
+		Context context = new Context();
+
+		context.setVariable("listDto", body);
+		String content = templateEngine.process("FeesFollowupTemplete", context);
 
 		MimeMessagePreparator messagePreparator = mimeMessage -> {
 
