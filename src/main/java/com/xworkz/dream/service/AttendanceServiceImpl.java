@@ -450,7 +450,7 @@ public class AttendanceServiceImpl implements AttendanceService {
 		List<List<Object>> traineeDetails = filterTraineeDetails(courseName);
 		List<AttendanceViewDto> viewDtos = new ArrayList<AttendanceViewDto>();
 		List<List<Object>> attendanceData = attendanceRepository.getAttendanceData(sheetId, attendanceInfoIDRange);
-    
+
 		List<AttendanceDto> attendance = attendanceData.stream().map(wrapper::attendanceListToDto)
 				.collect(Collectors.toList());
 		List<TraineeDto> filterTraineDetails = filterTraineDetails(courseName, traineeDetails);
@@ -531,28 +531,32 @@ public class AttendanceServiceImpl implements AttendanceService {
 	}
 
 	@Override
-	public ResponseEntity<List<AttendanceDto>> getSearchSuggestion(String value, String courseName) {
-		List<AttendanceDto> suggestion = new ArrayList<>();
-		if (value != null) {
-			List<List<Object>> dataList = attendanceRepository.getNamesAndCourseName(sheetId,
-					attandenceNameAndCourseRange, value);
-			if (dataList != null && !dataList.toString().contains("#NUM!")) {
-				List<AttendanceDto> attedaceData = dataList.stream().map(wrapper::attendanceListToDto)
-						.collect(Collectors.toList());
+	public ResponseEntity<List<AttendanceViewDto>> getSearchSuggestion(String value, String courseName) {
+		List<List<Object>> traineeDetails = filterTraineeDetails(courseName);
+		List<AttendanceViewDto> viewDtos = new ArrayList<AttendanceViewDto>();
+		List<List<Object>> attendanceData = attendanceRepository.getAttendanceData(sheetId, attendanceInfoIDRange);
+		List<AttendanceDto> attendance = attendanceData.stream().map(wrapper::attendanceListToDto)
+				.collect(Collectors.toList());
+		List<TraineeDto> filterTraineDetails = filterTraineDetails(courseName, traineeDetails);
+		if (value != null && !value.isEmpty()) {
+			filterTraineDetails.stream().forEach(traineDtos -> {
+				attendance.stream().filter(dtos -> dtos.getId().equals(traineDtos.getId())).forEach(items -> {
+					AttendanceViewDto viewDto = new AttendanceViewDto();
+					viewDto.setId(traineDtos.getId());
+					viewDto.setName(traineDtos.getBasicInfo().getTraineeName());
+					viewDto.setEmail(traineDtos.getBasicInfo().getEmail());
+					viewDto.setCourseName(traineDtos.getCourseInfo().getCourse());
+					viewDto.setTotalAbsent(items.getTotalAbsent());
+					viewDtos.add(viewDto);
+				});
+			});
 
-				if (!courseName.equalsIgnoreCase(ServiceConstant.NULL.toString())) {
-					suggestion = attedaceData.stream().filter(dto -> dto.getCourse().equalsIgnoreCase(courseName))
-							.filter(dto -> dto.getTraineeName().toLowerCase().startsWith(value.toLowerCase()))
-							.collect(Collectors.toList());
-					return ResponseEntity.ok(suggestion);
-				} else {
-					suggestion = attedaceData.stream()
-							.filter(dto -> dto.getTraineeName().toLowerCase().startsWith(value.toLowerCase()))
-							.collect(Collectors.toList());
-					return ResponseEntity.ok(suggestion);
-				}
-			} else {
-				return ResponseEntity.ok(suggestion);
+			if (!courseName.equalsIgnoreCase(ServiceConstant.NULL.toString())) {
+				List<AttendanceViewDto> viewDto = viewDtos.stream().filter(dto -> dto.getCourseName().equalsIgnoreCase(courseName))
+						.filter(dto -> dto.getName().toLowerCase().startsWith(value.toLowerCase()))
+						.collect(Collectors.toList());
+				return ResponseEntity.ok(viewDto);
+
 			}
 
 		}

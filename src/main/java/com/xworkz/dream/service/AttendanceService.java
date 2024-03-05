@@ -35,6 +35,6 @@ public interface AttendanceService {
 
 	List<AttendanceViewDto> filterData(String searchValue, String courseName);
 
-	ResponseEntity<List<AttendanceDto>> getSearchSuggestion(String value, String courseName);
+	ResponseEntity<List<AttendanceViewDto>> getSearchSuggestion(String value, String courseName);
 	
 }
