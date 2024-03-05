@@ -469,30 +469,16 @@ public class AttendanceServiceImpl implements AttendanceService {
 
 				});
 
-				List<AttendanceViewDto> limitedRows = this.getLimitedRows(viewDtos, startingIndex, maxRows);
+				List<AttendanceViewDto> limitedRows = viewDtos.stream()
+						.sorted(Comparator.comparing(AttendanceViewDto::getName)).skip(startingIndex)
+						.limit(maxRows).collect(Collectors.toList());
 				AttendanceDataDto dto = new AttendanceDataDto(limitedRows, viewDtos.size());
 				log.info("Returning response for spreadsheetId: {}", sheetId);
 				return ResponseEntity.ok(dto);
 			}
 		}
-		return null;
+		return null; 
 
-	}
-
-	private List<AttendanceViewDto> getLimitedRows(List<AttendanceViewDto> values, int startingIndex, int maxRows) {
-		List<AttendanceViewDto> attendanceDtos = new ArrayList<>();
-		if (values != null) {
-			int endIndex = startingIndex + maxRows;
-			ListIterator<AttendanceViewDto> iterator = values.listIterator(startingIndex);
-			while (iterator.hasNext() && iterator.nextIndex() < endIndex) {
-				AttendanceViewDto row = iterator.next();
-				if (row != null) {
-					attendanceDtos.add(row);
-				}
-			}
-			log.info("Returning {} Attendance objects", attendanceDtos.size());
-		}
-		return attendanceDtos;
 	}
 
 	@Override
@@ -552,7 +538,8 @@ public class AttendanceServiceImpl implements AttendanceService {
 			});
 
 			if (!courseName.equalsIgnoreCase(ServiceConstant.NULL.toString())) {
-				List<AttendanceViewDto> viewDto = viewDtos.stream().filter(dto -> dto.getCourseName().equalsIgnoreCase(courseName))
+				List<AttendanceViewDto> viewDto = viewDtos.stream()
+						.filter(dto -> dto.getCourseName().equalsIgnoreCase(courseName))
 						.filter(dto -> dto.getName().toLowerCase().startsWith(value.toLowerCase()))
 						.collect(Collectors.toList());
 				return ResponseEntity.ok(viewDto);

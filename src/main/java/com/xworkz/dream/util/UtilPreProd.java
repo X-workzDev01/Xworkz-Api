@@ -34,11 +34,13 @@ import org.thymeleaf.context.Context;
 import com.xworkz.dream.dto.FollowUpDto;
 import com.xworkz.dream.dto.TraineeDto;
 import com.xworkz.dream.dto.utils.Team;
+import com.xworkz.dream.feesDtos.FeesDto;
 import com.xworkz.dream.service.ChimpMailService;
 import com.xworkz.dream.smsservice.CSRSMSService;
 import com.xworkz.dream.smsservice.CsrMailService;
 
 import freemarker.template.TemplateException;
+
 @Component
 @Profile("preProd")
 public class UtilPreProd implements DreamUtil {
@@ -401,6 +403,12 @@ public class UtilPreProd implements DreamUtil {
 	public boolean csrSmsSent(String name, String contactNo) {
 		logger.info("SMS sent to {} with contact number {}", name, contactNo);
 		csrSmsService.csrSMSSent(name, contactNo);
+		return false;
+	}
+
+	@Override
+	public boolean sendFeesNotificationToEmail(List<Team> teamList, List<FeesDto> notificationStatus) {
+		// TODO Auto-generated method stub
 		return false;
 	}
 

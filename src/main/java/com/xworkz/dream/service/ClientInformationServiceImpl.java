@@ -55,21 +55,16 @@ public class ClientInformationServiceImpl implements ClientInformationService {
 			clientInformationUtil.setValuesToClientDto(dto);
 			List<Object> list = dreamWrapper.extractDtoDetails(dto);
 
-
-				log.info("in client service, Extracted values: {}", list);
-				if (clientRepository.writeClientInformation(list)) {
-					log.debug("adding newly added data to the cache, clientInformation :{}", list);
-					clientCacheService.addNewDtoToCache("clientInformation", "listOfClientDto", list);
-					clientCacheService.addToCache("getClientEmail", "listOfClientEmail", dto.getCompanyEmail());
-					clientCacheService.addToCache("getClientContactNumbers", "listOfClientContactNumber",
-							dto.getCompanyLandLineNumber().toString());
-					clientCacheService.addToCache("getClientWebsite", "listOfClientWebsite", dto.getCompanyWebsite());
-					clientCacheService.addToCache("getClientName", "listOfClientName", dto.getCompanyName());
-					return "Client Information saved successfully";
-				}
-			} catch (IllegalAccessException e) {
-				log.error("Exception in writeClient,{}", e.getMessage());
-				return "Client Information not saved successfully";
+			log.info("in client service, Extracted values: {}", list);
+			if (clientRepository.writeClientInformation(list)) {
+				log.debug("adding newly added data to the cache, clientInformation :{}", list);
+				clientCacheService.addNewDtoToCache("clientInformation", "listOfClientDto", list);
+				clientCacheService.addToCache("getClientEmail", "listOfClientEmail", dto.getCompanyEmail());
+				clientCacheService.addToCache("getClientContactNumbers", "listOfClientContactNumber",
+						dto.getCompanyLandLineNumber().toString());
+				clientCacheService.addToCache("getClientWebsite", "listOfClientWebsite", dto.getCompanyWebsite());
+				clientCacheService.addToCache("getClientName", "listOfClientName", dto.getCompanyName());
+				return "Client Information saved successfully";
 			}
 
 		}
@@ -347,13 +342,12 @@ public class ClientInformationServiceImpl implements ClientInformationService {
 
 			}
 			if (!dto.getCompanyWebsite().equalsIgnoreCase(clientDto.getCompanyWebsite())) {
-				clientCacheService.updateCache("getClientWebsite", "listOfClientWebsite",
-						dto.getCompanyWebsite(), clientDto.getCompanyWebsite());
+				clientCacheService.updateCache("getClientWebsite", "listOfClientWebsite", dto.getCompanyWebsite(),
+						clientDto.getCompanyWebsite());
 			}
 			if (!dto.getCompanyLandLineNumber().equals(clientDto.getCompanyLandLineNumber())) {
 				clientCacheService.updateCache("getClientContactNumbers", "listOfClientContactNumber",
-						dto.getCompanyLandLineNumber().toString(),
-						clientDto.getCompanyLandLineNumber().toString());
+						dto.getCompanyLandLineNumber().toString(), clientDto.getCompanyLandLineNumber().toString());
 			}
 		}
 	}
