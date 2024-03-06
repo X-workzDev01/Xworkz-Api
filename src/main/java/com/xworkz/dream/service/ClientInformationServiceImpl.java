@@ -314,7 +314,7 @@ public class ClientInformationServiceImpl implements ClientInformationService {
 				UpdateValuesResponse updated = clientRepository.updateclientInfo(range, valueRange);
 				log.info("update response is :{}", updated);
 				if (updated != null) {
-					List<List<Object>> listOfItems = Arrays.asList(dreamWrapper.extractDtoDetails(clientDto));
+					List<Object> listOfItems = dreamWrapper.extractDtoDetails(clientDto);
 					clientCacheService.updateClientDetailsInCache("clientInformation", "listOfClientDto", listOfItems);
 					updateDataInCache(clientDto, dto);
 					return "updated Successfully";

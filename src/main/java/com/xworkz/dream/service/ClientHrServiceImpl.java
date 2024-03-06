@@ -47,9 +47,7 @@ public class ClientHrServiceImpl implements ClientHrService {
 		if (clientHrDto != null) {
 			clientInformationUtil.setValuesToClientHrDto(clientHrDto);
 			log.debug("Received ClientHrDto: {}", clientHrDto);
-			List<Object> listItem = new ArrayList<>();
-			listItem = dreamWrapper.extractDtoDetails(clientHrDto);
-
+			List<Object> listItem = listItem = dreamWrapper.extractDtoDetails(clientHrDto);
 			if (clientHrRepository.saveClientHrInformation(listItem)) {
 				clientCacheService.addHRDetailsToCache("hrDetails", "listofHRDetails", listItem);
 				clientCacheService.addToCache("getListOfHrEmail", "listOfHrEmail", clientHrDto.getHrEmail());
@@ -147,7 +145,6 @@ public class ClientHrServiceImpl implements ClientHrService {
 	}
 	@Override
 	public String updateHrDetails(int hrId, ClientHrDto clientHrDto) {
-
 	    int rowNumber = hrId + 1;
 	    String range = propertiesDto.getHrSheetName() + propertiesDto.getHrStartRow() + rowNumber + ":"
 	            + propertiesDto.getHrEndRow() + rowNumber;
@@ -156,7 +153,6 @@ public class ClientHrServiceImpl implements ClientHrService {
 	        AuditDto auditDto = new AuditDto();
 	        auditDto.setUpdatedOn(LocalDateTime.now().toString());
 	        clientHrDto.getAdminDto().setUpdatedOn(LocalDateTime.now().toString());
-	        try {
 	            List<List<Object>> values = Arrays.asList(dreamWrapper.extractDtoDetails(clientHrDto));
 	            if (!values.isEmpty()) {
 	                List<Object> modifiedValues = new ArrayList<>(values.get(0).subList(1, values.get(0).size()));
@@ -168,25 +164,16 @@ public class ClientHrServiceImpl implements ClientHrService {
 	            UpdateValuesResponse updated = clientHrRepository.updateHrDetails(range, valueRange);
 	            log.info("update response is :{}", updated);
 	            if (updated != null) {
-	                List<List<Object>> listOfItems = null;
-	                try {
-	                    listOfItems = Arrays.asList(dreamWrapper.extractDtoDetails(clientHrDto));
+					List<Object> listOfItems =dreamWrapper.extractDtoDetails(clientHrDto);
 	                    log.info("{}", listOfItems);
 	                    clientCacheService.updateHrDetailsInCache("hrDetails", "listofHRDetails", listOfItems);
 	                    updateDataToCache(clientHrDto, hrDto);
-	                } catch (IllegalAccessException e) {
-	                    log.error("Exception update HR,{}", e.getMessage());
-	                }
 	                return "updated Successfully";
 	            } else {
 	                return "not updated successfully";
 	            }
-	        } catch (Exception e) {
-	            log.error("Exception update HR,{}", e.getMessage());
-	            return "not updated successfully";
-	        }
 	    }
-	    return null;
+	    return "not updated successfully";
 	}
 
 	private void updateDataToCache(ClientHrDto clientHrDto, ClientHrDto hrDto) {
