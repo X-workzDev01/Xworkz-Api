@@ -332,6 +332,7 @@ public class RegistrationServiceImpl implements RegistrationService {
 			dto.getBasicInfo().setEmail(dto.getBasicInfo().getEmail());
 		}
 		wrapper.setFieldValueAsNa(dto);
+		registrationUtil.cgpaToPercentage(dto);
 		try {
 			int rowIndex = findRowIndexByEmail(spreadsheetId, email);
 			if (rowIndex != -1) {
