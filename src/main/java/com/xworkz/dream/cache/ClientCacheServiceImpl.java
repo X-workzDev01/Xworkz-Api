@@ -89,7 +89,6 @@ public class ClientCacheServiceImpl implements ClientCacheService {
 					}
 				}
 				if (matchingIndex != -1) {
-					System.out.println("matching index:"+matchingIndex);
 					cacheItem.set(matchingIndex, list);
 					cache.put(key, cacheItem);
 				}
