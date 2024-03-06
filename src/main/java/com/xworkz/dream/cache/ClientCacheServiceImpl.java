@@ -132,7 +132,7 @@ public class ClientCacheServiceImpl implements ClientCacheService {
 	@SuppressWarnings("unchecked")
 	@Override
 	public void addHrFollowUpToCache(String cacheName, String key, List<Object> data) {
-		System.err.println(data);
+		
 		Cache cache = cacheManager.getCache(cacheName);
 		log.info("cache name: {}, cache key: {}", cacheName, key);
 		if (cache != null) {

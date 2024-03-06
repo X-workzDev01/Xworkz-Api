@@ -295,7 +295,7 @@ public class ClientInformationServiceImpl implements ClientInformationService {
 		log.info("updating client dto {}, Id {}", clientDto, companyId);
 		String range = propertiesDto.getClientSheetName() + propertiesDto.getClientStartRow() + (companyId + 1) + ":"
 				+ propertiesDto.getClientEndRow() + (companyId + 1);
-		System.out.println(range);
+		
 		if (companyId != 0 && clientDto != null) {
 			ClientDto dto = getClientDtoById(companyId);
 			AuditDto auditDto = new AuditDto();
