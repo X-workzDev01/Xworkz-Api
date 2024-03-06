@@ -61,6 +61,7 @@ public class RegistrationServiceImpl implements RegistrationService {
 		try {
 			log.info("Writing data for TraineeDto: {}", dto);
 			assignCsrDto(dto);
+			registrationUtil.cgpaToPercentage(dto);
 			wrapper.setValuesForTraineeDto(dto);
 			List<Object> list = wrapper.extractDtoDetails(dto);
 			repo.writeData(spreadsheetId, list);

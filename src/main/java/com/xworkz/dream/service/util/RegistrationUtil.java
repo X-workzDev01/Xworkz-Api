@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.xworkz.dream.constants.ServiceConstant;
+import com.xworkz.dream.dto.PercentageDto;
 import com.xworkz.dream.dto.TraineeDto;
 import com.xworkz.dream.wrapper.DreamWrapper;
 
@@ -19,7 +20,7 @@ public class RegistrationUtil {
 	private DreamWrapper wrapper;
 
 	private static final Logger log = LoggerFactory.getLogger(RegistrationUtil.class);
-	
+
 	public List<TraineeDto> readOnlyActiveData(List<List<Object>> listOfData) {
 		List<TraineeDto> traineeDtos = listOfData.stream().map(wrapper::listToDto)
 				.filter(traineeDto -> traineeDto != null && traineeDto.getCsrDto().getActiveFlag() != null
@@ -33,6 +34,35 @@ public class RegistrationUtil {
 		List<TraineeDto> traineeDtos = dataList.stream().map(wrapper::listToDto).collect(Collectors.toList());
 		log.info("filtering the active records size is:{}", traineeDtos.size());
 		return traineeDtos;
+	}
+
+	public TraineeDto cgpaToPercentage(TraineeDto dto) {
+		PercentageDto percentageDto = dto.getPercentageDto();
+		Double sslc = dto.getPercentageDto().getSslcPercentage();
+		Double puc = dto.getPercentageDto().getPucPercentage();
+		Double degree = dto.getPercentageDto().getDegreePercentage();
+
+		if (percentageDto != null) {
+			if (sslc != null) {
+				if (sslc <=9.99) {
+					percentageDto.setSslcPercentage((sslc - 0.7) * 10);
+				}
+			}
+			if (puc != null) {
+				if (puc <=9.99) {
+					percentageDto.setPucPercentage((puc - 0.7) * 10);
+				}
+			}
+			if (degree != null) {
+				if (degree <=9.99) {
+					percentageDto.setDegreePercentage((degree - 0.7) * 10);
+				}
+			}
+
+			dto.setPercentageDto(percentageDto);
+		}
+
+		return dto;
 	}
 
 }
