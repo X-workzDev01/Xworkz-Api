@@ -34,5 +34,6 @@ public class RegistrationUtil {
 		log.info("filtering the active records size is:{}", traineeDtos.size());
 		return traineeDtos;
 	}
+	
 
 }
