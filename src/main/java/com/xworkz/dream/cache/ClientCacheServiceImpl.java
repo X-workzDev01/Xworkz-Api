@@ -23,19 +23,46 @@ public class ClientCacheServiceImpl implements ClientCacheService {
 	@SuppressWarnings("unchecked")
 	@Override
 	public void addNewDtoToCache(String cacheName, String key, List<Object> data) {
-		data.remove(0);
 		Cache cache = cacheManager.getCache(cacheName);
-		log.info("cache name: {}, cache key: {},", cacheName, key);
+		log.info("cache name: {}, cache key: {}", cacheName, key);
 		if (cache != null) {
 			ValueWrapper valueWrapper = cache.get(key);
 			if (valueWrapper != null && valueWrapper.get() instanceof List) {
 				List<List<Object>> cacheData = ((List<List<Object>>) valueWrapper.get());
-				log.info("adding list to the cache {}:", data);
 				int size = (((List<List<Object>>) valueWrapper.get()).size());
-				data.set(0, size + 1);
-				((List<List<Object>>) valueWrapper.get()).add(data);
-				if (cacheData.get(0).size() < 1) {
-					cacheData.remove(0);
+				if (cacheData.get(0).contains("#NUM!")) {
+					log.info("adding into Cache:{}"+data);
+					data.set(0, size);
+					((List<List<Object>>) valueWrapper.get()).add(data);
+				} else {
+					log.info("adding into Cache:{}"+data);
+					data.set(0, size + 1);
+					((List<List<Object>>) valueWrapper.get()).add(data);
+				}
+
+			}
+		}
+
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public void addHRDetailsToCache(String cacheName, String key, List<Object> data) {
+		Cache cache = cacheManager.getCache(cacheName);
+		log.info("cache name: {}, cache key: {}", cacheName, key);
+		if (cache != null) {
+			ValueWrapper valueWrapper = cache.get(key);
+			if (valueWrapper != null && valueWrapper.get() instanceof List) {
+				List<List<Object>> cacheData = ((List<List<Object>>) valueWrapper.get());
+				int size = (((List<List<Object>>) valueWrapper.get()).size());
+				if (cacheData.get(0).contains("#NUM!")) {
+					data.set(0, size);
+					((List<List<Object>>) valueWrapper.get()).add(data);
+					log.info("adding into Cache:{}"+data);
+				} else {
+					data.set(0, size + 1);
+					((List<List<Object>>) valueWrapper.get()).add(data);
+					log.info("adding into Cache:{}"+data);
 				}
 			}
 		}
@@ -43,24 +70,7 @@ public class ClientCacheServiceImpl implements ClientCacheService {
 
 	@SuppressWarnings("unchecked")
 	@Override
-	public void addHRDetailsToCache(String cacheName, String key, List<Object> data) {
-		Cache cache = cacheManager.getCache(cacheName);
-		log.info("cache name: {}, cache key: {},", cacheName, key);
-		if (cache != null) {
-			ValueWrapper valueWrapper = cache.get(key);
-			if (valueWrapper != null && valueWrapper.get() instanceof List) {
-				log.info("adding list to the cache {}:", data);
-				int size = (((List<List<Object>>) valueWrapper.get()).size());
-				data.set(0, size + 1);
-				((List<List<Object>>) valueWrapper.get()).add(data);
-			}
-		}
-	}
-
-	@SuppressWarnings("unchecked")
-	@Override
-	public void updateClientDetailsInCache(String cacheName, String key, List<List<Object>> list)
-			throws IllegalAccessException {
+	public void updateClientDetailsInCache(String cacheName, String key, List<List<Object>> list) {
 		Cache cache = cacheManager.getCache(cacheName);
 		log.info("cache name: {}, cache key: {}", cacheName, key);
 
@@ -70,7 +80,6 @@ public class ClientCacheServiceImpl implements ClientCacheService {
 				List<List<Object>> cacheItem = ((List<List<Object>>) valueWrapper.get());
 				log.info("List data to be added {}", list);
 				List<Object> item = list.get(0);
-				item.remove(0);
 				log.info("{}", item);
 				int matchingIndex = -1;
 				for (int i = 0; i < cacheItem.size(); i++) {
@@ -122,19 +131,27 @@ public class ClientCacheServiceImpl implements ClientCacheService {
 
 	@SuppressWarnings("unchecked")
 	@Override
-	public void addHrFollowUpToCache(String cacheName, String key, List<Object> list) {
+	public void addHrFollowUpToCache(String cacheName, String key, List<Object> data) {
+		
 		Cache cache = cacheManager.getCache(cacheName);
-		log.info("cache name: {}, cache key: {},", cacheName, key);
+		log.info("cache name: {}, cache key: {}", cacheName, key);
 		if (cache != null) {
 			ValueWrapper valueWrapper = cache.get(key);
 			if (valueWrapper != null && valueWrapper.get() instanceof List) {
-				log.info("adding list to the cache {}:", list);
+				List<List<Object>> cacheData = ((List<List<Object>>) valueWrapper.get());
 				int size = (((List<List<Object>>) valueWrapper.get()).size());
-				list.set(0, size + 1);
-				((List<List<Object>>) valueWrapper.get()).add(list);
+				if (cacheData.get(0).contains("#NUM!")) {
+					cacheData.remove(0);
+					data.set(0, size);
+					((List<List<Object>>) valueWrapper.get()).add(data);
+					log.info("adding into Cache:{}"+data);
+				} else {
+					data.set(0, size + 1);
+					((List<List<Object>>) valueWrapper.get()).add(data);
+					log.info("adding into Cache:{}"+data);
+				}
 			}
 		}
-
 	}
 
 	@SuppressWarnings("unchecked")

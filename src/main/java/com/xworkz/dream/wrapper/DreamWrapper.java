@@ -465,6 +465,7 @@ public class DreamWrapper {
 				log.error("error converting data");
 			}
 		}
+
 		return detailsList;
 	}
 

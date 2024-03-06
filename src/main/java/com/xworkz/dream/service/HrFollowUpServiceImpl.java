@@ -39,9 +39,11 @@ public class HrFollowUpServiceImpl implements HrFollowUpService {
 
 	@Override
 	public String saveHrFollowUpDetails(HrFollowUpDto dto) {
-		log.info("saveHrFollowUpDetails hr follow Up Dto: {}", dto);
+		
 		clientInformationUtil.settingNaValues(dto);
+		log.info("saveHrFollowUpDetails hr follow Up Dto: {}", dto);
 		List<Object> list = dreamWrapper.extractDtoDetails(dto);
+		log.info("saveHrFollowUpDetails hr follow Up Dto: {}", dto);
 		if (dto != null) {
 			if (hrFollowUpRepository.saveHrFollowUpDetails(list)) {
 				clientCacheService.addHrFollowUpToCache("hrFollowUpDetails", "hrFollowUp", list);

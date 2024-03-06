@@ -143,10 +143,6 @@ public class ClientWrapperImpl implements ClientWrapper {
 		} else {
 
 			int rowSize = row.size();
-//		// Set clientDto properties based on the elements in the input list
-//		if (rowSize > 0 && row.get(0) != null && !row.get(0).toString().isEmpty()) {
-//			dto.setId(Integer.valueOf(row.get(0).toString()));
-//		}
 			if (rowSize > 0 && row.get(0) != null && !row.get(0).toString().isEmpty()) {
 				try {
 					dto.setId(Integer.valueOf(row.get(0).toString()));

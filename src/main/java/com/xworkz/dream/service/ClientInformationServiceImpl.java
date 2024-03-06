@@ -54,7 +54,6 @@ public class ClientInformationServiceImpl implements ClientInformationService {
 		if (dto != null) {
 			clientInformationUtil.setValuesToClientDto(dto);
 			List<Object> list = dreamWrapper.extractDtoDetails(dto);
-
 			log.info("in client service, Extracted values: {}", list);
 			if (clientRepository.writeClientInformation(list)) {
 				log.debug("adding newly added data to the cache, clientInformation :{}", list);
@@ -296,6 +295,7 @@ public class ClientInformationServiceImpl implements ClientInformationService {
 		log.info("updating client dto {}, Id {}", clientDto, companyId);
 		String range = propertiesDto.getClientSheetName() + propertiesDto.getClientStartRow() + (companyId + 1) + ":"
 				+ propertiesDto.getClientEndRow() + (companyId + 1);
+		
 		if (companyId != 0 && clientDto != null) {
 			ClientDto dto = getClientDtoById(companyId);
 			AuditDto auditDto = new AuditDto();
@@ -303,12 +303,11 @@ public class ClientInformationServiceImpl implements ClientInformationService {
 			clientDto.getAdminDto().setUpdatedOn(auditDto.getUpdatedOn());
 			try {
 				List<List<Object>> values = Arrays.asList(dreamWrapper.extractDtoDetails(clientDto));
-
+				log.info("values for updating:{}",values);
 				if (!values.isEmpty()) {
 					List<Object> modifiedValues = new ArrayList<>(values.get(0).subList(1, values.get(0).size()));
-					modifiedValues.remove(0);
 					values.set(0, modifiedValues);
-					log.debug("values {}", values);
+					log.info("modified Values for updating:{}",modifiedValues);
 				}
 				ValueRange valueRange = new ValueRange();
 				valueRange.setValues(values);

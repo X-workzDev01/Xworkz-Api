@@ -3,6 +3,7 @@ package com.xworkz.dream.service.util;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
@@ -35,6 +36,7 @@ public class ClientUtil {
 
 	public List<ClientDto> getActiveClientRecords() {
 		List<List<Object>> listOfData = clientRepository.readData();
+		System.out.println("client data:"+listOfData);
 		if (listOfData != null) {
 			return listOfData.stream().map(clientWrapper::listToClientDto)
 					.filter(clientDto -> clientDto != null&&clientDto.getId()!=null
@@ -58,6 +60,7 @@ public class ClientUtil {
 			return Collections.emptyList();
 		}
 	}
+
 	
 	public List<HrFollowUpDto> readClientFollowUp(){
 		List<List<Object>> listOfFollowUp=hrFollowUpRepository.readFollowUpDetailsById();

@@ -1,7 +1,5 @@
 package com.xworkz.dream.dto;
 
-import java.io.Serializable;
-
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import lombok.AllArgsConstructor;
@@ -15,9 +13,7 @@ import lombok.Setter;
 @Getter
 @AllArgsConstructor
 @Data
-public class ClientDto implements Serializable {
-
-	private static final long serialVersionUID = 1L;
+public class ClientDto{
 
 	private Integer id;
 	@JsonProperty("companyName")
