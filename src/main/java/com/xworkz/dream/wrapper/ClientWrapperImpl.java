@@ -29,7 +29,6 @@ public class ClientWrapperImpl implements ClientWrapper {
 					log.error("Exception while converting:{}", e.getMessage());
 				}
 			}
-
 			if (rowSize > 1 && row.get(1) != null && !row.get(1).toString().isEmpty()) {
 				clientDto.setCompanyName((String) row.get(1));
 			}

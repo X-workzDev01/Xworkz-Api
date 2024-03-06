@@ -23,17 +23,20 @@ public class ClientCacheServiceImpl implements ClientCacheService {
 	@SuppressWarnings("unchecked")
 	@Override
 	public void addNewDtoToCache(String cacheName, String key, List<Object> data) {
-
+		data.remove(0);
 		Cache cache = cacheManager.getCache(cacheName);
 		log.info("cache name: {}, cache key: {},", cacheName, key);
 		if (cache != null) {
 			ValueWrapper valueWrapper = cache.get(key);
 			if (valueWrapper != null && valueWrapper.get() instanceof List) {
+				List<List<Object>> cacheData = ((List<List<Object>>) valueWrapper.get());
 				log.info("adding list to the cache {}:", data);
 				int size = (((List<List<Object>>) valueWrapper.get()).size());
-				data.set(0, size);
-				data.remove(1);
+				data.set(0, size + 1);
 				((List<List<Object>>) valueWrapper.get()).add(data);
+				if (cacheData.get(0).size() < 1) {
+					cacheData.remove(0);
+				}
 			}
 		}
 	}
