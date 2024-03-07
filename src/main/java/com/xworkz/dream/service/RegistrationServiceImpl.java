@@ -52,7 +52,8 @@ public class RegistrationServiceImpl implements RegistrationService {
 	private CsrService csrService;
 	@Autowired
 	private RegistrationUtil registrationUtil;
-
+	@Value("${login.sheetId}")
+	private String sheetId;
 
 	private static final Logger log = LoggerFactory.getLogger(DreamServiceImpl.class);
 
@@ -359,29 +360,6 @@ public class RegistrationServiceImpl implements RegistrationService {
 					log.error("Error updating data. Email: {}", email);
 					return ResponseEntity.ok("error");
 				}
-			
-				
-				
-				
-				
-				
-				
-				
-				
-				
-				
-				
-				
-				
-				
-				
-				
-				
-				
-				
-				
-				
-				
 
 			} else {
 				log.warn("Email not found: {}", email);
@@ -395,7 +373,6 @@ public class RegistrationServiceImpl implements RegistrationService {
 
 	@Override
 	public TraineeDto getDetailsByEmail(String spreadsheetId, String email) {
-
 		List<List<Object>> data = repo.readData(spreadsheetId);
 		TraineeDto trainee = data.stream().filter(list -> list.get(2).toString().contentEquals(email)).findFirst()
 				.map(wrapper::listToDto).orElse(null);
@@ -449,6 +426,25 @@ public class RegistrationServiceImpl implements RegistrationService {
 		}
 		log.warn("Null value provided for search suggestion");
 		return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ArrayList<>());
+	}
+
+	@Override
+	public String checkworkzEmail(String email) {
+		log.debug("checkworkzEmail:{}", email);
+		List<List<Object>> listOfTraineeData = repo.readData(sheetId);
+		if (listOfTraineeData != null && email != null) {
+			TraineeDto dto = listOfTraineeData.stream().map(wrapper::listToDto)
+					.filter(traineeDto -> traineeDto != null && traineeDto.getOthersDto() != null
+							&& traineeDto.getOthersDto().getXworkzEmail() != null
+							&& traineeDto.getOthersDto().getXworkzEmail().equalsIgnoreCase(email))
+					.findFirst().orElse(null);
+			if (dto != null) {
+				return "Email Exist";
+			} else {
+				return "Email Not Exist";
+			}
+		}
+		return null;
 	}
 
 }
