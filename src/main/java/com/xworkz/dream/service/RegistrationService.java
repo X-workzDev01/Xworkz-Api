@@ -29,4 +29,6 @@ public interface RegistrationService {
 	ResponseEntity<List<TraineeDto>> getSearchSuggestion(String spreadsheetId, String value, String courseName,
 			String collegeName);
 
+     String checkworkzEmail(String email);
+
 }
