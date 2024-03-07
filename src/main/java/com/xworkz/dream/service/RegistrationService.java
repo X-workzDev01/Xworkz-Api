@@ -16,17 +16,18 @@ public interface RegistrationService {
 	ResponseEntity<String> contactNumberCheck(String spreadsheetId, Long contactNumber);
 
 	ResponseEntity<SheetsDto> readData(String spreadsheetId, int startingIndex, int maxRows, String courseName,
-			String collegeName);
+			String collegeName,String followupStatus);
 
 	List<TraineeDto> getLimitedRows(List<List<Object>> values, int startingIndex, int maxRows);
 
-	List<TraineeDto> filterData(String spreadsheetId, String searchValue, String courseName, String collegeName);
+	List<TraineeDto> filterData(String spreadsheetId, String searchValue, String courseName, String collegeName,String followupStatus);
 
 	ResponseEntity<String> update(String spreadsheetId, String email, TraineeDto dto);
 
 	TraineeDto getDetailsByEmail(String spreadsheetId, String email);
 
 	ResponseEntity<List<TraineeDto>> getSearchSuggestion(String spreadsheetId, String value, String courseName,
-			String collegeName);
+			String collegeName,String followupStatus);
+	
 
 }
