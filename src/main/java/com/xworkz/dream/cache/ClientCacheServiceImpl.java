@@ -32,6 +32,7 @@ public class ClientCacheServiceImpl implements ClientCacheService {
 				int size = (((List<List<Object>>) valueWrapper.get()).size());
 				if (cacheData.get(0).contains("#NUM!")) {
 					log.info("adding into Cache:{}"+data);
+					cacheData.remove(0);
 					data.set(0, size);
 					((List<List<Object>>) valueWrapper.get()).add(data);
 				} else {
@@ -56,6 +57,7 @@ public class ClientCacheServiceImpl implements ClientCacheService {
 				List<List<Object>> cacheData = ((List<List<Object>>) valueWrapper.get());
 				int size = (((List<List<Object>>) valueWrapper.get()).size());
 				if (cacheData.get(0).contains("#NUM!")) {
+					cacheData.remove(0);
 					data.set(0, size);
 					((List<List<Object>>) valueWrapper.get()).add(data);
 					log.info("adding into Cache:{}"+data);
@@ -70,7 +72,7 @@ public class ClientCacheServiceImpl implements ClientCacheService {
 
 	@SuppressWarnings("unchecked")
 	@Override
-	public void updateClientDetailsInCache(String cacheName, String key, List<List<Object>> list) {
+	public void updateClientDetailsInCache(String cacheName, String key,List<Object> list) {
 		Cache cache = cacheManager.getCache(cacheName);
 		log.info("cache name: {}, cache key: {}", cacheName, key);
 
@@ -79,17 +81,15 @@ public class ClientCacheServiceImpl implements ClientCacheService {
 			if (valueWrapper != null && valueWrapper.get() instanceof List) {
 				List<List<Object>> cacheItem = ((List<List<Object>>) valueWrapper.get());
 				log.info("List data to be added {}", list);
-				List<Object> item = list.get(0);
-				log.info("{}", item);
 				int matchingIndex = -1;
 				for (int i = 0; i < cacheItem.size(); i++) {
 					Integer val = Integer.parseInt(cacheItem.get(i).get(0).toString());
-					if (val.equals(item.get(0))) {
+					if (val.equals(list.get(0))) {
 						matchingIndex = i;
 					}
 				}
 				if (matchingIndex != -1) {
-					cacheItem.set(matchingIndex, item);
+					cacheItem.set(matchingIndex, list);
 					cache.put(key, cacheItem);
 				}
 			}
@@ -98,8 +98,7 @@ public class ClientCacheServiceImpl implements ClientCacheService {
 	}
 
 	@Override
-	public void updateHrDetailsInCache(String cacheName, String key, List<List<Object>> list)
-			throws IllegalAccessException {
+	public void updateHrDetailsInCache(String cacheName, String key, List<Object> list) {
 		Cache cache = cacheManager.getCache(cacheName);
 		log.info("cache name: {}, cache key: {}", cacheName, key);
 
@@ -110,17 +109,16 @@ public class ClientCacheServiceImpl implements ClientCacheService {
 				log.info("checking valuewrapper");
 				@SuppressWarnings("unchecked")
 				List<List<Object>> cacheItem = ((List<List<Object>>) valueWrapper.get());
-				List<Object> item = list.get(0);
-				log.info("{}", item);
+				log.info("{}", list);
 				int matchingIndex = -1;
 				for (int i = 0; i < cacheItem.size(); i++) {
 					Integer val = Integer.parseInt(cacheItem.get(i).get(0).toString());
-					if (val.equals(item.get(0))) {
+					if (val.equals(list.get(0))) {
 						matchingIndex = i;
 					}
 				}
 				if (matchingIndex != -1) {
-					cacheItem.set(matchingIndex, item);
+					cacheItem.set(matchingIndex, list);
 					cache.put(key, cacheItem);
 				}
 			}
