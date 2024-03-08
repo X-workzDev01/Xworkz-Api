@@ -525,14 +525,51 @@ public class RegistrationServiceImpl implements RegistrationService {
 	public ResponseEntity<List<TraineeDto>> getSearchSuggestion(String spreadsheetId, String value, String courseName,
 			String collegeName, String followupStatus) {
 		List<TraineeDto> suggestion = new ArrayList<>();
-		List<List<Object>> dataList = repo.getEmailsAndNames(spreadsheetId, value);
-		if (value != null && !value.isEmpty() && dataList != null) {
-			List<TraineeDto> listOfTrainee = registrationUtil.convertToTraineeDto(dataList);
+//		List<List<Object>> dataList = repo.getEmailsAndNames(spreadsheetId, value);
+		if (value != null && !value.isEmpty()) {
+//			List<TraineeDto> listOfTrainee = registrationUtil.convertToTraineeDto(dataList);
+			List<TraineeDto> listOfTrainee = traineeData();
 			if (!courseName.equalsIgnoreCase(ServiceConstant.NULL.toString())
+					&& !collegeName.equalsIgnoreCase(ServiceConstant.NULL.toString())
+					&& !followupStatus.equalsIgnoreCase(ServiceConstant.NULL.toString())) {
+				log.info("suggestion by college:{} and course name:{} and followupStatus :{} ", collegeName, courseName,followupStatus);
+				suggestion = listOfTrainee.stream()
+						.filter(traineeDto -> traineeDto.getCourseInfo().getCourse().equalsIgnoreCase(courseName))
+						.filter(traineeDto -> traineeDto.getEducationInfo().getCollegeName()
+								.equalsIgnoreCase(collegeName))
+						.filter(traineeDto -> traineeDto.getFollowupStatus()
+								.equalsIgnoreCase(followupStatus))
+						.filter(traineeDto -> traineeDto.getBasicInfo().getTraineeName().toLowerCase()
+								.startsWith(value.toLowerCase()))
+						.collect(Collectors.toList());
+				return ResponseEntity.ok(suggestion);
+			} else if (!courseName.equalsIgnoreCase(ServiceConstant.NULL.toString())
 					&& !collegeName.equalsIgnoreCase(ServiceConstant.NULL.toString())) {
 				log.info("suggestion by college:{} and course name:{}", collegeName, courseName);
 				suggestion = listOfTrainee.stream()
 						.filter(traineeDto -> traineeDto.getCourseInfo().getCourse().equalsIgnoreCase(courseName))
+						.filter(traineeDto -> traineeDto.getEducationInfo().getCollegeName()
+								.equalsIgnoreCase(collegeName))
+						.filter(traineeDto -> traineeDto.getBasicInfo().getTraineeName().toLowerCase()
+								.startsWith(value.toLowerCase()))
+						.collect(Collectors.toList());
+				return ResponseEntity.ok(suggestion);
+			} else if (!courseName.equalsIgnoreCase(ServiceConstant.NULL.toString())
+					&& !followupStatus.equalsIgnoreCase(ServiceConstant.NULL.toString())) {
+				log.info("suggestion by followupStatus:{} and course name:{}", followupStatus, courseName);
+				suggestion = listOfTrainee.stream()
+						.filter(traineeDto -> traineeDto.getCourseInfo().getCourse().equalsIgnoreCase(courseName))
+						.filter(traineeDto -> traineeDto.getFollowupStatus()
+								.equalsIgnoreCase(followupStatus))
+						.filter(traineeDto -> traineeDto.getBasicInfo().getTraineeName().toLowerCase()
+								.startsWith(value.toLowerCase()))
+						.collect(Collectors.toList());
+				return ResponseEntity.ok(suggestion);
+			} else if (!followupStatus.equalsIgnoreCase(ServiceConstant.NULL.toString())
+					&& !collegeName.equalsIgnoreCase(ServiceConstant.NULL.toString())) {
+				log.info("suggestion by college:{} and followupStatus:{}", collegeName, followupStatus);
+				suggestion = listOfTrainee.stream()
+						.filter(traineeDto -> traineeDto.getFollowupStatus().equalsIgnoreCase(followupStatus))
 						.filter(traineeDto -> traineeDto.getEducationInfo().getCollegeName()
 								.equalsIgnoreCase(collegeName))
 						.filter(traineeDto -> traineeDto.getBasicInfo().getTraineeName().toLowerCase()
@@ -551,6 +588,14 @@ public class RegistrationServiceImpl implements RegistrationService {
 				log.info("suggestion by course name:{}", collegeName);
 				suggestion = listOfTrainee.stream().filter(
 						traineeDto -> traineeDto.getEducationInfo().getCollegeName().equalsIgnoreCase(collegeName))
+						.filter(traineeDto -> traineeDto.getBasicInfo().getTraineeName().toLowerCase()
+								.startsWith(value.toLowerCase()))
+						.collect(Collectors.toList());
+				return ResponseEntity.ok(suggestion);
+			} else if (!followupStatus.equalsIgnoreCase(ServiceConstant.NULL.toString())) {
+				log.info("suggestion by followupStatus:{}", followupStatus);
+				suggestion = listOfTrainee.stream().filter(
+						traineeDto -> traineeDto.getFollowupStatus().equalsIgnoreCase(followupStatus))
 						.filter(traineeDto -> traineeDto.getBasicInfo().getTraineeName().toLowerCase()
 								.startsWith(value.toLowerCase()))
 						.collect(Collectors.toList());
