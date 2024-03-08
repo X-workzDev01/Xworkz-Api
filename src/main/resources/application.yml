@@ -80,6 +80,7 @@ sheets:
   clientNameRange: clientDetails!B2:B
   clientHrEmailRange: clientHRdetails!D2:D
   clientHrContactNumberRange: clientHRdetails!E2:E
+ 
   
 mailChimp:
   userName: 7FzbzzHIVQSVJVz5r4n/bGa/lhNWJCXUq6oqBxBCTYQ=

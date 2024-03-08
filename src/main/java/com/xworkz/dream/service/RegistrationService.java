@@ -30,4 +30,6 @@ public interface RegistrationService {
 			String collegeName,String followupStatus);
 	
 
+     String checkworkzEmail(String email);
+
 }

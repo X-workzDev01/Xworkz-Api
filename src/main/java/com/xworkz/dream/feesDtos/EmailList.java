@@ -13,5 +13,5 @@ import lombok.ToString;
 @ToString
 public class EmailList {
 	private String email;
-
+	
 }

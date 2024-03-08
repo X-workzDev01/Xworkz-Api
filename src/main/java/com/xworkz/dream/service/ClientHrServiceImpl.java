@@ -47,7 +47,7 @@ public class ClientHrServiceImpl implements ClientHrService {
 		if (clientHrDto != null) {
 			clientInformationUtil.setValuesToClientHrDto(clientHrDto);
 			log.debug("Received ClientHrDto: {}", clientHrDto);
-			List<Object> listItem = listItem = dreamWrapper.extractDtoDetails(clientHrDto);
+			List<Object> listItem = dreamWrapper.extractDtoDetails(clientHrDto);
 			if (clientHrRepository.saveClientHrInformation(listItem)) {
 				clientCacheService.addHRDetailsToCache("hrDetails", "listofHRDetails", listItem);
 				clientCacheService.addToCache("getListOfHrEmail", "listOfHrEmail", clientHrDto.getHrEmail());
