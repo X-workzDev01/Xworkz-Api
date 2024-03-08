@@ -21,7 +21,6 @@ public class ClientWrapperImpl implements ClientWrapper {
 		if (row == null) {
 			return clientDto;
 		} else {
-			System.err.println(row);
 			if (row.size() > 2) {
 				int rowSize = row.size();
 				if (rowSize > 0 && row.get(0) != null && !row.get(0).toString().isEmpty()) {
