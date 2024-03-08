@@ -232,6 +232,7 @@ public class RegistrationServiceImpl implements RegistrationService {
 	public List<TraineeDto> filterData(String spreadsheetId, String searchValue, String courseName,
 			String collegeName) {
 		List<List<Object>> data = repo.readData(spreadsheetId);
+		
 		List<TraineeDto> traineeDtos = new ArrayList<TraineeDto>();
 		if (data != null) {
 			List<TraineeDto> listOfTrainee = registrationUtil.readOnlyActiveData(data);
