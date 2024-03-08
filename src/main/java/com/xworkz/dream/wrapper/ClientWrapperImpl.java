@@ -120,7 +120,7 @@ public class ClientWrapperImpl implements ClientWrapper {
 				dto.setAttemptStatus(row.get(4).toString());
 			}
 			if (rowSize > 5 && row.get(5) != null && !row.get(5).toString().isEmpty()) {
-				dto.setCallDuration(Integer.valueOf(row.get(5).toString()));
+				dto.setCallDuration(row.get(5).toString());
 			}
 			if (rowSize > 6 && row.get(6) != null && !row.get(6).toString().isEmpty()) {
 				dto.setCallBackDate(row.get(6).toString());
