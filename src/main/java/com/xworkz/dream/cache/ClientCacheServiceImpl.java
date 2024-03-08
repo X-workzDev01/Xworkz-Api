@@ -30,7 +30,7 @@ public class ClientCacheServiceImpl implements ClientCacheService {
 			if (valueWrapper != null && valueWrapper.get() instanceof List) {
 				List<List<Object>> cacheData = ((List<List<Object>>) valueWrapper.get());
 				int size = (((List<List<Object>>) valueWrapper.get()).size());
-				if (cacheData.get(0).contains("#NUM!")) {
+				if (cacheData.get(0).equals("#NUM!")) {
 					log.info("adding into Cache:{}"+data);
 					cacheData.remove(0);
 					data.set(0, size);
