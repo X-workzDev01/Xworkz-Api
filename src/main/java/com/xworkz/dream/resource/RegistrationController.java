@@ -59,9 +59,10 @@ public class RegistrationController {
 	@ApiOperation(value = "To get Suggestions while search")
 	@GetMapping("register/suggestion/{courseName}")
 	public ResponseEntity<List<TraineeDto>> getSearchSuggestion(@RequestHeader String spreadsheetId,
-			@RequestParam String value, @PathVariable String courseName, @RequestParam String collegeName) {
+			@RequestParam String value, @PathVariable String courseName, @RequestParam String collegeName,
+			@RequestParam String followupStatus) {
 		log.info("Getting suggestions for search: {},courseName:{},collegeName:{}", value, courseName, collegeName);
-		return service.getSearchSuggestion(spreadsheetId, value, courseName, collegeName);
+		return service.getSearchSuggestion(spreadsheetId, value, courseName, collegeName, followupStatus);
 	}
 
 	@ApiOperation(value = "To register Check whether contact number already exist while registering")
@@ -74,18 +75,19 @@ public class RegistrationController {
 
 	@GetMapping("/readData")
 	public ResponseEntity<SheetsDto> readData(@RequestHeader String spreadsheetId, @RequestParam int startingIndex,
-			@RequestParam int maxRows, @RequestParam String courseName, @RequestParam String collegeName) {
+			@RequestParam int maxRows, @RequestParam String courseName, @RequestParam String collegeName,
+			@RequestParam String followupStatus) {
 		log.info("Reading data with parameters - SpreadsheetId: {}, Starting Index: {}, Max Rows: {}, Course Name: {}",
 				spreadsheetId, startingIndex, maxRows, courseName);
-		return service.readData(spreadsheetId, startingIndex, maxRows, courseName, collegeName);
+		return service.readData(spreadsheetId, startingIndex, maxRows, courseName, collegeName, followupStatus);
 	}
 
 	@GetMapping("/filterData/{courseName}")
 	public List<TraineeDto> filterData(@RequestHeader String spreadsheetId, @PathVariable String courseName,
-			@RequestParam String searchValue, @RequestParam String collegeName) {
+			@RequestParam String searchValue, @RequestParam String collegeName, @RequestParam String followupStatus) {
 		log.info("Filtering data with parameters-> Search Value: {},collegeName:{},courseName:{}", searchValue,
 				collegeName, courseName);
-		return service.filterData(spreadsheetId, searchValue, courseName, collegeName);
+		return service.filterData(spreadsheetId, searchValue, courseName, collegeName, followupStatus);
 	}
 
 	@ApiOperation(value = "To Update Registrated Details of Trainee")
