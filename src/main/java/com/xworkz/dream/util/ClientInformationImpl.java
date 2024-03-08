@@ -33,7 +33,7 @@ public class ClientInformationImpl implements ClientInformationUtil {
 		}
 
 		if (dto.getStatus() == null || dto.getStatus().isEmpty()) {
-			dto.setStatus(ServiceConstant.NA.toString());
+			dto.setStatus(ServiceConstant.ACTIVE.toString());
 		}
 		if (dto.getAdminDto() == null) {
 			dto.setAdminDto(new AuditDto()); // Assuming AdminDto has a no-argument constructor
