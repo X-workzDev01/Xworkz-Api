@@ -410,16 +410,16 @@ public class DreamWrapper {
 		if (row.size() > RegistrationConstant.COLUMN_SSLC.getIndex()
 				&& validateCell(RegistrationConstant.COLUMN_SSLC)) {
 			traineeDto.getPercentageDto()
-					.setSslcPercentage(row.get(RegistrationConstant.COLUMN_SSLC.getIndex()).toString());
+					.setSslcPercentage(Double.parseDouble(row.get(RegistrationConstant.COLUMN_SSLC.getIndex()).toString()));
 		}
 		if (row.size() > RegistrationConstant.COLUMN_PUC.getIndex() && validateCell(RegistrationConstant.COLUMN_PUC)) {
 			traineeDto.getPercentageDto()
-					.setPucPercentage(row.get(RegistrationConstant.COLUMN_PUC.getIndex()).toString());
+					.setPucPercentage(Double.parseDouble(row.get(RegistrationConstant.COLUMN_PUC.getIndex()).toString()));
 		}
 		if (row.size() > RegistrationConstant.COLUMN_DEGREE.getIndex()
 				&& validateCell(RegistrationConstant.COLUMN_DEGREE)) {
 			traineeDto.getPercentageDto()
-					.setDegreePercentage(row.get(RegistrationConstant.COLUMN_DEGREE.getIndex()).toString());
+					.setDegreePercentage(Double.parseDouble(row.get(RegistrationConstant.COLUMN_DEGREE.getIndex()).toString()));
 		}
 		return traineeDto;
 	}
@@ -798,9 +798,9 @@ public class DreamWrapper {
 
 		if(dto.getPercentageDto()==null) {
 			dto.setPercentageDto(new PercentageDto());
-			dto.getPercentageDto().setSslcPercentage(Status.NA.toString());
-			dto.getPercentageDto().setPucPercentage(Status.NA.toString());	
-			dto.getPercentageDto().setDegreePercentage(Status.NA.toString());
+			dto.getPercentageDto().setSslcPercentage(0d);
+			dto.getPercentageDto().setPucPercentage(0d);	
+			dto.getPercentageDto().setDegreePercentage(0d);
 		}
 	}
 
@@ -841,9 +841,9 @@ public class DreamWrapper {
 		}
 		if(dto.getPercentageDto()==null) {
 			dto.setPercentageDto(new PercentageDto());
-			dto.getPercentageDto().setSslcPercentage(Status.NA.toString());
-			dto.getPercentageDto().setPucPercentage(Status.NA.toString());	
-			dto.getPercentageDto().setDegreePercentage(Status.NA.toString());
+			dto.getPercentageDto().setSslcPercentage(0d);
+			dto.getPercentageDto().setPucPercentage(0d);	
+			dto.getPercentageDto().setDegreePercentage(0d);
 		}
 	}
 

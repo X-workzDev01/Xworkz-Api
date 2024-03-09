@@ -14,9 +14,9 @@ import lombok.Setter;
 public class PercentageDto {
 	
 	
-	private String sslcPercentage;
-	private String pucPercentage;
-	private String degreePercentage;
+	private Double sslcPercentage;
+	private Double pucPercentage;
+	private Double degreePercentage;
 	
 
 }

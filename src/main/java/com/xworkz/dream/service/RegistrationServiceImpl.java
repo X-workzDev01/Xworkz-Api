@@ -61,6 +61,7 @@ public class RegistrationServiceImpl implements RegistrationService {
 		try {
 			log.info("Writing data for TraineeDto: {}", dto);
 			assignCsrDto(dto);
+			registrationUtil.cgpaToPercentage(dto);
 			wrapper.setValuesForTraineeDto(dto);
 			List<Object> list = wrapper.extractDtoDetails(dto);
 			repo.writeData(spreadsheetId, list);
@@ -332,6 +333,7 @@ public class RegistrationServiceImpl implements RegistrationService {
 			dto.getBasicInfo().setEmail(dto.getBasicInfo().getEmail());
 		}
 		wrapper.setFieldValueAsNa(dto);
+		registrationUtil.cgpaToPercentage(dto);
 		try {
 			int rowIndex = findRowIndexByEmail(spreadsheetId, email);
 			if (rowIndex != -1) {
