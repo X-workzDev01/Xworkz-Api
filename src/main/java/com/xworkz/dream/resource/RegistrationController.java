@@ -107,4 +107,12 @@ public class RegistrationController {
 
 	}
 
+	@ApiOperation(value="To Check X-workz email Id")
+	@GetMapping("/checkxworkzemail")
+	public ResponseEntity<String> checkworkzEmail(@RequestParam String email) {
+	    log.info("Checking x-workz email existence: {}", email);
+	    String response = service.checkworkzEmail(email);
+	    return ResponseEntity.ok(response);
+	}
+
 }
