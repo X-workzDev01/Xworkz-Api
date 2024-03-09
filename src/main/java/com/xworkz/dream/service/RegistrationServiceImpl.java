@@ -58,8 +58,7 @@ public class RegistrationServiceImpl implements RegistrationService {
 	private RegistrationUtil registrationUtil;
 	@Autowired
 	private FollowUpRepository followupRepo;
-	@Value("${login.sheetId}")
-	private String sheetId;
+
 
 	private static final Logger log = LoggerFactory.getLogger(DreamServiceImpl.class);
 
