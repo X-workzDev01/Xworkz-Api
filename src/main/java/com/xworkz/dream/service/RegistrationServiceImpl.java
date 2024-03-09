@@ -59,7 +59,6 @@ public class RegistrationServiceImpl implements RegistrationService {
 	@Autowired
 	private FollowUpRepository followupRepo;
 
-
 	private static final Logger log = LoggerFactory.getLogger(DreamServiceImpl.class);
 
 	@Override

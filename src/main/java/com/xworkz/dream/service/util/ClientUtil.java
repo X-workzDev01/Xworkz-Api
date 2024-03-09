@@ -35,7 +35,6 @@ public class ClientUtil {
 
 	public List<ClientDto> getActiveClientRecords() {
 		List<List<Object>> listOfData = clientRepository.readData();
-		System.out.println("client data:"+listOfData);
 		if (listOfData != null) {
 			return listOfData.stream().map(clientWrapper::listToClientDto)
 					.filter(clientDto -> clientDto != null&&clientDto.getId()!=null
