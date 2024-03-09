@@ -3,6 +3,7 @@ package com.xworkz.dream.service;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import java.util.ListIterator;
@@ -20,6 +21,7 @@ import com.google.api.services.sheets.v4.model.UpdateValuesResponse;
 import com.google.api.services.sheets.v4.model.ValueRange;
 import com.xworkz.dream.constants.ServiceConstant;
 import com.xworkz.dream.dto.CSR;
+import com.xworkz.dream.dto.OthersDto;
 import com.xworkz.dream.dto.SheetsDto;
 import com.xworkz.dream.dto.TraineeDto;
 import com.xworkz.dream.repository.FollowUpRepository;
@@ -164,7 +166,14 @@ public class RegistrationServiceImpl implements RegistrationService {
 	public ResponseEntity<SheetsDto> readData(String spreadsheetId, int startingIndex, int maxRows, String courseName,
 			String collegeName, String followupStatus) {
 		SheetsDto traineeData = new SheetsDto();
-		List<TraineeDto> traineeDtos = traineeData();
+		List<TraineeDto> traineeDetails = traineeData();
+		List<TraineeDto> traineeDtos = traineeDetails.stream()
+				.sorted(Comparator.comparing(
+						trainee -> trainee != null ? trainee.getOthersDto().getRegistrationDate() : "",
+						Comparator.reverseOrder())
+
+				).collect(Collectors.toList());
+
 		if (traineeDtos != null) {
 			if (!courseName.equalsIgnoreCase(ServiceConstant.NULL.toString())
 					&& !collegeName.equalsIgnoreCase(ServiceConstant.NULL.toString())
@@ -532,13 +541,13 @@ public class RegistrationServiceImpl implements RegistrationService {
 			if (!courseName.equalsIgnoreCase(ServiceConstant.NULL.toString())
 					&& !collegeName.equalsIgnoreCase(ServiceConstant.NULL.toString())
 					&& !followupStatus.equalsIgnoreCase(ServiceConstant.NULL.toString())) {
-				log.info("suggestion by college:{} and course name:{} and followupStatus :{} ", collegeName, courseName,followupStatus);
+				log.info("suggestion by college:{} and course name:{} and followupStatus :{} ", collegeName, courseName,
+						followupStatus);
 				suggestion = listOfTrainee.stream()
 						.filter(traineeDto -> traineeDto.getCourseInfo().getCourse().equalsIgnoreCase(courseName))
 						.filter(traineeDto -> traineeDto.getEducationInfo().getCollegeName()
 								.equalsIgnoreCase(collegeName))
-						.filter(traineeDto -> traineeDto.getFollowupStatus()
-								.equalsIgnoreCase(followupStatus))
+						.filter(traineeDto -> traineeDto.getFollowupStatus().equalsIgnoreCase(followupStatus))
 						.filter(traineeDto -> traineeDto.getBasicInfo().getTraineeName().toLowerCase()
 								.startsWith(value.toLowerCase()))
 						.collect(Collectors.toList());
@@ -559,8 +568,7 @@ public class RegistrationServiceImpl implements RegistrationService {
 				log.info("suggestion by followupStatus:{} and course name:{}", followupStatus, courseName);
 				suggestion = listOfTrainee.stream()
 						.filter(traineeDto -> traineeDto.getCourseInfo().getCourse().equalsIgnoreCase(courseName))
-						.filter(traineeDto -> traineeDto.getFollowupStatus()
-								.equalsIgnoreCase(followupStatus))
+						.filter(traineeDto -> traineeDto.getFollowupStatus().equalsIgnoreCase(followupStatus))
 						.filter(traineeDto -> traineeDto.getBasicInfo().getTraineeName().toLowerCase()
 								.startsWith(value.toLowerCase()))
 						.collect(Collectors.toList());
@@ -594,8 +602,8 @@ public class RegistrationServiceImpl implements RegistrationService {
 				return ResponseEntity.ok(suggestion);
 			} else if (!followupStatus.equalsIgnoreCase(ServiceConstant.NULL.toString())) {
 				log.info("suggestion by followupStatus:{}", followupStatus);
-				suggestion = listOfTrainee.stream().filter(
-						traineeDto -> traineeDto.getFollowupStatus().equalsIgnoreCase(followupStatus))
+				suggestion = listOfTrainee.stream()
+						.filter(traineeDto -> traineeDto.getFollowupStatus().equalsIgnoreCase(followupStatus))
 						.filter(traineeDto -> traineeDto.getBasicInfo().getTraineeName().toLowerCase()
 								.startsWith(value.toLowerCase()))
 						.collect(Collectors.toList());
