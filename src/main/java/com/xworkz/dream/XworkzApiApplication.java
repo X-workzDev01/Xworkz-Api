@@ -13,7 +13,7 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 @EnableCaching
 @EnableFeignClients("com.xworkz.dream.interfaces")
 
-public class XworkzApiApplication {
+public class XworkzApiApplication { 
 
 	public static void main(String[] args) {
 		SpringApplication.run(XworkzApiApplication.class, args);	

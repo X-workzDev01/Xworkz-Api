@@ -1,6 +1,6 @@
 spring:
    profiles:
-      active: local
+      active: preProd
    freemarker:
     template-loader-path: classpath:/templates/
 sheets:
@@ -14,9 +14,9 @@ sheets:
   followUpStatus: followUpStatus!A2:L
   rowStartRange: B
   rowEndRange: AH 
-  traineeSheetName: xworkzApi!
+  traineeSheetName: xworkzApi!  
   followUpSheetName: followUp!
-  followUprowStartRange: B2 
+  followUprowStartRange: B2  
   followUprowEndRange: Q
   followUpEmailRange: followUp!C2:C
   idRange: xworkzApi!A3:A    
