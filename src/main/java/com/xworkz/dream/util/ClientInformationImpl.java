@@ -31,9 +31,8 @@ public class ClientInformationImpl implements ClientInformationUtil {
 		if (dto.getDesignation() == null || dto.getDesignation().isEmpty()) {
 			dto.setDesignation(ServiceConstant.NA.toString());
 		}
-
 		if (dto.getStatus() == null || dto.getStatus().isEmpty()) {
-			dto.setStatus(ServiceConstant.ACTIVE.toString());
+			dto.setStatus(ServiceConstant.NA.toString());
 		}
 		if (dto.getAdminDto() == null) {
 			dto.setAdminDto(new AuditDto()); // Assuming AdminDto has a no-argument constructor

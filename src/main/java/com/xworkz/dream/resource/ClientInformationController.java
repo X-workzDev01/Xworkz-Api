@@ -1,6 +1,5 @@
 package com.xworkz.dream.resource;
 
-import java.io.IOException;
 import java.util.List;
 
 import org.slf4j.Logger;
@@ -112,8 +111,7 @@ public class ClientInformationController {
 
 	@ApiOperation("updating client data by id")
 	@PutMapping("/clientupdate")
-	public String updateClientDto(@RequestParam int companyId, @RequestBody ClientDto clientDto)
-			throws IOException, IllegalAccessException {
+	public String updateClientDto(@RequestParam int companyId, @RequestBody ClientDto clientDto) {
 		log.info("updating client dto {}", clientDto);
 		return clientInformationService.updateClientDto(companyId, clientDto);
 	}
