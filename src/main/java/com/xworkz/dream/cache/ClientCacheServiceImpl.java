@@ -31,12 +31,12 @@ public class ClientCacheServiceImpl implements ClientCacheService {
 				List<List<Object>> cacheData = ((List<List<Object>>) valueWrapper.get());
 				int size = (((List<List<Object>>) valueWrapper.get()).size());
 				if (cacheData.get(0).contains("#NUM!")) {
-					log.info("adding into Cache:{}" + data);
+					log.info("adding into Cache:{}" ,data);
 					cacheData.remove(0);
 					data.set(0, size);
 					((List<List<Object>>) valueWrapper.get()).add(data);
 				} else {
-					log.info("adding into Cache:{}" + data);
+					log.info("adding into Cache:{}", data);
 					data.set(0, size + 1);
 					((List<List<Object>>) valueWrapper.get()).add(data);
 				}
@@ -60,11 +60,11 @@ public class ClientCacheServiceImpl implements ClientCacheService {
 					cacheData.remove(0);
 					data.set(0, size);
 					((List<List<Object>>) valueWrapper.get()).add(data);
-					log.info("adding into Cache:{}" + data);
+					log.info("adding into Cache:{}",data);
 				} else {
 					data.set(0, size + 1);
 					((List<List<Object>>) valueWrapper.get()).add(data);
-					log.info("adding into Cache:{}" + data);
+					log.info("adding into Cache:{}", data);
 				}
 			}
 		}
@@ -142,11 +142,11 @@ public class ClientCacheServiceImpl implements ClientCacheService {
 					cacheData.remove(0);
 					data.set(0, size);
 					((List<List<Object>>) valueWrapper.get()).add(data);
-					log.info("adding into Cache:{}" + data);
+					log.info("adding into Cache:{}" ,data);
 				} else {
 					data.set(0, size + 1);
 					((List<List<Object>>) valueWrapper.get()).add(data);
-					log.info("adding into Cache:{}" + data);
+					log.info("adding into Cache:{}" ,data);
 				}
 			}
 		}
