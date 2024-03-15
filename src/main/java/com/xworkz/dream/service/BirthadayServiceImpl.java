@@ -75,32 +75,40 @@ public class BirthadayServiceImpl implements BirthadayService {
 					dto -> dto != null && !dto.getBirthDayMailSent().equalsIgnoreCase(ServiceConstant.YES.toString()))
 					.map(BirthDayInfoDto::getTraineeEmail).collect(Collectors.toList());
 			if (listOfEmail != null && listofDtos != null) {
-				List<TraineeDto> matchingTrainees = listofDtos.stream()
-						.filter(traineeDto -> traineeDto != null && traineeDto.getBasicInfo() != null
-								&& traineeDto.getBasicInfo().getEmail() != null
-								&& listOfEmail.contains(traineeDto.getBasicInfo().getEmail())
-								&& listOfDetails.stream().map(wrapper::listToBirthDayInfo)
-										.anyMatch(birthDayInfoDto -> birthDayInfoDto.getTraineeEmail()
-												.equalsIgnoreCase(traineeDto.getBasicInfo().getEmail())
-												&& !traineeDto.getBasicInfo().getDateOfBirth()
-														.equals(ServiceConstant.NA.toString())
-												&& !traineeDto.getBasicInfo().getEmail().contains("@dummy.com")
-												&& LocalDate.parse(traineeDto.getBasicInfo().getDateOfBirth(),
-														dateFormatter).isEqual(LocalDate.now())))
-						.collect(Collectors.toList());
+				List<TraineeDto> matchingTrainees = getTraineeDetails(dateFormatter, listOfDetails, listofDtos,
+						listOfEmail);
 				if (matchingTrainees != null) {
 					matchingTrainees.stream().forEach(trainee -> {
 						String email = trainee.getBasicInfo().getEmail();
 						String name = trainee.getBasicInfo().getTraineeName();
 						System.out.println(name + ":" + email);
-						boolean mailSet = util.sendBirthadyEmail(email, subject, name);
-						if (mailSet) {
+						boolean mailSent = util.sendBirthadyEmail(email, subject, name);
+						if (mailSent) {
+							log.info("Birthday mail sent successfully:{}",mailSent);
 							updateMailStatus(email);
 						}
 					});
 				}
 			}
 		}
+	}
+
+	private List<TraineeDto> getTraineeDetails(DateTimeFormatter dateFormatter, List<List<Object>> listOfDetails,
+			List<TraineeDto> listofDtos, List<String> listOfEmail) {
+		List<TraineeDto> matchingTrainees = listofDtos.stream()
+				.filter(traineeDto -> traineeDto != null && traineeDto.getBasicInfo() != null
+						&& traineeDto.getBasicInfo().getEmail() != null
+						&& listOfEmail.contains(traineeDto.getBasicInfo().getEmail())
+						&& listOfDetails.stream().map(wrapper::listToBirthDayInfo)
+								.anyMatch(birthDayInfoDto -> birthDayInfoDto.getTraineeEmail()
+										.equalsIgnoreCase(traineeDto.getBasicInfo().getEmail())
+										&& !traineeDto.getBasicInfo().getDateOfBirth()
+												.equals(ServiceConstant.NA.toString())
+										&& !traineeDto.getBasicInfo().getEmail().contains("@dummy.com")
+										&& LocalDate.parse(traineeDto.getBasicInfo().getDateOfBirth(),
+												dateFormatter).isEqual(LocalDate.now())))
+				.collect(Collectors.toList());
+		return matchingTrainees;
 	}
 
 	public boolean updateMailStatus(String email) {
