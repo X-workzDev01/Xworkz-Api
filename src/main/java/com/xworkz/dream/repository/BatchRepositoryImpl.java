@@ -1,11 +1,6 @@
 package com.xworkz.dream.repository;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.security.GeneralSecurityException;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -14,94 +9,91 @@ import javax.annotation.PostConstruct;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cache.annotation.Cacheable;
-import org.springframework.core.io.Resource;
-import org.springframework.core.io.ResourceLoader;
 import org.springframework.stereotype.Repository;
 
-import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
-import com.google.api.client.http.HttpRequestInitializer;
-import com.google.api.client.json.JsonFactory;
-import com.google.api.client.json.gson.GsonFactory;
 import com.google.api.services.sheets.v4.Sheets;
-import com.google.api.services.sheets.v4.SheetsScopes;
 import com.google.api.services.sheets.v4.model.UpdateValuesResponse;
 import com.google.api.services.sheets.v4.model.ValueRange;
-import com.google.auth.http.HttpCredentialsAdapter;
-import com.google.auth.oauth2.GoogleCredentials;
+import com.xworkz.dream.constants.RepositoryConstant;
+import com.xworkz.dream.dto.SheetPropertyDto;
+import com.xworkz.dream.dto.utils.SheetSaveOpration;
 
 @Repository
 public class BatchRepositoryImpl implements BatchRepository {
 
 	private Sheets sheetsService;
-	@Value("${sheets.batchDetailsCourseNameRange}")
-	private String batchDetailsCourseNameRange;
-	@Value("${sheets.appName}")
-	private String applicationName;
-	@Value("${sheets.credentialsPath}")
-	private String credentialsPath;
-	private static final JsonFactory JSON_FACTORY = GsonFactory.getDefaultInstance();
-	private static final List<String> SCOPES = Collections.singletonList(SheetsScopes.SPREADSHEETS);
-	@Value("${sheets.batchDetails}")
-	private String batchDetails;
-	@Value("${sheets.batchDetailsRange}")
-	private String batchDetailsRange;
-	@Value("${sheets.batchIdRange}")
-	private String batchIdRange;
-
 	@Autowired
-	private ResourceLoader resourceLoader;
+	private SheetPropertyDto sheetPropertyDto;
+	@Autowired
+	private SheetSaveOpration saveOperation;
 
 	private static final Logger log = LoggerFactory.getLogger(BatchRepositoryImpl.class);
 
 	@PostConstruct
-	private void setSheetsService() throws IOException, FileNotFoundException, GeneralSecurityException {
-
-		Resource resource = resourceLoader.getResource(credentialsPath);
-		File file = resource.getFile();
-		GoogleCredentials credentials = GoogleCredentials.fromStream(new FileInputStream(file)).createScoped(SCOPES);
-		HttpRequestInitializer requestInitializer = new HttpCredentialsAdapter(credentials);
-		sheetsService = new Sheets.Builder(GoogleNetHttpTransport.newTrustedTransport(), JSON_FACTORY,
-				requestInitializer).setApplicationName(applicationName).build();
+	public void setSheetsService() {
+		try {
+			sheetsService = saveOperation.ConnsetSheetService();
+		} catch (Exception e) {
+			log.error("Exception while connecting to sheet,{}", e.getMessage());
+		}
 	}
 
 	@Override
-	public boolean saveBatchDetails(String spreadsheetId, List<Object> row) throws IOException {
-		List<List<Object>> values = new ArrayList<>();
-		List<Object> rowData = new ArrayList<>();
-		rowData.add("");
-		rowData.addAll(row.subList(1, row.size()));
-		values.add(rowData);
-		ValueRange body = new ValueRange().setValues(values);
-		sheetsService.spreadsheets().values().append(spreadsheetId, batchDetailsRange, body)
-				.setValueInputOption("USER_ENTERED").execute();
-		log.info("Batch details saved successfully for spreadsheetId: {}", spreadsheetId);
-		return true;
+	public boolean saveBatchDetails(String spreadsheetId, List<Object> row) {
+		try {
+			ValueRange value = sheetsService.spreadsheets().values()
+					.get(sheetPropertyDto.getSheetId(), sheetPropertyDto.getBatchDetailsRange()).execute();
+			if (value.getValues() != null && value.getValues().size() >= 1) {
+				return saveOperation.saveDetilesWithDataSize(row, sheetPropertyDto.getBatchDetailsRange());
+			} else {
+				return saveOperation.saveDetilesWithoutSize(row, sheetPropertyDto.getBatchDetailsRange());
+			}
+		} catch (IOException e) {
+			log.error("Exception while saving birthday details to sheet,{}", e.getMessage());
+			return false;
+		}
 	}
 
 	@Override
 	@Cacheable(value = "batchDetails", key = "'listOfBatch'")
-	public List<List<Object>> getCourseDetails(String spreadsheetId) throws IOException {
-		ValueRange response = sheetsService.spreadsheets().values().get(spreadsheetId, batchDetailsRange).execute();
-		log.debug("Course details retrieved successfully for spreadsheetId: {}", spreadsheetId);
-		return response.getValues();
+	public List<List<Object>> getCourseDetails(String spreadsheetId) {
+		try {
+			log.debug("Course details retrieved successfully for spreadsheetId: {}", spreadsheetId);
+			return sheetsService.spreadsheets().values()
+					.get(sheetPropertyDto.getSheetId(), sheetPropertyDto.getBatchDetailsRange()).execute().getValues();
+
+		} catch (Exception e) {
+			log.error("Exception in getCourse details,{}", e.getMessage());
+			return Collections.emptyList();
+		}
 	}
 
 	@Override
-	public UpdateValuesResponse updateBatchDetails(String spreadsheetId, String range2, ValueRange valueRange)
-			throws IOException {
+	public UpdateValuesResponse updateBatchDetails(String spreadsheetId, String range2, ValueRange valueRange) {
 		log.info("Batch details updated successfully for spreadsheetId: {}", spreadsheetId);
-		return sheetsService.spreadsheets().values().update(spreadsheetId, range2, valueRange)
-				.setValueInputOption("RAW").execute();
+		try {
+			return sheetsService.spreadsheets().values().update(sheetPropertyDto.getSheetId(), range2, valueRange)
+					.setValueInputOption(RepositoryConstant.RAW.toString()).execute();
+		} catch (IOException e) {
+			log.error("exception in update batch details:{}", e.getMessage());
+		}
+		return null;
 	}
 
 	@Override
-	@Cacheable(value = "getCourseNameList",key="'courseName")
-	public ValueRange getCourseNameList(String spreadsheetId) throws IOException {
+	@Cacheable(value = "getCourseNameList", key = "'courseName")
+	public ValueRange getCourseNameList(String spreadsheetId) {
 		log.debug("Course name list retrieved successfully for spreadsheetId: {}", spreadsheetId);
-		ValueRange response = sheetsService.spreadsheets().values().get(spreadsheetId, batchDetailsCourseNameRange)
-				.execute();
+		ValueRange response = null;
+		try {
+			response = sheetsService.spreadsheets().values()
+					.get(sheetPropertyDto.getSheetId(), sheetPropertyDto.getBatchDetailsCourseNameRange()).execute();
+		} catch (IOException e) {
+			log.error("exception in getcourse name list,{}", e.getMessage());
+			return response;
+
+		}
 		return response;
 	}
 

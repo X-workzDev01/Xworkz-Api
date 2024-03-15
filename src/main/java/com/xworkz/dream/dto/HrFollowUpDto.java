@@ -17,7 +17,7 @@ public class HrFollowUpDto {
 	private String attemptOn;
 	private String attemptBy;
 	private String attemptStatus;
-	private Integer callDuration;
+	private String callDuration;
 	private String callBackDate;
 	private String callBackTime;
 	private String comments;

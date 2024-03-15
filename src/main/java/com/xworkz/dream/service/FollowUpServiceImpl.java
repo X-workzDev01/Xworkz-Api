@@ -232,7 +232,6 @@ public class FollowUpServiceImpl implements FollowUpService {
 							&& statusDto.getBasicInfo().getEmail().equalsIgnoreCase(email))
 					.collect(Collectors.toList());
 			filteredStatusDto.stream().forEach(statusDto -> {
-				System.err.println(dto.getBasicInfo().getEmail());
 				if (!statusDto.getBasicInfo().getEmail().equalsIgnoreCase(dto.getBasicInfo().getEmail())) {
 					statusDto.getBasicInfo().setEmail(dto.getBasicInfo().getEmail());
 				}
@@ -246,7 +245,6 @@ public class FollowUpServiceImpl implements FollowUpService {
 				int rowIndexForFollowUpStatus = findByEmailForUpdateFollowUpStatus(spreadsheetId, email);
 				String followupStatusRange = "followUpStatus!" + "B" + rowIndexForFollowUpStatus + ":" + "M"
 						+ rowIndexForFollowUpStatus;
-				System.err.println(statusDto);
 				repo.updateFollowUpStatus(spreadsheetId, followupStatusRange, wrapper.extractDtoDetails(statusDto));
 				cacheService.updateFollowUpStatus("getFollowUpStatusDetails", "followupstatusdetails", email,
 						wrapper.extractDtoDetails(statusDto));

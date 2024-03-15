@@ -1,9 +1,7 @@
 
 sheets:
   credentialsPath: classpath:META-INF/credentials-dev.json
-  liveKey: live_d485f9b87a825393bc2i
-
-
+  liveKey: live_0254e637fcfbc90ff0a9
 
 mailChimp:
   userName: 7FzbzzHIVQSVJVz5r4n/bGa/lhNWJCXUq6oqBxBCTYQ=

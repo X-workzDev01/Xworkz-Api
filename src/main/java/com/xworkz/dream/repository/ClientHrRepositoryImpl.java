@@ -20,10 +20,7 @@ import com.xworkz.dream.constants.RepositoryConstant;
 import com.xworkz.dream.dto.PropertiesDto;
 import com.xworkz.dream.dto.utils.SheetSaveOpration;
 
-/**
- * @author vinoda
- *
- */
+
 @Repository
 public class ClientHrRepositoryImpl implements ClientHrRepository {
 

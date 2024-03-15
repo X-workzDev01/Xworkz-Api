@@ -1,9 +1,5 @@
 package com.xworkz.dream.resource;
 
-import java.io.IOException;
-
-import javax.servlet.http.HttpServletRequest;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,7 +7,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -31,10 +26,10 @@ public class BirthdayController {
 
 	@ApiOperation(value = "To update Birth day info while registering")
 	@PostMapping("/birthDayInfo")
-	public ResponseEntity<String> updateBirthDayInfo(@RequestHeader String spreadsheetId, @RequestBody TraineeDto dto,
-			HttpServletRequest request) throws IllegalAccessException, IOException {
-		log.info("Request received for updateBirthDayInfo. SpreadsheetId: {}", spreadsheetId);
-		return service.saveBirthDayInfo(spreadsheetId, dto);
+	public ResponseEntity<String> saveBirthDayInfo(@RequestBody TraineeDto dto) {
+		log.info("Saving Birthday details into birthday sheet");
+		String response=this.service.saveBirthDayInfo( dto);
+		return ResponseEntity.ok(response);
 	}
 
 	@ApiOperation(value = "To get Birth day info with pagination")

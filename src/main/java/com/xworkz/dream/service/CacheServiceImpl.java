@@ -49,8 +49,7 @@ public class CacheServiceImpl implements CacheService {
 
 	// retrieve cache data by email and updating to cache
 	@SuppressWarnings("unchecked")
-	public void getCacheDataByEmail(String cacheName, String key, String email, TraineeDto dto)
-			throws IllegalAccessException {
+	public void getCacheDataByEmail(String cacheName, String key, String email, TraineeDto dto) {
 		Cache cache = cacheManager.getCache(cacheName);
 		if (cache != null) {
 			ValueWrapper valueWrapper = cache.get(key);
@@ -79,8 +78,7 @@ public class CacheServiceImpl implements CacheService {
 	}
 
 	@Override
-	public void updateCacheFollowUp(String cacheName, String key, String email, FollowUpDto dto)
-			throws IllegalAccessException {
+	public void updateCacheFollowUp(String cacheName, String key, String email, FollowUpDto dto) {
 
 		Cache cache = cacheManager.getCache(cacheName);
 		if (cache != null) {
@@ -256,8 +254,7 @@ public class CacheServiceImpl implements CacheService {
 	}
 
 	@SuppressWarnings("unchecked")
-	public void getCacheDataByEmail(String cacheName, String key, String oldEmail, String newEmail)
-			throws IllegalAccessException {
+	public void getCacheDataByEmail(String cacheName, String key, String oldEmail, String newEmail) {
 		Cache cache = cacheManager.getCache(cacheName);
 		if (cache != null) {
 			ValueWrapper valueWrapper = cache.get(key);
@@ -307,8 +304,7 @@ public class CacheServiceImpl implements CacheService {
 	}
 
 	@Override
-	public void updateCacheAttendancde(String cacheName, String key, Integer id, AttendanceDto dto)
-			throws IllegalAccessException {
+	public void updateCacheAttendancde(String cacheName, String key, Integer id, AttendanceDto dto) {
 		Cache cache = cacheManager.getCache(cacheName);
 		if (cache != null) {
 			ValueWrapper valueWrapper = cache.get(key);
@@ -341,8 +337,7 @@ public class CacheServiceImpl implements CacheService {
 	}
 
 	@Override
-	public void updateCacheBatch(String cacheName, String key, String courseName, BatchDetailsDto dto)
-			throws IllegalAccessException {
+	public void updateCacheBatch(String cacheName, String key, String courseName, BatchDetailsDto dto) {
 		Cache cache = cacheManager.getCache(cacheName);
 		if (cache != null) {
 			ValueWrapper valueWrapper = cache.get(key);

@@ -13,6 +13,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 
 import com.xworkz.dream.constants.AttendanceConstant;
+import com.xworkz.dream.constants.BirthDayConstant;
 import com.xworkz.dream.constants.FollowUp;
 import com.xworkz.dream.constants.RegistrationConstant;
 import com.xworkz.dream.constants.ServiceConstant;
@@ -21,6 +22,7 @@ import com.xworkz.dream.dto.AttendanceDto;
 import com.xworkz.dream.dto.AuditDto;
 import com.xworkz.dream.dto.BasicInfoDto;
 import com.xworkz.dream.dto.BatchDetailsDto;
+import com.xworkz.dream.dto.BirthDayInfoDto;
 import com.xworkz.dream.dto.CSR;
 import com.xworkz.dream.dto.CourseDto;
 import com.xworkz.dream.dto.EducationInfoDto;
@@ -43,6 +45,10 @@ public class DreamWrapper {
 
 	public static boolean validateCell(AttendanceConstant attendanceConstant) {
 		return StringUtils.hasLength(String.valueOf(attendanceConstant.getIndex()));
+	}
+
+	public static boolean validateCell(BirthDayConstant birthDayConstant) {
+		return StringUtils.hasLength(String.valueOf(birthDayConstant.getIndex()));
 	}
 
 	public List<Object> dtoToList(TraineeDto dto) {
@@ -221,14 +227,13 @@ public class DreamWrapper {
 
 	public TraineeDto listToDto(List<Object> row) {
 		TraineeDto traineeDto = new TraineeDto(0, new BasicInfoDto(), new EducationInfoDto(), new CourseDto(),
-				new OthersDto(), new AuditDto(), new CSR(), new PercentageDto());
+				new OthersDto(), new AuditDto(), new CSR(), new PercentageDto(), null);
 		// Assuming the list follows this order: id ,traineeName, email, contactNumber,
 		// qualification, stream,
 		// yearOfPassout, collegeName, batch, branch, course, referalName,
 		// referalContactNumber, comments
 		// if there any changes in the table, please make sure the right changes are
 		// done here also
-
 		if (row.size() > RegistrationConstant.COLUMN_ID.getIndex() && validateCell(RegistrationConstant.COLUMN_ID)) {
 			traineeDto.setId(Integer.valueOf(row.get(RegistrationConstant.COLUMN_ID.getIndex()).toString()));
 		}
@@ -883,6 +888,49 @@ public class DreamWrapper {
 
 		return attendanceDto;
 
+	}
+
+	public BirthDayInfoDto listToBirthDayInfo(List<Object> row) {
+		BirthDayInfoDto birthDto = new BirthDayInfoDto(null, null, null, new AuditDto());
+		if (row != null) {
+			int rowSize = row.size();
+			if (rowSize > 1) {
+				if (rowSize > BirthDayConstant.COLUMN_ID.getIndex() && validateCell(BirthDayConstant.COLUMN_ID)) {
+					birthDto.setId(Integer.parseInt((String) row.get(BirthDayConstant.COLUMN_ID.getIndex())));
+				}
+				if (rowSize > BirthDayConstant.COLUMN_TRAINEE_EMAIL.getIndex()
+						&& validateCell(BirthDayConstant.COLUMN_TRAINEE_EMAIL)) {
+					birthDto.setTraineeEmail((String) row.get(BirthDayConstant.COLUMN_TRAINEE_EMAIL.getIndex()));
+				}
+				if (rowSize > BirthDayConstant.COLUMN_BIRTHDAY_MAILSET.getIndex()
+						&& validateCell(BirthDayConstant.COLUMN_BIRTHDAY_MAILSET)) {
+					birthDto.setBirthDayMailSent((String) row.get(BirthDayConstant.COLUMN_BIRTHDAY_MAILSET.getIndex()));
+				}
+
+				if (rowSize > BirthDayConstant.COLUMN_CREATED_BY.getIndex()
+						&& validateCell(BirthDayConstant.COLUMN_CREATED_BY)) {
+					birthDto.getAuditDto()
+							.setCreatedBy((String) row.get(BirthDayConstant.COLUMN_CREATED_BY.getIndex()));
+				}
+				if (rowSize > BirthDayConstant.COLUMN_CREATED_ON.getIndex()
+						&& validateCell(BirthDayConstant.COLUMN_CREATED_ON)) {
+					birthDto.getAuditDto()
+							.setCreatedOn((String) row.get(BirthDayConstant.COLUMN_CREATED_ON.getIndex()));
+				}
+				if (rowSize > BirthDayConstant.COLUMN_UPDATED_BY.getIndex()
+						&& validateCell(BirthDayConstant.COLUMN_UPDATED_BY)) {
+					birthDto.getAuditDto()
+							.setUpdatedBy((String) row.get(BirthDayConstant.COLUMN_UPDATED_BY.getIndex()));
+				}
+				if (rowSize > BirthDayConstant.COLUMN_UPDATED_ON.getIndex()
+						&& validateCell(BirthDayConstant.COLUMN_UPDATED_ON)) {
+					birthDto.getAuditDto()
+							.setUpdatedOn((String) row.get(BirthDayConstant.COLUMN_UPDATED_ON.getIndex()));
+				}
+				return birthDto;
+			}
+		}
+		return birthDto;
 	}
 
 }
