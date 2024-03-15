@@ -1,6 +1,5 @@
 package com.xworkz.dream.service;
 
-import java.io.IOException;
 import java.time.LocalDate;
 import java.util.HashSet;
 import java.util.List;
@@ -10,7 +9,6 @@ import java.util.Set;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
@@ -19,6 +17,7 @@ import com.xworkz.dream.dto.CSR;
 import com.xworkz.dream.dto.CourseDto;
 import com.xworkz.dream.dto.CsrDto;
 import com.xworkz.dream.dto.OthersDto;
+import com.xworkz.dream.dto.SheetPropertyDto;
 import com.xworkz.dream.dto.TraineeDto;
 import com.xworkz.dream.repository.RegisterRepository;
 import com.xworkz.dream.util.DreamUtil;
@@ -39,8 +38,8 @@ public class CsrServiceImpl implements CsrService {
 	private FollowUpService followUpService;
 	@Autowired
 	private CacheService cacheService;
-	@Value("${login.sheetId}")
-	private String spreadsheetId;
+	@Autowired
+	private SheetPropertyDto sheetPropertyDto;
 	private static final int MAX_ATTEMPTS = 99999;
 	private static Set<Integer> generatedIDs = new HashSet<>();
 
@@ -52,12 +51,12 @@ public class CsrServiceImpl implements CsrService {
 			log.info("Writing data for TraineeDto: {}", dto);
 			wrapper.setValuesForCSRDto(dto);
 			List<Object> list = wrapper.extractDtoDetails(dto);
-			repo.writeData(spreadsheetId, list);
+			repo.writeData(sheetPropertyDto.getSheetId(), list);
 			addToCache(dto, list);
-			boolean status = followUpService.addCsrToFollowUp(dto, spreadsheetId);
+			boolean status = followUpService.addCsrToFollowUp(dto, sheetPropertyDto.getSheetId());
 
 			if (status) {
-				log.info("Data written successfully to spreadsheetId and Added to Follow Up: {}", spreadsheetId);
+				log.info("Data written successfully to spreadsheetId and Added to Follow Up: {}", sheetPropertyDto.getSheetId());
 				util.csrSmsSent(dto.getBasicInfo().getTraineeName(), dto.getBasicInfo().getContactNumber().toString());
 				boolean sent = util.csrEmailSent(dto);
 
@@ -80,18 +79,13 @@ public class CsrServiceImpl implements CsrService {
 	public void addToCache(TraineeDto dto, List<Object> list) {
 		cacheService.updateCache("sheetsData", "listOfTraineeData", list);
 		if (dto.getBasicInfo().getEmail() != null) {
-			cacheService.addEmailToCache("emailData", spreadsheetId, dto.getBasicInfo().getEmail());
+			cacheService.addEmailToCache("emailData", sheetPropertyDto.getSheetId(), dto.getBasicInfo().getEmail());
 		}
 		if (dto.getBasicInfo().getContactNumber() != null) {
-			cacheService.addContactNumberToCache("contactData", spreadsheetId, dto.getBasicInfo().getContactNumber());
+			cacheService.addContactNumberToCache("contactData", sheetPropertyDto.getSheetId(), dto.getBasicInfo().getContactNumber());
 		}
 		log.info("Saving birth details: {}", dto);
-		try {
-			service.saveBirthDayInfo(spreadsheetId, dto);
-		} catch (IllegalAccessException | IOException e) {
-
-			log.error("Exception in addToCache: {}", e.getMessage());
-		}
+		service.saveBirthDayInfo(dto);
 		cacheService.addContactNumberToCache("alternativeNumber", "listOfAlternativeContactNumbers",
 				dto.getCsrDto().getAlternateContactNumber());
 		cacheService.addEmailToCache("usnNumber", "listOfUsnNumbers", dto.getCsrDto().getUsnNumber());
@@ -126,11 +120,11 @@ public class CsrServiceImpl implements CsrService {
 	public boolean checkContactNumber(Long contactNumber) {
 		boolean isExists = false;
 		if (contactNumber != null) {
-			List<List<Object>> listOfC_number = repo.getContactNumbers(spreadsheetId);
-			List<List<Object>> listOfA_number = repo.getAlternativeNumber(spreadsheetId);
+			List<List<Object>> listOfC_number = repo.getContactNumbers(sheetPropertyDto.getSheetId());
+			List<List<Object>> listOfA_number = repo.getAlternativeNumber(sheetPropertyDto.getSheetId());
 			log.info("checking contact number is sheet {}", contactNumber);
 			isExists = containsContactNumber(listOfC_number, contactNumber)
-					|| containsContactNumber(listOfA_number, contactNumber); 
+					|| containsContactNumber(listOfA_number, contactNumber);
 		}
 		return isExists;
 	}
@@ -146,7 +140,7 @@ public class CsrServiceImpl implements CsrService {
 	public boolean checkUsnNumber(String usnNumber) {
 		log.info("check Usn Number,{} ", usnNumber);
 		if (usnNumber != null) {
-			List<List<Object>> listOfUsn = repo.getUsnNumber(spreadsheetId);
+			List<List<Object>> listOfUsn = repo.getUsnNumber(sheetPropertyDto.getSheetId());
 			return listOfUsn != null
 					&& listOfUsn.stream().filter(list -> list != null && !list.isEmpty() && list.get(0) != null)
 							.anyMatch(list -> list.get(0).toString().equalsIgnoreCase(usnNumber));
@@ -180,7 +174,7 @@ public class CsrServiceImpl implements CsrService {
 	public boolean checkUniqueNumber(String uniqueNumber) {
 		if (uniqueNumber != null) {
 			log.info("checking unique number,{}", uniqueNumber);
-			List<List<Object>> listOfUniqueNumber = repo.getUniqueNumbers(spreadsheetId);
+			List<List<Object>> listOfUniqueNumber = repo.getUniqueNumbers(sheetPropertyDto.getSheetId());
 			return listOfUniqueNumber != null && listOfUniqueNumber.stream()
 					.filter(list -> list != null && !list.isEmpty() && list.get(0) != null)
 					.anyMatch(list -> list.get(0).toString().equals(uniqueNumber));

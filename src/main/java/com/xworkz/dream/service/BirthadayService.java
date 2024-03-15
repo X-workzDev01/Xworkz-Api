@@ -1,18 +1,13 @@
 package com.xworkz.dream.service;
 
-import java.io.IOException;
-
-import org.springframework.http.ResponseEntity;
-
 import com.xworkz.dream.dto.TraineeDto;
 
 public interface BirthadayService {
 
-	void sendBirthdayEmails() throws IOException;
+	void sendBirthdayEmails();
 
-	ResponseEntity<String> saveBirthDayInfo(String spreadsheetId, TraineeDto dto)
-			throws IllegalAccessException, IOException;
+	String saveBirthDayInfo(TraineeDto dto);
 
-	boolean updateDob(TraineeDto dto);
+	boolean updateDob(String email,TraineeDto dto);
 
 }

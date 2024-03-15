@@ -1,6 +1,5 @@
 package com.xworkz.dream.wrapper;
 
-import java.io.IOException;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -93,7 +92,6 @@ public class BatchWrapper {
 				dto.setTotalClass(detailsDto.getTotalClass());
 			}
 
-			try {
 				int rowIndex = findIndex(updateBatchValue.getCourseName());
 				String range = batchDetailsSheetName + batchDetailsStartRange + rowIndex + ":" + batchDetailsEndRange
 						+ rowIndex;
@@ -109,16 +107,12 @@ public class BatchWrapper {
 				valueRange.setValues(values);
 				cacheService.updateCacheBatch("batchDetails", "listOfBatch", dto.getCourseName(), dto);
 				repository.updateBatchDetails(sheetId, range, valueRange);
-
-			} catch (IllegalAccessException | IOException e) {
-				log.error(e.getMessage());
-			}
 		}
 		return "Batch Details updated successfully";
 
 	}
 
-	private int findIndex(String courseName) throws IOException {
+	private int findIndex(String courseName){
 		List<List<Object>> data = repository.getCourseDetails(sheetId);
 		if (data != null) {
 			if (data != null && !data.isEmpty()) {
