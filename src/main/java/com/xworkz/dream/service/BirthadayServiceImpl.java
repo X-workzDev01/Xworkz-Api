@@ -1,10 +1,16 @@
 package com.xworkz.dream.service;
-
+import java.io.IOException;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Comparator;
+import java.util.Iterator;
 import java.util.List;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
@@ -15,6 +21,11 @@ import org.springframework.stereotype.Service;
 import com.google.api.services.sheets.v4.model.ValueRange;
 import com.xworkz.dream.constants.ServiceConstant;
 import com.xworkz.dream.dto.BirthDayInfoDto;
+import com.xworkz.dream.dto.BirthdayDataDto;
+import com.xworkz.dream.dto.BirthdayDetailsDto;
+import com.xworkz.dream.dto.TraineeDto;
+import com.xworkz.dream.repository.BirthadayRepository;
+import com.xworkz.dream.repository.RegisterRepository;
 import com.xworkz.dream.dto.SheetPropertyDto;
 import com.xworkz.dream.dto.TraineeDto;
 import com.xworkz.dream.repository.BirthadayRepository;
@@ -28,6 +39,8 @@ public class BirthadayServiceImpl implements BirthadayService {
 
 	@Autowired
 	private BirthadayRepository repository;
+	@Autowired
+	private RegisterRepository registerRepository;
 	@Autowired
 	private DreamUtil util;
 	@Autowired
@@ -208,6 +221,46 @@ public class BirthadayServiceImpl implements BirthadayService {
 		}
 		log.info("Email {} not found in the spreadsheet.", email);
 		return -1;
+	}
+
+	@Override
+	public BirthdayDataDto getBirthdays(String spreadsheetId, int startingIndex, int maxRows, String date,
+			String courseName) {
+
+		List<TraineeDto> listOfTrainees = registerRepository.readData(spreadsheetId).stream().map(wrapper::listToDto)
+				.collect(Collectors.toList());
+		BirthdayDataDto dataDto = new BirthdayDataDto();
+		List<BirthdayDetailsDto> listofBirthdays = new ArrayList<>();
+
+		for (TraineeDto traineeDto : listOfTrainees) {
+			BirthdayDetailsDto dto = new BirthdayDetailsDto();
+			dto.setBasicInfoDto(traineeDto.getBasicInfo());
+			dto.setCourseName(traineeDto.getCourseInfo().getCourse());
+			listofBirthdays.add(dto);
+		}
+
+		Predicate<BirthdayDetailsDto> predicate = null;
+		DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("MM-dd");
+
+		if (!courseName.equals("null") && date.equals("null")) {
+			predicate = dto -> dto.getCourseName().equalsIgnoreCase(courseName);
+		}
+
+		if (courseName.equals("null") && !date.equals("null")) {
+			predicate = dto -> LocalDate.parse(dto.getBasicInfoDto().getDateOfBirth()).format(dateFormatter).toString()
+					.equals(LocalDate.parse(date).format(dateFormatter).toString());
+
+		}
+		if (predicate != null) {
+			listofBirthdays = listofBirthdays.stream().filter(predicate).collect(Collectors.toList());
+		}
+
+		List<BirthdayDetailsDto> limitedRows = listofBirthdays.stream().skip(startingIndex).limit(maxRows)
+				.collect(Collectors.toList());
+
+		dataDto.setListofBirthdays(limitedRows);
+		dataDto.setSize(listofBirthdays.size());
+		return dataDto;
 	}
 
 }
