@@ -34,7 +34,7 @@ public class NotificationController {
 	
 	@GetMapping("/feesNotification")
 	public ResponseEntity<FeesNotificationDto> getFeesFollowupNotification(@RequestParam String email) throws IOException {
-		log.info("Request received for notification with email: {}", email);
+		log.info("Request received for fees notification with email: {}", email);
 		return ResponseEntity.ok(notificationService.feesNotification(email));
 
 	}

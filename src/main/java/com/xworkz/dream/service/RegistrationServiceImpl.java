@@ -159,12 +159,10 @@ public class RegistrationServiceImpl implements RegistrationService {
 			String collegeName, String followupStatus) {
 		SheetsDto traineeData = new SheetsDto();
 		List<TraineeDto> traineeDetails = traineeData();
-		List<TraineeDto> traineeDtos = traineeDetails.stream()
-				.sorted(Comparator.comparing(
-						trainee -> trainee != null ? trainee.getOthersDto().getRegistrationDate() : "",
-						Comparator.reverseOrder())
-
-				).collect(Collectors.toList());
+		Comparator<TraineeDto> registrationDateComparator = Comparator
+				.comparing(trainee -> trainee.getOthersDto().getRegistrationDate());
+		List<TraineeDto> traineeDtos = traineeDetails.stream().sorted(registrationDateComparator.reversed())
+				.collect(Collectors.toList());
 
 		if (traineeDtos != null) {
 			if (!courseName.equalsIgnoreCase(ServiceConstant.NULL.toString())

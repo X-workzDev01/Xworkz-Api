@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<title>Candidate Attendance FollowUP Content</title>
+</head>
+<body>
+	<h3>Hi Team,</h3>
+	 <p>Please arrange Attendance FollowUp for the following candidates:</p>
+<p style="color: red;">This trainee has been absent for three consecutive days. Please follow up with them.</p>
+ <table border="1">
+		<thead style="background-color: yellow;">
+			<tr>
+				<th>Id</th>
+				<th>Candidate Name</th>
+				<th>Email</th>
+				<th>Batch</th>
+				<th>Contact No</th>
+			</tr>
+		</thead>
+			<tbody>
+			<tr th:each="dto : ${traineeDto}">
+				<td th:text="${dto.id}"></td>
+				<td th:text="${dto.basicInfo.traineeName}"></td>
+				<td th:text="${dto.basicInfo.email}"></td>
+				<td th:text="${dto.courseInfo.course}"></td>
+				<td th:text="${dto.basicInfo.contactNumber}"></td> 
+			</tr>
+		</tbody> 
+	</table>
+   
+	<p>This is an auto-generated email. Please do not reply. To update the status, click on the link below:</p>
+	<p>
+		Link: <a href="ombn.in/x-workz">https://ombn.in/x-workz/login</a>
+	</p>
+
+	<h3>Thank You</h3>
+</body>
+</html>

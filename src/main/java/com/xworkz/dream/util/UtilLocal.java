@@ -113,4 +113,10 @@ public class UtilLocal implements DreamUtil {
 		return false;
 	}
 
+	@Override
+	public Boolean sendEmailNotificationForAttendanceFollowUp(List<TraineeDto> traineeDtos) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
 }
