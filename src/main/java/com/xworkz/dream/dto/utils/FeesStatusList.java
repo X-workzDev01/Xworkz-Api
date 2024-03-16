@@ -15,7 +15,7 @@ import lombok.Setter;
 @Data
 public class FeesStatusList {
 
-	private List<String> statusList = Stream.of(Status.FEES_DUE.toString().replace('_', ' '), Status.PENDING.toString())
+	private List<String> statusList = Stream.of(Status.FEES_DUE.toString(), Status.PENDING.toString())
 			.collect(Collectors.toList());
 
 }

@@ -30,7 +30,6 @@ import com.xworkz.dream.dto.AttendanceTrainee;
 import com.xworkz.dream.dto.AttendanceViewDto;
 import com.xworkz.dream.service.AttendanceService;
 import com.xworkz.dream.service.BatchAttendanceService;
-import com.xworkz.dream.service.BatchService;
 
 import io.swagger.annotations.ApiOperation;
 
@@ -39,8 +38,6 @@ import io.swagger.annotations.ApiOperation;
 public class AttendanceController {
 	@Autowired
 	private AttendanceService attendanceService;
-	@Autowired
-	private BatchService batchService;
 	@Autowired
 	private BatchAttendanceService batchAttendanceService;
 	@Value("${login.sheetId}")
@@ -76,10 +73,11 @@ public class AttendanceController {
 	public ResponseEntity<AbsentDto> getAbsentDetails(@PathVariable Integer id, @RequestParam String batch)
 			throws IOException {
 		List<AbsentDaysDto> listOfAbsentDays = attendanceService.getAttendanceById(id);
-		Integer gettotalClassByCourseName = batchService.gettotalClassByCourseName(batch);
+		Map<Integer, Boolean> batchAttendanceDetails = batchAttendanceService.getBatchAttendanceDetails(batch);
 		AbsentDto absentDto = new AbsentDto();
 		absentDto.setList(listOfAbsentDays);
-		absentDto.setTotalClass(gettotalClassByCourseName);
+		batchAttendanceDetails.entrySet().stream()
+	    .forEach(entry ->	absentDto.setTotalClass(entry.getKey()));
 		ResponseEntity<AbsentDto> responseEntity = new ResponseEntity<AbsentDto>(absentDto, HttpStatus.OK);
 		return responseEntity;
 	}
@@ -141,5 +139,6 @@ public class AttendanceController {
 		Map<Integer, Boolean> batchAttendanceDetails = batchAttendanceService.getBatchAttendanceDetails(courseName);
 		return batchAttendanceDetails;
 	}
+	
 
 }
