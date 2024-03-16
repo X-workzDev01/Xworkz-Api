@@ -127,7 +127,7 @@ public class UtilProd implements DreamUtil {
 
 		return true;
 	}
-	
+
 	@Override
 	public boolean sendFeesNotificationToEmail(List<Team> teamList, List<FeesDto> notificationStatus) {
 		// TODO Auto-generated method stub
@@ -197,13 +197,15 @@ public class UtilProd implements DreamUtil {
 
 	@Override
 
-	public void sendBirthadyEmail(String traineeEmail, String subject, String name) {
+	public boolean sendBirthadyEmail(String traineeEmail, String subject, String name) {
 
 		if (traineeEmail == null || name == null) {
 			logger.warn("Email or name is null");
-
+			return false;
+		} else {
+			sendBirthadyEmailChimp(traineeEmail, subject, name);
+			return true;
 		}
-		sendBirthadyEmailChimp(traineeEmail, subject, name);
 	}
 
 	@Override
@@ -457,6 +459,5 @@ public class UtilProd implements DreamUtil {
 		return false;
 
 	}
-
 
 }

@@ -126,7 +126,6 @@ public class BatchServiceImpl implements BatchService {
 	@Override
 	public ResponseEntity<List<Object>> getCourseNameByStatus(String spreadsheetId, String status) {
 		List<List<Object>> courseNameByStatus;
-		try {
 			courseNameByStatus = repository.getCourseDetails(spreadsheetId);
 			List<Object> coursename = new ArrayList<Object>();
 			if (courseNameByStatus != null) {
@@ -144,10 +143,6 @@ public class BatchServiceImpl implements BatchService {
 				log.info("No course names found for status: {}", status);
 				return null;
 			}
-		} catch (IOException e) {
-			log.error("An IOException occurred: {}", e.getMessage());
-			return null;
-		}
 	}
 
 	@Override

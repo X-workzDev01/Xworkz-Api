@@ -190,13 +190,16 @@ public class UtilPreProd implements DreamUtil {
 
 	@Override
 
-	public void sendBirthadyEmail(String traineeEmail, String subject, String name) {
+	public boolean sendBirthadyEmail(String traineeEmail, String subject, String name) {
 
 		if (traineeEmail == null || name == null) {
 			logger.warn("Email or name is null");
+			return false;
 
+		} else {
+			sendBirthadyEmailChimp(traineeEmail, subject, name);
+			return true;
 		}
-		sendBirthadyEmailChimp(traineeEmail, subject, name);
 	}
 
 	@Override
