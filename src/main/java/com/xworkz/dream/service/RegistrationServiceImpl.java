@@ -3,7 +3,6 @@ package com.xworkz.dream.service;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import java.util.ListIterator;
@@ -12,7 +11,6 @@ import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -21,7 +19,7 @@ import com.google.api.services.sheets.v4.model.UpdateValuesResponse;
 import com.google.api.services.sheets.v4.model.ValueRange;
 import com.xworkz.dream.constants.ServiceConstant;
 import com.xworkz.dream.dto.CSR;
-import com.xworkz.dream.dto.OthersDto;
+import com.xworkz.dream.dto.SheetPropertyDto;
 import com.xworkz.dream.dto.SheetsDto;
 import com.xworkz.dream.dto.TraineeDto;
 import com.xworkz.dream.repository.FollowUpRepository;
@@ -32,8 +30,6 @@ import com.xworkz.dream.wrapper.DreamWrapper;
 
 @Service
 public class RegistrationServiceImpl implements RegistrationService {
-	@Value("${login.sheetId}")
-	private String sheetId;
 	@Autowired
 	private RegisterRepository repo;
 	@Autowired
@@ -44,12 +40,6 @@ public class RegistrationServiceImpl implements RegistrationService {
 	private BirthadayService service;
 	@Autowired
 	private FollowUpService followUpService;
-	@Value("${sheets.rowStartRange}")
-	private String rowStartRange;
-	@Value("${sheets.rowEndRange}")
-	private String rowEndRange;
-	@Value("${sheets.traineeSheetName}")
-	private String traineeSheetName;
 	@Autowired
 	private CacheService cacheService;
 	@Autowired
@@ -58,6 +48,8 @@ public class RegistrationServiceImpl implements RegistrationService {
 	private RegistrationUtil registrationUtil;
 	@Autowired
 	private FollowUpRepository followupRepo;
+	@Autowired
+	private SheetPropertyDto sheetPropertyDto;
 
 	private static final Logger log = LoggerFactory.getLogger(DreamServiceImpl.class);
 
@@ -87,7 +79,7 @@ public class RegistrationServiceImpl implements RegistrationService {
 			if (status) {
 				log.info("Data written successfully to spreadsheetId and Added to Follow Up: {}");
 				log.info("saving birthday information", dto);
-				service.saveBirthDayInfo(spreadsheetId, dto);
+				service.saveBirthDayInfo(dto);
 				boolean sent = util.sendCourseContent(dto.getBasicInfo().getEmail(),
 						dto.getBasicInfo().getTraineeName());
 
@@ -255,8 +247,8 @@ public class RegistrationServiceImpl implements RegistrationService {
 	}
 
 	private List<TraineeDto> traineeData() {
-		List<List<Object>> dataList = repo.readData(sheetId);
-		List<List<Object>> followupList = followupRepo.getFollowUpDetails(sheetId);
+		List<List<Object>> dataList = repo.readData(sheetPropertyDto.getSheetId());
+		List<List<Object>> followupList = followupRepo.getFollowUpDetails(sheetPropertyDto.getSheetId());
 		List<TraineeDto> listOfTrainee = registrationUtil.readOnlyActiveData(dataList);
 		List<TraineeDto> traineeDtos = listOfTrainee.stream()
 				.peek(traineeDto -> followupList.stream().map(wrapper::listToFollowUpDTO)
@@ -483,7 +475,8 @@ public class RegistrationServiceImpl implements RegistrationService {
 			int rowIndex = findRowIndexByEmail(spreadsheetId, email);
 			if (rowIndex != -1) {
 				log.info("Found row index {} for email: {}", rowIndex, email);
-				String range = traineeSheetName + rowStartRange + rowIndex + ":" + rowEndRange + rowIndex;
+				String range = sheetPropertyDto.getTraineeSheetName() + sheetPropertyDto.getRowStartRange() + rowIndex
+						+ ":" + sheetPropertyDto.getRowEndRange() + rowIndex;
 				List<List<Object>> values = Arrays.asList(wrapper.extractDtoDetails(dto));
 				if (!values.isEmpty()) {
 					List<Object> modifiedValues = new ArrayList<>(values.get(0).subList(1, values.get(0).size()));
@@ -493,7 +486,7 @@ public class RegistrationServiceImpl implements RegistrationService {
 				valueRange.setValues(values);
 
 				UpdateValuesResponse updated = repo.update(spreadsheetId, range, valueRange);
-				boolean updateDob = service.updateDob(dto);
+				boolean updateDob = service.updateDob(email, dto);
 
 				log.info("updated DOB in Sheet,{}", updateDob);
 				if (updated != null && !updated.isEmpty()) {
@@ -621,7 +614,7 @@ public class RegistrationServiceImpl implements RegistrationService {
 	@Override
 	public String checkworkzEmail(String email) {
 		log.debug("checkworkzEmail:{}", email);
-		List<List<Object>> listOfTraineeData = repo.readData(sheetId);
+		List<List<Object>> listOfTraineeData = repo.readData(sheetPropertyDto.getSheetId());
 		if (listOfTraineeData != null && email != null) {
 			TraineeDto dto = listOfTraineeData.stream().map(wrapper::listToDto)
 					.filter(traineeDto -> traineeDto != null && traineeDto.getOthersDto() != null
@@ -634,7 +627,7 @@ public class RegistrationServiceImpl implements RegistrationService {
 				return "Email Not Exist";
 			}
 		}
-		return null;
+		return "Email Not Exist";
 	}
 
 }

@@ -5,7 +5,6 @@ import java.util.List;
 import com.xworkz.dream.dto.AttendanceDto;
 import com.xworkz.dream.dto.BatchDetailsDto;
 import com.xworkz.dream.dto.FollowUpDto;
-import com.xworkz.dream.dto.StatusDto;
 import com.xworkz.dream.dto.TraineeDto;
 
 public interface CacheService {
@@ -13,10 +12,9 @@ public interface CacheService {
 
 	public void EmailUpdate(String cacheName, String key, String oldEmail, String newEmail);
 
-	void getCacheDataByEmail(String cacheName, String key, String email, TraineeDto dto) throws IllegalAccessException;
+	void getCacheDataByEmail(String cacheName, String key, String email, TraineeDto dto);
 
-	void updateCacheFollowUp(String cacheName, String key, String email, FollowUpDto followUpDto)
-			throws IllegalAccessException;
+	void updateCacheFollowUp(String cacheName, String key, String email, FollowUpDto followUpDto);
 
 	void updateFollowUpStatus(String cacheName, String spreadsheetId, String email, List<Object> statusData);
 
@@ -30,15 +28,12 @@ public interface CacheService {
 
 	void addContactNumberToCache(String cacheName, String spreadSheetId, Long contactNumber);
 
-	public void getCacheDataByEmail(String cacheName, String key, String oldEmail, String newEmail)
-			throws IllegalAccessException;
+	public void getCacheDataByEmail(String cacheName, String key, String oldEmail, String newEmail);
 
 	public void addAttendancdeToCache(String cacheName, String key, List<Object> data);
 
-	public void updateCacheAttendancde(String cacheName, String key, Integer id, AttendanceDto dto)
-			throws IllegalAccessException;
+	public void updateCacheAttendancde(String cacheName, String key, Integer id, AttendanceDto dto);
 
-	public void updateCacheBatch(String cacheName, String key, String courseNAME, BatchDetailsDto dto)
-			throws IllegalAccessException;
+	public void updateCacheBatch(String cacheName, String key, String courseNAME, BatchDetailsDto dto);
 
 }

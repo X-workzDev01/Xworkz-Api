@@ -31,12 +31,12 @@ public class ClientCacheServiceImpl implements ClientCacheService {
 				List<List<Object>> cacheData = ((List<List<Object>>) valueWrapper.get());
 				int size = (((List<List<Object>>) valueWrapper.get()).size());
 				if (cacheData.get(0).contains("#NUM!")) {
-					log.info("adding into Cache:{}"+data);
+					log.info("adding into Cache:{}" ,data);
 					cacheData.remove(0);
 					data.set(0, size);
 					((List<List<Object>>) valueWrapper.get()).add(data);
 				} else {
-					log.info("adding into Cache:{}"+data);
+					log.info("adding into Cache:{}", data);
 					data.set(0, size + 1);
 					((List<List<Object>>) valueWrapper.get()).add(data);
 				}
@@ -60,11 +60,11 @@ public class ClientCacheServiceImpl implements ClientCacheService {
 					cacheData.remove(0);
 					data.set(0, size);
 					((List<List<Object>>) valueWrapper.get()).add(data);
-					log.info("adding into Cache:{}"+data);
+					log.info("adding into Cache:{}",data);
 				} else {
 					data.set(0, size + 1);
 					((List<List<Object>>) valueWrapper.get()).add(data);
-					log.info("adding into Cache:{}"+data);
+					log.info("adding into Cache:{}", data);
 				}
 			}
 		}
@@ -72,7 +72,7 @@ public class ClientCacheServiceImpl implements ClientCacheService {
 
 	@SuppressWarnings("unchecked")
 	@Override
-	public void updateClientDetailsInCache(String cacheName, String key,List<Object> list) {
+	public void updateClientDetailsInCache(String cacheName, String key, List<Object> list) {
 		Cache cache = cacheManager.getCache(cacheName);
 		log.info("cache name: {}, cache key: {}", cacheName, key);
 
@@ -130,7 +130,7 @@ public class ClientCacheServiceImpl implements ClientCacheService {
 	@SuppressWarnings("unchecked")
 	@Override
 	public void addHrFollowUpToCache(String cacheName, String key, List<Object> data) {
-		
+
 		Cache cache = cacheManager.getCache(cacheName);
 		log.info("cache name: {}, cache key: {}", cacheName, key);
 		if (cache != null) {
@@ -142,11 +142,11 @@ public class ClientCacheServiceImpl implements ClientCacheService {
 					cacheData.remove(0);
 					data.set(0, size);
 					((List<List<Object>>) valueWrapper.get()).add(data);
-					log.info("adding into Cache:{}"+data);
+					log.info("adding into Cache:{}" ,data);
 				} else {
 					data.set(0, size + 1);
 					((List<List<Object>>) valueWrapper.get()).add(data);
-					log.info("adding into Cache:{}"+data);
+					log.info("adding into Cache:{}" ,data);
 				}
 			}
 		}
@@ -158,14 +158,18 @@ public class ClientCacheServiceImpl implements ClientCacheService {
 		Cache cache = cacheManager.getCache(cacheName);
 		if (cache != null) {
 			log.info("Email added into cache {} ", value);
-
 			ValueWrapper valueWrapper = cache.get(key);
+			List<List<Object>> cacheValue;
 			if (valueWrapper != null && valueWrapper.get() instanceof List) {
-				List<Object> valueList = new ArrayList<Object>(Arrays.asList(value));
-				((List<List<Object>>) valueWrapper.get()).add(valueList);
+				cacheValue = (List<List<Object>>) valueWrapper.get();
+			} else {
+				cacheValue = new ArrayList<>();
 			}
+			List<Object> valueList = new ArrayList<>(Arrays.asList((Object) value));
+			cacheValue.add(valueList);
+			cache.put(key, cacheValue);
+			log.info("Email: {} added to cache with key: {}", value, key);
 		}
-
 	}
 
 	@Override

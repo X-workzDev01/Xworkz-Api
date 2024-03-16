@@ -31,10 +31,11 @@ sheets:
   batchIdRange: batchDetails!A2:A 
 
   dateOfBirthDetailsSheetName: dateOfBirthDetails!
-  dateOfBirthDetailsRange: dateOfBirthDetails!A2:E
+  dateOfBirthDetailsRange: dateOfBirthDetails!A2:G
   birthdayRange: dateOfBirthDetails!A2:A
   birthDayStartRow: B
-  birthDayEndRow: J
+  birthDayEndRow: G
+  birthDayEmailRange: dateOfBirthDetails!B2:B
 
   followUpStatusIdRange: followUpStatus!A2:A
   batchDetailsCourseNameRange: batchDetails!B2:B
