@@ -29,7 +29,7 @@ import com.xworkz.dream.wrapper.DreamWrapper;
 
 public class BirthadayServiceImpl implements BirthadayService {
 
-	@Autowired
+	@Autowired 
 	private BirthadayRepository repository;
 	@Autowired
 	private DreamUtil util;

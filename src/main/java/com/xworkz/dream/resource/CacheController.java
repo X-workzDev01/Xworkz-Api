@@ -1,5 +1,7 @@
 package com.xworkz.dream.resource;
 
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.util.List;
 
 import org.slf4j.Logger;
@@ -18,6 +20,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.itextpdf.text.Document;
+import com.itextpdf.text.DocumentException;
+import com.itextpdf.text.Paragraph;
+import com.itextpdf.text.pdf.PdfWriter;
 import com.xworkz.dream.service.CacheServiceImpl;
 
 @RestController
@@ -78,6 +84,24 @@ public class CacheController {
 			log.warn("Cache '{}' not found.", cacheName);
 			return "Cache '" + cacheName + "' not found.";
 		}
+	}
+
+	@GetMapping("/downloadPdf")
+	public String downloadPdf() {
+		Document document = new Document();
+		try {
+			PdfWriter writer = PdfWriter.getInstance(document, new FileOutputStream("HelloWorld.pdf"));
+			document.open();
+			document.add(new Paragraph("A Hello World PDF document."));
+			System.out.println("pdf generated Successfully"+document);
+			document.close();
+			writer.close();
+		} catch (DocumentException e) {
+			e.printStackTrace();
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		}
+		return "Download Succesdsfully";
 	}
 
 }

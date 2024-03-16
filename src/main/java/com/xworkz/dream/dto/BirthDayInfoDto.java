@@ -11,6 +11,5 @@ public class BirthDayInfoDto {
 	@JsonProperty("basicInfo")
 	private BasicInfoDto dto;
 	private String birthDayMailSent;
-	private AuditDto auditDto;
-	
+	private AuditDto auditDto;	
 }

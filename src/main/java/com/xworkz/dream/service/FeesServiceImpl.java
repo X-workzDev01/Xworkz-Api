@@ -29,7 +29,6 @@ import com.xworkz.dream.wrapper.FeesDetilesWrapper;
 
 @Service
 public class FeesServiceImpl implements FeesService {
-
 	@Autowired
 	private WrapperUtil util;
 	@Autowired
@@ -165,7 +164,7 @@ public class FeesServiceImpl implements FeesService {
 
 	}
 
-	@Override
+	@Override 
 	public String updateNameAndEmail(Integer feesConcession, String traineeName, String oldEmail, String newEmail,
 			String updatedBy) {
 		List<FeesDto> feesDetailsByemail = getFeesDetailsByemail(oldEmail, feesFinalDtoRanges.getFeesEmailRange());
@@ -174,9 +173,9 @@ public class FeesServiceImpl implements FeesService {
 		feesDetailsByemail.stream().forEach(existingDto -> {
 			updateUtil.updateBasedOnEditEmail(feesConcession, traineeName, oldEmail, newEmail, updatedBy, existingDto,
 					filteredData);
-		});
-
-		return "Updated Sucessfully";
+		});  
+ 
+		return "Updated Sucessfully"; 
 	}
 
 }
