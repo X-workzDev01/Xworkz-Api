@@ -1,14 +1,9 @@
 package com.xworkz.dream.service;
-import java.io.IOException;
-import java.text.DateFormat;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
+
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Comparator;
-import java.util.Iterator;
 import java.util.List;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
@@ -23,13 +18,11 @@ import com.xworkz.dream.constants.ServiceConstant;
 import com.xworkz.dream.dto.BirthDayInfoDto;
 import com.xworkz.dream.dto.BirthdayDataDto;
 import com.xworkz.dream.dto.BirthdayDetailsDto;
-import com.xworkz.dream.dto.TraineeDto;
-import com.xworkz.dream.repository.BirthadayRepository;
-import com.xworkz.dream.repository.RegisterRepository;
 import com.xworkz.dream.dto.SheetPropertyDto;
 import com.xworkz.dream.dto.TraineeDto;
 import com.xworkz.dream.repository.BirthadayRepository;
 import com.xworkz.dream.repository.RegisterRepository;
+import com.xworkz.dream.service.util.BirthdayUtil;
 import com.xworkz.dream.service.util.RegistrationUtil;
 import com.xworkz.dream.util.DreamUtil;
 import com.xworkz.dream.wrapper.DreamWrapper;
@@ -39,8 +32,6 @@ public class BirthadayServiceImpl implements BirthadayService {
 
 	@Autowired
 	private BirthadayRepository repository;
-	@Autowired
-	private RegisterRepository registerRepository;
 	@Autowired
 	private DreamUtil util;
 	@Autowired
@@ -53,6 +44,8 @@ public class BirthadayServiceImpl implements BirthadayService {
 	private RegisterRepository registrationRepo;
 	@Autowired
 	private RegistrationUtil registrationUtil;
+	@Autowired
+	private BirthdayUtil birthdayUtil;
 	private static final Logger log = LoggerFactory.getLogger(BirthadayServiceImpl.class);
 
 	@Override
@@ -97,7 +90,7 @@ public class BirthadayServiceImpl implements BirthadayService {
 						System.out.println(name + ":" + email);
 						boolean mailSent = util.sendBirthadyEmail(email, subject, name);
 						if (mailSent) {
-							log.info("Birthday mail sent successfully:{}",mailSent);
+							log.info("Birthday mail sent successfully:{}", mailSent);
 							updateMailStatus(email);
 						}
 					});
@@ -108,18 +101,19 @@ public class BirthadayServiceImpl implements BirthadayService {
 
 	private List<TraineeDto> getTraineeDetails(DateTimeFormatter dateFormatter, List<List<Object>> listOfDetails,
 			List<TraineeDto> listofDtos, List<String> listOfEmail) {
-		List<TraineeDto> matchingTrainees = listofDtos.stream()
-				.filter(traineeDto -> traineeDto != null && traineeDto.getBasicInfo() != null
-						&& traineeDto.getBasicInfo().getEmail() != null
-						&& listOfEmail.contains(traineeDto.getBasicInfo().getEmail())
-						&& listOfDetails.stream().map(wrapper::listToBirthDayInfo)
-								.anyMatch(birthDayInfoDto -> birthDayInfoDto.getTraineeEmail()
-										.equalsIgnoreCase(traineeDto.getBasicInfo().getEmail())
-										&& !traineeDto.getBasicInfo().getDateOfBirth()
-												.equals(ServiceConstant.NA.toString())
-										&& !traineeDto.getBasicInfo().getEmail().contains("@dummy.com")
-										&& LocalDate.parse(traineeDto.getBasicInfo().getDateOfBirth(),
-												dateFormatter).isEqual(LocalDate.now())))
+		List<TraineeDto> matchingTrainees = listofDtos
+				.stream().filter(
+						traineeDto -> traineeDto != null && traineeDto.getBasicInfo() != null
+								&& traineeDto.getBasicInfo().getEmail() != null
+								&& listOfEmail.contains(traineeDto.getBasicInfo().getEmail())
+								&& listOfDetails.stream().map(wrapper::listToBirthDayInfo)
+										.anyMatch(birthDayInfoDto -> birthDayInfoDto.getTraineeEmail()
+												.equalsIgnoreCase(traineeDto.getBasicInfo().getEmail())
+												&& !traineeDto.getBasicInfo().getDateOfBirth()
+														.equals(ServiceConstant.NA.toString())
+												&& !traineeDto.getBasicInfo().getEmail().contains("@dummy.com")
+												&& LocalDate.parse(traineeDto.getBasicInfo().getDateOfBirth(),
+														dateFormatter).isEqual(LocalDate.now())))
 				.collect(Collectors.toList());
 		return matchingTrainees;
 	}
@@ -225,42 +219,40 @@ public class BirthadayServiceImpl implements BirthadayService {
 
 	@Override
 	public BirthdayDataDto getBirthdays(String spreadsheetId, int startingIndex, int maxRows, String date,
-			String courseName) {
-
-		List<TraineeDto> listOfTrainees = registerRepository.readData(spreadsheetId).stream().map(wrapper::listToDto)
+			String courseName, String month) {
+		List<BirthDayInfoDto> mailSentList = repository.getBirthadayDetails(spreadsheetId).stream()
+				.map(wrapper::listToBirthDayInfo).collect(Collectors.toList());
+		List<TraineeDto> listOfTrainees = registrationRepo.readData(spreadsheetId).stream().map(wrapper::listToDto)
 				.collect(Collectors.toList());
-		BirthdayDataDto dataDto = new BirthdayDataDto();
-		List<BirthdayDetailsDto> listofBirthdays = new ArrayList<>();
+		List<BirthdayDetailsDto> listofBirthday = new ArrayList<>();
 
-		for (TraineeDto traineeDto : listOfTrainees) {
-			BirthdayDetailsDto dto = new BirthdayDetailsDto();
-			dto.setBasicInfoDto(traineeDto.getBasicInfo());
-			dto.setCourseName(traineeDto.getCourseInfo().getCourse());
-			listofBirthdays.add(dto);
-		}
+		listOfTrainees.stream().forEach(dto -> {
+			if (dto.getBasicInfo() != null && dto.getCourseInfo().getCourse() != null) {
+				listofBirthday.add(
+						new BirthdayDetailsDto(dto.getId(), dto.getBasicInfo(), dto.getCourseInfo().getCourse(),null));
+			}
+		});
+		
+		listofBirthday.stream().forEach(dto -> {
+			mailSentList.stream().forEach(d -> {
+				if (d.getTraineeEmail().equalsIgnoreCase(dto.getBasicInfoDto().getEmail())) {
+					dto.setBirthDayMailSent(d.getBirthDayMailSent());
+				}
+			});
+		});
 
-		Predicate<BirthdayDetailsDto> predicate = null;
-		DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("MM-dd");
-
-		if (!courseName.equals("null") && date.equals("null")) {
-			predicate = dto -> dto.getCourseName().equalsIgnoreCase(courseName);
-		}
-
-		if (courseName.equals("null") && !date.equals("null")) {
-			predicate = dto -> LocalDate.parse(dto.getBasicInfoDto().getDateOfBirth()).format(dateFormatter).toString()
-					.equals(LocalDate.parse(date).format(dateFormatter).toString());
-
-		}
+		Predicate<BirthdayDetailsDto> predicate = birthdayUtil.predicateBySelected(date, courseName, month);
 		if (predicate != null) {
-			listofBirthdays = listofBirthdays.stream().filter(predicate).collect(Collectors.toList());
+			List<BirthdayDetailsDto> filteredList = listofBirthday.stream().filter(predicate)
+					.collect(Collectors.toList());
+			List<BirthdayDetailsDto> limitedRows = filteredList.stream().skip(startingIndex).limit(maxRows)
+					.collect(Collectors.toList());
+			return new BirthdayDataDto(limitedRows, filteredList.size());
 		}
-
-		List<BirthdayDetailsDto> limitedRows = listofBirthdays.stream().skip(startingIndex).limit(maxRows)
+		List<BirthdayDetailsDto> limitedRows = listofBirthday.stream().skip(startingIndex).limit(maxRows)
 				.collect(Collectors.toList());
 
-		dataDto.setListofBirthdays(limitedRows);
-		dataDto.setSize(listofBirthdays.size());
-		return dataDto;
+		return new BirthdayDataDto(limitedRows, listofBirthday.size());
 	}
 
 }

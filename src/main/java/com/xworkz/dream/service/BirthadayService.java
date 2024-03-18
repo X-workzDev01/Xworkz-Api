@@ -10,6 +10,6 @@ public interface BirthadayService {
 
 	boolean updateDob(String email,TraineeDto dto);
 
-	BirthdayDataDto getBirthdays(String spreadsheetId, int startingIndex, int maxRows, String date, String courseName);
+	BirthdayDataDto getBirthdays(String spreadsheetId, int startingIndex, int maxRows, String date, String courseName,String month);
 
 }

@@ -13,8 +13,9 @@ import lombok.ToString;
 @AllArgsConstructor
 public class BirthdayDetailsDto {
 
+	private int id;
 	private BasicInfoDto basicInfoDto;
 	private String courseName;
-
+	private String birthDayMailSent;
 
 }
