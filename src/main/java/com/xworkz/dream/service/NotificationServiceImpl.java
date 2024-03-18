@@ -165,8 +165,7 @@ public class NotificationServiceImpl implements NotificationService {
 		FeesStatusList list = new FeesStatusList();
 		List<String> statusCheck = list.getStatusList();
 		DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-//		LocalTime time = LocalTime.of(16, 59, 01, 500_000_000);
-		LocalTime time = LocalTime.now();
+		LocalTime time = LocalTime.of(16, 59, 01, 500_000_000);
 		List<FeesDto> notificationStatus = new ArrayList<FeesDto>();
 		List<FeesDto> today = new ArrayList<FeesDto>();
 		List<FeesDto> yesterday = new ArrayList<FeesDto>();

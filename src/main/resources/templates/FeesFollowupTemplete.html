@@ -1,5 +1,6 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org">
 <head>
 <title>Candidate Fees FollowUP Content</title>
 </head>
@@ -15,17 +16,17 @@
 				<th>Candidate Name</th>
 				<th>Email</th>
 				<th>Call Back Date</th>
-				
+
 			</tr>
 		</thead>
 		<tbody>
 
 			<tr th:each="dto : ${listDto}">
 				<td th:text="${dto.id}"></td>
-				<td th:text=${dto.basicInfo.traineeName}></td>
-				<td th:text="${dto.basicInfo.email}"></td>
-				<td th:text="${dto.getCallback()}"></td>
-		
+				<td th:text=${dto.name}></td>
+				<td th:text="${dto.feesHistoryDto.email}"></td>
+				<td th:text="${dto.FeesHistoryDto.followupCallbackDate}"></td>
+
 
 
 
