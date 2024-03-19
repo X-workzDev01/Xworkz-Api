@@ -896,7 +896,7 @@ public class DreamWrapper {
 			int rowSize = row.size();
 			if (rowSize > 1) {
 				if (rowSize > BirthDayConstant.COLUMN_ID.getIndex() && validateCell(BirthDayConstant.COLUMN_ID)) {
-					birthDto.setId(Integer.parseInt((String) row.get(BirthDayConstant.COLUMN_ID.getIndex())));
+					birthDto.setId(Integer.parseInt(row.get(BirthDayConstant.COLUMN_ID.getIndex()).toString()));
 				}
 				if (rowSize > BirthDayConstant.COLUMN_TRAINEE_EMAIL.getIndex()
 						&& validateCell(BirthDayConstant.COLUMN_TRAINEE_EMAIL)) {

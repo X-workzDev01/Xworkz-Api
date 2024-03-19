@@ -55,7 +55,7 @@ public class ClientRepositoryImpl implements ClientRepository {
 		}
 	}
 
-	@Cacheable(value = "clientInformation", key = "'listOfClientDto'")
+	//@Cacheable(value = "clientInformation", key = "'listOfClientDto'")
 	public List<List<Object>> readData() {
 		log.info(" client repository, reading client information,{}", propertiesDto.getClientInformationReadRange());
 		try {

@@ -16,6 +16,7 @@ import org.springframework.stereotype.Component;
 
 import com.xworkz.dream.dto.AttendanceDto;
 import com.xworkz.dream.dto.BatchDetailsDto;
+import com.xworkz.dream.dto.BirthDayInfoDto;
 import com.xworkz.dream.dto.FollowUpDto;
 import com.xworkz.dream.dto.TraineeDto;
 import com.xworkz.dream.wrapper.DreamWrapper;
@@ -42,6 +43,7 @@ public class CacheServiceImpl implements CacheService {
 			if (valueWrapper != null && valueWrapper.get() instanceof List) {
 				int size = (((List<List<Object>>) valueWrapper.get()).size());
 				data.set(0, size + 1);
+				System.out.println("Size of the cache:" + size);
 				((List<List<Object>>) valueWrapper.get()).add(data);
 			}
 		}
@@ -235,7 +237,6 @@ public class CacheServiceImpl implements CacheService {
 				((List<List<Object>>) valueWrapper.get()).add(EmailList);
 			}
 		}
-
 	}
 
 	@SuppressWarnings("unchecked")
@@ -368,4 +369,70 @@ public class CacheServiceImpl implements CacheService {
 		}
 	}
 
+	@SuppressWarnings("unchecked")
+	@Override
+	public void addToCache(String cacheName, String key, String value) {
+		Cache cache = cacheManager.getCache(cacheName);
+		if (cache != null) {
+			log.info("Email added into cache {} ", value);
+			ValueWrapper valueWrapper = cache.get(key);
+			List<List<Object>> cacheValue;
+			if (valueWrapper != null && valueWrapper.get() instanceof List) {
+				cacheValue = (List<List<Object>>) valueWrapper.get();
+			} else {
+				cacheValue = new ArrayList<>();
+			}
+			List<Object> valueList = new ArrayList<>(Arrays.asList((Object) value));
+			cacheValue.add(valueList);
+			cache.put(key, cacheValue);
+			log.info("Email: {} added to cache with key: {}", value, key);
+		}
+	}
+
+	@Override
+	public void updateBirthDayInfoInCache(String cacheName, String key, String email, BirthDayInfoDto birthDayInfoDto) {
+		Cache cache = cacheManager.getCache(cacheName);
+		if (cache != null) {
+			ValueWrapper valueWrapper = cache.get(key);
+			if (valueWrapper != null && valueWrapper.get() instanceof List) {
+				@SuppressWarnings("unchecked")
+				List<List<Object>> listOfItems = (List<List<Object>>) valueWrapper.get();
+				int matchingIndex = -1; // Initialize to -1, indicating not found initially
+				for (int i = 0; i < listOfItems.size(); i++) {
+					List<Object> items = listOfItems.get(i);
+					if (items.get(1).equals(email)) {
+						matchingIndex = i; // Set the index when a match is found
+						break; // Exit the loop once a match is found
+					}
+				}
+				List<Object> list = wrapper.extractDtoDetails(birthDayInfoDto);
+				if (matchingIndex >= 0) {
+					listOfItems.set(matchingIndex, list);
+					log.info("Updated cache data for email: {}", email);
+				}
+
+			}
+		}
+
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public void addBirthDayToCache(String cacheName, String key, List<Object> data) {
+		Cache cache = cacheManager.getCache(cacheName);
+		if (cache != null) {
+			ValueWrapper valueWrapper = cache.get(key);
+			List<List<Object>> list = ((List<List<Object>>) valueWrapper.get());
+			if (valueWrapper != null && valueWrapper.get() instanceof List) {
+				int size = (((List<List<Object>>) valueWrapper.get()).size());
+				data.set(0, size + 1);
+				((List<List<Object>>) valueWrapper.get()).add(data);
+				if (list.get(0).size() <= 1) {
+					list.remove(0);
+				}
+
+				log.info("Updated cache for key: {}", key);
+			}
+		}
+	}
 }
