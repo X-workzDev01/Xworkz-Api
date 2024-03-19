@@ -60,10 +60,10 @@ public class ClientInformationImpl implements ClientInformationUtil {
 		} else {
 			dto.setCallBackDate(dto.getCallBackDate());
 		}
-		if (dto.getCallBackTime() == null) {
+		if (dto.getCallBackTime() == null || dto.getCallBackTime().isEmpty()) {
 			dto.setCallBackTime(ServiceConstant.NA.toString());
 		}
-		if (dto.getCallDuration() == null) {
+		if (dto.getCallDuration() == null || dto.getCallDuration().isEmpty()) {
 			dto.setCallDuration(ServiceConstant.NA.toString());
 		}
 		if (dto.getComments() == null || dto.getComments().isEmpty()) {
@@ -76,7 +76,7 @@ public class ClientInformationImpl implements ClientInformationUtil {
 
 	@Override
 	public void setValuesToClientDto(ClientDto dto) {
-	
+
 		log.debug("client wrapper setting NA values to the fields null {}", dto);
 		if (dto.getCompanyName() == null || dto.getCompanyName().isEmpty()) {
 			dto.setCompanyName(ServiceConstant.NA.toString());
