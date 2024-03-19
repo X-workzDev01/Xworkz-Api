@@ -232,7 +232,7 @@ public class UtilProd implements DreamUtil {
 			messageHelper.setText(content, true);
 		};
 
-		return chimpMailService.validateAndSendMailByMailOtp(messagePreparator);
+		return chimpMailService.validateAndSendMailByMailIdDev(messagePreparator);
 	}
 
 	private boolean sendBulkMailToNotification(List<String> recipients, String subject, List<FollowUpDto> body) {
