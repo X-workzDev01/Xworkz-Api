@@ -113,7 +113,7 @@ public class RegisterRepositoryImpl implements RegisterRepository {
 			return null;
 		}
 
-	}
+	} 
 
 	@Override
 	public List<List<Object>> getEmailsAndNames(String spreadsheetId, String value) {
@@ -159,4 +159,6 @@ public class RegisterRepositoryImpl implements RegisterRepository {
 			return Collections.emptyList();
 		}
 	}
+
+	
 }

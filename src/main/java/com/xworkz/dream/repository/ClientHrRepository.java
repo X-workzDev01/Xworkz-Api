@@ -12,4 +12,8 @@ public interface ClientHrRepository {
 	List<List<Object>> readData();
 
 	UpdateValuesResponse updateHrDetails(String range, ValueRange valueRange);
+
+	List<List<Object>> getListOfHrEmails();
+
+	List<List<Object>> getListOfHrContactNumber();
 }

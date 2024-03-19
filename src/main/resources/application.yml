@@ -1,11 +1,11 @@
 spring:
    profiles:
-      active: preProd
+      active: prod
    freemarker:
     template-loader-path: classpath:/templates/
 sheets:
   appName: Dream Api
-  range: A3:Ak 
+  range: A3:AH 
   emailRange: C3:C
   contactNumberRange: D3:D
   dropdownRange: dropDowns!A2:I
@@ -13,10 +13,10 @@ sheets:
   followUpRange: followUp!A2:Q 
   followUpStatus: followUpStatus!A2:L
   rowStartRange: B
-  rowEndRange: Ak 
-  traineeSheetName: xworkzApi!
+  rowEndRange: AH 
+  traineeSheetName: xworkzApi!  
   followUpSheetName: followUp!
-  followUprowStartRange: B2 
+  followUprowStartRange: B2  
   followUprowEndRange: Q
   followUpEmailRange: followUp!C2:C
   idRange: xworkzApi!A3:A    
@@ -31,10 +31,11 @@ sheets:
   batchIdRange: batchDetails!A2:A 
 
   dateOfBirthDetailsSheetName: dateOfBirthDetails!
-  dateOfBirthDetailsRange: dateOfBirthDetails!A2:E
+  dateOfBirthDetailsRange: dateOfBirthDetails!A2:G
   birthdayRange: dateOfBirthDetails!A2:A
   birthDayStartRow: B
-  birthDayEndRow: J
+  birthDayEndRow: G
+  birthDayEmailRange: dateOfBirthDetails!B2:B
 
   followUpStatusIdRange: followUpStatus!A2:A
   batchDetailsCourseNameRange: batchDetails!B2:B
@@ -74,6 +75,13 @@ sheets:
   hrFollowUpInformationRange: ClientHRFollowUpStatus!B2:I
   hrFollowUpInformationReadRange: ClientHRFollowUpStatus!A2:I
   clientDropDownRange: dropDowns!J2:N
+  clientEmailRange: clientDetails!C2:C
+  clientContactNumberRange: clientDetails!D2:D
+  clientWebsiteRange: clientDetails!E2:E
+  clientNameRange: clientDetails!B2:B
+  clientHrEmailRange: clientHRdetails!D2:D
+  clientHrContactNumberRange: clientHRdetails!E2:E
+ 
   
 mailChimp:
   userName: 7FzbzzHIVQSVJVz5r4n/bGa/lhNWJCXUq6oqBxBCTYQ=

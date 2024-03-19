@@ -1,7 +1,5 @@
 package com.xworkz.dream.scheduler;
 
-import java.io.IOException;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,13 +15,11 @@ public class BirthdaySchedulerImpl {
 	Logger logger = LoggerFactory.getLogger(BirthdaySchedulerImpl.class);
 
 	@Scheduled(cron = "0 0 0 * * *")
+	// @Scheduled(cron = "0 * * * * *")
+	// @Scheduled(cron = "0 */3 * * * *")
 	public void sendBirthdayEmailsScheduled() {
-		try {
-			logger.info("Running sendBirthday Scheduler");
-			birthadayService.sendBirthdayEmails();
-		} catch (IOException e) {
-			logger.info("Birthday Mail is not working : {} ", e.getMessage());
-		}
+		logger.info("Running sendBirthday Scheduler");
+		birthadayService.sendBirthdayEmails();
 	}
 
 }

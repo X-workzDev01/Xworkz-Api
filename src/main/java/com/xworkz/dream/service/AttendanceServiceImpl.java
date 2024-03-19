@@ -8,9 +8,9 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
-import java.util.ListIterator;
 import java.util.Set;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.ConstraintViolation;
@@ -34,6 +34,7 @@ import com.xworkz.dream.dto.AbsenteesDto;
 import com.xworkz.dream.dto.AttendanceDataDto;
 import com.xworkz.dream.dto.AttendanceDto;
 import com.xworkz.dream.dto.AttendanceTrainee;
+import com.xworkz.dream.dto.AttendanceViewDto;
 import com.xworkz.dream.dto.BatchAttendanceDto;
 import com.xworkz.dream.dto.BatchDetailsDto;
 import com.xworkz.dream.dto.FollowUpDto;
@@ -372,10 +373,8 @@ public class AttendanceServiceImpl implements AttendanceService {
 	}
 
 	private List<List<Object>> filterTraineeDetails(String courseName) {
-		List<List<Object>> followUpDetails;
-		List<List<Object>> readData;
-		followUpDetails = repository.getFollowUpDetails(sheetId);
-		readData = registerRepository.readData(sheetId);
+		List<List<Object>> followUpDetails = repository.getFollowUpDetails(sheetId);
+		List<List<Object>> readData = registerRepository.readData(sheetId);
 		List<List<Object>> traineeDetails = followUpDetails.stream().filter(followUpDetail -> {
 			return Status.Joined.toString().equalsIgnoreCase(followUpDetail.get(8).toString())
 					&& followUpDetail.get(15).toString().equalsIgnoreCase(ServiceConstant.ACTIVE.toString());
@@ -446,24 +445,31 @@ public class AttendanceServiceImpl implements AttendanceService {
 	public ResponseEntity<AttendanceDataDto> attendanceReadData(Integer startingIndex, Integer maxRows,
 			String courseName) {
 		List<List<Object>> traineeDetails = filterTraineeDetails(courseName);
-		List<List<Object>> traineData = traineeDetails.stream()
-				.filter(dtos -> dtos.get(9).toString().equals(courseName)).collect(Collectors.toList());
+		List<AttendanceViewDto> viewDtos = new ArrayList<AttendanceViewDto>();
 		List<List<Object>> attendanceData = attendanceRepository.getAttendanceData(sheetId, attendanceInfoIDRange);
-		if (attendanceData != null && !attendanceData.toString().contains("#NUM!")) {
-			List<List<Object>> sortedData = attendanceData.stream()
-					.sorted(Comparator.comparing(
-							list -> list != null && !list.isEmpty() && list.size() > 10 ? list.get(10).toString() : "",
-							Comparator.reverseOrder()))
-					.collect(Collectors.toList());
-			List<List<Object>> collect;
+
+		List<AttendanceDto> attendance = attendanceData.stream().map(wrapper::attendanceListToDto)
+				.collect(Collectors.toList());
+		List<TraineeDto> filterTraineDetails = filterTraineDetails(courseName, traineeDetails);
+		if (attendanceData != null) {
 			if (!courseName.equalsIgnoreCase(ServiceConstant.NULL.toString())) {
-				collect = sortedData.stream()
-						.filter(items -> traineData.stream()
-								.anyMatch(dtos -> dtos.get(0).toString().equals(items.get(1).toString()))
-								&& items.get(3).toString().equalsIgnoreCase(courseName))
+				filterTraineDetails.stream().forEach(traineDtos -> {
+					attendance.stream().filter(dtos -> dtos.getId().equals(traineDtos.getId())).forEach(items -> {
+						AttendanceViewDto viewDto = new AttendanceViewDto();
+						viewDto.setId(traineDtos.getId());
+						viewDto.setName(traineDtos.getBasicInfo().getTraineeName());
+						viewDto.setEmail(traineDtos.getBasicInfo().getEmail());
+						viewDto.setCourseName(traineDtos.getCourseInfo().getCourse());
+						viewDto.setTotalAbsent(items.getTotalAbsent());
+						viewDtos.add(viewDto);
+					});
+
+				});
+
+				List<AttendanceViewDto> limitedRows = viewDtos.stream()
+						.sorted(Comparator.comparing(AttendanceViewDto::getName)).skip(startingIndex).limit(maxRows)
 						.collect(Collectors.toList());
-				List<AttendanceDto> limitedRows = this.getLimitedRows(collect, startingIndex, maxRows);
-				AttendanceDataDto dto = new AttendanceDataDto(limitedRows, collect.size());
+				AttendanceDataDto dto = new AttendanceDataDto(limitedRows, viewDtos.size());
 				log.info("Returning response for spreadsheetId: {}", sheetId);
 				return ResponseEntity.ok(dto);
 			}
@@ -472,77 +478,69 @@ public class AttendanceServiceImpl implements AttendanceService {
 
 	}
 
-	private List<AttendanceDto> getLimitedRows(List<List<Object>> values, int startingIndex, int maxRows) {
-		List<AttendanceDto> attendanceDtos = new ArrayList<>();
-		if (values != null) {
-			int endIndex = startingIndex + maxRows;
-			ListIterator<List<Object>> iterator = values.listIterator(startingIndex);
-			while (iterator.hasNext() && iterator.nextIndex() < endIndex) {
-				List<Object> row = iterator.next();
-				if (row != null && !row.isEmpty()) {
-					AttendanceDto attendanceDto = wrapper.attendanceListToDto(row);
-					attendanceDtos.add(attendanceDto);
-				}
-			}
-			log.info("Returning {} Attendance objects", attendanceDtos.size());
-		}
-		return attendanceDtos;
-	}
-
 	@Override
-	public List<AttendanceDto> filterData(String searchValue, String courseName) {
-
+	public List<AttendanceViewDto> filterData(String searchValue, String courseName) {
+		List<List<Object>> traineeDetails = filterTraineeDetails(courseName);
+		List<AttendanceViewDto> viewDtos = new ArrayList<AttendanceViewDto>();
+		List<List<Object>> attendanceData = attendanceRepository.getAttendanceData(sheetId, attendanceInfoIDRange);
+		List<AttendanceDto> attendance = attendanceData.stream().map(wrapper::attendanceListToDto)
+				.collect(Collectors.toList());
+		List<TraineeDto> filterTraineDetails = filterTraineDetails(courseName, traineeDetails);
 		if (searchValue != null && !searchValue.isEmpty()) {
-			log.info("Filtering data in spreadsheetId: {} with search value: {}", sheetId, searchValue);
-			List<List<Object>> attendanceData = attendanceRepository.getAttendanceData(sheetId, attendanceInfoIDRange);
-			List<List<Object>> filteredLists = attendanceData.stream().filter(list -> list.stream().anyMatch(
-					value -> value != null && value.toString().toLowerCase().contains(searchValue.toLowerCase())))
-					.collect(Collectors.toList());
+			filterTraineDetails.stream().forEach(traineDtos -> {
+				attendance.stream().filter(dtos -> dtos.getId().equals(traineDtos.getId())).forEach(items -> {
+					AttendanceViewDto viewDto = new AttendanceViewDto();
+					viewDto.setId(traineDtos.getId());
+					viewDto.setName(traineDtos.getBasicInfo().getTraineeName());
+					viewDto.setEmail(traineDtos.getBasicInfo().getEmail());
+					viewDto.setCourseName(traineDtos.getCourseInfo().getCourse());
+					viewDto.setTotalAbsent(items.getTotalAbsent());
+					viewDtos.add(viewDto);
+				});
+
+			});
 			if (!courseName.equalsIgnoreCase(ServiceConstant.NULL.toString())) {
-				List<AttendanceDto> flist = filteredLists.stream().map(items -> wrapper.attendanceListToDto(items))
-						.filter(dto -> dto.getCourse().equalsIgnoreCase(courseName)).collect(Collectors.toList());
-				log.info("Filtered {} Attendance objects", flist.size());
-
-				return flist;
-
-			} else {
-				List<AttendanceDto> flist = filteredLists.stream().map(items -> wrapper.attendanceListToDto(items))
-						.filter(dto -> dto.getTraineeName().equalsIgnoreCase(searchValue)).collect(Collectors.toList());
-				log.debug("Filtered {} TraineeDto objects", flist.size());
-
-				return flist;
-
+				List<AttendanceViewDto> collect = viewDtos.stream().filter(
+						value -> value != null && value.toString().toLowerCase().contains(searchValue.toLowerCase()))
+						.filter(dto -> dto.getCourseName().equalsIgnoreCase(courseName)).collect(Collectors.toList());
+				return collect;
 			}
 		} else {
 			log.warn("Search value is null or empty. Returning an empty list.");
 			return new ArrayList<>();
 		}
+		return viewDtos;
 
 	}
 
 	@Override
-	public ResponseEntity<List<AttendanceDto>> getSearchSuggestion(String value, String courseName) {
-		List<AttendanceDto> suggestion = new ArrayList<>();
-		if (value != null) {
-			List<List<Object>> dataList = attendanceRepository.getNamesAndCourseName(sheetId,
-					attandenceNameAndCourseRange, value);
-			if (dataList != null && !dataList.toString().contains("#NUM!")) {
-				List<AttendanceDto> attedaceData = dataList.stream().map(wrapper::attendanceListToDto)
-						.collect(Collectors.toList());
+	public ResponseEntity<List<AttendanceViewDto>> getSearchSuggestion(String value, String courseName) {
+		List<List<Object>> traineeDetails = filterTraineeDetails(courseName);
+		List<AttendanceViewDto> viewDtos = new ArrayList<AttendanceViewDto>();
+		List<List<Object>> attendanceData = attendanceRepository.getAttendanceData(sheetId, attendanceInfoIDRange);
+		List<AttendanceDto> attendance = attendanceData.stream().map(wrapper::attendanceListToDto)
+				.collect(Collectors.toList());
+		List<TraineeDto> filterTraineDetails = filterTraineDetails(courseName, traineeDetails);
+		if (value != null && !value.isEmpty()) {
+			filterTraineDetails.stream().forEach(traineDtos -> {
+				attendance.stream().filter(dtos -> dtos.getId().equals(traineDtos.getId())).forEach(items -> {
+					AttendanceViewDto viewDto = new AttendanceViewDto();
+					viewDto.setId(traineDtos.getId());
+					viewDto.setName(traineDtos.getBasicInfo().getTraineeName());
+					viewDto.setEmail(traineDtos.getBasicInfo().getEmail());
+					viewDto.setCourseName(traineDtos.getCourseInfo().getCourse());
+					viewDto.setTotalAbsent(items.getTotalAbsent());
+					viewDtos.add(viewDto);
+				});
+			});
 
-				if (!courseName.equalsIgnoreCase(ServiceConstant.NULL.toString())) {
-					suggestion = attedaceData.stream().filter(dto -> dto.getCourse().equalsIgnoreCase(courseName))
-							.filter(dto -> dto.getTraineeName().toLowerCase().startsWith(value.toLowerCase()))
-							.collect(Collectors.toList());
-					return ResponseEntity.ok(suggestion);
-				} else {
-					suggestion = attedaceData.stream()
-							.filter(dto -> dto.getTraineeName().toLowerCase().startsWith(value.toLowerCase()))
-							.collect(Collectors.toList());
-					return ResponseEntity.ok(suggestion);
-				}
-			} else {
-				return ResponseEntity.ok(suggestion);
+			if (!courseName.equalsIgnoreCase(ServiceConstant.NULL.toString())) {
+				List<AttendanceViewDto> viewDto = viewDtos.stream()
+						.filter(dto -> dto.getCourseName().equalsIgnoreCase(courseName))
+						.filter(dto -> dto.getName().toLowerCase().startsWith(value.toLowerCase()))
+						.collect(Collectors.toList());
+				return ResponseEntity.ok(viewDto);
+
 			}
 
 		}
@@ -568,5 +566,55 @@ public class AttendanceServiceImpl implements AttendanceService {
 			dreamUtil.sendAbsentMail(dto.getBasicInfo().getEmail(), dto.getBasicInfo().getTraineeName(), reason);
 		});
 	}
+
+	private boolean checkContinuousAbsence(List<List<Object>> attendanceData, Integer traineeId) {
+		LocalDate today = LocalDate.now();
+		List<AttendanceDto> collect = attendanceData.stream().map(wrapper::attendanceListToDto)
+				.collect(Collectors.toList());
+
+		for (AttendanceDto attendanceDto : collect) {
+			if (attendanceDto.getId().equals(traineeId)) {
+				String absentDate = attendanceDto.getAbsentDate();
+				String[] dates = absentDate.split(",");
+				int consecutiveAbsentDays = 0;
+
+				for (String date : dates) {
+					if (date.equals(today.minusDays(1).toString()) || date.equals(today.minusDays(2).toString())
+							|| date.equals(today.toString())) {
+						consecutiveAbsentDays++;
+					} else {
+						consecutiveAbsentDays = 0;
+					}
+
+				}
+				if (consecutiveAbsentDays >= 3) {
+					return true;
+				}
+			}
+		}
+		return false;
+	}
+
+	@Override
+	public void processAttendanceData() {
+	    List<List<Object>> attendanceData = attendanceRepository.getAttendanceData(sheetId, attendanceInfoIDRange);
+	    List<List<Object>> readData = registerRepository.readData(sheetId);
+
+	    List<TraineeDto> listToDto = new ArrayList<>(); 
+	    readData.forEach(dtos -> {
+	        attendanceData.forEach(record -> {
+	            Integer traineeId = Integer.valueOf(record.get(1).toString());
+	            if (dtos.get(0).toString().equals(traineeId.toString())) {
+	                boolean checkContinuousAbsence = checkContinuousAbsence(attendanceData, traineeId);
+	                if (checkContinuousAbsence) {
+	                    TraineeDto traineeDto = wrapper.listToDto(dtos); 
+	                    listToDto.add(traineeDto);
+	                }
+	            }
+	        });
+	    });
+	    dreamUtil.sendEmailNotificationForAttendanceFollowUp(listToDto);
+	}
+
 
 }

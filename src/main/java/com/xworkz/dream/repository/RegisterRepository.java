@@ -7,8 +7,7 @@ import com.google.api.services.sheets.v4.model.ValueRange;
 
 public interface RegisterRepository {
 
-
-	boolean writeData(String spreadsheetId, List<Object> row) ;
+	boolean writeData(String spreadsheetId, List<Object> row);
 
 	List<List<Object>> getEmails(String spreadsheetId, String email);
 

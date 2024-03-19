@@ -1,7 +1,5 @@
 package com.xworkz.dream.service;
 
-import java.lang.reflect.Field;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
@@ -41,21 +39,20 @@ public class HrFollowUpServiceImpl implements HrFollowUpService {
 
 	@Override
 	public String saveHrFollowUpDetails(HrFollowUpDto dto) {
-		log.info("saveHrFollowUpDetails hr follow Up Dto: {}", dto);
+		
 		clientInformationUtil.settingNaValues(dto);
-		try {
-			List<Object> list = dreamWrapper.extractDtoDetails(dto);
-			if (dto != null) {
-				if (hrFollowUpRepository.saveHrFollowUpDetails(list)) {
-					clientCacheService.addHrFollowUpToCache("hrFollowUpDetails", "hrFollowUp", list);
-					return "Hr Follow up details saved successfully";
-				} else {
-					return "Hr Follow up details not saved";
-				}
+		log.info("saveHrFollowUpDetails hr follow Up Dto: {}", dto);
+		List<Object> list = dreamWrapper.extractDtoDetails(dto);
+		log.info("saveHrFollowUpDetails hr follow Up Dto: {}", dto);
+		if (dto != null) {
+			if (hrFollowUpRepository.saveHrFollowUpDetails(list)) {
+				clientCacheService.addHrFollowUpToCache("hrFollowUpDetails", "hrFollowUp", list);
+				return "Hr Follow up details saved successfully";
+			} else {
+				return "Hr Follow up details not saved";
 			}
-		} catch (IllegalAccessException e) {
-			log.error("exception while saving client follow up:{}", e.getMessage());
 		}
+
 		return "Hr Follow up details not saved";
 	}
 

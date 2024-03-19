@@ -17,7 +17,6 @@ import org.springframework.stereotype.Component;
 import com.xworkz.dream.dto.AttendanceDto;
 import com.xworkz.dream.dto.BatchDetailsDto;
 import com.xworkz.dream.dto.FollowUpDto;
-import com.xworkz.dream.dto.StatusDto;
 import com.xworkz.dream.dto.TraineeDto;
 import com.xworkz.dream.wrapper.DreamWrapper;
 
@@ -41,8 +40,6 @@ public class CacheServiceImpl implements CacheService {
 		if (cache != null) {
 			ValueWrapper valueWrapper = cache.get(key);
 			if (valueWrapper != null && valueWrapper.get() instanceof List) {
-				// cache.put(key, existingData);
-				// adding single list to the cache
 				int size = (((List<List<Object>>) valueWrapper.get()).size());
 				data.set(0, size + 1);
 				((List<List<Object>>) valueWrapper.get()).add(data);
@@ -52,8 +49,7 @@ public class CacheServiceImpl implements CacheService {
 
 	// retrieve cache data by email and updating to cache
 	@SuppressWarnings("unchecked")
-	public void getCacheDataByEmail(String cacheName, String key, String email, TraineeDto dto)
-			throws IllegalAccessException {
+	public void getCacheDataByEmail(String cacheName, String key, String email, TraineeDto dto) {
 		Cache cache = cacheManager.getCache(cacheName);
 		if (cache != null) {
 			ValueWrapper valueWrapper = cache.get(key);
@@ -82,8 +78,7 @@ public class CacheServiceImpl implements CacheService {
 	}
 
 	@Override
-	public void updateCacheFollowUp(String cacheName, String key, String email, FollowUpDto dto)
-			throws IllegalAccessException {
+	public void updateCacheFollowUp(String cacheName, String key, String email, FollowUpDto dto) {
 
 		Cache cache = cacheManager.getCache(cacheName);
 		if (cache != null) {
@@ -117,29 +112,29 @@ public class CacheServiceImpl implements CacheService {
 	}
 
 	@Override
-	public void updateFollowUpStatus(String cacheName, String key, StatusDto statusDto) throws IllegalAccessException {
+	public void updateFollowUpStatus(String cacheName, String key, String email, List<Object> statusData) {
 		Cache cache = cacheManager.getCache(cacheName);
-		String email = statusDto.getBasicInfo().getEmail();
 		if (cache != null) {
 			ValueWrapper valueWrapper = cache.get(key);
 			if (valueWrapper != null && valueWrapper.get() instanceof List) {
 
 				@SuppressWarnings("unchecked")
 				List<List<Object>> ListOfItems = (List<List<Object>>) valueWrapper.get();
-				int matchingIndex = -1; // Initialize to -1, indicating not found initially
+				int matchingIndex = -1;
 
 				for (int i = 0; i < ListOfItems.size(); i++) {
 					List<Object> items = ListOfItems.get(i);
 					if (items.get(2).equals(email)) {
-						matchingIndex = i; // Set the index when a match is found
-						break; // Exit the loop once a match is found
+						matchingIndex = i;
+						break;
 					}
 				}
-				List<Object> list = wrapper.extractDtoDetails(statusDto);
-
 				if (matchingIndex >= 0) {
-
-					ListOfItems.set(matchingIndex, list);
+					statusData.remove(4);
+					statusData.remove(4);
+					statusData.add("NA");
+					statusData.remove(11);
+					ListOfItems.set(matchingIndex, statusData);
 					log.info("Updated cache data for email: {}", email);
 				}
 
@@ -149,20 +144,46 @@ public class CacheServiceImpl implements CacheService {
 		}
 	}
 
-	@SuppressWarnings("unchecked")
-	public void updateFollowUpStatusInCache(String cacheName, String key, List<Object> data) {
+	public void EmailUpdate(String cacheName, String key, String oldEmail, String newEmail) {
+
 		Cache cache = cacheManager.getCache(cacheName);
 		if (cache != null) {
 			ValueWrapper valueWrapper = cache.get(key);
 			if (valueWrapper != null && valueWrapper.get() instanceof List) {
-				// cache.put(key, existingData);
-				// adding single list to the cache
+				@SuppressWarnings("unchecked")
+				List<List<Object>> ListOfItems = (List<List<Object>>) valueWrapper.get();
+				int matchingIndex = -1;
+				for (int i = 0; i < ListOfItems.size(); i++) {
+					List<Object> items = ListOfItems.get(i);
+					if (items.get(0).equals(oldEmail)) {
+						matchingIndex = i;
+						break;
+					}
+				}
+				if (matchingIndex >= 0) {
+					ListOfItems.set(matchingIndex, Arrays.asList(newEmail));
+					log.info("Updated cache data for email: {}", newEmail);
+				}
+			} else {
+				log.debug("Data not found in the cache for the specified email: {}", oldEmail);
+			}
+		}
+	}
+
+	@SuppressWarnings("unchecked")
+	public void addToFollowUpStatusCache(String cacheName, String key, List<Object> data) {
+		Cache cache = cacheManager.getCache(cacheName);
+		if (cache != null) {
+			ValueWrapper valueWrapper = cache.get(key);
+			if (valueWrapper != null && valueWrapper.get() instanceof List) {
 				if (data.size() > 5) {
-					data.remove(5); // Removes the element at index 5
+					data.remove(5);
 				}
 				if (data.size() > 4) {
-					data.remove(4); // Removes the element at index 4
+					data.remove(4);
 				}
+				int size = (((List<List<Object>>) valueWrapper.get()).size());
+				data.set(0, size + 1);
 				((List<List<Object>>) valueWrapper.get()).add(data);
 				log.info("Updated cache for key: {}", key);
 			}
@@ -175,8 +196,6 @@ public class CacheServiceImpl implements CacheService {
 		if (cache != null) {
 			ValueWrapper valueWrapper = cache.get(key);
 			if (valueWrapper != null && valueWrapper.get() instanceof List) {
-				// cache.put(key, existingData);
-				// adding single list to the cache
 				int size = (((List<List<Object>>) valueWrapper.get()).size());
 				data.set(0, size + 1);
 				((List<List<Object>>) valueWrapper.get()).add(data);
@@ -212,8 +231,8 @@ public class CacheServiceImpl implements CacheService {
 
 			ValueWrapper valueWrapper = cache.get(spreadSheetId);
 			if (valueWrapper != null && valueWrapper.get() instanceof List) {
-				List<Object> contactNumbers = new ArrayList<Object>(Arrays.asList(email));
-				((List<List<Object>>) valueWrapper.get()).add(contactNumbers);
+				List<Object> EmailList = new ArrayList<Object>(Arrays.asList(email));
+				((List<List<Object>>) valueWrapper.get()).add(EmailList);
 			}
 		}
 
@@ -226,7 +245,6 @@ public class CacheServiceImpl implements CacheService {
 		if (cache != null) {
 
 			log.info("Contact number added into cache: {}", contactNumber);
-			@SuppressWarnings("unchecked")
 			ValueWrapper valueWrapper = cache.get(spreadSheetId);
 			if (valueWrapper != null && valueWrapper.get() instanceof List) {
 				List<Object> contactNumbers = new ArrayList<Object>(Arrays.asList(contactNumber));
@@ -236,8 +254,7 @@ public class CacheServiceImpl implements CacheService {
 	}
 
 	@SuppressWarnings("unchecked")
-	public void getCacheDataByEmail(String cacheName, String key, String oldEmail, String newEmail)
-			throws IllegalAccessException {
+	public void getCacheDataByEmail(String cacheName, String key, String oldEmail, String newEmail) {
 		Cache cache = cacheManager.getCache(cacheName);
 		if (cache != null) {
 			ValueWrapper valueWrapper = cache.get(key);
@@ -287,8 +304,7 @@ public class CacheServiceImpl implements CacheService {
 	}
 
 	@Override
-	public void updateCacheAttendancde(String cacheName, String key, Integer id, AttendanceDto dto)
-			throws IllegalAccessException {
+	public void updateCacheAttendancde(String cacheName, String key, Integer id, AttendanceDto dto) {
 		Cache cache = cacheManager.getCache(cacheName);
 		if (cache != null) {
 			ValueWrapper valueWrapper = cache.get(key);
@@ -321,8 +337,7 @@ public class CacheServiceImpl implements CacheService {
 	}
 
 	@Override
-	public void updateCacheBatch(String cacheName, String key, String courseName, BatchDetailsDto dto)
-			throws IllegalAccessException {
+	public void updateCacheBatch(String cacheName, String key, String courseName, BatchDetailsDto dto) {
 		Cache cache = cacheManager.getCache(cacheName);
 		if (cache != null) {
 			ValueWrapper valueWrapper = cache.get(key);

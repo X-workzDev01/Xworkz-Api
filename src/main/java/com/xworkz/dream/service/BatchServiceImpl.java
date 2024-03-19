@@ -18,7 +18,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import com.xworkz.dream.constants.ServiceConstant;
-import com.xworkz.dream.constants.Status;
 import com.xworkz.dream.dto.BatchDetailsDto;
 import com.xworkz.dream.dto.TraineeDto;
 import com.xworkz.dream.repository.BatchRepository;
@@ -39,7 +38,8 @@ public class BatchServiceImpl implements BatchService {
 	private DreamWrapper wrapper;
 	@Autowired
 	private BatchWrapper batchWrapper;
-
+	@Autowired
+	private CacheService cacheService;
 	private static final Logger log = LoggerFactory.getLogger(BatchServiceImpl.class);
 
 	@Override
@@ -47,8 +47,9 @@ public class BatchServiceImpl implements BatchService {
 			throws IOException, IllegalAccessException {
 		List<Object> list = wrapper.extractDtoDetails(dto);
 		boolean save = repository.saveBatchDetails(spreadsheetId, list);
-		// adding to cache
-//		cacheService.updateCourseCache("batchDetails", spreadsheetId, list);
+		cacheService.updateCache("batchDetails", "listOfBatch", list);
+		cacheService.addEmailToCache("getCourseNameList", "courseName", dto.getCourseName());
+
 		if (save == true) {
 			log.info("Batch details added successfully");
 			return ResponseEntity.ok("Batch details added successfully");
@@ -125,7 +126,6 @@ public class BatchServiceImpl implements BatchService {
 	@Override
 	public ResponseEntity<List<Object>> getCourseNameByStatus(String spreadsheetId, String status) {
 		List<List<Object>> courseNameByStatus;
-		try {
 			courseNameByStatus = repository.getCourseDetails(spreadsheetId);
 			List<Object> coursename = new ArrayList<Object>();
 			if (courseNameByStatus != null) {
@@ -143,10 +143,6 @@ public class BatchServiceImpl implements BatchService {
 				log.info("No course names found for status: {}", status);
 				return null;
 			}
-		} catch (IOException e) {
-			log.error("An IOException occurred: {}", e.getMessage());
-			return null;
-		}
 	}
 
 	@Override

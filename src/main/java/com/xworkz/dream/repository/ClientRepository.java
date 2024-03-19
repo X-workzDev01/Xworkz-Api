@@ -13,5 +13,9 @@ public interface ClientRepository {
 	List<List<Object>> readData();
 
 	UpdateValuesResponse updateclientInfo(String range, ValueRange valueRange);
+	List<List<Object>> getClientListOfEmail();
+	List<List<Object>> getClientContactNumber();
+	List<List<Object>> getClientWebsite();
+	List<List<Object>> getClientName();
 
 }

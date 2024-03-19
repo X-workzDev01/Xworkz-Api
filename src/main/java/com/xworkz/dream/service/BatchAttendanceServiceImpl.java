@@ -12,7 +12,6 @@ import javax.validation.ConstraintViolation;
 import javax.validation.Validation;
 import javax.validation.ValidatorFactory;
 
-import org.aspectj.weaver.patterns.HasMemberTypePatternForPerThisMatching;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
@@ -21,7 +20,6 @@ import org.springframework.stereotype.Service;
 import com.xworkz.dream.dto.BatchAttendanceDto;
 import com.xworkz.dream.dto.utils.WrapperUtil;
 import com.xworkz.dream.repository.BatchAttendanceRepository;
-import com.xworkz.dream.wrapper.BatchWrapper;
 
 @Service
 public class BatchAttendanceServiceImpl implements BatchAttendanceService {
@@ -95,5 +93,7 @@ public class BatchAttendanceServiceImpl implements BatchAttendanceService {
 		return attendanceDetails;
 
 	}
+	
+	
 
 }

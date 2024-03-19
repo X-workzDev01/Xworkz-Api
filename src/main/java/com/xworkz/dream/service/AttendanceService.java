@@ -11,6 +11,7 @@ import com.xworkz.dream.dto.AbsenteesDto;
 import com.xworkz.dream.dto.AttendanceDataDto;
 import com.xworkz.dream.dto.AttendanceDto;
 import com.xworkz.dream.dto.AttendanceTrainee;
+import com.xworkz.dream.dto.AttendanceViewDto;
 
 public interface AttendanceService {
 
@@ -32,8 +33,10 @@ public interface AttendanceService {
 
 	ResponseEntity<AttendanceDataDto> attendanceReadData(Integer startingIndex, Integer maxRows, String courseName);
 
-	List<AttendanceDto> filterData(String searchValue, String courseName);
+	List<AttendanceViewDto> filterData(String searchValue, String courseName);
 
-	ResponseEntity<List<AttendanceDto>> getSearchSuggestion(String value, String courseName);
+	ResponseEntity<List<AttendanceViewDto>> getSearchSuggestion(String value, String courseName);
+	
+	 void processAttendanceData();
 	
 }

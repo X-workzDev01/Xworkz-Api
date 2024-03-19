@@ -1,9 +1,7 @@
 
 sheets:
-  range: A3:AC
-  emailRange: C3:C
   credentialsPath: classpath:META-INF/credentials-prod.json
-  liveKey: live_d485f9b87a825393bc2f
+  liveKey: live_d4218df2b68537378ba3
 
 
 mailChimp:

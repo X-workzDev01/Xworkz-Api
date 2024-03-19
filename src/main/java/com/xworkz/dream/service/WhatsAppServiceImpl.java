@@ -138,7 +138,6 @@ public class WhatsAppServiceImpl implements WhatsAppService {
 
 	private ResponseEntity<String> updateWhatsAppLink(String spreadsheetId, String email, TraineeDto dto) {
 		if (email != null && dto != null) {
-			try {
 				int rowIndex = findRowIndexByEmail(spreadsheetId, email);
 				if (rowIndex != -1) {
 					log.info("Found row index {} for email: {}", rowIndex, email);
@@ -163,11 +162,6 @@ public class WhatsAppServiceImpl implements WhatsAppService {
 					log.warn("Email not found: {}", email);
 					return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Email not found");
 				}
-
-			} catch (IllegalAccessException e) {
-				log.error("An error occurred while updating data. Email: {}", email, e);
-				return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("An error occurred ");
-			}
 		}
 		return null;
 

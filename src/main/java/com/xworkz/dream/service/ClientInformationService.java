@@ -11,13 +11,13 @@ public interface ClientInformationService {
 
 	ClientDataDto readClientData(int startingIndex, int maxRows,String callBackDate,String clientType);
 
-	boolean checkComanyName(String companyName);
+	boolean checkCompanyName(String companyName);
 
 	ClientDto getClientDtoById(int companyId);
 
 	boolean checkEmail(String companyEmail);
 
-	boolean checkContactNumber(String contactNumber);
+	boolean checkContactNumber(Long contactNumber);
 
 	boolean checkCompanyWebsite(String companyWebsite);
 

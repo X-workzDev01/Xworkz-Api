@@ -40,11 +40,10 @@ public class FollowUpRepositoryImpl implements FollowUpRepository {
 	private String followUpStatusIdRange;
 	@Autowired
 	private SheetSaveOpration saveOpration;
-	@Autowired
 	private static final Logger log = LoggerFactory.getLogger(FollowUpRepositoryImpl.class);
 
 	@PostConstruct
-	private void setsheetsRepository() { 
+	private void setsheetsRepository() {
 		sheetsService = saveOpration.ConnsetSheetService();
 	}
 
@@ -99,7 +98,6 @@ public class FollowUpRepositoryImpl implements FollowUpRepository {
 		}
 	}
 
-	@Override
 	public boolean updateCurrentFollowUpStatus(String spreadsheetId, String currentFollowRange, List<Object> data) {
 		List<List<Object>> list = new ArrayList<List<Object>>();
 		list.add(data);
@@ -116,10 +114,10 @@ public class FollowUpRepositoryImpl implements FollowUpRepository {
 
 	@Override
 
-	@Cacheable(value = "getEmailList", key="'followUpEmailList'")
-	public ValueRange getEmailList(String spreadsheetId) {
+	@Cacheable(value = "getEmailList", key = "'followUpEmailList'")
+	public List<List<Object>> getEmailList(String spreadsheetId) {
 		try {
-			return sheetsService.spreadsheets().values().get(spreadsheetId, followUpEmailRange).execute();
+			return sheetsService.spreadsheets().values().get(spreadsheetId, followUpEmailRange).execute().getValues();
 		} catch (IOException e) {
 			log.error("error getting data {} ", e);
 			return null;
@@ -127,7 +125,7 @@ public class FollowUpRepositoryImpl implements FollowUpRepository {
 	}
 
 	@Override
-	// @Cacheable(value="getFollowUpStatusDetails",key="'followupstatusdetails'")
+	@Cacheable(value = "getFollowUpStatusDetails", key = "'followupstatusdetails'")
 	public List<List<Object>> getFollowUpStatusDetails(String spreadsheetId) {
 		log.info("FollowUp Status Details retrieved successfully for spreadsheetId: {}", spreadsheetId);
 		try {
@@ -144,6 +142,32 @@ public class FollowUpRepositoryImpl implements FollowUpRepository {
 		try {
 			return sheetsService.spreadsheets().values().update(spreadsheetId, range2, valueRange)
 					.setValueInputOption(RepositoryConstant.RAW.toString()).execute();
+		} catch (IOException e) {
+			log.error("error updating data {} ", e);
+			return null;
+		}
+	}
+ 
+	@Override
+	@Cacheable(value = "getFollowupStatusEmailList", key = "'followUpEmailList'")
+	public List<List<Object>> getFollowupStatusEmailList(String spreadsheetId) {
+		try {
+			return sheetsService.spreadsheets().values().get(spreadsheetId, "followUpStatus!C2:C").execute()
+					.getValues();
+		} catch (IOException e) {
+			log.error("error getting data {} ", e);
+			return null;
+		} 
+	}
+
+	@Override
+	public String updateFollowUpStatus(String spreadsheetId, String range, List<Object> list) {
+		log.info("FollowUp updated successfully for spreadsheetId: {}", spreadsheetId);
+		ValueRange updateDetilesToSheet = saveOpration.updateDetilesToSheet(list);
+		try {
+			sheetsService.spreadsheets().values().update(spreadsheetId, range, updateDetilesToSheet)
+					.setValueInputOption(RepositoryConstant.RAW.toString()).execute();
+			return "Update Successfully";
 		} catch (IOException e) {
 			log.error("error updating data {} ", e);
 			return null;

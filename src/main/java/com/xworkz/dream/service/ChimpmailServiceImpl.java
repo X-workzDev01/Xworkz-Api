@@ -25,7 +25,7 @@ public class ChimpmailServiceImpl implements ChimpMailService {
 	@Override
 	public boolean validateAndSendMailByMailIdDev(MimeMessagePreparator messagePreparator) {
 		log.info("invoked validateAndSendMailByMailId of SpringMailServiceImpl...");
- 
+
 		try {
 			config.getMailSenderDev().send(messagePreparator);
 			log.info("Mail sent successfully");
@@ -70,17 +70,18 @@ public class ChimpmailServiceImpl implements ChimpMailService {
 	}
 
 	@Override
-	public void validateAndSendBirthdayMail(MimeMessagePreparator messagePreparator) {
+	public boolean validateAndSendBirthdayMail(MimeMessagePreparator messagePreparator) {
 		log.info("invoked validateAndSendMailByMailId of SpringMailServiceImpl...");
 
 		try {
 			config.getMailSender().send(messagePreparator);
 			log.info("Mail sent successfully");
+			return true;
 
 		} catch (MailException e) {
 			log.info("Mail sent Faild!");
 			log.error(e.getMessage(), e);
-
+			return false;
 		}
 
 	}

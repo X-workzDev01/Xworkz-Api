@@ -58,6 +58,7 @@ public class ClientUtil {
 			return Collections.emptyList();
 		}
 	}
+
 	
 	public List<HrFollowUpDto> readClientFollowUp(){
 		List<List<Object>> listOfFollowUp=hrFollowUpRepository.readFollowUpDetailsById();

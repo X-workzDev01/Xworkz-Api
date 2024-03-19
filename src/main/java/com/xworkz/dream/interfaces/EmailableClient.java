@@ -6,7 +6,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 
 @FeignClient(name = "emailableClinet", url = "https://api.emailable.com/v1")
-public interface EmailableClient {
+public interface EmailableClient { 
 
 	
 	@GetMapping("/verify")

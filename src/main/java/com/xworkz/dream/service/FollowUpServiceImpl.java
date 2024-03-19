@@ -95,7 +95,6 @@ public class FollowUpServiceImpl implements FollowUpService {
 		log.info("Saving data to the follow-up sheet: {}", data);
 		if (repo.saveToFollowUp(spreadSheetId, data)) {
 			cacheService.addFollowUpToCache("getFollowUpDetails", "listOfFollowUpDetails", data);
-			System.out.println("Calling saveTo follow then add Cache");
 			cacheService.addEmailToCache("getEmailList", "followUpEmailList", traineeDto.getBasicInfo().getEmail());
 			return true;
 		} else {
@@ -127,7 +126,6 @@ public class FollowUpServiceImpl implements FollowUpService {
 
 		if (repo.saveToFollowUp(spreadSheetId, data)) {
 			cacheService.addFollowUpToCache("getFollowUpDetails", "listOfFollowUpDetails", data);
-			System.out.println("Calling saveTo follow then add Cache");
 			cacheService.addEmailToCache("getEmailList", "followUpEmailList", traineeDto.getBasicInfo().getEmail());
 			return true;
 		} else {
@@ -159,7 +157,6 @@ public class FollowUpServiceImpl implements FollowUpService {
 		}
 		if (repo.saveToFollowUp(spreadSheetId, data)) {
 			cacheService.addFollowUpToCache("getFollowUpDetails", "listOfFollowUpDetails", data);
-			System.out.println("Calling saveTo follow then add Cache");
 			cacheService.addEmailToCache("getEmailList", "followUpEmailList", traineeDto.getBasicInfo().getEmail());
 			return true;
 		} else {
@@ -170,8 +167,23 @@ public class FollowUpServiceImpl implements FollowUpService {
 
 	private int findByEmailForUpdate(String spreadsheetId, String email) throws IOException {
 
-		ValueRange data = repo.getEmailList(spreadsheetId);
-		List<List<Object>> values = data.getValues();
+		List<List<Object>> values = repo.getEmailList(spreadsheetId);
+		if (values != null) {
+			for (int i = 0; i < values.size(); i++) {
+				List<Object> row = values.get(i);
+				if (row.size() > 0 && row.get(0).toString().equalsIgnoreCase(email)) {
+					log.debug("Row index found for email: {}. Index: {}", email, i + 2);
+					return i + 2;
+				}
+			}
+		}
+		log.debug("Row index not found for email: {}", email);
+		return -1;
+	}
+
+	private int findByEmailForUpdateFollowUpStatus(String spreadsheetId, String email) {
+
+		List<List<Object>> values = repo.getFollowupStatusEmailList(spreadsheetId);
 		if (values != null) {
 			for (int i = 0; i < values.size(); i++) {
 				List<Object> row = values.get(i);
@@ -212,6 +224,34 @@ public class FollowUpServiceImpl implements FollowUpService {
 			valueRange.setValues(values);
 			UpdateValuesResponse updated = repo.updateFollow(spreadsheetId, range, valueRange);
 			cacheService.updateCacheFollowUp("getFollowUpDetails", "listOfFollowUpDetails", email, followUpDto);
+			cacheService.EmailUpdate("getEmailList", "followUpEmailList", email, followUpDto.getBasicInfo().getEmail());
+
+			List<StatusDto> filteredStatusDto = repo.getFollowUpStatusDetails(spreadsheetId).stream()
+					.map(wrapper::listToStatusDto)
+					.filter(statusDto -> statusDto.getBasicInfo().getEmail() != null
+							&& statusDto.getBasicInfo().getEmail().equalsIgnoreCase(email))
+					.collect(Collectors.toList());
+			filteredStatusDto.stream().forEach(statusDto -> {
+				if (!statusDto.getBasicInfo().getEmail().equalsIgnoreCase(dto.getBasicInfo().getEmail())) {
+					statusDto.getBasicInfo().setEmail(dto.getBasicInfo().getEmail());
+				}
+				if (!statusDto.getBasicInfo().getContactNumber().toString()
+						.equalsIgnoreCase(dto.getBasicInfo().getContactNumber().toString())) {
+					statusDto.getBasicInfo().setContactNumber(dto.getBasicInfo().getContactNumber());
+				}
+				if (!statusDto.getBasicInfo().getTraineeName().equalsIgnoreCase(dto.getBasicInfo().getTraineeName())) {
+					statusDto.getBasicInfo().setTraineeName(dto.getBasicInfo().getTraineeName());
+				}
+				int rowIndexForFollowUpStatus = findByEmailForUpdateFollowUpStatus(spreadsheetId, email);
+				String followupStatusRange = "followUpStatus!" + "B" + rowIndexForFollowUpStatus + ":" + "M"
+						+ rowIndexForFollowUpStatus;
+				repo.updateFollowUpStatus(spreadsheetId, followupStatusRange, wrapper.extractDtoDetails(statusDto));
+				cacheService.updateFollowUpStatus("getFollowUpStatusDetails", "followupstatusdetails", email,
+						wrapper.extractDtoDetails(statusDto));
+				cacheService.EmailUpdate("getFollowupStatusEmailList", "followUpEmailList", email,
+						statusDto.getBasicInfo().getEmail());
+
+			});
 
 			if (updated != null && !updated.isEmpty()) {
 				log.info("Follow-up details updated successfully");
@@ -237,7 +277,6 @@ public class FollowUpServiceImpl implements FollowUpService {
 			String range = followUpSheetName + followUprowStartRange + rowIndex + ":" + followUprowEndRange + rowIndex;
 			UpdateValuesResponse updated = setFollowUpDto(calBack, spreadsheetId, currentStatus, currentlyFollowedBy,
 					followUpDto, joiningDate, range);
-			cacheService.updateCacheFollowUp("getFollowUpDetails", "listOfFollowUpDetails", email, followUpDto);
 			if (updated != null && !updated.isEmpty()) {
 				log.info("Current follow-up details updated successfully");
 				return true;
@@ -315,11 +354,12 @@ public class FollowUpServiceImpl implements FollowUpService {
 
 			List<Object> statusData = wrapper.extractDtoDetails(sdto);
 			boolean status = repo.updateFollowUpStatus(spreadsheetId, statusData);
-			cacheService.updateFollowUpStatusInCache("getFollowUpStatusDetails", "followupstatusdetails", statusData);
+			cacheService.addToFollowUpStatusCache("getFollowUpStatusDetails", "followupstatusdetails", statusData);
+			cacheService.addEmailToCache("getFollowupStatusEmailList", "followUpEmailList",
+					sdto.getBasicInfo().getEmail());
 			if (status == true) {
 				updateCurrentFollowUp(statusDto.getCallBack(), spreadsheetId, statusDto.getBasicInfo().getEmail(),
 						statusDto.getAttemptStatus(), statusDto.getAttemptedBy(), statusDto.getJoiningDate());
-				cacheService.updateFollowUpStatus("getFollowUpStatusDetails", "followupstatusdetails", statusDto);
 			}
 			log.info("Follow-up status updated successfully for ID: {}", statusDto.getId());
 			return ResponseEntity.ok("Follow Status Updated for ID :  " + statusDto.getId());

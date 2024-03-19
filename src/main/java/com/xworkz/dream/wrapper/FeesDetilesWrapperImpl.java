@@ -26,7 +26,7 @@ public class FeesDetilesWrapperImpl implements FeesDetilesWrapper {
 
 	@Override
 	public FeesDto listToFeesDTO(List<Object> row) {
-		if (row.size() > 1) {
+		if (row.size() > 2) {
 			FeesDto feesDto = new FeesDto(0, null, new FeesHistoryDto(), null, null, null, 0, null, null, null, null,
 					new AuditDto(), null, null);
 
@@ -105,7 +105,7 @@ public class FeesDetilesWrapperImpl implements FeesDetilesWrapper {
 			if (validateCell(SheetConstant.LATE_FEES)) {
 				feesDto.setLateFees(Long.valueOf(row.get(SheetConstant.LATE_FEES.getIndex()).toString()));
 			}
-			if (validateCell(SheetConstant.COLUMN_EMAIL)) {
+			if (validateCell(SheetConstant.COLUMN_EMAIL)) { 
 				BatchDetailsDto details = feesUtiles
 						.getBatchDetiles(row.get(SheetConstant.COLUMN_EMAIL.getIndex()).toString());
 				if (details != null && details.getTotalAmount() != null) {

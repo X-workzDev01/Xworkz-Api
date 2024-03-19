@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.xworkz.dream.dto.FeesNotificationDto;
 import com.xworkz.dream.dto.SheetNotificationDto;
 import com.xworkz.dream.scheduler.NotificationScheduler;
 
@@ -28,6 +29,13 @@ public class NotificationController {
 	public ResponseEntity<SheetNotificationDto> getFollowupNotification(@RequestParam String email) throws IOException {
 		log.info("Request received for notification with email: {}", email);
 		return ResponseEntity.ok(notificationService.setNotification(email));
+
+	}
+	
+	@GetMapping("/feesNotification")
+	public ResponseEntity<FeesNotificationDto> getFeesFollowupNotification(@RequestParam String email) throws IOException {
+		log.info("Request received for fees notification with email: {}", email);
+		return ResponseEntity.ok(notificationService.feesNotification(email));
 
 	}
 

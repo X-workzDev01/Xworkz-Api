@@ -26,7 +26,7 @@ public class FeesDto {
 	private String comments;
 	private Long lateFees;
 	private AuditDto admin;
-	private String softFlag;
+	private String softFlag; 
 	private String courseName;
 
 	public FeesDto(FeesHistoryDto feesHistoryDto, AuditDto admin) {
