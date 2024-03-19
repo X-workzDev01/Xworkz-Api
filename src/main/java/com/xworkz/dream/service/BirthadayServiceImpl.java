@@ -229,14 +229,18 @@ public class BirthadayServiceImpl implements BirthadayService {
 		listOfTrainees.stream().forEach(dto -> {
 			if (dto.getBasicInfo() != null && dto.getCourseInfo().getCourse() != null) {
 				listofBirthday.add(
-						new BirthdayDetailsDto(dto.getId(), dto.getBasicInfo(), dto.getCourseInfo().getCourse(),null));
+						new BirthdayDetailsDto(dto.getId(), dto.getBasicInfo(), dto.getCourseInfo().getCourse(), null));
 			}
 		});
-		
+
 		listofBirthday.stream().forEach(dto -> {
 			mailSentList.stream().forEach(d -> {
 				if (d.getTraineeEmail().equalsIgnoreCase(dto.getBasicInfoDto().getEmail())) {
-					dto.setBirthDayMailSent(d.getBirthDayMailSent());
+					if (!d.getBirthDayMailSent().equals(null) && !d.getBirthDayMailSent().equals("")) {
+						dto.setBirthDayMailSent(d.getBirthDayMailSent());
+					} else {
+						dto.setBirthDayMailSent("NA");
+					}
 				}
 			});
 		});
