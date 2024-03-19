@@ -7,9 +7,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+
 import com.xworkz.dream.constants.ServiceConstant;
-import com.xworkz.dream.dto.SheetPropertyDto;
 import com.xworkz.dream.dto.PercentageDto;
+import com.xworkz.dream.dto.SheetPropertyDto;
 import com.xworkz.dream.dto.TraineeDto;
 import com.xworkz.dream.repository.RegisterRepository;
 import com.xworkz.dream.wrapper.DreamWrapper;
@@ -60,6 +61,7 @@ public class RegistrationUtil {
 			}
 		}
 		return null;
+	}
 	public TraineeDto cgpaToPercentage(TraineeDto dto) {
 		PercentageDto percentageDto = dto.getPercentageDto();
 		Double sslc = dto.getPercentageDto().getSslcPercentage();
