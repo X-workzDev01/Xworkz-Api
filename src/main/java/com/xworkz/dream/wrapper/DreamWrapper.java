@@ -400,7 +400,7 @@ public class DreamWrapper {
 				&& validateCell(RegistrationConstant.COLUMN_ALTERNATIVE_CONTACT_NUMBER)) {
 			Long alternativeContactNumber = Long
 					.parseLong(row.get(RegistrationConstant.COLUMN_ALTERNATIVE_CONTACT_NUMBER.getIndex()).toString());
-			traineeDto.getCsrDto().setAlternateContactNumber(alternativeContactNumber);
+			traineeDto.getCsrDto().setAlternateContactNumber(alternativeContactNumber); 
 		}
 		if (row.size() > RegistrationConstant.COLUMN_UNIQUE_ID.getIndex()
 				&& validateCell(RegistrationConstant.COLUMN_UNIQUE_ID)) {

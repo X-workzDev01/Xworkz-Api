@@ -234,9 +234,8 @@ public class NotificationServiceImpl implements NotificationService {
 
 					listOfData.stream().forEach(e -> {
 						FeesDto dto = feesWrapper.listToFeesDTO(e);
-
-						if (dto.getFeesHistoryDto().getFollowupCallbackDate() != null && dto.getSoftFlag() != null
-								&& !dto.getSoftFlag().equalsIgnoreCase("Inactive")
+						if (dto.getFeesHistoryDto() != null && dto.getFeesHistoryDto().getFollowupCallbackDate() != null
+								&& dto.getSoftFlag() != null && !dto.getSoftFlag().equalsIgnoreCase("Inactive")
 								&& statusCheck.contains(dto.getFeesStatus())) {
 							if (dto.getFeesHistoryDto().getFollowupCallbackDate().length() > 10
 									&& LocalDateTime.now()
@@ -287,8 +286,7 @@ public class NotificationServiceImpl implements NotificationService {
 
 				if (!notificationStatus.isEmpty()) {
 
-					util.sendFeesNotificationToEmail(teamList,
-							notificationStatus);
+					util.sendFeesNotificationToEmail(teamList, notificationStatus);
 
 				}
 
