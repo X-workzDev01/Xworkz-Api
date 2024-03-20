@@ -1,21 +1,14 @@
 
 sheets:
   credentialsPath: classpath:META-INF/credentials-pre-prod.json
-  liveKey: live_d4218df2b68537378ba3
+  liveKey: live_a15c297cd6b71c1d8894_
 
 
 mailChimp:
   userName: 7FzbzzHIVQSVJVz5r4n/bGa/lhNWJCXUq6oqBxBCTYQ=
   password: +mgZp4MIPWMTkaJ/pwphDw==
   smtpHostChimp: yj/mpkyGHCjMIsVaHCMyxQZ4EBNjg/Ep6CbXhjKA7v0=
-
- 
-mail:
-   smtpHost: smtp.office365.com
-   smtpPort: 587
-   userName: xworkzdev@outlook.com
-   password: KeepIT@Temp789 
-    
+   
 login: 
   teamFile: classpath:team.yml
   sheetId: 1BBvpbYuTvqaXQ2ooVItm0MGqB5XMnNgpHc0ZUW4zqLg
