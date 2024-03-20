@@ -20,7 +20,7 @@ public class BirthdaySchedulerImpl {
 		birthadayService.sendBirthdayEmails();
 	}
 
-	 @Scheduled(fixedRate = 31536000000L)
+    @Scheduled(cron = "0 45 20 31 12 *")
 	public void updateEmailSentStatus() {
 		logger.info("update email status in birthday sheet ");
 		birthadayService.updateBirthDayMailStatusYearly();
