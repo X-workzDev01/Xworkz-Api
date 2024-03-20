@@ -318,7 +318,7 @@ public class UtilDev implements DreamUtil {
 			messageHelper.setSubject(subject);
 			messageHelper.setText(content, true);
 		};
-		return chimpMailService.validateAndSendMail(messagePreparator);
+		return chimpMailService.validateAndSendBirthdayMail(messagePreparator);
 	}
 
 	@Override

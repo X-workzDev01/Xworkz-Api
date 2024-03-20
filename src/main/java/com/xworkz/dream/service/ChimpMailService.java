@@ -7,7 +7,7 @@ import org.springframework.mail.javamail.MimeMessagePreparator;
 
 	 boolean validateAndSendBirthdayMail(MimeMessagePreparator messagePreparator);
 
-	 boolean validateAndSendMail(MimeMessagePreparator messagePreparator);
+	 void  validateAndSendMail(MimeMessagePreparator messagePreparator);
 
 	 boolean validateAndSendMailByMailOtp(MimeMessagePreparator messagePreparator);
 
