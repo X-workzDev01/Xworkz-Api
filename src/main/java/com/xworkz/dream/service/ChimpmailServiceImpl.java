@@ -12,6 +12,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.MailException;
 import org.springframework.mail.javamail.MimeMessagePreparator;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 import com.xworkz.dream.configuration.MailConfig;
@@ -39,6 +40,7 @@ public class ChimpmailServiceImpl implements ChimpMailService {
 	}
 
 	@Override
+	@Async
 	public void  validateAndSendMail(MimeMessagePreparator messagePreparator) {
 		log.info("invoked validateAndSendMailByMailId of SpringMailServiceImpl...");
 
