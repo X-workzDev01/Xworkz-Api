@@ -190,7 +190,6 @@ public class UtilDev implements DreamUtil {
 	}
 
 	@Override
-
 	public boolean sendBirthadyEmail(String traineeEmail, String subject, String name) {
 
 		if (traineeEmail == null || name == null) {

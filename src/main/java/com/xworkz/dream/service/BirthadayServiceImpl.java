@@ -104,6 +104,10 @@ public class BirthadayServiceImpl implements BirthadayService {
 		}
 		TraineeDto traineeDto = registrationUtil.getDetailsByEmail(email);
 		BirthDayInfoDto birthday = getDetailsByEmail(email);
+		if (birthday.getBirthDayMailSent() != null
+				&& !birthday.getBirthDayMailSent().equalsIgnoreCase(ServiceConstant.YES.toString())) {
+			birthday.setBirthDayMailSent(ServiceConstant.NO.toString());
+		}
 		birthday.setTraineeEmail(dto.getBasicInfo().getEmail());
 		birthday.setAuditDto(dto.getAdminDto());
 		boolean updateResponse = birthDayUtil.findAndUpdateByEmail(email, dto, birthday, traineeDto);

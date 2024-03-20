@@ -104,8 +104,6 @@ public class BirthDayUtil {
 					.getBasicInfo().getDateOfBirth().equalsIgnoreCase(dto.getBasicInfo().getDateOfBirth())) {
 				int rowIndex = findRowIndexByEmail(email);
 				if (rowIndex != -1) {
-					Integer id = rowIndex - 1;
-					birthday.setId(id);
 					String updateRange = sheetPropertyDto.getDobSheetName() + sheetPropertyDto.getBirthDayStartRow()
 							+ rowIndex + ":" + sheetPropertyDto.getBirthDayEndRow() + rowIndex;
 					List<List<Object>> values = Arrays.asList(wrapper.extractDtoDetails(birthday));
@@ -177,5 +175,4 @@ public class BirthDayUtil {
 		return false;
 	}
 
-	
 }
