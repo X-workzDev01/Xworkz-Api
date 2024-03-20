@@ -56,6 +56,7 @@ public class BirthadayRepositoryImpl implements BirthadayRepository {
 	}
 
 	@Override
+	@Cacheable(value = "getListOfBirthDayDetails", key = "'listOfBirthDayDetails'")
 	public List<List<Object>> getBirthadayDetails(String spreadsheetId) {
 		try {
 			return sheetsService.spreadsheets().values()
@@ -83,7 +84,7 @@ public class BirthadayRepositoryImpl implements BirthadayRepository {
 	}
 
 	@Override
-	@Cacheable(value="getListOfBirthDayEmail",key="'listOfBirthDayEmail'")
+	@Cacheable(value = "getListOfBirthDayEmail", key = "'listOfBirthDayEmail'")
 	public List<List<Object>> getBirthadayEmailList() {
 		try {
 			return sheetsService.spreadsheets().values()

@@ -202,9 +202,8 @@ public class UtilProd implements DreamUtil {
 		if (traineeEmail == null || name == null) {
 			logger.warn("Email or name is null");
 			return false;
-		} else {
-			sendBirthadyEmailChimp(traineeEmail, subject, name);
-			return true;
+		} else {		
+			return sendBirthadyEmailChimp(traineeEmail, subject, name);
 		}
 	}
 
@@ -336,7 +335,7 @@ public class UtilProd implements DreamUtil {
 		}
 	}
 
-	private void sendBirthadyEmailChimp(String traineeEmail, String subject, String name) {
+	private boolean sendBirthadyEmailChimp(String traineeEmail, String subject, String name) {
 		Context context = new Context();
 
 		context.setVariable("name", name);
@@ -352,7 +351,7 @@ public class UtilProd implements DreamUtil {
 			messageHelper.setSubject(subject);
 			messageHelper.setText(content, true);
 		};
-		chimpMailService.validateAndSendBirthdayMail(messagePreparator);
+	return chimpMailService.validateAndSendBirthdayMail(messagePreparator);
 	}
 
 	private void sendAbsentEmailChimp(String email, String name, String reason) {

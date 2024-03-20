@@ -110,9 +110,8 @@ public class UtilDev implements DreamUtil {
 
 		return true;
 	}
-
 	@Override
-	public boolean sendFeesNotificationToEmail(List<Team> teamList, List<FeesDto> notificationStatus) {
+	public boolean sendFeesNotificationToEmail(List<Team> teamList, List<FeesDto> notificationStatus){
 		if (teamList == null || notificationStatus == null) {
 			logger.warn("teamList or notificationStatus is null");
 			return false;
@@ -194,17 +193,13 @@ public class UtilDev implements DreamUtil {
 	}
 
 	@Override
-
 	public boolean sendBirthadyEmail(String traineeEmail, String subject, String name) {
 
 		if (traineeEmail == null || name == null) {
 			logger.warn("Email or name is null");
-			return false;
 
-		} else {
-			sendBirthadyEmailChimp(traineeEmail, subject, name);
-			return true;
 		}
+		return sendBirthadyEmailChimp(traineeEmail, subject, name);
 	}
 
 	private boolean otpMailService(String email, int otp, String subject) {
@@ -245,7 +240,7 @@ public class UtilDev implements DreamUtil {
 
 		return chimpMailService.validateAndSendMailByMailIdDev(messagePreparator);
 	}
-
+	
 	private boolean sendBulkMailToFeesNotification(List<String> recipients, String subject, List<FeesDto> body) {
 		Context context = new Context();
 
@@ -326,8 +321,7 @@ public class UtilDev implements DreamUtil {
 			messageHelper.setSubject(subject);
 			messageHelper.setText(content, true);
 		};
-		chimpMailService.validateAndSendMail(messagePreparator);
-		return true;
+		return chimpMailService.validateAndSendBirthdayMail(messagePreparator);
 	}
 
 	@Override
