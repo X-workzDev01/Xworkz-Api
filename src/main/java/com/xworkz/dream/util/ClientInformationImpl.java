@@ -41,6 +41,13 @@ public class ClientInformationImpl implements ClientInformationUtil {
 			dto.getAdminDto().setCreatedBy(ServiceConstant.NA.toString());
 		}
 		dto.getAdminDto().setCreatedOn(LocalDateTime.now().toString());
+		if (dto.getAdminDto().getUpdatedBy() == null) {
+			dto.getAdminDto().setUpdatedBy(ServiceConstant.NA.toString());
+		}
+		if (dto.getAdminDto().getUpdatedOn() == null) {
+			dto.getAdminDto().setUpdatedOn(ServiceConstant.NA.toString());
+		}
+
 	}
 
 	@Override
@@ -117,6 +124,12 @@ public class ClientInformationImpl implements ClientInformationUtil {
 		}
 		// here we need to set createdBy email
 		dto.getAdminDto().setCreatedOn(LocalDateTime.now().toString());
+		if (dto.getAdminDto().getUpdatedBy() == null) {
+			dto.getAdminDto().setUpdatedBy(ServiceConstant.NA.toString());
+		}
+		if (dto.getAdminDto().getUpdatedOn() == null) {
+			dto.getAdminDto().setUpdatedOn(ServiceConstant.NA.toString());
+		}
 		log.debug("client wrapper,after assigning values: {}", dto);
 	}
 
