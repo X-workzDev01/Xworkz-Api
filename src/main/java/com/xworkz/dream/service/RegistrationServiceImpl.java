@@ -5,7 +5,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
-import java.util.ListIterator;
 import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
@@ -260,24 +259,6 @@ public class RegistrationServiceImpl implements RegistrationService {
 	}
 
 	@Override
-	public List<TraineeDto> getLimitedRows(List<List<Object>> values, int startingIndex, int maxRows) {
-		List<TraineeDto> traineeDtos = new ArrayList<>();
-		if (values != null) {
-			int endIndex = startingIndex + maxRows;
-			ListIterator<List<Object>> iterator = values.listIterator(startingIndex);
-			while (iterator.hasNext() && iterator.nextIndex() < endIndex) {
-				List<Object> row = iterator.next();
-				if (row != null && !row.isEmpty()) {
-					TraineeDto traineeDto = wrapper.listToDto(row);
-					traineeDtos.add(traineeDto);
-				}
-			}
-			log.info("Returning {} TraineeDto objects", traineeDtos.size());
-		}
-		return traineeDtos;
-	}
-
-	@Override
 	public List<TraineeDto> filterData(String spreadsheetId, String searchValue, String courseName, String collegeName,
 			String followupStatus) {
 		List<TraineeDto> traineeDtos = new ArrayList<TraineeDto>();
@@ -484,13 +465,15 @@ public class RegistrationServiceImpl implements RegistrationService {
 				}
 				ValueRange valueRange = new ValueRange();
 				valueRange.setValues(values);
-
+				System.err.println("values************************              " + values
+						+ "\n ------------------      range        ----------   " + range);
 				UpdateValuesResponse updated = repo.update(spreadsheetId, range, valueRange);
 				boolean updateDob = service.updateDob(email, dto);
 
 				log.info("updated DOB in Sheet,{}", updateDob);
 				if (updated != null && !updated.isEmpty()) {
 					followUpService.updateFollowUp(spreadsheetId, email, dto);
+					System.err.println("Update cache             -********************    " + dto);
 					cacheService.getCacheDataByEmail("sheetsData", "listOfTraineeData", email, dto);
 					log.info("Updated Successfully. Email: {}", email);
 					cacheService.getCacheDataByEmail("emailData", spreadsheetId, email, dto.getBasicInfo().getEmail());
