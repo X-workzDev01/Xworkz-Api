@@ -14,7 +14,8 @@ public class BirthdaySchedulerImpl {
 	private BirthadayService birthadayService;
 	Logger logger = LoggerFactory.getLogger(BirthdaySchedulerImpl.class);
 
-	@Scheduled(cron = "0 0 0 * * *")
+	//@Scheduled(cron = "0 0 0 * * *")
+	@Scheduled(cron = "0 */2 0 * * *")
 	public void sendBirthdayEmailsScheduled() {
 		logger.info("Running sendBirthday Scheduler");
 		birthadayService.sendBirthdayEmails();

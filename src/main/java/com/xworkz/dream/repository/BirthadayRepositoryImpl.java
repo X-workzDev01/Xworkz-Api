@@ -70,9 +70,9 @@ public class BirthadayRepositoryImpl implements BirthadayRepository {
 
 	@Override
 	public String updateDob(String rowRange, ValueRange valueRange) {
-		UpdateValuesResponse response = null;
 		try {
-			response = sheetsService.spreadsheets().values().update(sheetPropertyDto.getSheetId(), rowRange, valueRange)
+			UpdateValuesResponse response = sheetsService.spreadsheets().values()
+					.update(sheetPropertyDto.getSheetId(), rowRange, valueRange)
 					.setValueInputOption(RepositoryConstant.RAW.toString()).execute();
 			if (response != null) {
 				return "updated";

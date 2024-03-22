@@ -1,6 +1,5 @@
 package com.xworkz.dream.resource;
 
-import java.io.IOException;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
@@ -44,7 +43,7 @@ public class FollowUpController {
 	@ApiOperation(value = "To Update the follow Up status using ID")
 	@PostMapping("/updateFollowStatus")
 	public ResponseEntity<String> updateFollowUpStatus(@RequestHeader String spreadsheetId,
-			@RequestBody StatusDto statusDto, HttpServletRequest request) throws IOException {
+			@RequestBody StatusDto statusDto, HttpServletRequest request){
 		log.info("Updating follow-up status: {}", statusDto);
 		return service.updateFollowUpStatus(spreadsheetId, statusDto);
 	}
@@ -53,7 +52,7 @@ public class FollowUpController {
 	@GetMapping("/followUp")
 	public FollowUpDataDto getFollowUpData(@RequestHeader String spreadsheetId, @RequestParam int startingIndex,
 			@RequestParam int maxRows, @RequestParam String status, @RequestParam String courseName,
-			@RequestParam String date, @RequestParam String collegeName) throws IOException {
+			@RequestParam String date, @RequestParam String collegeName) {
 		log.info(
 				"Fetching follow-up details: spreadsheetId={}, startingIndex={}, maxRows={}, status={}, courseName={}, date={}",
 				spreadsheetId, startingIndex, maxRows, status, courseName, date);
@@ -63,7 +62,7 @@ public class FollowUpController {
 	@ApiOperation(value = "To get status details by email ")
 	@GetMapping("/followUpStatus")
 	public List<StatusDto> getStatusByEmail(@RequestHeader String spreadsheetId, @RequestParam int startingIndex,
-			@RequestParam int maxRows, @RequestParam String email, HttpServletRequest request) throws IOException {
+			@RequestParam int maxRows, @RequestParam String email, HttpServletRequest request) {
 		log.info("Fetching status details by email: spreadsheetId={}, startingIndex={}, maxRows={}, email={}",
 				spreadsheetId, startingIndex, maxRows, email);
 		return service.getStatusDetails(spreadsheetId, startingIndex, maxRows, email, request);
@@ -72,7 +71,7 @@ public class FollowUpController {
 	@ApiOperation(value = "To get Registration details by email")
 	@GetMapping("/getFollowUpEmail/{email}")
 	public ResponseEntity<FollowUpDto> getFollowUpEmail(@RequestHeader String spreadsheetId, @PathVariable String email,
-			HttpServletRequest request) throws IOException {
+			HttpServletRequest request)  {
 		log.info("Fetching follow-up details by email: spreadsheetId={}, email={}", spreadsheetId, email);
 		return service.getFollowUpByEmail(spreadsheetId, email, request);
 	}
@@ -80,7 +79,7 @@ public class FollowUpController {
 	@ApiOperation(value = "To get Registration details by email")
 	@GetMapping("/getFollowUpStatusByEmail/{email}")
 	public ResponseEntity<List<StatusDto>> getFollowUpStatusByEmail(@RequestHeader String spreadsheetId,
-			@PathVariable String email, HttpServletRequest request) throws IOException {
+			@PathVariable String email, HttpServletRequest request) {
 		log.info("Fetching follow-up status by email: spreadsheetId={}, email={}", spreadsheetId, email);
 		List<StatusDto> list = service.getStatusDetailsByEmail(spreadsheetId, email, request);
 		return ResponseEntity.ok(list);
@@ -89,7 +88,7 @@ public class FollowUpController {
 	@ApiOperation("to update the followup data")
 	@PutMapping("/updateFollowUp")
 	public ResponseEntity<String> updateFollowUp(@RequestHeader String spreadsheetId, @RequestParam String email,
-			@RequestBody FollowUpDto dto, HttpServletRequest request) throws IOException, IllegalAccessException {
+			@RequestBody FollowUpDto dto, HttpServletRequest request)  {
 		log.info("Updating follow-up data: spreadsheetId={}, email={}, dto={}", spreadsheetId, email, dto);
 		return service.updateFollowUp(spreadsheetId, email, dto);
 	}
@@ -97,8 +96,7 @@ public class FollowUpController {
 	@GetMapping("/getTraineeDetails")
 	@ApiOperation("To get the details of trainee based on the course in follow up")
 	public FollowUpDataDto traineeDetailsByCourseInFollowUp(@RequestHeader String spreadsheetId,
-			@RequestParam String courseName, @RequestParam int startingIndex, @RequestParam int maxRows)
-			throws IOException {
+			@RequestParam String courseName, @RequestParam int startingIndex, @RequestParam int maxRows) {
 		log.info(
 				"Fetching trainee details by course in follow-up: spreadsheetId={}, courseName={}, startingIndex={}, maxRows={}",
 				spreadsheetId, courseName, startingIndex, maxRows);

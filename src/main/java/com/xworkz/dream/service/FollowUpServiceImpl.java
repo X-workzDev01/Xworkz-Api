@@ -1,6 +1,5 @@
 package com.xworkz.dream.service;
 
-import java.io.IOException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -20,7 +19,6 @@ import javax.servlet.http.HttpServletRequest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -31,6 +29,7 @@ import com.xworkz.dream.constants.ServiceConstant;
 import com.xworkz.dream.dto.AuditDto;
 import com.xworkz.dream.dto.FollowUpDataDto;
 import com.xworkz.dream.dto.FollowUpDto;
+import com.xworkz.dream.dto.SheetPropertyDto;
 import com.xworkz.dream.dto.StatusDto;
 import com.xworkz.dream.dto.TraineeDto;
 import com.xworkz.dream.dto.utils.StatusList;
@@ -48,24 +47,8 @@ public class FollowUpServiceImpl implements FollowUpService {
 	private DreamWrapper wrapper;
 	@Autowired
 	private RegisterRepository repository;
-	@Value("${login.sheetId}")
-	private String id;
-	@Value("${login.teamFile}")
-	private String userFile;
-	@Value("${sheets.rowStartRange}")
-	private String rowStartRange;
-	@Value("${sheets.rowEndRange}")
-	private String rowEndRange;
-	@Value("${sheets.followUpRowCurrentStartRange}")
-	private String followUpRowCurrentStartRange;
-	@Value("${sheets.followUpRowCurrentEndRange}")
-	private String followUpRowCurrentEndRange;
-	@Value("${sheets.followUpSheetName}")
-	private String followUpSheetName;
-	@Value("${sheets.followUprowStartRange}")
-	private String followUprowStartRange;
-	@Value("${sheets.followUprowEndRange}")
-	private String followUprowEndRange;
+	@Autowired
+	private SheetPropertyDto sheetPropertyDto;
 	@Autowired
 	private CacheService cacheService;
 	private static final Logger log = LoggerFactory.getLogger(FollowUpServiceImpl.class);
@@ -73,8 +56,7 @@ public class FollowUpServiceImpl implements FollowUpService {
 	private FollowUpUtil followUpUtil;
 
 	@Override
-	public boolean addToFollowUp(TraineeDto traineeDto, String spreadSheetId)
-			throws IOException, IllegalAccessException {
+	public boolean addToFollowUp(TraineeDto traineeDto, String spreadSheetId) {
 		log.info("Follow-up service running for traineeDto: {}", traineeDto);
 		if (traineeDto == null) {
 			return false;
@@ -103,8 +85,7 @@ public class FollowUpServiceImpl implements FollowUpService {
 	}
 
 	@Override
-	public boolean addToFollowUpEnquiry(TraineeDto traineeDto, String spreadSheetId)
-			throws IOException, IllegalAccessException {
+	public boolean addToFollowUpEnquiry(TraineeDto traineeDto, String spreadSheetId) {
 		log.info("Follow-up Enquiry service running for traineeDto: {}", traineeDto);
 		if (traineeDto == null) {
 			return false;
@@ -135,8 +116,7 @@ public class FollowUpServiceImpl implements FollowUpService {
 	}
 
 	@Override
-	public boolean addCsrToFollowUp(TraineeDto traineeDto, String spreadSheetId)
-			throws IOException, IllegalAccessException {
+	public boolean addCsrToFollowUp(TraineeDto traineeDto, String spreadSheetId){
 		log.info("CSR Follow-up service running for traineeDto: {}", traineeDto);
 		if (traineeDto == null) {
 			return false;
@@ -165,7 +145,7 @@ public class FollowUpServiceImpl implements FollowUpService {
 
 	}
 
-	private int findByEmailForUpdate(String spreadsheetId, String email) throws IOException {
+	private int findByEmailForUpdate(String spreadsheetId, String email){
 
 		List<List<Object>> values = repo.getEmailList(spreadsheetId);
 		if (values != null) {
@@ -198,8 +178,7 @@ public class FollowUpServiceImpl implements FollowUpService {
 	}
 
 	@Override
-	public boolean updateFollowUp(String spreadsheetId, String email, TraineeDto dto)
-			throws IOException, IllegalAccessException {
+	public boolean updateFollowUp(String spreadsheetId, String email, TraineeDto dto){
 		log.info("Update follow-up service running. Email: {}", email);
 		FollowUpDto followUpDto = getFollowUpDetailsByEmail(spreadsheetId, email);
 		if (followUpDto == null) {
@@ -209,7 +188,8 @@ public class FollowUpServiceImpl implements FollowUpService {
 
 		int rowIndex = findByEmailForUpdate(spreadsheetId, email);
 		if (rowIndex != -1) {
-			String range = followUpSheetName + followUprowStartRange + rowIndex + ":" + followUprowEndRange + rowIndex;
+			String range = sheetPropertyDto.getFollowUpSheetName() + sheetPropertyDto.getFollowUprowStartRange() + rowIndex + ":" 
+		+ sheetPropertyDto.getFollowUprowEndRange() + rowIndex;
 			followUpDto.getBasicInfo().setTraineeName(dto.getBasicInfo().getTraineeName());
 			followUpDto.getBasicInfo().setEmail(dto.getBasicInfo().getEmail());
 			followUpDto.getBasicInfo().setContactNumber(dto.getBasicInfo().getContactNumber());
@@ -268,13 +248,14 @@ public class FollowUpServiceImpl implements FollowUpService {
 
 	@Override
 	public boolean updateCurrentFollowUp(String calBack, String spreadsheetId, String email, String currentStatus,
-			String currentlyFollowedBy, String joiningDate) throws IOException, IllegalAccessException {
+			String currentlyFollowedBy, String joiningDate) {
 
 		log.info("Update current follow-up service running. SpreadsheetId: {}, Email: {}", spreadsheetId, email);
 		FollowUpDto followUpDto = getFollowUpDetailsByEmail(spreadsheetId, email);
 		int rowIndex = findByEmailForUpdate(spreadsheetId, email);
 		if (rowIndex != -1) {
-			String range = followUpSheetName + followUprowStartRange + rowIndex + ":" + followUprowEndRange + rowIndex;
+			String range =sheetPropertyDto.getFollowUpSheetName() + sheetPropertyDto.getFollowUprowStartRange() + rowIndex + ":" +
+					sheetPropertyDto.getFollowUprowEndRange() + rowIndex;
 			UpdateValuesResponse updated = setFollowUpDto(calBack, spreadsheetId, currentStatus, currentlyFollowedBy,
 					followUpDto, joiningDate, range);
 			if (updated != null && !updated.isEmpty()) {
@@ -291,8 +272,7 @@ public class FollowUpServiceImpl implements FollowUpService {
 	}
 
 	private UpdateValuesResponse setFollowUpDto(String callBack, String spreadsheetId, String currentStatus,
-			String currentlyFollowedBy, FollowUpDto followUpDto, String joiningDate, String range)
-			throws IllegalAccessException, IOException {
+			String currentlyFollowedBy, FollowUpDto followUpDto, String joiningDate, String range) {
 		log.info("Setting follow-up DTO. SpreadsheetId: {}, Email: {}", spreadsheetId,
 				followUpDto.getBasicInfo().getEmail());
 		AuditDto existingAdminDto = followUpDto.getAdminDto();
@@ -347,7 +327,6 @@ public class FollowUpServiceImpl implements FollowUpService {
 
 	@Override
 	public ResponseEntity<String> updateFollowUpStatus(String spreadsheetId, StatusDto statusDto) {
-		try {
 			log.info("Update follow-up status service start. SpreadsheetId: {}, StatusDto: {}", spreadsheetId,
 					statusDto);
 			StatusDto sdto = wrapper.setFollowUpStatus(statusDto);
@@ -363,11 +342,6 @@ public class FollowUpServiceImpl implements FollowUpService {
 			}
 			log.info("Follow-up status updated successfully for ID: {}", statusDto.getId());
 			return ResponseEntity.ok("Follow Status Updated for ID :  " + statusDto.getId());
-		} catch (IOException | IllegalAccessException e) {
-			log.error("An error occurred while updating follow-up status", e);
-			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-					.body("An error occurred with credentials file ");
-		}
 	}
 
 	@Override
@@ -521,8 +495,7 @@ public class FollowUpServiceImpl implements FollowUpService {
 	}
 
 	@Override
-	public List<StatusDto> getStatusDetailsByEmail(String spreadsheetId, String email, HttpServletRequest request)
-			throws IOException {
+	public List<StatusDto> getStatusDetailsByEmail(String spreadsheetId, String email, HttpServletRequest request) {
 		log.info("Get Status Details by Email service start. SpreadsheetId: {}, Email: {}", spreadsheetId, email);
 		List<StatusDto> statusDto = new ArrayList<>();
 		List<List<Object>> dataList = repo.getFollowUpStatusDetails(spreadsheetId);
@@ -557,7 +530,7 @@ public class FollowUpServiceImpl implements FollowUpService {
 	}
 
 	@Override
-	public FollowUpDto getFollowUpDetailsByEmail(String spreadsheetId, String email) throws IOException {
+	public FollowUpDto getFollowUpDetailsByEmail(String spreadsheetId, String email){
 		log.info("Get Follow-up Details by Email service start. SpreadsheetId: {}, Email: {}", spreadsheetId, email);
 		FollowUpDto followUpDto = new FollowUpDto();
 
@@ -581,12 +554,12 @@ public class FollowUpServiceImpl implements FollowUpService {
 	}
 
 	@Override
-	public ResponseEntity<String> updateFollowUp(String spreadsheetId, String email, FollowUpDto followDto)
-			throws IOException, IllegalAccessException {
+	public ResponseEntity<String> updateFollowUp(String spreadsheetId, String email, FollowUpDto followDto){
 		log.info("Update Follow-up service start. SpreadsheetId: {}, Email: {}", spreadsheetId, email);
 		int rowIndex = findByEmailForUpdate(spreadsheetId, email);
 
-		String range = followUpSheetName + followUprowStartRange + rowIndex + ":" + followUprowEndRange + rowIndex;
+		String range = sheetPropertyDto.getFollowUpSheetName() + sheetPropertyDto.getFollowUprowStartRange() +
+				rowIndex + ":" + sheetPropertyDto.getFollowUprowEndRange() + rowIndex;
 		List<List<Object>> values = Arrays.asList(wrapper.extractDtoDetails(followDto));
 		ValueRange valueRange = new ValueRange();
 		valueRange.setValues(values);
@@ -602,7 +575,7 @@ public class FollowUpServiceImpl implements FollowUpService {
 
 	@Override
 	public FollowUpDataDto getTraineeDetailsByCourseInFollowUp(String spreadsheetId, String courseName,
-			int startingIndex, int maxIndex) throws IOException {
+			int startingIndex, int maxIndex){
 		log.info("Get Trainee Details By Course In FollowUp service start. SpreadsheetId: {}, CourseName: {}, "
 				+ "StartingIndex: {}, MaxIndex: {}", spreadsheetId, courseName, startingIndex, maxIndex);
 
@@ -645,14 +618,9 @@ public class FollowUpServiceImpl implements FollowUpService {
 						return null;
 					}
 					FollowUpDto followUp = null;
-					try {
 						String email = dto.getBasicInfo().getEmail();
 						log.debug("Attempting to get FollowUp details for email: {}", email);
 						followUp = getFollowUpDetailsByEmail(spreadsheetId, email);
-
-					} catch (IOException e) {
-						log.error("An IOException occurred: ", e.getMessage(), e);
-					}
 					if (followUp == null) {
 						return null;
 					}
