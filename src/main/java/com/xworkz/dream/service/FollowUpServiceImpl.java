@@ -14,8 +14,6 @@ import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import javax.servlet.http.HttpServletRequest;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -345,8 +343,7 @@ public class FollowUpServiceImpl implements FollowUpService {
 	}
 
 	@Override
-	public ResponseEntity<FollowUpDto> getFollowUpByEmail(String spreadsheetId, String email,
-			HttpServletRequest request) {
+	public ResponseEntity<FollowUpDto> getFollowUpByEmail(String spreadsheetId, String email) {
 		log.info("Get follow-up by email service start. SpreadsheetId: {}, Email: {}", spreadsheetId, email);
 		List<List<Object>> data;
 		try {
@@ -477,8 +474,7 @@ public class FollowUpServiceImpl implements FollowUpService {
 	}
 
 	@Override
-	public List<StatusDto> getStatusDetails(String spreadsheetId, int startingIndex, int maxRows, String email,
-			HttpServletRequest request) {
+	public List<StatusDto> getStatusDetails(String spreadsheetId, int startingIndex, int maxRows, String email) {
 		log.info("Get Status Details service start. SpreadsheetId: {}, StartingIndex: {}, MaxRows: {}, Email: {}",
 				spreadsheetId, startingIndex, maxRows, email);
 		List<StatusDto> statusDto = new ArrayList<>();
@@ -495,7 +491,7 @@ public class FollowUpServiceImpl implements FollowUpService {
 	}
 
 	@Override
-	public List<StatusDto> getStatusDetailsByEmail(String spreadsheetId, String email, HttpServletRequest request) {
+	public List<StatusDto> getStatusDetailsByEmail(String spreadsheetId, String email) {
 		log.info("Get Status Details by Email service start. SpreadsheetId: {}, Email: {}", spreadsheetId, email);
 		List<StatusDto> statusDto = new ArrayList<>();
 		List<List<Object>> dataList = repo.getFollowUpStatusDetails(spreadsheetId);

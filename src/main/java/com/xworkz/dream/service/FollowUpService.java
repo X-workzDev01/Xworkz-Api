@@ -2,8 +2,6 @@ package com.xworkz.dream.service;
 
 import java.util.List;
 
-import javax.servlet.http.HttpServletRequest;
-
 import org.springframework.http.ResponseEntity;
 
 import com.xworkz.dream.dto.FollowUpDataDto;
@@ -18,8 +16,7 @@ import com.xworkz.dream.dto.TraineeDto;
 
 	 ResponseEntity<String> updateFollowUpStatus(String spreadsheetId, StatusDto statusDto);
 
-	 ResponseEntity<FollowUpDto> getFollowUpByEmail(String spreadsheetId, String email,
-			HttpServletRequest request) ;
+	 ResponseEntity<FollowUpDto> getFollowUpByEmail(String spreadsheetId, String email) ;
 	
 	 FollowUpDataDto getTraineeDetailsByCourseInFollowUp(String spreadsheetId,
 			String courseName,int startingIndex,int maxRows) ;
@@ -35,10 +32,9 @@ import com.xworkz.dream.dto.TraineeDto;
 
 	 FollowUpDto getFollowUpDetailsByEmail(String spreadsheetId, String email);
 
-	 List<StatusDto> getStatusDetails(String spreadsheetId, int startingIndex, int maxRows, String email,
-			HttpServletRequest request);
+	 List<StatusDto> getStatusDetails(String spreadsheetId, int startingIndex, int maxRows, String email);
 
-	 List<StatusDto> getStatusDetailsByEmail(String spreadsheetId, String email, HttpServletRequest request);
+	 List<StatusDto> getStatusDetailsByEmail(String spreadsheetId, String email);
 
 	boolean updateCurrentFollowUp(String calback, String spreadsheetId, String email, String currentStatus,
 			String currentlyFollowedBy, String joiningDate);

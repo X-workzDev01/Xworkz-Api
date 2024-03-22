@@ -1,9 +1,5 @@
 package com.xworkz.dream.resource;
 
-import java.io.IOException;
-
-import javax.servlet.http.HttpServletRequest;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,10 +26,9 @@ public class CreateBatchInfoController {
 
 	@ApiOperation(value = "To register the upcoming batch details")
 	@PostMapping("/batchInfo")
-	public ResponseEntity<String> batchDetails(@RequestHeader String spreadsheetId, @RequestBody BatchDetailsDto dto,
-			HttpServletRequest request) throws IOException, IllegalAccessException {
+	public ResponseEntity<String> batchDetails(@RequestHeader String spreadsheetId, @RequestBody BatchDetailsDto dto){
 		log.info("Registering batch details: {}", dto);
-		return service.saveDetails(spreadsheetId, dto, request);
+		return service.saveDetails(spreadsheetId, dto);
 	}
 
 }

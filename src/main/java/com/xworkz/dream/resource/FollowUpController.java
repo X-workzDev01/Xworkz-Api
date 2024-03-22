@@ -2,8 +2,6 @@ package com.xworkz.dream.resource;
 
 import java.util.List;
 
-import javax.servlet.http.HttpServletRequest;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -43,7 +41,7 @@ public class FollowUpController {
 	@ApiOperation(value = "To Update the follow Up status using ID")
 	@PostMapping("/updateFollowStatus")
 	public ResponseEntity<String> updateFollowUpStatus(@RequestHeader String spreadsheetId,
-			@RequestBody StatusDto statusDto, HttpServletRequest request){
+			@RequestBody StatusDto statusDto){
 		log.info("Updating follow-up status: {}", statusDto);
 		return service.updateFollowUpStatus(spreadsheetId, statusDto);
 	}
@@ -62,33 +60,32 @@ public class FollowUpController {
 	@ApiOperation(value = "To get status details by email ")
 	@GetMapping("/followUpStatus")
 	public List<StatusDto> getStatusByEmail(@RequestHeader String spreadsheetId, @RequestParam int startingIndex,
-			@RequestParam int maxRows, @RequestParam String email, HttpServletRequest request) {
+			@RequestParam int maxRows, @RequestParam String email) {
 		log.info("Fetching status details by email: spreadsheetId={}, startingIndex={}, maxRows={}, email={}",
 				spreadsheetId, startingIndex, maxRows, email);
-		return service.getStatusDetails(spreadsheetId, startingIndex, maxRows, email, request);
+		return service.getStatusDetails(spreadsheetId, startingIndex, maxRows, email);
 	}
 
 	@ApiOperation(value = "To get Registration details by email")
 	@GetMapping("/getFollowUpEmail/{email}")
-	public ResponseEntity<FollowUpDto> getFollowUpEmail(@RequestHeader String spreadsheetId, @PathVariable String email,
-			HttpServletRequest request)  {
+	public ResponseEntity<FollowUpDto> getFollowUpEmail(@RequestHeader String spreadsheetId, @PathVariable String email)  {
 		log.info("Fetching follow-up details by email: spreadsheetId={}, email={}", spreadsheetId, email);
-		return service.getFollowUpByEmail(spreadsheetId, email, request);
+		return service.getFollowUpByEmail(spreadsheetId, email);
 	}
 
 	@ApiOperation(value = "To get Registration details by email")
 	@GetMapping("/getFollowUpStatusByEmail/{email}")
 	public ResponseEntity<List<StatusDto>> getFollowUpStatusByEmail(@RequestHeader String spreadsheetId,
-			@PathVariable String email, HttpServletRequest request) {
+			@PathVariable String email) {
 		log.info("Fetching follow-up status by email: spreadsheetId={}, email={}", spreadsheetId, email);
-		List<StatusDto> list = service.getStatusDetailsByEmail(spreadsheetId, email, request);
+		List<StatusDto> list = service.getStatusDetailsByEmail(spreadsheetId, email);
 		return ResponseEntity.ok(list);
 	}
 
 	@ApiOperation("to update the followup data")
 	@PutMapping("/updateFollowUp")
 	public ResponseEntity<String> updateFollowUp(@RequestHeader String spreadsheetId, @RequestParam String email,
-			@RequestBody FollowUpDto dto, HttpServletRequest request)  {
+			@RequestBody FollowUpDto dto)  {
 		log.info("Updating follow-up data: spreadsheetId={}, email={}, dto={}", spreadsheetId, email, dto);
 		return service.updateFollowUp(spreadsheetId, email, dto);
 	}
