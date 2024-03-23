@@ -32,7 +32,7 @@ public class NotificationSchedulerImpl implements NotificationScheduler {
 	private TeamList team;
 
 	@Override
-	public SheetNotificationDto setNotification(String email) {
+	public SheetNotificationDto setNotification(String email) { 
 		this.email = email;
 		notification();
 		return sheetDto;

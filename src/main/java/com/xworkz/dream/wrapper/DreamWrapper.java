@@ -88,7 +88,7 @@ public class DreamWrapper {
 	public FollowUpDto listToFollowUpDTO(List<Object> row) {
 		FollowUpDto followUpDto = new FollowUpDto(0, new BasicInfoDto(), null, null, null, null, null, null, null, null,
 				null, null, null);
-		int rowSize = row.size();
+		int rowSize = row.size(); 
 
 		if (rowSize > 0 && row.get(0) != null && !row.get(0).toString().isEmpty()) {
 			followUpDto.setId(Integer.valueOf(row.get(0).toString()));
@@ -171,6 +171,12 @@ public class DreamWrapper {
 				followUpDto.setAdminDto(new AuditDto());
 			}
 			followUpDto.getAdminDto().setUpdatedBy(row.get(12).toString());
+		}
+		if (rowSize > 13 && row.get(13) != null && !row.get(13).toString().isEmpty()) {
+			if (followUpDto.getAdminDto() == null) {
+				followUpDto.setAdminDto(new AuditDto());
+			}
+			followUpDto.getAdminDto().setUpdatedOn(row.get(13).toString());
 		}
 		if (rowSize > 14 && row.get(14) != null && !row.get(14).toString().isEmpty()) {
 			followUpDto.setFlag((String) row.get(14));

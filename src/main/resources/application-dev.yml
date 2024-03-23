@@ -7,6 +7,8 @@ mailChimp:
   userName: 7FzbzzHIVQSVJVz5r4n/bGa/lhNWJCXUq6oqBxBCTYQ=
   password: +mgZp4MIPWMTkaJ/pwphDw==
   smtpHostChimp: yj/mpkyGHCjMIsVaHCMyxQZ4EBNjg/Ep6CbXhjKA7v0= 
+  subject: Thank you for registring at x-workz
+
 
 logging:
   file:

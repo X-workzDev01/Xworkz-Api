@@ -381,7 +381,7 @@ public class UtilProd implements DreamUtil {
 	@Override
 	public boolean csrEmailSent(TraineeDto dto) {
 		Context context = new Context();
-		if (dto.getCourseInfo().getOfferedAs().equalsIgnoreCase("CSR")) {
+		if (dto.getCourseInfo().getOfferedAs().equalsIgnoreCase("CSR Offered")) {
 			context.setVariable("name", dto.getBasicInfo().getTraineeName());
 			context.setVariable("usnNumber", dto.getCsrDto().getUsnNumber());
 			context.setVariable("collegeName", dto.getEducationInfo().getCollegeName());
