@@ -42,4 +42,6 @@ public interface CacheService {
 	void updateBirthDayInfoInCache(String cacheName, String key, String email, BirthDayInfoDto birthDayInfoDto);
 
 	void addBirthDayToCache(String cacheName, String key, List<Object> data);
+
+	void updateValue(String cacheName, String key, Long oldValue, Long newValue);
 }

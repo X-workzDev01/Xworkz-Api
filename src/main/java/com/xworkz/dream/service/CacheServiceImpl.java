@@ -435,4 +435,31 @@ public class CacheServiceImpl implements CacheService {
 			}
 		}
 	}
+
+	@Override
+	public void updateValue(String cacheName, String key, Long oldValue, Long newValue) {
+		Cache cache = cacheManager.getCache(cacheName);
+		if (cache != null) {
+			ValueWrapper valueWrapper = cache.get(key);
+			if (valueWrapper != null && valueWrapper.get() instanceof List) {
+				@SuppressWarnings("unchecked")
+				List<List<Object>> ListOfItems = (List<List<Object>>) valueWrapper.get();
+				int matchingIndex = -1;
+				for (int i = 0; i < ListOfItems.size(); i++) {
+					List<Object> items = ListOfItems.get(i);
+					if (items.get(0) instanceof Long && ((Long) items.get(0)).equals(oldValue)) {
+						matchingIndex = i;
+						break;
+					}
+				}
+				if (matchingIndex >= 0) {
+					ListOfItems.set(matchingIndex, Arrays.asList(newValue));
+					log.info("Updated cache data for email: {}", newValue);
+				}
+			} else {
+				log.debug("Data not found in the cache for the specified email: {}", oldValue);
+			}
+		}
+
+	}
 }
