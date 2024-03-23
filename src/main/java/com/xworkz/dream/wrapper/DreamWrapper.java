@@ -226,15 +226,9 @@ public class DreamWrapper {
 	}
 
 	public TraineeDto listToDto(List<Object> row) {
+		System.out.println("sheet data" + row);
 		TraineeDto traineeDto = new TraineeDto(0, new BasicInfoDto(), new EducationInfoDto(), new CourseDto(),
-				new OthersDto(), new AuditDto(), new CSR(), new PercentageDto(), null);
-		// Assuming the list follows this order: id ,traineeName, email, contactNumber,
-		// qualification, stream,
-		// yearOfPassout, collegeName, batch, branch, course, referalName,
-		// referalContactNumber, comments
-		// if there any changes in the table, please make sure the right changes are
-		// done here also
-
+				new OthersDto(), new AuditDto(), new CSR(), new PercentageDto(), null, null);
 		if (row.size() > RegistrationConstant.COLUMN_ID.getIndex() && validateCell(RegistrationConstant.COLUMN_ID)) {
 			traineeDto.setId(Integer.valueOf(row.get(RegistrationConstant.COLUMN_ID.getIndex()).toString()));
 		}
@@ -449,6 +443,11 @@ public class DreamWrapper {
 			}
 		} else {
 			traineeDto.getPercentageDto().setDegreePercentage(0d);
+		}
+		if (row.size() > RegistrationConstant.GITHUB_LINK.getIndex()
+				&& row.get(RegistrationConstant.GITHUB_LINK.getIndex()) != null
+				&& validateCell(RegistrationConstant.GITHUB_LINK)) {
+			traineeDto.setGithubLink(row.get(RegistrationConstant.GITHUB_LINK.getIndex()).toString());
 		}
 		return traineeDto;
 	}
@@ -802,6 +801,9 @@ public class DreamWrapper {
 		if (dto.getCourseInfo().getStartDate() == null) {
 			dto.getCourseInfo().setStartDate(ServiceConstant.NA.toString());
 		}
+		if (dto.getGithubLink() == null) {
+			dto.setGithubLink(ServiceConstant.NA.toString());
+		}
 	}
 
 	public void setValuesForTraineeDto(TraineeDto dto) {
@@ -839,6 +841,7 @@ public class DreamWrapper {
 			dto.getPercentageDto().setPucPercentage(0d);
 			dto.getPercentageDto().setDegreePercentage(0d);
 		}
+		dto.setGithubLink(ServiceConstant.NA.toString());
 	}
 
 	public void setValuesForCSRDto(TraineeDto dto) {
@@ -882,6 +885,7 @@ public class DreamWrapper {
 			dto.getPercentageDto().setPucPercentage(0d);
 			dto.getPercentageDto().setDegreePercentage(0d);
 		}
+		dto.setGithubLink(ServiceConstant.NA.toString());
 	}
 
 	public AttendanceDto saveAttendance(TraineeDto dto) {

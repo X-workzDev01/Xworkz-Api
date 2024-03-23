@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
-import java.util.ListIterator;
 import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
@@ -259,24 +258,6 @@ public class RegistrationServiceImpl implements RegistrationService {
 	}
 
 	@Override
-	public List<TraineeDto> getLimitedRows(List<List<Object>> values, int startingIndex, int maxRows) {
-		List<TraineeDto> traineeDtos = new ArrayList<>();
-		if (values != null) {
-			int endIndex = startingIndex + maxRows;
-			ListIterator<List<Object>> iterator = values.listIterator(startingIndex);
-			while (iterator.hasNext() && iterator.nextIndex() < endIndex) {
-				List<Object> row = iterator.next();
-				if (row != null && !row.isEmpty()) {
-					TraineeDto traineeDto = wrapper.listToDto(row);
-					traineeDtos.add(traineeDto);
-				}
-			}
-			log.info("Returning {} TraineeDto objects", traineeDtos.size());
-		}
-		return traineeDtos;
-	}
-
-	@Override
 	public List<TraineeDto> filterData(String spreadsheetId, String searchValue, String courseName, String collegeName,
 			String followupStatus) {
 		List<TraineeDto> traineeDtos = new ArrayList<TraineeDto>();
@@ -483,10 +464,14 @@ public class RegistrationServiceImpl implements RegistrationService {
 				}
 				ValueRange valueRange = new ValueRange();
 				valueRange.setValues(values);
+
 				UpdateValuesResponse updated = repo.update(spreadsheetId, range, valueRange);
 				if (updated != null && !updated.isEmpty()) {
 					service.updateDob(email, dto);
 					followUpService.updateFollowUp(spreadsheetId, email, dto);
+					cacheService.getCacheDataByEmail("sheetsData", "listOfTraineeData", email, dto);
+					log.info("Updated Successfully. Email: {}", email);
+					cacheService.getCacheDataByEmail("emailData", spreadsheetId, email, dto.getBasicInfo().getEmail());
 					updateCacheValues(spreadsheetId, email, dto, traineeDto);
 					return ResponseEntity.ok("Updated Successfully");
 				} else {
