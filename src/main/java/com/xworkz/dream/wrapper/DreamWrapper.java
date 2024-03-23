@@ -413,7 +413,7 @@ public class DreamWrapper {
 
 		if (row.size() > RegistrationConstant.COLUMN_SSLC.getIndex()
 				&& validateCell(RegistrationConstant.COLUMN_SSLC)) {
-			if (row.get(RegistrationConstant.COLUMN_SSLC.getIndex()) != null) {
+			if (row.get(RegistrationConstant.COLUMN_SSLC.getIndex()) != null&&!row.get(RegistrationConstant.COLUMN_SSLC.getIndex()).equals("NA")) {
 				traineeDto.getPercentageDto().setSslcPercentage(
 						Double.parseDouble(row.get(RegistrationConstant.COLUMN_SSLC.getIndex()).toString()));
 			} else {
@@ -424,7 +424,7 @@ public class DreamWrapper {
 		}
 		if (row.size() > RegistrationConstant.COLUMN_PUC.getIndex() && validateCell(RegistrationConstant.COLUMN_PUC)) {
 
-			if (row.get(RegistrationConstant.COLUMN_PUC.getIndex()) != null) {
+			if (row.get(RegistrationConstant.COLUMN_PUC.getIndex()) != null&&!row.get(RegistrationConstant.COLUMN_PUC.getIndex()).equals("NA")) {
 				traineeDto.getPercentageDto().setPucPercentage(
 						Double.parseDouble(row.get(RegistrationConstant.COLUMN_PUC.getIndex()).toString()));
 			} else {
@@ -435,7 +435,7 @@ public class DreamWrapper {
 		}
 		if (row.size() > RegistrationConstant.COLUMN_DEGREE.getIndex()
 				&& validateCell(RegistrationConstant.COLUMN_DEGREE)) {
-			if (row.get(RegistrationConstant.COLUMN_DEGREE.getIndex()) != null) {
+			if (row.get(RegistrationConstant.COLUMN_DEGREE.getIndex()) != null&&!row.get(RegistrationConstant.COLUMN_DEGREE.getIndex()).equals("NA")) {
 				traineeDto.getPercentageDto().setDegreePercentage(
 						Double.parseDouble(row.get(RegistrationConstant.COLUMN_DEGREE.getIndex()).toString()));
 			} else {
