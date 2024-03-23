@@ -240,6 +240,7 @@ public class DreamWrapper {
 		// referalContactNumber, comments
 		// if there any changes in the table, please make sure the right changes are
 		// done here also
+
 		if (row.size() > RegistrationConstant.COLUMN_ID.getIndex() && validateCell(RegistrationConstant.COLUMN_ID)) {
 			traineeDto.setId(Integer.valueOf(row.get(RegistrationConstant.COLUMN_ID.getIndex()).toString()));
 		}
@@ -406,7 +407,7 @@ public class DreamWrapper {
 				&& validateCell(RegistrationConstant.COLUMN_ALTERNATIVE_CONTACT_NUMBER)) {
 			Long alternativeContactNumber = Long
 					.parseLong(row.get(RegistrationConstant.COLUMN_ALTERNATIVE_CONTACT_NUMBER.getIndex()).toString());
-			traineeDto.getCsrDto().setAlternateContactNumber(alternativeContactNumber); 
+			traineeDto.getCsrDto().setAlternateContactNumber(alternativeContactNumber);
 		}
 		if (row.size() > RegistrationConstant.COLUMN_UNIQUE_ID.getIndex()
 				&& validateCell(RegistrationConstant.COLUMN_UNIQUE_ID)) {
@@ -421,20 +422,40 @@ public class DreamWrapper {
 			traineeDto.getCsrDto()
 					.setActiveFlag(row.get(RegistrationConstant.COLUMN_ACTIVE_FLAG.getIndex()).toString());
 		}
-//		if (row.size() > RegistrationConstant.COLUMN_SSLC.getIndex()
-//				&& validateCell(RegistrationConstant.COLUMN_SSLC)) {
-//			traineeDto.getPercentageDto()
-//					.setSslcPercentage(row.get(RegistrationConstant.COLUMN_SSLC.getIndex()).toString());
-//		}
-//		if (row.size() > RegistrationConstant.COLUMN_PUC.getIndex() && validateCell(RegistrationConstant.COLUMN_PUC)) {
-//			traineeDto.getPercentageDto()
-//					.setPucPercentage(row.get(RegistrationConstant.COLUMN_PUC.getIndex()).toString());
-//		}
-//		if (row.size() > RegistrationConstant.COLUMN_DEGREE.getIndex()
-//				&& validateCell(RegistrationConstant.COLUMN_DEGREE)) {
-//			traineeDto.getPercentageDto()
-//					.setDegreePercentage(row.get(RegistrationConstant.COLUMN_DEGREE.getIndex()).toString());
-//		}
+
+		if (row.size() > RegistrationConstant.COLUMN_SSLC.getIndex()
+				&& validateCell(RegistrationConstant.COLUMN_SSLC)) {
+			if (row.get(RegistrationConstant.COLUMN_SSLC.getIndex()) != null) {
+				traineeDto.getPercentageDto().setSslcPercentage(
+						Double.parseDouble(row.get(RegistrationConstant.COLUMN_SSLC.getIndex()).toString()));
+			} else {
+				traineeDto.getPercentageDto().setSslcPercentage(0d);
+			}
+		} else {
+			traineeDto.getPercentageDto().setSslcPercentage(0d);
+		}
+		if (row.size() > RegistrationConstant.COLUMN_PUC.getIndex() && validateCell(RegistrationConstant.COLUMN_PUC)) {
+
+			if (row.get(RegistrationConstant.COLUMN_PUC.getIndex()) != null) {
+				traineeDto.getPercentageDto().setPucPercentage(
+						Double.parseDouble(row.get(RegistrationConstant.COLUMN_PUC.getIndex()).toString()));
+			} else {
+				traineeDto.getPercentageDto().setPucPercentage(0d);
+			}
+		} else {
+			traineeDto.getPercentageDto().setPucPercentage(0d);
+		}
+		if (row.size() > RegistrationConstant.COLUMN_DEGREE.getIndex()
+				&& validateCell(RegistrationConstant.COLUMN_DEGREE)) {
+			if (row.get(RegistrationConstant.COLUMN_DEGREE.getIndex()) != null) {
+				traineeDto.getPercentageDto().setDegreePercentage(
+						Double.parseDouble(row.get(RegistrationConstant.COLUMN_DEGREE.getIndex()).toString()));
+			} else {
+				traineeDto.getPercentageDto().setDegreePercentage(0d);
+			}
+		} else {
+			traineeDto.getPercentageDto().setDegreePercentage(0d);
+		}
 		return traineeDto;
 	}
 
@@ -820,9 +841,9 @@ public class DreamWrapper {
 
 		if (dto.getPercentageDto() == null) {
 			dto.setPercentageDto(new PercentageDto());
-			dto.getPercentageDto().setSslcPercentage(Status.NA.toString());
-			dto.getPercentageDto().setPucPercentage(Status.NA.toString());
-			dto.getPercentageDto().setDegreePercentage(Status.NA.toString());
+			dto.getPercentageDto().setSslcPercentage(0d);
+			dto.getPercentageDto().setPucPercentage(0d);
+			dto.getPercentageDto().setDegreePercentage(0d);
 		}
 	}
 
@@ -863,9 +884,9 @@ public class DreamWrapper {
 		}
 		if (dto.getPercentageDto() == null) {
 			dto.setPercentageDto(new PercentageDto());
-			dto.getPercentageDto().setSslcPercentage(Status.NA.toString());
-			dto.getPercentageDto().setPucPercentage(Status.NA.toString());
-			dto.getPercentageDto().setDegreePercentage(Status.NA.toString());
+			dto.getPercentageDto().setSslcPercentage(0d);
+			dto.getPercentageDto().setPucPercentage(0d);
+			dto.getPercentageDto().setDegreePercentage(0d);
 		}
 	}
 
@@ -902,7 +923,7 @@ public class DreamWrapper {
 			int rowSize = row.size();
 			if (rowSize > 1) {
 				if (rowSize > BirthDayConstant.COLUMN_ID.getIndex() && validateCell(BirthDayConstant.COLUMN_ID)) {
-					birthDto.setId(Integer.parseInt((String) row.get(BirthDayConstant.COLUMN_ID.getIndex())));
+					birthDto.setId(Integer.parseInt(row.get(BirthDayConstant.COLUMN_ID.getIndex()).toString()));
 				}
 				if (rowSize > BirthDayConstant.COLUMN_TRAINEE_EMAIL.getIndex()
 						&& validateCell(BirthDayConstant.COLUMN_TRAINEE_EMAIL)) {

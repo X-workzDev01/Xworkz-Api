@@ -1,6 +1,5 @@
 package com.xworkz.dream.dto.utils;
 
-import java.io.IOException;
 import java.time.LocalDate;
 import java.util.Collections;
 import java.util.Comparator;
@@ -13,7 +12,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
- 
+
 import com.xworkz.dream.constants.FeesConstant;
 import com.xworkz.dream.constants.ServiceConstant;
 import com.xworkz.dream.constants.Status;
@@ -40,7 +39,6 @@ public class FeesUtils {
 
 	public BatchDetailsDto getBatchDetiles(String email) {
 		TraineeDto traineeDto;
-		try {
 			traineeDto = registrationService.getDetailsByEmail(spreadSheetId, email);
 
 			if (traineeDto != null) {
@@ -48,9 +46,6 @@ public class FeesUtils {
 						traineeDto.getCourseInfo().getCourse());
 				return details;
 			}
-		} catch (IOException e) {
-			log.error("Batch detils is empty {} ", e);
-		}
 		return new BatchDetailsDto();
 
 	}

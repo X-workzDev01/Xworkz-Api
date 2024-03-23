@@ -6,6 +6,7 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLEncoder;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -40,7 +41,7 @@ public class ChimpmailServiceImpl implements ChimpMailService {
 
 	@Override
 	@Async
-	public void validateAndSendMail(MimeMessagePreparator messagePreparator) {
+	public void  validateAndSendMail(MimeMessagePreparator messagePreparator) {
 		log.info("invoked validateAndSendMailByMailId of SpringMailServiceImpl...");
 
 		try {

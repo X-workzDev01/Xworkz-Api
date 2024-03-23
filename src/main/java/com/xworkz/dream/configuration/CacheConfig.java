@@ -55,6 +55,8 @@ public class CacheConfig {
 		caches.add(new ConcurrentMapCache("getListOfHrEmail"));
 		caches.add(new ConcurrentMapCache("getListOfContactNumber"));
 		caches.add(new ConcurrentMapCache("getListOfBirthDayEmail"));
+		caches.add(new ConcurrentMapCache("getListOfBirthDayDetails"));
+
 		cacheManager.setCaches(caches);
 		return cacheManager;
 	}

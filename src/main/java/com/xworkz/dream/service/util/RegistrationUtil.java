@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.xworkz.dream.constants.ServiceConstant;
+import com.xworkz.dream.dto.PercentageDto;
 import com.xworkz.dream.dto.SheetPropertyDto;
 import com.xworkz.dream.dto.TraineeDto;
 import com.xworkz.dream.repository.RegisterRepository;
@@ -60,6 +61,35 @@ public class RegistrationUtil {
 			}
 		}
 		return null;
+	}
+
+	public TraineeDto cgpaToPercentage(TraineeDto dto) {
+		PercentageDto percentageDto = dto.getPercentageDto();
+		Double sslc = dto.getPercentageDto().getSslcPercentage();
+		Double puc = dto.getPercentageDto().getPucPercentage();
+		Double degree = dto.getPercentageDto().getDegreePercentage();
+
+		if (percentageDto != null) {
+			if (sslc != null && sslc != 0.0) {
+				if (sslc <= 9.99) {
+					percentageDto.setSslcPercentage((sslc - 0.7) * 10);
+				}
+			}
+			if (puc != null) {
+				if (puc <= 9.99 && puc != 0.0) {
+					percentageDto.setPucPercentage((puc - 0.7) * 10);
+				}
+			}
+			if (degree != null && degree != 0.0) {
+				if (degree <= 9.99) {
+					percentageDto.setDegreePercentage((degree - 0.7) * 10);
+				}
+			}
+
+			dto.setPercentageDto(percentageDto);
+		}
+
+		return dto;
 	}
 
 }

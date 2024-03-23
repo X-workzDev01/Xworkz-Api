@@ -96,6 +96,7 @@ public class UtilServiceImpl implements UtilService {
 
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
 	public ClientDropDown getClientDropDown() {
 		List<List<Object>> listOfClientDropDown = repo.getClientDropDown();

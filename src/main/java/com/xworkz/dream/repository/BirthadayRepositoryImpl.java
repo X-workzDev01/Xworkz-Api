@@ -56,6 +56,7 @@ public class BirthadayRepositoryImpl implements BirthadayRepository {
 	}
 
 	@Override
+	@Cacheable(value = "getListOfBirthDayDetails", key = "'listOfBirthDayDetails'")
 	public List<List<Object>> getBirthadayDetails(String spreadsheetId) {
 		try {
 			return sheetsService.spreadsheets().values()
@@ -69,9 +70,9 @@ public class BirthadayRepositoryImpl implements BirthadayRepository {
 
 	@Override
 	public String updateDob(String rowRange, ValueRange valueRange) {
-		UpdateValuesResponse response = null;
 		try {
-			response = sheetsService.spreadsheets().values().update(sheetPropertyDto.getSheetId(), rowRange, valueRange)
+			UpdateValuesResponse response = sheetsService.spreadsheets().values()
+					.update(sheetPropertyDto.getSheetId(), rowRange, valueRange)
 					.setValueInputOption(RepositoryConstant.RAW.toString()).execute();
 			if (response != null) {
 				return "updated";
@@ -83,7 +84,7 @@ public class BirthadayRepositoryImpl implements BirthadayRepository {
 	}
 
 	@Override
-	@Cacheable(value="getListOfBirthDayEmail",key="'listOfBirthDayEmail'")
+	@Cacheable(value = "getListOfBirthDayEmail", key = "'listOfBirthDayEmail'")
 	public List<List<Object>> getBirthadayEmailList() {
 		try {
 			return sheetsService.spreadsheets().values()
