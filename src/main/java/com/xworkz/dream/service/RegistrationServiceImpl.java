@@ -1,6 +1,5 @@
 package com.xworkz.dream.service;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
@@ -452,7 +451,7 @@ public class RegistrationServiceImpl implements RegistrationService {
 		}
 		wrapper.setFieldValueAsNa(dto);
 		registrationUtil.cgpaToPercentage(dto);
-		try {
+		TraineeDto traineeDto = registrationUtil.getDetailsByEmail(email);
 			int rowIndex = findRowIndexByEmail(spreadsheetId, email);
 			if (rowIndex != -1) {
 				log.info("Found row index {} for email: {}", rowIndex, email);
@@ -465,18 +464,15 @@ public class RegistrationServiceImpl implements RegistrationService {
 				}
 				ValueRange valueRange = new ValueRange();
 				valueRange.setValues(values);
-				System.err.println("values************************              " + values
-						+ "\n ------------------      range        ----------   " + range);
-				UpdateValuesResponse updated = repo.update(spreadsheetId, range, valueRange);
-				boolean updateDob = service.updateDob(email, dto);
 
-				log.info("updated DOB in Sheet,{}", updateDob);
+				UpdateValuesResponse updated = repo.update(spreadsheetId, range, valueRange);
 				if (updated != null && !updated.isEmpty()) {
+					service.updateDob(email, dto);
 					followUpService.updateFollowUp(spreadsheetId, email, dto);
-					System.err.println("Update cache             -********************    " + dto);
 					cacheService.getCacheDataByEmail("sheetsData", "listOfTraineeData", email, dto);
 					log.info("Updated Successfully. Email: {}", email);
 					cacheService.getCacheDataByEmail("emailData", spreadsheetId, email, dto.getBasicInfo().getEmail());
+					updateCacheValues(spreadsheetId, email, dto, traineeDto);
 					return ResponseEntity.ok("Updated Successfully");
 				} else {
 					log.error("Error updating data. Email: {}", email);
@@ -487,10 +483,21 @@ public class RegistrationServiceImpl implements RegistrationService {
 				log.warn("Email not found: {}", email);
 				return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Email not found");
 			}
-		} catch (IOException | IllegalAccessException e) {
-			log.error("An error occurred while updating data. Email: {}", email, e);
-			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("An error occurred ");
-		}
+	}
+
+	private void updateCacheValues(String spreadsheetId, String email, TraineeDto dto, TraineeDto traineeDto) {
+		cacheService.getCacheDataByEmail("sheetsData", "listOfTraineeData", email, dto);
+		log.info("Updated Successfully. Email: {}", email);
+		cacheService.getCacheDataByEmail("emailData", spreadsheetId, email, dto.getBasicInfo().getEmail());
+		cacheService.EmailUpdate("usnNumber", "listOfUsnNumbers", traineeDto.getCsrDto().getUsnNumber(),
+				dto.getCsrDto().getUsnNumber());
+		cacheService.EmailUpdate("uniqueNumber", "listofUniqueNumbers",
+				traineeDto.getCsrDto().getUniqueId(), dto.getCsrDto().getUniqueId());
+		cacheService.updateValue("alternativeNumber", "listOfAlternativeContactNumbers",
+				traineeDto.getCsrDto().getAlternateContactNumber(),
+				dto.getCsrDto().getAlternateContactNumber());
+		cacheService.updateValue("contactData", spreadsheetId, traineeDto.getBasicInfo().getContactNumber(),
+				dto.getBasicInfo().getContactNumber());
 	}
 
 	@Override

@@ -1,14 +1,11 @@
 package com.xworkz.dream.service;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
-
-import javax.servlet.http.HttpServletRequest;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -43,8 +40,7 @@ public class BatchServiceImpl implements BatchService {
 	private static final Logger log = LoggerFactory.getLogger(BatchServiceImpl.class);
 
 	@Override
-	public ResponseEntity<String> saveDetails(String spreadsheetId, BatchDetailsDto dto, HttpServletRequest request)
-			throws IOException, IllegalAccessException {
+	public ResponseEntity<String> saveDetails(String spreadsheetId, BatchDetailsDto dto) {
 		List<Object> list = wrapper.extractDtoDetails(dto);
 		boolean save = repository.saveBatchDetails(spreadsheetId, list);
 		cacheService.updateCache("batchDetails", "listOfBatch", list);
@@ -59,7 +55,7 @@ public class BatchServiceImpl implements BatchService {
 		}
 	}
 
-	public List<TraineeDto> getTraineeDetailsByCourse(String spreadsheetId, String courseName) throws IOException {
+	public List<TraineeDto> getTraineeDetailsByCourse(String spreadsheetId, String courseName) {
 		List<TraineeDto> traineeDetails = new ArrayList<>();
 		log.debug("Reading trainee data by course: {} ", courseName);
 		return readTraineeDataByCourseName(courseName, spreadsheetId, traineeDetails);
@@ -67,7 +63,7 @@ public class BatchServiceImpl implements BatchService {
 	}
 
 	private List<TraineeDto> readTraineeDataByCourseName(String courseName, String spreadsheetId,
-			List<TraineeDto> traineeDetails) throws IOException {
+			List<TraineeDto> traineeDetails) {
 		List<List<Object>> data = repo.readData(spreadsheetId);
 		if (courseName != null && data != null) {
 			log.debug("Course name: {}", courseName);
@@ -87,7 +83,7 @@ public class BatchServiceImpl implements BatchService {
 	}
 
 	@Override
-	public BatchDetailsDto getBatchDetailsByCourseName(String spreadsheetId, String courseName) throws IOException {
+	public BatchDetailsDto getBatchDetailsByCourseName(String spreadsheetId, String courseName) {
 		List<List<Object>> detailsByCourseName = repository.getCourseDetails(spreadsheetId);
 		BatchDetailsDto batch = detailsByCourseName.stream().map(wrapper::batchDetailsToDto)
 				.filter(dto -> dto.getCourseName().equalsIgnoreCase(courseName)
@@ -103,7 +99,7 @@ public class BatchServiceImpl implements BatchService {
 	}
 
 	@Override
-	public BatchDetailsDto getBatchDetailsListByCourseName(String spreadsheetId, String courseName) throws IOException {
+	public BatchDetailsDto getBatchDetailsListByCourseName(String spreadsheetId, String courseName) {
 		BatchDetailsDto batch = new BatchDetailsDto();
 		if (courseName != null && !courseName.isEmpty()) {
 			List<List<Object>> detailsByCourseName = repository.getCourseDetails(spreadsheetId);
@@ -146,8 +142,7 @@ public class BatchServiceImpl implements BatchService {
 	}
 
 	@Override
-	public void updateBatchDetails(String courseName, BatchDetailsDto details)
-			throws IOException, IllegalAccessException {
+	public void updateBatchDetails(String courseName, BatchDetailsDto details){
 
 		List<List<Object>> courseDetails = repository.getCourseDetails(sheetId);
 
@@ -162,7 +157,7 @@ public class BatchServiceImpl implements BatchService {
 	}
 
 	@Override
-	public Integer gettotalClassByCourseName(String courseName) throws IOException {
+	public Integer gettotalClassByCourseName(String courseName){
 		List<List<Object>> courseDetails = repository.getCourseDetails(sheetId);
 		int totalClass = courseDetails.stream().filter(courseDetail -> courseName.equals(courseDetail.get(1)))
 				.map(courseDetail -> {

@@ -94,7 +94,6 @@ public class ClientInformationController {
 		}
 	}
 
-
 	@ApiOperation("get suggestiong by name")
 	@GetMapping("/client/suggestions")
 	public List<ClientDto> getSuggestion(@RequestParam String companyName,@RequestParam String callBackDate,@RequestParam String clientType){

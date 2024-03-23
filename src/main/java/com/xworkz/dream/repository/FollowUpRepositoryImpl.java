@@ -10,7 +10,6 @@ import javax.annotation.PostConstruct;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Repository;
 
@@ -18,26 +17,15 @@ import com.google.api.services.sheets.v4.Sheets;
 import com.google.api.services.sheets.v4.model.UpdateValuesResponse;
 import com.google.api.services.sheets.v4.model.ValueRange;
 import com.xworkz.dream.constants.RepositoryConstant;
+import com.xworkz.dream.dto.SheetPropertyDto;
 import com.xworkz.dream.dto.utils.SheetSaveOpration;
 
 @Repository
 public class FollowUpRepositoryImpl implements FollowUpRepository {
 
-	@Value("${sheets.appName}")
-	private String applicationName;
-	@Value("${sheets.credentialsPath}")
-	private String credentialsPath;
 	private Sheets sheetsService;
-	@Value("${sheets.followUpStatus}")
-	private String followUpStatus;
-	@Value("${sheets.emailAndNameRange}")
-	private String emailAndNameRange;
-	@Value("${sheets.followUpRange}")
-	private String followUpRange;
-	@Value("${sheets.followUpEmailRange}")
-	private String followUpEmailRange;
-	@Value("${sheets.followUpStatusIdRange}")
-	private String followUpStatusIdRange;
+	@Autowired
+	private SheetPropertyDto sheetPropertyDto;
 	@Autowired
 	private SheetSaveOpration saveOpration;
 	private static final Logger log = LoggerFactory.getLogger(FollowUpRepositoryImpl.class);
@@ -56,7 +44,7 @@ public class FollowUpRepositoryImpl implements FollowUpRepository {
 		list.add(rowData);
 		ValueRange body = new ValueRange().setValues(list);
 		try {
-			sheetsService.spreadsheets().values().append(spreadsheetId, followUpRange, body)
+			sheetsService.spreadsheets().values().append(spreadsheetId, sheetPropertyDto.getFollowUpRange(), body)
 					.setValueInputOption(RepositoryConstant.USER_ENTERED.toString()).execute();
 			return true;
 		} catch (IOException e) {
@@ -76,7 +64,7 @@ public class FollowUpRepositoryImpl implements FollowUpRepository {
 		list.add(rowData);
 		ValueRange body = new ValueRange().setValues(list);
 		try {
-			sheetsService.spreadsheets().values().append(spreadsheetId, followUpStatus, body)
+			sheetsService.spreadsheets().values().append(spreadsheetId, sheetPropertyDto.getFollowUpStatus(), body)
 					.setValueInputOption(RepositoryConstant.USER_ENTERED.toString()).execute();
 			return true;
 		} catch (IOException e) {
@@ -91,7 +79,7 @@ public class FollowUpRepositoryImpl implements FollowUpRepository {
 		try {
 
 			log.info("FollowUp details retrieved successfully for spreadsheetId: {}", spreadsheetId);
-			return sheetsService.spreadsheets().values().get(spreadsheetId, followUpRange).execute().getValues();
+			return sheetsService.spreadsheets().values().get(spreadsheetId, sheetPropertyDto.getFollowUpRange()).execute().getValues();
 		} catch (IOException e) {
 			log.error("error getting data {} ", e);
 			return Collections.emptyList();
@@ -117,10 +105,10 @@ public class FollowUpRepositoryImpl implements FollowUpRepository {
 	@Cacheable(value = "getEmailList", key = "'followUpEmailList'")
 	public List<List<Object>> getEmailList(String spreadsheetId) {
 		try {
-			return sheetsService.spreadsheets().values().get(spreadsheetId, followUpEmailRange).execute().getValues();
+			return sheetsService.spreadsheets().values().get(spreadsheetId, sheetPropertyDto.getFollowUpEmailRange()).execute().getValues();
 		} catch (IOException e) {
 			log.error("error getting data {} ", e);
-			return null;
+			return Collections.emptyList();
 		}
 	}
 
@@ -129,7 +117,7 @@ public class FollowUpRepositoryImpl implements FollowUpRepository {
 	public List<List<Object>> getFollowUpStatusDetails(String spreadsheetId) {
 		log.info("FollowUp Status Details retrieved successfully for spreadsheetId: {}", spreadsheetId);
 		try {
-			return sheetsService.spreadsheets().values().get(spreadsheetId, followUpStatus).execute().getValues();
+			return sheetsService.spreadsheets().values().get(spreadsheetId, sheetPropertyDto.getFollowUpStatus()).execute().getValues();
 		} catch (IOException e) {
 			log.error("error getting data {} ", e);
 			return Collections.emptyList();
@@ -156,7 +144,7 @@ public class FollowUpRepositoryImpl implements FollowUpRepository {
 					.getValues();
 		} catch (IOException e) {
 			log.error("error getting data {} ", e);
-			return null;
+			return Collections.emptyList();
 		} 
 	}
 

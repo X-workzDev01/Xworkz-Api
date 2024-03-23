@@ -417,8 +417,10 @@ public class DreamWrapper {
 				traineeDto.getPercentageDto().setSslcPercentage(
 						Double.parseDouble(row.get(RegistrationConstant.COLUMN_SSLC.getIndex()).toString()));
 			} else {
-				traineeDto.getPercentageDto().setSslcPercentage(Double.parseDouble("0.0"));
+				traineeDto.getPercentageDto().setSslcPercentage(0d);
 			}
+		} else {
+			traineeDto.getPercentageDto().setSslcPercentage(0d);
 		}
 		if (row.size() > RegistrationConstant.COLUMN_PUC.getIndex() && validateCell(RegistrationConstant.COLUMN_PUC)) {
 
@@ -426,8 +428,10 @@ public class DreamWrapper {
 				traineeDto.getPercentageDto().setPucPercentage(
 						Double.parseDouble(row.get(RegistrationConstant.COLUMN_PUC.getIndex()).toString()));
 			} else {
-				traineeDto.getPercentageDto().setPucPercentage(Double.parseDouble("0.0"));
+				traineeDto.getPercentageDto().setPucPercentage(0d);
 			}
+		} else {
+			traineeDto.getPercentageDto().setPucPercentage(0d);
 		}
 		if (row.size() > RegistrationConstant.COLUMN_DEGREE.getIndex()
 				&& validateCell(RegistrationConstant.COLUMN_DEGREE)) {
@@ -435,8 +439,10 @@ public class DreamWrapper {
 				traineeDto.getPercentageDto().setDegreePercentage(
 						Double.parseDouble(row.get(RegistrationConstant.COLUMN_DEGREE.getIndex()).toString()));
 			} else {
-				traineeDto.getPercentageDto().setDegreePercentage(Double.parseDouble("0.0"));
+				traineeDto.getPercentageDto().setDegreePercentage(0d);
 			}
+		} else {
+			traineeDto.getPercentageDto().setDegreePercentage(0d);
 		}
 		if (row.size() > RegistrationConstant.GITHUB_LINK.getIndex()
 				&& row.get(RegistrationConstant.GITHUB_LINK.getIndex()) != null
