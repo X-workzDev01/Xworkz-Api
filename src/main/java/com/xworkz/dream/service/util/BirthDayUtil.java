@@ -5,6 +5,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
@@ -15,6 +16,7 @@ import org.springframework.stereotype.Component;
 import com.google.api.services.sheets.v4.model.ValueRange;
 import com.xworkz.dream.constants.ServiceConstant;
 import com.xworkz.dream.dto.BirthDayInfoDto;
+import com.xworkz.dream.dto.BirthdayDetailsDto;
 import com.xworkz.dream.dto.SheetPropertyDto;
 import com.xworkz.dream.dto.TraineeDto;
 import com.xworkz.dream.repository.BirthadayRepository;
@@ -173,6 +175,42 @@ public class BirthDayUtil {
 			}
 		}
 		return false;
+	}
+	public Predicate<BirthdayDetailsDto> predicateBySelected(String date, String courseName, String month) {
+		Predicate<BirthdayDetailsDto> predicate = null;
+
+		DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("MM-dd");
+		DateTimeFormatter monthFormatter = DateTimeFormatter.ofPattern("MM");
+
+		if (!courseName.equals("null") && date.equals("null")) {
+			predicate = dto -> dto.getCourseName().equalsIgnoreCase(courseName);
+		}
+
+		if (courseName.equals("null") && !date.equals("null")) {
+			predicate = dto -> !dto.getBasicInfoDto().getDateOfBirth().equals("NA")
+					&& LocalDate.parse(dto.getBasicInfoDto().getDateOfBirth()).format(dateFormatter).toString()
+							.equals(LocalDate.parse(date).format(dateFormatter).toString());
+		}
+		if (!courseName.equals("null") && !date.equals("null")) {
+			predicate = dto -> !dto.getBasicInfoDto().getDateOfBirth().equals("NA")
+					&& LocalDate.parse(dto.getBasicInfoDto().getDateOfBirth()).format(dateFormatter).toString()
+							.equals(LocalDate.parse(date).format(dateFormatter).toString())
+					&& dto.getCourseName().equalsIgnoreCase(courseName);
+		}
+
+		if (!month.equals("null") && courseName.equals("null") && date.equals("null")) {
+			predicate = dto -> !dto.getBasicInfoDto().getDateOfBirth().equals("NA")
+					&& LocalDate.parse(dto.getBasicInfoDto().getDateOfBirth()).format(monthFormatter).toString()
+							.equals(LocalDate.parse(month.concat("-01")).format(monthFormatter).toString());
+		}
+
+		if (!month.equals("null") && !courseName.equals("null") && date.equals("null")) {
+			predicate = dto -> !dto.getBasicInfoDto().getDateOfBirth().equals("NA")
+					&& LocalDate.parse(dto.getBasicInfoDto().getDateOfBirth()).format(monthFormatter).toString()
+							.equals(LocalDate.parse(month.concat("-01")).format(monthFormatter).toString())
+					&& dto.getCourseName().equalsIgnoreCase(courseName);
+		}
+		return predicate;
 	}
 
 }
