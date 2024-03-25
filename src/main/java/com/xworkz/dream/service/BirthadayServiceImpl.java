@@ -2,7 +2,6 @@ package com.xworkz.dream.service;
 
 import java.time.format.DateTimeFormatter;
 import java.util.List;
-import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
@@ -12,8 +11,6 @@ import org.springframework.stereotype.Service;
 
 import com.xworkz.dream.constants.ServiceConstant;
 import com.xworkz.dream.dto.BirthDayInfoDto;
-import com.xworkz.dream.dto.BirthdayDataDto;
-import com.xworkz.dream.dto.BirthdayDetailsDto;
 import com.xworkz.dream.dto.SheetPropertyDto;
 import com.xworkz.dream.dto.TraineeDto;
 import com.xworkz.dream.repository.BirthadayRepository;
@@ -40,6 +37,7 @@ public class BirthadayServiceImpl implements BirthadayService {
 	private RegisterRepository registrationRepo;
 	@Autowired
 	private RegistrationUtil registrationUtil;
+	@Autowired
 	private CacheService cacheService;
 
 	private static final Logger log = LoggerFactory.getLogger(BirthadayServiceImpl.class);
@@ -88,6 +86,7 @@ public class BirthadayServiceImpl implements BirthadayService {
 			}
 		}
 	}
+
 	public boolean updateMailStatus(String email) {
 		TraineeDto traineeDto = registrationUtil.getDetailsByEmail(email);
 		log.info("updating mail status for the email:{}", email);
@@ -148,48 +147,6 @@ public class BirthadayServiceImpl implements BirthadayService {
 			}
 		}
 		return null;
-	}
-
-	@Override
-	public BirthdayDataDto getBirthdays(String spreadsheetId, int startingIndex, int maxRows, String date,
-			String courseName, String month) {
-		List<BirthDayInfoDto> mailSentList = repository.getBirthadayDetails(spreadsheetId).stream()
-				.map(wrapper::listToBirthDayInfo).collect(Collectors.toList());
-		List<TraineeDto> listOfTrainees = registrationRepo.readData(spreadsheetId).stream().map(wrapper::listToDto)
-				.collect(Collectors.toList());
-		List<BirthdayDetailsDto> listofBirthday = new ArrayList<>();
-
-		listOfTrainees.stream().forEach(dto -> {
-			if (dto.getBasicInfo() != null && dto.getCourseInfo().getCourse() != null) {
-				listofBirthday.add(
-						new BirthdayDetailsDto(dto.getId(), dto.getBasicInfo(), dto.getCourseInfo().getCourse(), null));
-			}
-		});
-
-		listofBirthday.stream().forEach(dto -> {
-			mailSentList.stream().forEach(d -> {
-				if (d.getTraineeEmail().equalsIgnoreCase(dto.getBasicInfoDto().getEmail())) {
-					if (!d.getBirthDayMailSent().equals(null) && !d.getBirthDayMailSent().equals("")) {
-						dto.setBirthDayMailSent(d.getBirthDayMailSent());
-					} else {
-						dto.setBirthDayMailSent("NA");
-					}
-				}
-			});
-		});
-
-		Predicate<BirthdayDetailsDto> predicate = birthdayUtil.predicateBySelected(date, courseName, month);
-		if (predicate != null) {
-			List<BirthdayDetailsDto> filteredList = listofBirthday.stream().filter(predicate)
-					.collect(Collectors.toList());
-			List<BirthdayDetailsDto> limitedRows = filteredList.stream().skip(startingIndex).limit(maxRows)
-					.collect(Collectors.toList());
-			return new BirthdayDataDto(limitedRows, filteredList.size());
-		}
-		List<BirthdayDetailsDto> limitedRows = listofBirthday.stream().skip(startingIndex).limit(maxRows)
-				.collect(Collectors.toList());
-
-		return new BirthdayDataDto(limitedRows, listofBirthday.size());
 	}
 
 }
