@@ -2,6 +2,7 @@ package com.xworkz.dream.service;
 
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
@@ -154,9 +155,12 @@ public class BirthadayServiceImpl implements BirthadayService {
 	@Override
 	public BirthdayDataDto getBirthdays(String spreadsheetId, int startingIndex, int maxRows, String date,
 			String courseName, String month) {
+		
+		Comparator<TraineeDto> comparator = Comparator
+				.comparing(trainee -> trainee.getBasicInfo().getTraineeName());
 		List<BirthDayInfoDto> mailSentList = repository.getBirthadayDetails(spreadsheetId).stream()
-				.map(wrapper::listToBirthDayInfo).collect(Collectors.toList());
-		List<TraineeDto> listOfTrainees = registrationRepo.readData(spreadsheetId).stream().map(wrapper::listToDto)
+				.map(wrapper::listToBirthDayInfo).sorted().collect(Collectors.toList());
+		List<TraineeDto> listOfTrainees = registrationRepo.readData(spreadsheetId).stream().map(wrapper::listToDto).sorted(comparator)
 				.collect(Collectors.toList());
 		List<BirthdayDetailsDto> listofBirthday = new ArrayList<>();
 
@@ -167,13 +171,13 @@ public class BirthadayServiceImpl implements BirthadayService {
 			}
 		});
 
-		listofBirthday.stream().forEach(dto -> {
-			mailSentList.stream().forEach(d -> {
-				if (d.getTraineeEmail().equalsIgnoreCase(dto.getBasicInfoDto().getEmail())) {
-					if (!d.getBirthDayMailSent().equals(null) && !d.getBirthDayMailSent().equals("")) {
-						dto.setBirthDayMailSent(d.getBirthDayMailSent());
+		listofBirthday.stream().forEach(birthdayDetailsDto -> {
+			mailSentList.stream().forEach(birthDayInfoDto -> {
+				if (birthDayInfoDto.getTraineeEmail().equalsIgnoreCase(birthdayDetailsDto.getBasicInfoDto().getEmail())) {
+					if (!birthDayInfoDto.getBirthDayMailSent().equals(null) && !birthDayInfoDto.getBirthDayMailSent().equals("")) {
+						birthDayInfoDto.setBirthDayMailSent(birthDayInfoDto.getBirthDayMailSent());
 					} else {
-						dto.setBirthDayMailSent("NA");
+						birthDayInfoDto.setBirthDayMailSent("NA");
 					}
 				}
 			});
