@@ -372,10 +372,8 @@ public class AttendanceServiceImpl implements AttendanceService {
 	}
 
 	private List<List<Object>> filterTraineeDetails(String courseName) {
-		List<List<Object>> followUpDetails;
-		List<List<Object>> readData;
-		followUpDetails = repository.getFollowUpDetails(sheetId);
-		readData = registerRepository.readData(sheetId);
+		List<List<Object>> followUpDetails = repository.getFollowUpDetails(sheetId);
+		List<List<Object>> readData = registerRepository.readData(sheetId);
 		List<List<Object>> traineeDetails = followUpDetails.stream().filter(followUpDetail -> {
 			return Status.Joined.toString().equalsIgnoreCase(followUpDetail.get(8).toString())
 					&& followUpDetail.get(15).toString().equalsIgnoreCase(ServiceConstant.ACTIVE.toString());
@@ -468,14 +466,14 @@ public class AttendanceServiceImpl implements AttendanceService {
 				});
 
 				List<AttendanceViewDto> limitedRows = viewDtos.stream()
-						.sorted(Comparator.comparing(AttendanceViewDto::getName)).skip(startingIndex)
-						.limit(maxRows).collect(Collectors.toList());
+						.sorted(Comparator.comparing(AttendanceViewDto::getName)).skip(startingIndex).limit(maxRows)
+						.collect(Collectors.toList());
 				AttendanceDataDto dto = new AttendanceDataDto(limitedRows, viewDtos.size());
 				log.info("Returning response for spreadsheetId: {}", sheetId);
 				return ResponseEntity.ok(dto);
 			}
 		}
-		return null; 
+		return null;
 
 	}
 
@@ -567,5 +565,55 @@ public class AttendanceServiceImpl implements AttendanceService {
 			dreamUtil.sendAbsentMail(dto.getBasicInfo().getEmail(), dto.getBasicInfo().getTraineeName(), reason);
 		});
 	}
+
+	private boolean checkContinuousAbsence(List<List<Object>> attendanceData, Integer traineeId) {
+		LocalDate today = LocalDate.now();
+		List<AttendanceDto> collect = attendanceData.stream().map(wrapper::attendanceListToDto)
+				.collect(Collectors.toList());
+
+		for (AttendanceDto attendanceDto : collect) {
+			if (attendanceDto.getId().equals(traineeId)) {
+				String absentDate = attendanceDto.getAbsentDate();
+				String[] dates = absentDate.split(",");
+				int consecutiveAbsentDays = 0;
+
+				for (String date : dates) {
+					if (date.equals(today.minusDays(1).toString()) || date.equals(today.minusDays(2).toString())
+							|| date.equals(today.toString())) {
+						consecutiveAbsentDays++;
+					} else {
+						consecutiveAbsentDays = 0;
+					}
+
+				}
+				if (consecutiveAbsentDays >= 3) {
+					return true;
+				}
+			}
+		}
+		return false;
+	}
+
+	@Override
+	public void processAttendanceData() {
+	    List<List<Object>> attendanceData = attendanceRepository.getAttendanceData(sheetId, attendanceInfoIDRange);
+	    List<List<Object>> readData = registerRepository.readData(sheetId);
+
+	    List<TraineeDto> listToDto = new ArrayList<>(); 
+	    readData.forEach(dtos -> {
+	        attendanceData.forEach(record -> {
+	            Integer traineeId = Integer.valueOf(record.get(1).toString());
+	            if (dtos.get(0).toString().equals(traineeId.toString())) {
+	                boolean checkContinuousAbsence = checkContinuousAbsence(attendanceData, traineeId);
+	                if (checkContinuousAbsence) {
+	                    TraineeDto traineeDto = wrapper.listToDto(dtos); 
+	                    listToDto.add(traineeDto);
+	                }
+	            }
+	        });
+	    });
+	    dreamUtil.sendEmailNotificationForAttendanceFollowUp(listToDto);
+	}
+
 
 }

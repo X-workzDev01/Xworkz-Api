@@ -38,6 +38,7 @@ import com.xworkz.dream.feesDtos.FeesDto;
 import com.xworkz.dream.service.ChimpMailService;
 import com.xworkz.dream.smsservice.CSRSMSService;
 import com.xworkz.dream.smsservice.CsrMailService;
+import com.xworkz.dream.userYml.TeamList;
 
 import freemarker.template.TemplateException;
 
@@ -77,7 +78,8 @@ public class UtilProd implements DreamUtil {
 	private CSRSMSService csrSmsService;
 	@Autowired
 	private CsrMailService csrMailService;
-
+	@Autowired
+	private TeamList team;
 	@Autowired
 	private EncryptionHelper helper;
 
@@ -200,9 +202,8 @@ public class UtilProd implements DreamUtil {
 		if (traineeEmail == null || name == null) {
 			logger.warn("Email or name is null");
 			return false;
-		} else {
-			sendBirthadyEmailChimp(traineeEmail, subject, name);
-			return true;
+		} else {		
+			return sendBirthadyEmailChimp(traineeEmail, subject, name);
 		}
 	}
 
@@ -230,7 +231,7 @@ public class UtilProd implements DreamUtil {
 			messageHelper.setText(content, true);
 		};
 
-		return chimpMailService.validateAndSendMailByMailOtp(messagePreparator);
+		return chimpMailService.validateAndSendMailByMailIdDev(messagePreparator);
 	}
 
 	private boolean sendBulkMailToNotification(List<String> recipients, String subject, List<FollowUpDto> body) {
@@ -334,7 +335,7 @@ public class UtilProd implements DreamUtil {
 		}
 	}
 
-	private void sendBirthadyEmailChimp(String traineeEmail, String subject, String name) {
+	private boolean sendBirthadyEmailChimp(String traineeEmail, String subject, String name) {
 		Context context = new Context();
 
 		context.setVariable("name", name);
@@ -350,7 +351,7 @@ public class UtilProd implements DreamUtil {
 			messageHelper.setSubject(subject);
 			messageHelper.setText(content, true);
 		};
-		chimpMailService.validateAndSendBirthdayMail(messagePreparator);
+	return chimpMailService.validateAndSendBirthdayMail(messagePreparator);
 	}
 
 	private void sendAbsentEmailChimp(String email, String name, String reason) {
@@ -413,6 +414,49 @@ public class UtilProd implements DreamUtil {
 		logger.info("SMS sent to {} with contact number {}", name, contactNo);
 		csrSmsService.csrSMSSent(name, contactNo);
 		return false;
+	}
+
+	private boolean sendBulkMailToAttendanceNotification(List<String> recipients, List<TraineeDto> traineeDto) {
+		Context context = new Context();
+
+		context.setVariable("traineeDto", traineeDto);
+		String content = templateEngine.process("FollowCandidateFollowupTemplete", context);
+
+		MimeMessagePreparator messagePreparator = mimeMessage -> {
+
+			MimeMessageHelper messageHelper = new MimeMessageHelper(mimeMessage);
+			messageHelper.setFrom(helper.decrypt(chimpUserName));
+			messageHelper.addTo(recipients.get(1));
+			for (String recepent : recipients) {
+				messageHelper.addCc(new InternetAddress(recepent));
+			}
+			messageHelper.setSubject("Attendance FollowUp");
+			messageHelper.setText(content, true);
+		};
+		return chimpMailService.validateAndSendMailByMailId(messagePreparator);
+	}
+
+	@Override
+	public Boolean sendEmailNotificationForAttendanceFollowUp(List<TraineeDto> traineeDtos) {
+		if ( traineeDtos == null) {
+			logger.warn("teamList or notificationStatus is null");
+			return false;
+		}
+		List<Team> teamList;
+		try {
+			teamList = team.getTeam();
+			String subject = "Attendance Follow Up Candidate Details";
+			logger.debug("Sending email to {}: Subject: {},", teamList, subject);
+			List<String> recipients = new ArrayList<String>();
+			teamList.stream().filter(Objects::nonNull).forEach(e -> recipients.add(e.getEmail()));
+			sendBulkMailToAttendanceNotification(recipients, traineeDtos);
+
+			return true;
+		} catch (IOException e) {
+			logger.error(e.getMessage());
+		}
+		return false;
+
 	}
 
 }

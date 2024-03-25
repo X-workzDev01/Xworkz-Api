@@ -62,7 +62,7 @@ public class NotificationSchedulerImpl implements NotificationScheduler {
 
 	}
 
-//	@Scheduled(fixedRate = 2 * 60 * 1000)
+	@Scheduled(fixedRate = 30 * 60 * 1000) 
 	public void feesNotification() {
 		try {
 			List<Team> teamList = team.getTeam();

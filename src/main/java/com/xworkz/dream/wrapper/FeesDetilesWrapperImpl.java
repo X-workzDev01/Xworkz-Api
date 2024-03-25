@@ -26,7 +26,7 @@ public class FeesDetilesWrapperImpl implements FeesDetilesWrapper {
 
 	@Override
 	public FeesDto listToFeesDTO(List<Object> row) {
-		if (row.size() > 1) {
+		if (row.size() > 2) {
 			FeesDto feesDto = new FeesDto(0, null, new FeesHistoryDto(), null, null, null, 0, null, null, null, null,
 					new AuditDto(), null, null);
 

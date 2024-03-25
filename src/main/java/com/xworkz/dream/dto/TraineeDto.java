@@ -30,9 +30,10 @@ public class TraineeDto {
 	private CSR csrDto;
 	@JsonProperty("percentageDto")
 	private PercentageDto percentageDto;
+	@JsonProperty("githubLink")
+	private String  githubLink;
 	private String followupStatus ;
-	
-
+	 
 	public Integer getId() {
 		return id;
 	}

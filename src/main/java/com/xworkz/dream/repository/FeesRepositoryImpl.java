@@ -24,17 +24,15 @@ public class FeesRepositoryImpl implements FeesRepository {
 	@Value("${login.sheetId}")
 	private String spreadSheetId;
 	private Sheets sheetsRepository;
-	@Autowired
+	@Autowired 
 	private SheetSaveOpration saveOpration;
 	private Logger log = LoggerFactory.getLogger(FeesRepositoryImpl.class);
 	@Autowired
-	private FeesFinalDto feesFinalDtoRanges;
-
-	@PostConstruct
+	private FeesFinalDto feesFinalDtoRanges; 
+	@PostConstruct 
 	private void setsheetsRepository() {
 		sheetsRepository = saveOpration.ConnsetSheetService();
 	}
-
 	@Override
 	public boolean writeFeesDetails(List<Object> list) {
 		ValueRange value = getReadFirstSheet();

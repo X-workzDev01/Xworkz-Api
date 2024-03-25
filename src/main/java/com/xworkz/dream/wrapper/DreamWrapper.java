@@ -226,14 +226,9 @@ public class DreamWrapper {
 	}
 
 	public TraineeDto listToDto(List<Object> row) {
+		System.out.println("sheet data" + row);
 		TraineeDto traineeDto = new TraineeDto(0, new BasicInfoDto(), new EducationInfoDto(), new CourseDto(),
-				new OthersDto(), new AuditDto(), new CSR(), new PercentageDto(), null);
-		// Assuming the list follows this order: id ,traineeName, email, contactNumber,
-		// qualification, stream,
-		// yearOfPassout, collegeName, batch, branch, course, referalName,
-		// referalContactNumber, comments
-		// if there any changes in the table, please make sure the right changes are
-		// done here also
+				new OthersDto(), new AuditDto(), new CSR(), new PercentageDto(), null, null);
 		if (row.size() > RegistrationConstant.COLUMN_ID.getIndex() && validateCell(RegistrationConstant.COLUMN_ID)) {
 			traineeDto.setId(Integer.valueOf(row.get(RegistrationConstant.COLUMN_ID.getIndex()).toString()));
 		}
@@ -415,20 +410,45 @@ public class DreamWrapper {
 			traineeDto.getCsrDto()
 					.setActiveFlag(row.get(RegistrationConstant.COLUMN_ACTIVE_FLAG.getIndex()).toString());
 		}
-//		if (row.size() > RegistrationConstant.COLUMN_SSLC.getIndex()
-//				&& validateCell(RegistrationConstant.COLUMN_SSLC)) {
-//			traineeDto.getPercentageDto()
-//					.setSslcPercentage(row.get(RegistrationConstant.COLUMN_SSLC.getIndex()).toString());
-//		}
-//		if (row.size() > RegistrationConstant.COLUMN_PUC.getIndex() && validateCell(RegistrationConstant.COLUMN_PUC)) {
-//			traineeDto.getPercentageDto()
-//					.setPucPercentage(row.get(RegistrationConstant.COLUMN_PUC.getIndex()).toString());
-//		}
-//		if (row.size() > RegistrationConstant.COLUMN_DEGREE.getIndex()
-//				&& validateCell(RegistrationConstant.COLUMN_DEGREE)) {
-//			traineeDto.getPercentageDto()
-//					.setDegreePercentage(row.get(RegistrationConstant.COLUMN_DEGREE.getIndex()).toString());
-//		}
+
+		if (row.size() > RegistrationConstant.COLUMN_SSLC.getIndex()
+				&& validateCell(RegistrationConstant.COLUMN_SSLC)) {
+			if (row.get(RegistrationConstant.COLUMN_SSLC.getIndex()) != null) {
+				traineeDto.getPercentageDto().setSslcPercentage(
+						Double.parseDouble(row.get(RegistrationConstant.COLUMN_SSLC.getIndex()).toString()));
+			} else {
+				traineeDto.getPercentageDto().setSslcPercentage(0d);
+			}
+		} else {
+			traineeDto.getPercentageDto().setSslcPercentage(0d);
+		}
+		if (row.size() > RegistrationConstant.COLUMN_PUC.getIndex() && validateCell(RegistrationConstant.COLUMN_PUC)) {
+
+			if (row.get(RegistrationConstant.COLUMN_PUC.getIndex()) != null) {
+				traineeDto.getPercentageDto().setPucPercentage(
+						Double.parseDouble(row.get(RegistrationConstant.COLUMN_PUC.getIndex()).toString()));
+			} else {
+				traineeDto.getPercentageDto().setPucPercentage(0d);
+			}
+		} else {
+			traineeDto.getPercentageDto().setPucPercentage(0d);
+		}
+		if (row.size() > RegistrationConstant.COLUMN_DEGREE.getIndex()
+				&& validateCell(RegistrationConstant.COLUMN_DEGREE)) {
+			if (row.get(RegistrationConstant.COLUMN_DEGREE.getIndex()) != null) {
+				traineeDto.getPercentageDto().setDegreePercentage(
+						Double.parseDouble(row.get(RegistrationConstant.COLUMN_DEGREE.getIndex()).toString()));
+			} else {
+				traineeDto.getPercentageDto().setDegreePercentage(0d);
+			}
+		} else {
+			traineeDto.getPercentageDto().setDegreePercentage(0d);
+		}
+		if (row.size() > RegistrationConstant.GITHUB_LINK.getIndex()
+				&& row.get(RegistrationConstant.GITHUB_LINK.getIndex()) != null
+				&& validateCell(RegistrationConstant.GITHUB_LINK)) {
+			traineeDto.setGithubLink(row.get(RegistrationConstant.GITHUB_LINK.getIndex()).toString());
+		}
 		return traineeDto;
 	}
 
@@ -781,6 +801,9 @@ public class DreamWrapper {
 		if (dto.getCourseInfo().getStartDate() == null) {
 			dto.getCourseInfo().setStartDate(ServiceConstant.NA.toString());
 		}
+		if (dto.getGithubLink() == null) {
+			dto.setGithubLink(ServiceConstant.NA.toString());
+		}
 	}
 
 	public void setValuesForTraineeDto(TraineeDto dto) {
@@ -814,10 +837,11 @@ public class DreamWrapper {
 
 		if (dto.getPercentageDto() == null) {
 			dto.setPercentageDto(new PercentageDto());
-			dto.getPercentageDto().setSslcPercentage(Status.NA.toString());
-			dto.getPercentageDto().setPucPercentage(Status.NA.toString());
-			dto.getPercentageDto().setDegreePercentage(Status.NA.toString());
+			dto.getPercentageDto().setSslcPercentage(0d);
+			dto.getPercentageDto().setPucPercentage(0d);
+			dto.getPercentageDto().setDegreePercentage(0d);
 		}
+		dto.setGithubLink(ServiceConstant.NA.toString());
 	}
 
 	public void setValuesForCSRDto(TraineeDto dto) {
@@ -857,10 +881,11 @@ public class DreamWrapper {
 		}
 		if (dto.getPercentageDto() == null) {
 			dto.setPercentageDto(new PercentageDto());
-			dto.getPercentageDto().setSslcPercentage(Status.NA.toString());
-			dto.getPercentageDto().setPucPercentage(Status.NA.toString());
-			dto.getPercentageDto().setDegreePercentage(Status.NA.toString());
+			dto.getPercentageDto().setSslcPercentage(0d);
+			dto.getPercentageDto().setPucPercentage(0d);
+			dto.getPercentageDto().setDegreePercentage(0d);
 		}
+		dto.setGithubLink(ServiceConstant.NA.toString());
 	}
 
 	public AttendanceDto saveAttendance(TraineeDto dto) {
@@ -896,7 +921,7 @@ public class DreamWrapper {
 			int rowSize = row.size();
 			if (rowSize > 1) {
 				if (rowSize > BirthDayConstant.COLUMN_ID.getIndex() && validateCell(BirthDayConstant.COLUMN_ID)) {
-					birthDto.setId(Integer.parseInt((String) row.get(BirthDayConstant.COLUMN_ID.getIndex())));
+					birthDto.setId(Integer.parseInt(row.get(BirthDayConstant.COLUMN_ID.getIndex()).toString()));
 				}
 				if (rowSize > BirthDayConstant.COLUMN_TRAINEE_EMAIL.getIndex()
 						&& validateCell(BirthDayConstant.COLUMN_TRAINEE_EMAIL)) {

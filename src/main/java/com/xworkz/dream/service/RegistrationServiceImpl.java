@@ -1,11 +1,9 @@
 package com.xworkz.dream.service;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
-import java.util.ListIterator;
 import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
@@ -58,6 +56,7 @@ public class RegistrationServiceImpl implements RegistrationService {
 		try {
 			log.info("Writing data for TraineeDto: {}", dto);
 			assignCsrDto(dto);
+			registrationUtil.cgpaToPercentage(dto);
 			wrapper.setValuesForTraineeDto(dto);
 			List<Object> list = wrapper.extractDtoDetails(dto);
 			repo.writeData(spreadsheetId, list);
@@ -159,12 +158,10 @@ public class RegistrationServiceImpl implements RegistrationService {
 			String collegeName, String followupStatus) {
 		SheetsDto traineeData = new SheetsDto();
 		List<TraineeDto> traineeDetails = traineeData();
-		List<TraineeDto> traineeDtos = traineeDetails.stream()
-				.sorted(Comparator.comparing(
-						trainee -> trainee != null ? trainee.getOthersDto().getRegistrationDate() : "",
-						Comparator.reverseOrder())
-
-				).collect(Collectors.toList());
+		Comparator<TraineeDto> registrationDateComparator = Comparator
+				.comparing(trainee -> trainee.getOthersDto().getRegistrationDate());
+		List<TraineeDto> traineeDtos = traineeDetails.stream().sorted(registrationDateComparator.reversed())
+				.collect(Collectors.toList());
 
 		if (traineeDtos != null) {
 			if (!courseName.equalsIgnoreCase(ServiceConstant.NULL.toString())
@@ -258,24 +255,6 @@ public class RegistrationServiceImpl implements RegistrationService {
 
 		return traineeDtos;
 
-	}
-
-	@Override
-	public List<TraineeDto> getLimitedRows(List<List<Object>> values, int startingIndex, int maxRows) {
-		List<TraineeDto> traineeDtos = new ArrayList<>();
-		if (values != null) {
-			int endIndex = startingIndex + maxRows;
-			ListIterator<List<Object>> iterator = values.listIterator(startingIndex);
-			while (iterator.hasNext() && iterator.nextIndex() < endIndex) {
-				List<Object> row = iterator.next();
-				if (row != null && !row.isEmpty()) {
-					TraineeDto traineeDto = wrapper.listToDto(row);
-					traineeDtos.add(traineeDto);
-				}
-			}
-			log.info("Returning {} TraineeDto objects", traineeDtos.size());
-		}
-		return traineeDtos;
 	}
 
 	@Override
@@ -471,7 +450,8 @@ public class RegistrationServiceImpl implements RegistrationService {
 			dto.getBasicInfo().setEmail(dto.getBasicInfo().getEmail());
 		}
 		wrapper.setFieldValueAsNa(dto);
-		try {
+		registrationUtil.cgpaToPercentage(dto);
+		TraineeDto traineeDto = registrationUtil.getDetailsByEmail(email);
 			int rowIndex = findRowIndexByEmail(spreadsheetId, email);
 			if (rowIndex != -1) {
 				log.info("Found row index {} for email: {}", rowIndex, email);
@@ -486,14 +466,13 @@ public class RegistrationServiceImpl implements RegistrationService {
 				valueRange.setValues(values);
 
 				UpdateValuesResponse updated = repo.update(spreadsheetId, range, valueRange);
-				boolean updateDob = service.updateDob(email, dto);
-
-				log.info("updated DOB in Sheet,{}", updateDob);
 				if (updated != null && !updated.isEmpty()) {
+					service.updateDob(email, dto);
 					followUpService.updateFollowUp(spreadsheetId, email, dto);
 					cacheService.getCacheDataByEmail("sheetsData", "listOfTraineeData", email, dto);
 					log.info("Updated Successfully. Email: {}", email);
 					cacheService.getCacheDataByEmail("emailData", spreadsheetId, email, dto.getBasicInfo().getEmail());
+					updateCacheValues(spreadsheetId, email, dto, traineeDto);
 					return ResponseEntity.ok("Updated Successfully");
 				} else {
 					log.error("Error updating data. Email: {}", email);
@@ -504,10 +483,21 @@ public class RegistrationServiceImpl implements RegistrationService {
 				log.warn("Email not found: {}", email);
 				return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Email not found");
 			}
-		} catch (IOException | IllegalAccessException e) {
-			log.error("An error occurred while updating data. Email: {}", email, e);
-			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("An error occurred ");
-		}
+	}
+
+	private void updateCacheValues(String spreadsheetId, String email, TraineeDto dto, TraineeDto traineeDto) {
+		cacheService.getCacheDataByEmail("sheetsData", "listOfTraineeData", email, dto);
+		log.info("Updated Successfully. Email: {}", email);
+		cacheService.getCacheDataByEmail("emailData", spreadsheetId, email, dto.getBasicInfo().getEmail());
+		cacheService.EmailUpdate("usnNumber", "listOfUsnNumbers", traineeDto.getCsrDto().getUsnNumber(),
+				dto.getCsrDto().getUsnNumber());
+		cacheService.EmailUpdate("uniqueNumber", "listofUniqueNumbers",
+				traineeDto.getCsrDto().getUniqueId(), dto.getCsrDto().getUniqueId());
+		cacheService.updateValue("alternativeNumber", "listOfAlternativeContactNumbers",
+				traineeDto.getCsrDto().getAlternateContactNumber(),
+				dto.getCsrDto().getAlternateContactNumber());
+		cacheService.updateValue("contactData", spreadsheetId, traineeDto.getBasicInfo().getContactNumber(),
+				dto.getBasicInfo().getContactNumber());
 	}
 
 	@Override

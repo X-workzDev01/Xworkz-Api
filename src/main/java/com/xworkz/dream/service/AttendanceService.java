@@ -37,4 +37,6 @@ public interface AttendanceService {
 
 	ResponseEntity<List<AttendanceViewDto>> getSearchSuggestion(String value, String courseName);
 	
+	 void processAttendanceData();
+	
 }

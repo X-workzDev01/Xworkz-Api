@@ -93,5 +93,7 @@ public class BatchAttendanceServiceImpl implements BatchAttendanceService {
 		return attendanceDetails;
 
 	}
+	
+	
 
 }

@@ -14,7 +14,7 @@ public interface FollowUpRepository {
 
 	boolean updateCurrentFollowUpStatus(String spreadsheetId, String currentFollowRange, List<Object> data);
 
-	public List<List<Object>> getFollowupStatusEmailList(String spreadsheetId);
+	List<List<Object>> getFollowupStatusEmailList(String spreadsheetId);
 
 	List<List<Object>> getEmailList(String spreadsheetId);
 
@@ -22,6 +22,6 @@ public interface FollowUpRepository {
 
 	UpdateValuesResponse updateFollow(String spreadsheetId, String range2, ValueRange valueRange);
 
-	public String updateFollowUpStatus(String spreadsheetId, String range, List<Object> list);
+	String updateFollowUpStatus(String spreadsheetId, String range, List<Object> list);
 
 }

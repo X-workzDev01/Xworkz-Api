@@ -186,14 +186,12 @@ public class NotificationServiceImpl implements NotificationService {
 													.isEqual(LocalDate.parse(LocalDateTime
 															.parse(dto.getFeesHistoryDto().getFollowupCallbackDate())
 															.format(dateFormatter)))) {
-										System.err.println("today list : " + dto);
 										today.add(dto);
 									} else if (dto.getFeesHistoryDto().getFollowupCallbackDate().length() <= 10
 											&& LocalDate.now()
 													.isEqual(LocalDate.parse(LocalDate
 															.parse(dto.getFeesHistoryDto().getFollowupCallbackDate())
 															.format(dateFormatter)))) {
-										System.err.println("today list 3333 : " + dto);
 										today.add(dto);
 									}
 
@@ -202,14 +200,12 @@ public class NotificationServiceImpl implements NotificationService {
 													.isEqual(LocalDate.parse(LocalDateTime
 															.parse(dto.getFeesHistoryDto().getFollowupCallbackDate())
 															.format(dateFormatter)))) {
-										System.err.println("yesterday list : " + dto);
 										yesterday.add(dto);
 									} else if (dto.getFeesHistoryDto().getFollowupCallbackDate().length() <= 10
 											&& LocalDate.now().minusDays(1)
 													.isEqual(LocalDate.parse(LocalDate
 															.parse(dto.getFeesHistoryDto().getFollowupCallbackDate())
 															.format(dateFormatter)))) {
-										System.err.println("yesterday list 3333 : " + dto);
 										yesterday.add(dto);
 									}
 
@@ -218,14 +214,12 @@ public class NotificationServiceImpl implements NotificationService {
 													.isEqual(LocalDate.parse(LocalDateTime
 															.parse(dto.getFeesHistoryDto().getFollowupCallbackDate())
 															.format(dateFormatter)))) {
-										System.err.println("afterFoureDay list  : " + dto);
 										afterFoureDay.add(dto);
 									} else if (dto.getFeesHistoryDto().getFollowupCallbackDate().length() <= 10
 											&& LocalDate.now().plusDays(4)
 													.isEqual(LocalDate.parse(LocalDate
 															.parse(dto.getFeesHistoryDto().getFollowupCallbackDate())
 															.format(dateFormatter)))) {
-										System.err.println("afterFoureDay list 3333 : " + dto);
 										afterFoureDay.add(dto);
 
 									}
@@ -240,9 +234,8 @@ public class NotificationServiceImpl implements NotificationService {
 
 					listOfData.stream().forEach(e -> {
 						FeesDto dto = feesWrapper.listToFeesDTO(e);
-
-						if (dto.getFeesHistoryDto().getFollowupCallbackDate() != null && dto.getSoftFlag() != null
-								&& !dto.getSoftFlag().equalsIgnoreCase("Inactive")
+						if (dto.getFeesHistoryDto() != null && dto.getFeesHistoryDto().getFollowupCallbackDate() != null
+								&& dto.getSoftFlag() != null && !dto.getSoftFlag().equalsIgnoreCase("Inactive")
 								&& statusCheck.contains(dto.getFeesStatus())) {
 							if (dto.getFeesHistoryDto().getFollowupCallbackDate().length() > 10
 									&& LocalDateTime.now()
@@ -293,9 +286,7 @@ public class NotificationServiceImpl implements NotificationService {
 
 				if (!notificationStatus.isEmpty()) {
 
-					boolean sendFeesNotificationToEmail = util.sendFeesNotificationToEmail(teamList,
-							notificationStatus);
-					System.err.println("sendFeesNotificationToEmail  :  " + sendFeesNotificationToEmail);
+					util.sendFeesNotificationToEmail(teamList, notificationStatus);
 
 				}
 

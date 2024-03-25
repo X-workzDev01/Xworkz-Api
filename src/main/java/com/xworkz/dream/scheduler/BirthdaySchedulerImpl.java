@@ -19,5 +19,11 @@ public class BirthdaySchedulerImpl {
 		logger.info("Running sendBirthday Scheduler");
 		birthadayService.sendBirthdayEmails();
 	}
-	
+
+    @Scheduled(cron = "0 45 20 31 12 *")
+	public void updateEmailSentStatus() {
+		logger.info("update email status in birthday sheet ");
+		birthadayService.updateBirthDayMailStatusYearly();
+	}
+
 }
