@@ -1,6 +1,7 @@
 package com.xworkz.dream.service;
 
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
@@ -178,7 +179,7 @@ public class BirthadayServiceImpl implements BirthadayService {
 			});
 		});
 
-		Predicate<BirthdayDetailsDto> predicate = birthdayUtil.predicateBySelected(date, courseName, month);
+		Predicate<BirthdayDetailsDto> predicate = birthDayUtil.predicateBySelected(date, courseName, month);
 		if (predicate != null) {
 			List<BirthdayDetailsDto> filteredList = listofBirthday.stream().filter(predicate)
 					.collect(Collectors.toList());
