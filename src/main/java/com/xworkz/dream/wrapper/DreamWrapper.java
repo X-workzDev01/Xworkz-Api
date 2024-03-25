@@ -147,8 +147,6 @@ public class DreamWrapper {
 		if (rowSize > 8 && row.get(8) != null && !row.get(8).toString().isEmpty()) {
 			followUpDto.setCurrentStatus((String) row.get(8));
 		}
-
-		// Note: The code sets the 'callback' property as a string, not a Date object.
 		if (rowSize > 8 && row.get(9) != null && !row.get(9).toString().isEmpty()) {
 			followUpDto.setCallback((String) row.get(9));
 		}
@@ -171,6 +169,12 @@ public class DreamWrapper {
 				followUpDto.setAdminDto(new AuditDto());
 			}
 			followUpDto.getAdminDto().setUpdatedBy(row.get(12).toString());
+		}
+		if (rowSize > 13 && row.get(13) != null && !row.get(13).toString().isEmpty()) {
+			if (followUpDto.getAdminDto() == null) {
+				followUpDto.setAdminDto(new AuditDto());
+			}
+			followUpDto.getAdminDto().setUpdatedOn(row.get(13).toString());
 		}
 		if (rowSize > 14 && row.get(14) != null && !row.get(14).toString().isEmpty()) {
 			followUpDto.setFlag((String) row.get(14));
@@ -226,7 +230,6 @@ public class DreamWrapper {
 	}
 
 	public TraineeDto listToDto(List<Object> row) {
-		System.out.println("sheet data" + row);
 		TraineeDto traineeDto = new TraineeDto(0, new BasicInfoDto(), new EducationInfoDto(), new CourseDto(),
 				new OthersDto(), new AuditDto(), new CSR(), new PercentageDto(), null, null);
 		if (row.size() > RegistrationConstant.COLUMN_ID.getIndex() && validateCell(RegistrationConstant.COLUMN_ID)) {
@@ -413,7 +416,9 @@ public class DreamWrapper {
 
 		if (row.size() > RegistrationConstant.COLUMN_SSLC.getIndex()
 				&& validateCell(RegistrationConstant.COLUMN_SSLC)) {
-			if (row.get(RegistrationConstant.COLUMN_SSLC.getIndex()) != null) {
+			if (row.get(RegistrationConstant.COLUMN_SSLC.getIndex()) != null
+					&& !row.get(RegistrationConstant.COLUMN_SSLC.getIndex()).toString()
+							.equalsIgnoreCase(ServiceConstant.NA.toString())) {
 				traineeDto.getPercentageDto().setSslcPercentage(
 						Double.parseDouble(row.get(RegistrationConstant.COLUMN_SSLC.getIndex()).toString()));
 			} else {
@@ -424,7 +429,9 @@ public class DreamWrapper {
 		}
 		if (row.size() > RegistrationConstant.COLUMN_PUC.getIndex() && validateCell(RegistrationConstant.COLUMN_PUC)) {
 
-			if (row.get(RegistrationConstant.COLUMN_PUC.getIndex()) != null) {
+			if (row.get(RegistrationConstant.COLUMN_PUC.getIndex()) != null
+					&& !row.get(RegistrationConstant.COLUMN_SSLC.getIndex()).toString()
+							.equalsIgnoreCase(ServiceConstant.NA.toString())) {
 				traineeDto.getPercentageDto().setPucPercentage(
 						Double.parseDouble(row.get(RegistrationConstant.COLUMN_PUC.getIndex()).toString()));
 			} else {
@@ -435,7 +442,9 @@ public class DreamWrapper {
 		}
 		if (row.size() > RegistrationConstant.COLUMN_DEGREE.getIndex()
 				&& validateCell(RegistrationConstant.COLUMN_DEGREE)) {
-			if (row.get(RegistrationConstant.COLUMN_DEGREE.getIndex()) != null) {
+			if (row.get(RegistrationConstant.COLUMN_DEGREE.getIndex()) != null
+					&& !row.get(RegistrationConstant.COLUMN_SSLC.getIndex()).toString()
+							.equalsIgnoreCase(ServiceConstant.NA.toString())) {
 				traineeDto.getPercentageDto().setDegreePercentage(
 						Double.parseDouble(row.get(RegistrationConstant.COLUMN_DEGREE.getIndex()).toString()));
 			} else {

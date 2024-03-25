@@ -95,7 +95,6 @@ public class RegisterRepositoryImpl implements RegisterRepository {
 	@Cacheable(value = "sheetsData", key = "'listOfTraineeData'", unless = "#result == null")
 	public List<List<Object>> readData(String spreadsheetId) {
 		try {
-			System.err.println(sheetsService.spreadsheets().values().get(spreadsheetId, range).execute().getValues());
 			return sheetsService.spreadsheets().values().get(spreadsheetId, range).execute().getValues();
 		} catch (IOException e) {
 			log.error("Exception in readData method, {}", e.getMessage());
