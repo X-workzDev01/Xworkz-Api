@@ -174,7 +174,7 @@ public class BirthadayServiceImpl implements BirthadayService {
 		listofBirthday.stream().forEach(birthdayDetailsDto -> {
 			mailSentList.stream().forEach(birthDayInfoDto -> {
 				if (birthDayInfoDto.getTraineeEmail().equalsIgnoreCase(birthdayDetailsDto.getBasicInfoDto().getEmail())) {
-					if (!birthDayInfoDto.getBirthDayMailSent().equals(null) && !birthDayInfoDto.getBirthDayMailSent().equals("")) {
+					if (birthDayInfoDto.getBirthDayMailSent()!=null && !birthDayInfoDto.getBirthDayMailSent().equals("")) {
 						birthDayInfoDto.setBirthDayMailSent(birthDayInfoDto.getBirthDayMailSent());
 					} else {
 						birthDayInfoDto.setBirthDayMailSent("NA");
