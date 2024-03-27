@@ -17,5 +17,7 @@ public class AttendanceSchedulerImpl {
 	public void attendanceFollowUp() {
 		service.processAttendanceData();
 	}
+	
+	
 
 }

@@ -12,8 +12,8 @@ mailChimp:
 
  
 mail:
-   smtpHost: smtp.office365.com
-   smtpPort: 587
+   smtpHost: smtp.elasticemail.com
+   smtpPort: 2525
    userName: xworkzdev@outlook.com
    password: KeepIT@Temp789 
     

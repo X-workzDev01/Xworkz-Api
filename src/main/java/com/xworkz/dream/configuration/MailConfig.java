@@ -67,7 +67,7 @@ public class MailConfig {
 		JavaMailSenderImpl mailSender = new JavaMailSenderImpl();
 
 		mailSender.setHost(helper.decrypt(smtpHostChimp));
-		mailSender.setPort(587);
+		mailSender.setPort(2525);
 		mailSender.setUsername(helper.decrypt(chimpUserName));
 		mailSender.setPassword(helper.decrypt(chimpPassword));
 		Properties javaMailProperties = new Properties();
