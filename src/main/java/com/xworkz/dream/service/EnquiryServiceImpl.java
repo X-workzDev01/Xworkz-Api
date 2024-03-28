@@ -71,7 +71,6 @@ public class EnquiryServiceImpl implements EnquiryService {
 
 			}
 			service.saveBirthDayInfo(dto);
-			System.err.println("Dto:"+dto);
 			boolean status = followUpService.addToFollowUpEnquiry(dto, spreadsheetId);
 			log.info("Saving birth details: {}", dto);
 		
