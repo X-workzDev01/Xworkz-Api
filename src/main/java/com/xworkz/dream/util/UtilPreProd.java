@@ -191,7 +191,6 @@ public class UtilPreProd implements DreamUtil {
 	}
 
 	@Override
-
 	public boolean sendBirthadyEmail(String traineeEmail, String subject, String name) {
 
 		if (traineeEmail == null || name == null) {
@@ -199,8 +198,7 @@ public class UtilPreProd implements DreamUtil {
 			return false;
 
 		} else {
-			sendBirthadyEmailChimp(traineeEmail, subject, name);
-			return true;
+			return sendBirthadyEmailChimp(traineeEmail, subject, name);
 		}
 	}
 
@@ -332,7 +330,7 @@ public class UtilPreProd implements DreamUtil {
 		}
 	}
 
-	private void sendBirthadyEmailChimp(String traineeEmail, String subject, String name) {
+	private boolean sendBirthadyEmailChimp(String traineeEmail, String subject, String name) {
 		Context context = new Context();
 
 		context.setVariable("name", name);
@@ -348,7 +346,7 @@ public class UtilPreProd implements DreamUtil {
 			messageHelper.setSubject(subject);
 			messageHelper.setText(content, true);
 		};
-		chimpMailService.validateAndSendBirthdayMail(messagePreparator);
+	return chimpMailService.validateAndSendBirthdayMail(messagePreparator);
 	}
 
 	private void sendAbsentEmailChimp(String email, String name, String reason) {

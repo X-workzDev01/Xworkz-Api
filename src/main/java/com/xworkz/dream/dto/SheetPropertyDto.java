@@ -45,6 +45,25 @@ public class SheetPropertyDto {
 	private String batchIdRange;
 	@Value("${sheets.batchDetailsCourseNameRange}")
 	private String batchDetailsCourseNameRange;
-	
+	@Value("${login.teamFile}")
+	private String userFile;
+	@Value("${sheets.followUpRowCurrentStartRange}")
+	private String followUpRowCurrentStartRange;
+	@Value("${sheets.followUpRowCurrentEndRange}")
+	private String followUpRowCurrentEndRange;
+	@Value("${sheets.followUpSheetName}")
+	private String followUpSheetName;
+	@Value("${sheets.followUprowStartRange}")
+	private String followUprowStartRange;
+	@Value("${sheets.followUprowEndRange}")
+	private String followUprowEndRange;
+	@Value("${sheets.followUpStatus}")
+	private String followUpStatus;
+	@Value("${sheets.emailAndNameRange}")
+	private String emailAndNameRange;
+	@Value("${sheets.followUpRange}")
+	private String followUpRange;
+	@Value("${sheets.followUpEmailRange}")
+	private String followUpEmailRange;
 
 }

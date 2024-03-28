@@ -15,11 +15,15 @@ public class BirthdaySchedulerImpl {
 	Logger logger = LoggerFactory.getLogger(BirthdaySchedulerImpl.class);
 
 	@Scheduled(cron = "0 0 0 * * *")
-	// @Scheduled(cron = "0 * * * * *")
-	// @Scheduled(cron = "0 */3 * * * *")
 	public void sendBirthdayEmailsScheduled() {
 		logger.info("Running sendBirthday Scheduler");
 		birthadayService.sendBirthdayEmails();
+	}
+
+    @Scheduled(cron = "0 45 20 31 12 *")
+	public void updateEmailSentStatus() {
+		logger.info("update email status in birthday sheet ");
+		birthadayService.updateBirthDayMailStatusYearly();
 	}
 
 }

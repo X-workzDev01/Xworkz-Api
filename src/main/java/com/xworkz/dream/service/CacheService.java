@@ -4,13 +4,14 @@ import java.util.List;
 
 import com.xworkz.dream.dto.AttendanceDto;
 import com.xworkz.dream.dto.BatchDetailsDto;
+import com.xworkz.dream.dto.BirthDayInfoDto;
 import com.xworkz.dream.dto.FollowUpDto;
 import com.xworkz.dream.dto.TraineeDto;
 
 public interface CacheService {
 	void updateCache(String cacheName, String key, List<Object> data);
 
-	public void EmailUpdate(String cacheName, String key, String oldEmail, String newEmail);
+	void EmailUpdate(String cacheName, String key, String oldEmail, String newEmail);
 
 	void getCacheDataByEmail(String cacheName, String key, String email, TraineeDto dto);
 
@@ -28,12 +29,19 @@ public interface CacheService {
 
 	void addContactNumberToCache(String cacheName, String spreadSheetId, Long contactNumber);
 
-	public void getCacheDataByEmail(String cacheName, String key, String oldEmail, String newEmail);
+	void getCacheDataByEmail(String cacheName, String key, String oldEmail, String newEmail);
 
-	public void addAttendancdeToCache(String cacheName, String key, List<Object> data);
+	void addAttendancdeToCache(String cacheName, String key, List<Object> data);
 
-	public void updateCacheAttendancde(String cacheName, String key, Integer id, AttendanceDto dto);
+	void updateCacheAttendancde(String cacheName, String key, Integer id, AttendanceDto dto);
 
-	public void updateCacheBatch(String cacheName, String key, String courseNAME, BatchDetailsDto dto);
+	void updateCacheBatch(String cacheName, String key, String courseNAME, BatchDetailsDto dto);
 
+	void addToCache(String cacheName, String key, String value);
+
+	void updateBirthDayInfoInCache(String cacheName, String key, String email, BirthDayInfoDto birthDayInfoDto);
+
+	void addBirthDayToCache(String cacheName, String key, List<Object> data);
+
+	void updateValue(String cacheName, String key, Long oldValue, Long newValue);
 }

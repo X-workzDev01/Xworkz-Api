@@ -1,22 +1,21 @@
 package com.xworkz.dream.dto;
 
+import java.util.List;
+
 import lombok.AllArgsConstructor;
-import lombok.Data;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.ToString;
 
-@Data
 @Getter
 @Setter
-@AllArgsConstructor
+@ToString
 @NoArgsConstructor
-public class PercentageDto {
+@AllArgsConstructor
+public class BirthdayDataDto {
 	
-	
-	private Double sslcPercentage;
-	private Double pucPercentage;
-	private Double degreePercentage;
-	
+	private List<BirthdayDetailsDto> listofBirthdays;
+	private int size;
 
 }
