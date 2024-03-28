@@ -596,24 +596,23 @@ public class AttendanceServiceImpl implements AttendanceService {
 
 	@Override
 	public void processAttendanceData() {
-	    List<List<Object>> attendanceData = attendanceRepository.getAttendanceData(sheetId, attendanceInfoIDRange);
-	    List<List<Object>> readData = registerRepository.readData(sheetId);
+		List<List<Object>> attendanceData = attendanceRepository.getAttendanceData(sheetId, attendanceInfoIDRange);
+		List<List<Object>> readData = registerRepository.readData(sheetId);
 
-	    List<TraineeDto> listToDto = new ArrayList<>(); 
-	    readData.forEach(dtos -> {
-	        attendanceData.forEach(record -> {
-	            Integer traineeId = Integer.valueOf(record.get(1).toString());
-	            if (dtos.get(0).toString().equals(traineeId.toString())) {
-	                boolean checkContinuousAbsence = checkContinuousAbsence(attendanceData, traineeId);
-	                if (checkContinuousAbsence) {
-	                    TraineeDto traineeDto = wrapper.listToDto(dtos); 
-	                    listToDto.add(traineeDto);
-	                }
-	            }
-	        });
-	    });
-	    dreamUtil.sendEmailNotificationForAttendanceFollowUp(listToDto);
+		List<TraineeDto> listToDto = new ArrayList<>();
+		readData.forEach(dtos -> {
+			attendanceData.forEach(record -> {
+				Integer traineeId = Integer.valueOf(record.get(1).toString());
+				if (dtos.get(0).toString().equals(traineeId.toString())) {
+					boolean checkContinuousAbsence = checkContinuousAbsence(attendanceData, traineeId);
+					if (checkContinuousAbsence) {
+						TraineeDto traineeDto = wrapper.listToDto(dtos);
+						listToDto.add(traineeDto);
+					}
+				}
+			});
+		});
+//	    dreamUtil.sendEmailNotificationForAttendanceFollowUp(listToDto);
 	}
-
 
 }

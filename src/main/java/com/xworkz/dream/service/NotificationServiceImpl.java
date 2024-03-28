@@ -165,7 +165,7 @@ public class NotificationServiceImpl implements NotificationService {
 		FeesStatusList list = new FeesStatusList();
 		List<String> statusCheck = list.getStatusList();
 		DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-		LocalTime time = LocalTime.of(16, 59, 01, 500_000_000);
+		LocalTime time = LocalTime.of(16, 00, 01, 500_000_000);
 		List<FeesDto> notificationStatus = new ArrayList<FeesDto>();
 		List<FeesDto> today = new ArrayList<FeesDto>();
 		List<FeesDto> yesterday = new ArrayList<FeesDto>();
@@ -174,7 +174,6 @@ public class NotificationServiceImpl implements NotificationService {
 		if (spreadsheetId != null) {
 			List<List<Object>> listOfData = notificationRepository.feesNotification(spreadsheetId);
 			if (listOfData != null) {
-
 				if (!listOfData.isEmpty()) {
 					if (email != null) {
 						listOfData.stream().forEach(e -> {
@@ -283,7 +282,6 @@ public class NotificationServiceImpl implements NotificationService {
 				}
 			}
 			if (LocalTime.now().isAfter(time) && LocalTime.now().isBefore(time.plusMinutes(26))) {
-
 				if (!notificationStatus.isEmpty()) {
 
 					util.sendFeesNotificationToEmail(teamList, notificationStatus);

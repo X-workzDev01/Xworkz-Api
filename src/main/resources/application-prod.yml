@@ -1,13 +1,14 @@
 
 sheets:
   credentialsPath: classpath:META-INF/credentials-prod.json
-  liveKey: live_d4218df2b68537378ba3
+  liveKey: live_a15c297cd6b71c1d8894
 
 
 mailChimp:
   userName: 7FzbzzHIVQSVJVz5r4n/bGa/lhNWJCXUq6oqBxBCTYQ=
   password: +mgZp4MIPWMTkaJ/pwphDw==
   smtpHostChimp: yj/mpkyGHCjMIsVaHCMyxQZ4EBNjg/Ep6CbXhjKA7v0=
+  subject: Thank you for registring at x-workz
 
  
 mail:

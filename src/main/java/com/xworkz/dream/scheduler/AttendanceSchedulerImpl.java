@@ -14,7 +14,7 @@ public class AttendanceSchedulerImpl {
 
 	Logger log = LoggerFactory.getLogger(AttendanceSchedulerImpl.class);
 	
-	 @Scheduled(cron = "0 0 16 * * *")
+//	 @Scheduled(cron = "0 0 16 * * *")
 	public void attendanceFollowUp() {
 		service.processAttendanceData();
 	}

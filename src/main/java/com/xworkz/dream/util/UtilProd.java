@@ -74,6 +74,8 @@ public class UtilProd implements DreamUtil {
 	private String smsType;
 	@Value("${mailChimp.smsSuccess}")
 	private String smsSuccess;
+	@Value("${mailChimp.subject}")
+	private String csrSubject;
 	@Autowired
 	private CSRSMSService csrSmsService;
 	@Autowired
@@ -231,7 +233,7 @@ public class UtilProd implements DreamUtil {
 			messageHelper.setText(content, true);
 		};
 
-		return chimpMailService.validateAndSendMailByMailIdDev(messagePreparator);
+		return chimpMailService.validateAndSendMailByMailId(messagePreparator);
 	}
 
 	private boolean sendBulkMailToNotification(List<String> recipients, String subject, List<FollowUpDto> body) {
@@ -378,7 +380,7 @@ public class UtilProd implements DreamUtil {
 	@Override
 	public boolean csrEmailSent(TraineeDto dto) {
 		Context context = new Context();
-		if (dto.getCourseInfo().getOfferedAs().equalsIgnoreCase("CSR")) {
+		if (dto.getCourseInfo().getOfferedAs().equalsIgnoreCase("CSR Offered")) {
 			context.setVariable("name", dto.getBasicInfo().getTraineeName());
 			context.setVariable("usnNumber", dto.getCsrDto().getUsnNumber());
 			context.setVariable("collegeName", dto.getEducationInfo().getCollegeName());
@@ -403,7 +405,7 @@ public class UtilProd implements DreamUtil {
 
 			messageHelper.setFrom(helper.decrypt(chimpUserName));
 			messageHelper.setTo(dto.getBasicInfo().getEmail());
-			messageHelper.setSubject("Hello csr drive");
+			messageHelper.setSubject(csrSubject);
 			messageHelper.setText(content, true);
 		};
 		return messagePreparator;
@@ -421,7 +423,7 @@ public class UtilProd implements DreamUtil {
 
 		context.setVariable("traineeDto", traineeDto);
 		String content = templateEngine.process("FollowCandidateFollowupTemplete", context);
-
+ 
 		MimeMessagePreparator messagePreparator = mimeMessage -> {
 
 			MimeMessageHelper messageHelper = new MimeMessageHelper(mimeMessage);

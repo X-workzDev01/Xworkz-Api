@@ -81,6 +81,8 @@ public class UtilPreProd implements DreamUtil {
 	private TeamList team;
 	@Autowired
 	private EncryptionHelper helper;
+	@Value("${mailChimp.subject}")
+	private String csrSubject;
 
 	private static final Logger logger = LoggerFactory.getLogger(UtilDev.class);
 
@@ -371,7 +373,7 @@ public class UtilPreProd implements DreamUtil {
 	@Override
 	public boolean csrEmailSent(TraineeDto dto) {
 		Context context = new Context();
-		if (dto.getCourseInfo().getOfferedAs().equalsIgnoreCase("CSR")) {
+		if (dto.getCourseInfo().getOfferedAs().equalsIgnoreCase("CSR Offered")) {
 			context.setVariable("name", dto.getBasicInfo().getTraineeName());
 			context.setVariable("usnNumber", dto.getCsrDto().getUsnNumber());
 			context.setVariable("collegeName", dto.getEducationInfo().getCollegeName());
@@ -396,7 +398,7 @@ public class UtilPreProd implements DreamUtil {
 
 			messageHelper.setFrom(helper.decrypt(chimpUserName));
 			messageHelper.setTo(dto.getBasicInfo().getEmail());
-			messageHelper.setSubject("Hello csr drive");
+			messageHelper.setSubject(csrSubject);
 			messageHelper.setText(content, true);
 		};
 		return messagePreparator;

@@ -67,6 +67,8 @@ public class UtilDev implements DreamUtil {
 	private CSRSMSService csrSmsService;
 	@Autowired
 	private TeamList team;
+	@Value("${mailChimp.subject}")
+	private String csrSubject;
 
 	private static final Logger logger = LoggerFactory.getLogger(UtilDev.class);
 
@@ -327,7 +329,7 @@ public class UtilDev implements DreamUtil {
 	@Override
 	public boolean csrEmailSent(TraineeDto dto) {
 		Context context = new Context();
-		if (dto.getCourseInfo().getOfferedAs().equalsIgnoreCase("CSR")) {
+		if (dto.getCourseInfo().getOfferedAs().equalsIgnoreCase("CSR Offered")) {
 			context.setVariable("name", dto.getBasicInfo().getTraineeName());
 			context.setVariable("usnNumber", dto.getCsrDto().getUsnNumber());
 			context.setVariable("collegeName", dto.getEducationInfo().getCollegeName());
