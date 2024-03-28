@@ -24,7 +24,7 @@ import com.xworkz.dream.dto.TraineeDto;
 	 boolean addToFollowUpEnquiry(TraineeDto traineeDto, String spreadSheetId);
 
 	 FollowUpDataDto getFollowUpDetails(String spreadsheetId, int startingIndex, int maxRows,
-			String status, String courseName, String date, String collegeName) ;
+			String status, String courseName, String date, String collegeName,String yearOfPass) ;
 
 	 List<FollowUpDto> getFollowUpRows(List<List<Object>> values, int startingIndex, int maxRows);
 

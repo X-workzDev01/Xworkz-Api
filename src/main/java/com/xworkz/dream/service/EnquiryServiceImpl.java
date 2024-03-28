@@ -70,11 +70,10 @@ public class EnquiryServiceImpl implements EnquiryService {
 						dto.getBasicInfo().getContactNumber());
 
 			}
-			log.info("Saving birth details: {}", dto);
 			service.saveBirthDayInfo(dto);
-
 			boolean status = followUpService.addToFollowUpEnquiry(dto, spreadsheetId);
-
+			log.info("Saving birth details: {}", dto);
+		
 			if (status) {
 				log.info("Data written successfully to spreadsheetId and Added to Follow Up: {}", spreadsheetId);
 				util.sms(dto);

@@ -50,11 +50,11 @@ public class FollowUpController {
 	@GetMapping("/followUp")
 	public FollowUpDataDto getFollowUpData(@RequestHeader String spreadsheetId, @RequestParam int startingIndex,
 			@RequestParam int maxRows, @RequestParam String status, @RequestParam String courseName,
-			@RequestParam String date, @RequestParam String collegeName) {
+			@RequestParam String date, @RequestParam String collegeName,@RequestParam String yearOfPass) {
 		log.info(
-				"Fetching follow-up details: spreadsheetId={}, startingIndex={}, maxRows={}, status={}, courseName={}, date={}",
-				spreadsheetId, startingIndex, maxRows, status, courseName, date);
-		return service.getFollowUpDetails(spreadsheetId, startingIndex, maxRows, status, courseName, date, collegeName);
+				"Fetching follow-up details: spreadsheetId={}, startingIndex={}, maxRows={}, status={}, courseName={}, date={}, collegeName={},yearOfPass={}",
+				spreadsheetId, startingIndex, maxRows, status, courseName, date,collegeName,yearOfPass);
+		return service.getFollowUpDetails(spreadsheetId, startingIndex, maxRows, status, courseName, date, collegeName,yearOfPass);
 	}
 
 	@ApiOperation(value = "To get status details by email ")

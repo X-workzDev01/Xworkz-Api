@@ -1,6 +1,7 @@
 package com.xworkz.dream.service.util;
 
 import java.util.List;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
@@ -92,4 +93,63 @@ public class RegistrationUtil {
 		return dto;
 	}
 
+	public Predicate<TraineeDto> getBySelection(String courseName, String collegeName, String followupStatus,
+			String offeredAs, String yearOfPassOut) {
+		Predicate<TraineeDto> predicate = traineeDto -> {
+			boolean condition1 = courseName.equals("null")
+					|| traineeDto.getCourseInfo().getCourse().equalsIgnoreCase(courseName);
+			boolean condition2 = collegeName.equals("null")
+					|| traineeDto.getEducationInfo().getCollegeName().equalsIgnoreCase(collegeName);
+			boolean condition3 = followupStatus.equals("null")
+					|| traineeDto.getFollowupStatus().equalsIgnoreCase(followupStatus);
+			boolean condition4 = offeredAs.equals("null")
+					|| traineeDto.getCourseInfo().getOfferedAs().equalsIgnoreCase(offeredAs);
+			boolean condition5 = yearOfPassOut.equals("null")
+					|| traineeDto.getEducationInfo().getYearOfPassout().equalsIgnoreCase(yearOfPassOut);
+			return condition1 && condition2 && condition3 && condition4 && condition5;
+		};
+		return predicate;
+	}
+	public Predicate<TraineeDto> findBySearchValue(String searchValue, String courseName, String collegeName,
+	        String followupStatus, String offeredAs, String yearOfPassOut) {
+	    Predicate<TraineeDto> predicate = traineeDto -> searchValue != null &&
+	            traineeDto.getBasicInfo().getEmail().equalsIgnoreCase(searchValue);
+	    predicate = nullCheck(courseName, collegeName, followupStatus, offeredAs, yearOfPassOut, predicate);
+	    return predicate;
+	}
+
+	public Predicate<TraineeDto> findSuggestion(String value, String courseName, String collegeName,
+	        String followupStatus, String offeredAs, String yearOfPassOut) {
+	    Predicate<TraineeDto> predicate = traineeDto -> true;
+	    if (value != null && !value.isEmpty()) {
+	        String searchValue = value.trim();
+	        predicate = predicate.and(traineeDto ->
+	                traineeDto.getBasicInfo().getTraineeName().contains(searchValue));
+	    }
+	    predicate = nullCheck(courseName, collegeName, followupStatus, offeredAs, yearOfPassOut, predicate);
+
+	    return predicate;
+	}
+
+
+	private Predicate<TraineeDto> nullCheck(String courseName, String collegeName, String followupStatus,
+			String offeredAs, String yearOfPassOut, Predicate<TraineeDto> predicate) {
+		if (!courseName.equals("null")) {
+		    predicate = predicate.and(traineeDto -> traineeDto.getCourseInfo().getCourse().equalsIgnoreCase(courseName));
+		}
+		if (!collegeName.equals("null")) {
+		    predicate = predicate.and(traineeDto -> traineeDto.getEducationInfo().getCollegeName().equalsIgnoreCase(collegeName));
+		}
+		if (!followupStatus.equals("null")) {
+		    predicate = predicate.and(traineeDto -> traineeDto.getFollowupStatus().equalsIgnoreCase(followupStatus));
+		}
+		if (!offeredAs.equals("null")) {
+		    predicate = predicate.and(traineeDto -> traineeDto.getCourseInfo().getOfferedAs().equalsIgnoreCase(offeredAs));
+		}
+		if (!yearOfPassOut.equals("null")) {
+		    predicate = predicate.and(traineeDto -> traineeDto.getEducationInfo().getYearOfPassout().equalsIgnoreCase(yearOfPassOut));
+		}
+		return predicate;
+	}
+	
 }
