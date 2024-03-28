@@ -366,7 +366,7 @@ public class FollowUpServiceImpl implements FollowUpService {
 
 	@Override
 	public FollowUpDataDto getFollowUpDetails(String spreadsheetId, int startingIndex, int maxRows, String status,
-			String courseName, String date, String collegeName) {
+			String courseName, String date, String collegeName,String yearOfPass) {
 		log.info(
 				"Get Follow-up Details service start. SpreadsheetId: {}, StartingIndex: {}, MaxRows: {}, Status: {}, "
 						+ "CourseName: {}, Date: {} ,CollegeName : {}  ",
@@ -377,7 +377,7 @@ public class FollowUpServiceImpl implements FollowUpService {
 			List<List<Object>> traineeData = repository.readData(spreadsheetId);
 			StatusList statusList = new StatusList();
 			Predicate<FollowUpDto> predicate = predicateByStatus(status, courseName, date, collegeName, dateFormatter,
-					statusList);
+					statusList,yearOfPass);
 			try {
 				List<FollowUpDto> dto;
 				if (predicate != null) {
@@ -405,50 +405,30 @@ public class FollowUpServiceImpl implements FollowUpService {
 	}
 
 	private Predicate<FollowUpDto> predicateByStatus(String status, String courseName, String date, String collegeName,
-			DateTimeFormatter dateFormatter, StatusList statusList) {
+			DateTimeFormatter dateFormatter, StatusList statusList,String yearOfPass) {
 		Predicate<FollowUpDto> predicate = null;
+		 if (!"null".equals(courseName)) {
+		        predicate = followUpData -> followUpData.getCourseName().equalsIgnoreCase(courseName);
+		    } else if (!"null".equals(date)) {
+		        predicate = followUpData -> followUpData.getCallback().equalsIgnoreCase(date);
+		    } else if (!"null".equals(collegeName)) {
+		        predicate = followUpData -> followUpData.getCollegeName().equalsIgnoreCase(collegeName);
+		    } else if (!"null".equals(yearOfPass)) {
+		        predicate = followUpData -> followUpData.getYear().equalsIgnoreCase(yearOfPass);
+		    }
 
-		if (!courseName.equals("null") && status.equals("null") && date.equals("null") && collegeName.equals("null")) {
-			predicate = followUpData -> followUpData.getCourseName().equalsIgnoreCase(courseName);
-		}
-		if (!date.equals("null") && status.equals("null") && collegeName.equals("null") && courseName.equals("null")) {
-			predicate = followUpData -> followUpData.getCallback().equalsIgnoreCase(date);
-		}
-
-		if (!collegeName.equals("null") && date.equals("null") && status.equals("null") && courseName.equals("null")) {
-			predicate = followUpData -> followUpData.getCollegeName().equalsIgnoreCase(collegeName);
-		}
-
-		if (!collegeName.equals("null") && !date.equals("null") && status.equals("null") && courseName.equals("null")) {
-			predicate = followUpData -> followUpData.getCollegeName().equalsIgnoreCase(collegeName)
-					&& followUpData.getCallback().equalsIgnoreCase(date);
-		}
-		if (!courseName.equals("null") && !date.equals("null") && status.equals("null") && collegeName.equals("null")) {
-			predicate = followUpData -> followUpData.getCourseName().equalsIgnoreCase(courseName)
-					&& followUpData.getCallback().equalsIgnoreCase(date);
-		}
-		if (!courseName.equals("null") && !collegeName.equals("null") && status.equals("null") && date.equals("null")) {
-			predicate = followUpData -> followUpData.getCourseName().equalsIgnoreCase(courseName)
-					&& followUpData.getCollegeName().equalsIgnoreCase(collegeName);
-		}
-
-		predicate = followUpUtil.byStatus(status, courseName, date, collegeName, dateFormatter, statusList, predicate);
-		predicate = followUpUtil.byStatusAndCourseName(status, courseName, date, collegeName, dateFormatter, statusList,
-				predicate);
-		predicate = followUpUtil.byStatusAndDate(status, courseName, date, collegeName, dateFormatter, statusList,
-				predicate);
-		predicate = followUpUtil.byStatusAndCollegeName(status, courseName, date, collegeName, dateFormatter,
-				statusList, predicate);
-		predicate = followUpUtil.byStatusAndCourseNameAndCollegeName(status, courseName, date, collegeName,
-				dateFormatter, statusList, predicate);
-		predicate = followUpUtil.byStatusCourseNameAndDateAndCollegeName(status, courseName, date, collegeName,
-				dateFormatter, statusList, predicate);
-		predicate = followUpUtil.byStatusAndDateAndCollegeName(status, courseName, date, collegeName, dateFormatter,
-				statusList, predicate);
-
-		predicate = followUpUtil.byStatusAndCourseAndDate(status, courseName, date, collegeName, dateFormatter,
-				statusList, predicate);
-
+		    if (predicate != null) {
+		        if (!"null".equals(date)) {
+		            predicate = predicate.and(followUpData -> followUpData.getCallback().equalsIgnoreCase(date));
+		        }
+		        if (!"null".equals(collegeName)) {
+		            predicate = predicate.and(followUpData -> followUpData.getCollegeName().equalsIgnoreCase(collegeName));
+		        }
+		        if (!"null".equals(yearOfPass)) {
+		            predicate = predicate.and(followUpData -> followUpData.getYear().equalsIgnoreCase(yearOfPass));
+		        }
+		    }
+		predicate = followUpUtil.byStatus(status, courseName, date, collegeName, dateFormatter, statusList, predicate,yearOfPass);
 		return predicate;
 	}
 

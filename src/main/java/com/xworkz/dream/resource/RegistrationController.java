@@ -60,9 +60,9 @@ public class RegistrationController {
 	@GetMapping("register/suggestion/{courseName}")
 	public ResponseEntity<List<TraineeDto>> getSearchSuggestion(@RequestHeader String spreadsheetId,
 			@RequestParam String value, @PathVariable String courseName, @RequestParam String collegeName,
-			@RequestParam String followupStatus) {
+			@RequestParam String followupStatus,@RequestParam String offeredAs,@RequestParam String yearOfPassOut) {
 		log.info("Getting suggestions for search: {},courseName:{},collegeName:{}", value, courseName, collegeName);
-		return service.getSearchSuggestion(spreadsheetId, value, courseName, collegeName, followupStatus);
+		return service.getSearchSuggestion(spreadsheetId, value, courseName, collegeName, followupStatus,offeredAs,yearOfPassOut);
 	}
 
 	@ApiOperation(value = "To register Check whether contact number already exist while registering")
@@ -76,18 +76,19 @@ public class RegistrationController {
 	@GetMapping("/readData")
 	public ResponseEntity<SheetsDto> readData(@RequestHeader String spreadsheetId, @RequestParam int startingIndex,
 			@RequestParam int maxRows, @RequestParam String courseName, @RequestParam String collegeName,
-			@RequestParam String followupStatus) {
+			@RequestParam String followupStatus, @RequestParam String offeredAs, @RequestParam String yearOfPassOut) {
 		log.info("Reading data with parameters - SpreadsheetId: {}, Starting Index: {}, Max Rows: {}, Course Name: {}",
 				spreadsheetId, startingIndex, maxRows, courseName);
-		return service.readData(spreadsheetId, startingIndex, maxRows, courseName, collegeName, followupStatus);
+		return service.readData(spreadsheetId, startingIndex, maxRows, courseName, collegeName, followupStatus,
+				offeredAs, yearOfPassOut);
 	}
 
 	@GetMapping("/filterData/{courseName}")
 	public List<TraineeDto> filterData(@RequestHeader String spreadsheetId, @PathVariable String courseName,
-			@RequestParam String searchValue, @RequestParam String collegeName, @RequestParam String followupStatus) {
+			@RequestParam String searchValue, @RequestParam String collegeName, @RequestParam String followupStatus,@RequestParam String offeredAs,@RequestParam String yearOfPassOut) {
 		log.info("Filtering data with parameters-> Search Value: {},collegeName:{},courseName:{}", searchValue,
 				collegeName, courseName);
-		return service.filterData(spreadsheetId, searchValue, courseName, collegeName, followupStatus);
+		return service.filterData(spreadsheetId, searchValue, courseName, collegeName, followupStatus,offeredAs,yearOfPassOut);
 	}
 
 	@ApiOperation(value = "To Update Registrated Details of Trainee")
@@ -107,12 +108,12 @@ public class RegistrationController {
 
 	}
 
-	@ApiOperation(value="To Check X-workz email Id")
+	@ApiOperation(value = "To Check X-workz email Id")
 	@GetMapping("/checkxworkzemail")
 	public ResponseEntity<String> checkworkzEmail(@RequestParam String email) {
-	    log.info("Checking x-workz email existence: {}", email);
-	    String response = service.checkworkzEmail(email);
-	    return ResponseEntity.ok(response);
+		log.info("Checking x-workz email existence: {}", email);
+		String response = service.checkworkzEmail(email);
+		return ResponseEntity.ok(response);
 	}
 
 }

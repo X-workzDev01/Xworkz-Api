@@ -42,6 +42,7 @@ public class BirthadayServiceImpl implements BirthadayService {
 	private RegisterRepository registrationRepo;
 	@Autowired
 	private RegistrationUtil registrationUtil;
+	@Autowired
 	private CacheService cacheService;
 
 	private static final Logger log = LoggerFactory.getLogger(BirthadayServiceImpl.class);

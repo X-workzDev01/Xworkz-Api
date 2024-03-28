@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
@@ -155,92 +156,28 @@ public class RegistrationServiceImpl implements RegistrationService {
 
 	@Override
 	public ResponseEntity<SheetsDto> readData(String spreadsheetId, int startingIndex, int maxRows, String courseName,
-			String collegeName, String followupStatus) {
+			String collegeName, String followupStatus, String offeredAs, String yearOfPassOut) {
 		SheetsDto traineeData = new SheetsDto();
 		List<TraineeDto> traineeDetails = traineeData();
 		Comparator<TraineeDto> registrationDateComparator = Comparator
 				.comparing(trainee -> trainee.getOthersDto().getRegistrationDate());
 		List<TraineeDto> traineeDtos = traineeDetails.stream().sorted(registrationDateComparator.reversed())
 				.collect(Collectors.toList());
-
-		if (traineeDtos != null) {
-			if (!courseName.equalsIgnoreCase(ServiceConstant.NULL.toString())
-					&& !collegeName.equalsIgnoreCase(ServiceConstant.NULL.toString())
-					&& !followupStatus.equalsIgnoreCase(ServiceConstant.NULL.toString())) {
-				List<TraineeDto> sortedData = traineeDtos.stream()
-						.filter(traineeDto -> traineeDto.getCourseInfo().getCourse().equals(courseName))
-						.filter(traineeDto -> traineeDto.getEducationInfo().getCollegeName().equals(collegeName))
-						.filter(traineeDto -> traineeDto.getFollowupStatus().equals(followupStatus))
-						.collect(Collectors.toList());
-				traineeData.setSheetsData(
-						sortedData.stream().skip(startingIndex).limit(maxRows).collect(Collectors.toList()));
-				traineeData.setSize(sortedData.size());
-				return ResponseEntity.ok(traineeData);
-			} else if (!courseName.equalsIgnoreCase(ServiceConstant.NULL.toString())
-					&& !collegeName.equalsIgnoreCase(ServiceConstant.NULL.toString())) {
-				List<TraineeDto> sortedData = traineeDtos.stream()
-						.filter(traineeDto -> traineeDto.getCourseInfo().getCourse().equals(courseName))
-						.filter(traineeDto -> traineeDto.getEducationInfo().getCollegeName().equals(collegeName))
-						.collect(Collectors.toList());
-				traineeData.setSheetsData(
-						sortedData.stream().skip(startingIndex).limit(maxRows).collect(Collectors.toList()));
-				traineeData.setSize(sortedData.size());
-				return ResponseEntity.ok(traineeData);
-			} else if (!courseName.equalsIgnoreCase(ServiceConstant.NULL.toString())
-					&& !followupStatus.equalsIgnoreCase(ServiceConstant.NULL.toString())) {
-				List<TraineeDto> sortedData = traineeDtos.stream()
-						.filter(traineeDto -> traineeDto.getCourseInfo().getCourse().equals(courseName))
-						.filter(traineeDto -> traineeDto.getFollowupStatus().equals(followupStatus))
-						.collect(Collectors.toList());
-				traineeData.setSheetsData(
-						sortedData.stream().skip(startingIndex).limit(maxRows).collect(Collectors.toList()));
-				traineeData.setSize(sortedData.size());
-				return ResponseEntity.ok(traineeData);
-			} else if (!collegeName.equalsIgnoreCase(ServiceConstant.NULL.toString())
-					&& !followupStatus.equalsIgnoreCase(ServiceConstant.NULL.toString())) {
-				List<TraineeDto> sortedData = traineeDtos.stream()
-						.filter(traineeDto -> traineeDto.getEducationInfo().getCollegeName().equals(collegeName))
-						.filter(traineeDto -> traineeDto.getFollowupStatus().equals(followupStatus))
-						.collect(Collectors.toList());
-				traineeData.setSheetsData(
-						sortedData.stream().skip(startingIndex).limit(maxRows).collect(Collectors.toList()));
-				traineeData.setSize(sortedData.size());
-				return ResponseEntity.ok(traineeData);
-			} else if (!courseName.equalsIgnoreCase(ServiceConstant.NULL.toString())) {
-				List<TraineeDto> sortedCourse = traineeDtos.stream()
-						.filter(items -> items.getCourseInfo().getCourse().equalsIgnoreCase(courseName))
-						.collect(Collectors.toList());
-				traineeData.setSheetsData(
-						sortedCourse.stream().skip(startingIndex).limit(maxRows).collect(Collectors.toList()));
-				traineeData.setSize(sortedCourse.size());
-				log.info("Returning response for course: {}", courseName);
-				return ResponseEntity.ok(traineeData);
-			} else if (!collegeName.equalsIgnoreCase(ServiceConstant.NULL.toString())) {
-				List<TraineeDto> sortedByCollege = traineeDtos.stream()
-						.filter(items -> items.getEducationInfo().getCollegeName().equalsIgnoreCase(collegeName))
-						.collect(Collectors.toList());
-				traineeData.setSheetsData(
-						sortedByCollege.stream().skip(startingIndex).limit(maxRows).collect(Collectors.toList()));
-				traineeData.setSize(sortedByCollege.size());
-				log.info("Returning response for college Name: {}", collegeName);
-				return ResponseEntity.ok(traineeData);
-			} else if (!followupStatus.equalsIgnoreCase(ServiceConstant.NULL.toString())) {
-				List<TraineeDto> sortedByCollege = traineeDtos.stream()
-						.filter(items -> items.getFollowupStatus().equalsIgnoreCase(followupStatus))
-						.collect(Collectors.toList());
-				traineeData.setSheetsData(
-						sortedByCollege.stream().skip(startingIndex).limit(maxRows).collect(Collectors.toList()));
-				traineeData.setSize(sortedByCollege.size());
-				log.info("Returning response for college Name: {}", collegeName);
-				return ResponseEntity.ok(traineeData);
-			}
-			log.info("Returning response for spreadsheetId: {}", spreadsheetId);
+		Predicate<TraineeDto> predicate = registrationUtil.getBySelection(courseName, collegeName, followupStatus,
+				offeredAs, yearOfPassOut);
+		List<TraineeDto> listOfDto = new ArrayList<TraineeDto>();
+		if (predicate != null) {
+			listOfDto = traineeDtos.stream().filter(predicate).collect(Collectors.toList());
+			traineeData.setSize(listOfDto.size());
+			traineeData
+					.setSheetsData(listOfDto.stream().skip(startingIndex).limit(maxRows).collect(Collectors.toList()));
+		} else {
+			traineeData.setSize(traineeDtos.size());
 			traineeData.setSheetsData(
 					traineeDtos.stream().skip(startingIndex).limit(maxRows).collect(Collectors.toList()));
-			traineeData.setSize(traineeDtos.size());
-			return ResponseEntity.ok(traineeData);
 		}
 		return ResponseEntity.ok(traineeData);
+
 	}
 
 	private List<TraineeDto> traineeData() {
@@ -259,168 +196,19 @@ public class RegistrationServiceImpl implements RegistrationService {
 
 	@Override
 	public List<TraineeDto> filterData(String spreadsheetId, String searchValue, String courseName, String collegeName,
-			String followupStatus) {
+			String followupStatus, String offeredAs, String yearOfPassOut) {
 		List<TraineeDto> traineeDtos = new ArrayList<TraineeDto>();
 		List<TraineeDto> listOfTrainee = traineeData();
-		if (searchValue != null && !searchValue.isEmpty()) {
-			if (!courseName.equalsIgnoreCase(ServiceConstant.NULL.toString())
-					&& !collegeName.equalsIgnoreCase(ServiceConstant.NULL.toString())
-					&& !followupStatus.equalsIgnoreCase(ServiceConstant.NULL.toString())) {
-				log.info("filterdata by collegeName:{},courseName:{},followupStatus:{},searchValue:{}", collegeName,
-						courseName, followupStatus, searchValue);
-				traineeDtos = listOfTrainee.stream()
-						.filter(traineeDto -> traineeDto != null
-								&& traineeDto.getCourseInfo().getCourse().equalsIgnoreCase(courseName))
-						.filter(traineeDto -> traineeDto != null
-								&& traineeDto.getEducationInfo().getCollegeName().equalsIgnoreCase(collegeName))
-						.filter(traineeDto -> traineeDto != null
-								&& traineeDto.getFollowupStatus().equalsIgnoreCase(followupStatus))
-						.filter(traineeDto -> traineeDto != null
-								&& traineeDto.getBasicInfo().getEmail().equalsIgnoreCase(searchValue))
-						.collect(Collectors.toList());
-				return traineeDtos;
-			} else if (!courseName.equalsIgnoreCase(ServiceConstant.NULL.toString())
-					&& !followupStatus.equalsIgnoreCase(ServiceConstant.NULL.toString())) {
-				log.info("filterdata by followupStatus:{},courseName:{},searchValue:{}", followupStatus, courseName,
-						searchValue);
-				traineeDtos = listOfTrainee.stream()
-						.filter(traineeDto -> traineeDto != null
-								&& traineeDto.getCourseInfo().getCourse().equalsIgnoreCase(courseName))
-						.filter(traineeDto -> traineeDto != null
-								&& traineeDto.getFollowupStatus().equalsIgnoreCase(followupStatus))
-						.filter(traineeDto -> traineeDto != null
-								&& traineeDto.getBasicInfo().getEmail().equalsIgnoreCase(searchValue))
-						.collect(Collectors.toList());
-				return traineeDtos;
-			} else if (!followupStatus.equalsIgnoreCase(ServiceConstant.NULL.toString())
-					&& !collegeName.equalsIgnoreCase(ServiceConstant.NULL.toString())) {
-				log.info("filterdata by collegeName:{},followupStatus:{},searchValue:{}", collegeName, followupStatus,
-						searchValue);
-				traineeDtos = listOfTrainee.stream()
-						.filter(traineeDto -> traineeDto != null
-								&& traineeDto.getFollowupStatus().equalsIgnoreCase(followupStatus))
-						.filter(traineeDto -> traineeDto != null
-								&& traineeDto.getEducationInfo().getCollegeName().equalsIgnoreCase(collegeName))
-						.filter(traineeDto -> traineeDto != null
-								&& traineeDto.getBasicInfo().getEmail().equalsIgnoreCase(searchValue))
-						.collect(Collectors.toList());
-				return traineeDtos;
-			} else if (!courseName.equalsIgnoreCase(ServiceConstant.NULL.toString())
-					&& !collegeName.equalsIgnoreCase(ServiceConstant.NULL.toString())) {
-				log.info("filterdata by collegeName:{},courseName:{},searchValue:{}", collegeName, courseName,
-						searchValue);
-				traineeDtos = listOfTrainee.stream()
-						.filter(traineeDto -> traineeDto != null
-								&& traineeDto.getCourseInfo().getCourse().equalsIgnoreCase(courseName))
-						.filter(traineeDto -> traineeDto != null
-								&& traineeDto.getEducationInfo().getCollegeName().equalsIgnoreCase(collegeName))
-						.filter(traineeDto -> traineeDto != null
-								&& traineeDto.getBasicInfo().getEmail().equalsIgnoreCase(searchValue))
-						.collect(Collectors.toList());
-				return traineeDtos;
-			} else if (!courseName.equalsIgnoreCase(ServiceConstant.NULL.toString())) {
-				log.info("filterdata by courseName:{},searchValue:{}", courseName, searchValue);
-				traineeDtos = listOfTrainee.stream()
-						.filter(traineeDto -> traineeDto != null
-								&& traineeDto.getCourseInfo().getCourse().equalsIgnoreCase(courseName))
-						.filter(traineeDto -> traineeDto != null
-								&& traineeDto.getBasicInfo().getEmail().equalsIgnoreCase(searchValue))
-						.collect(Collectors.toList());
-				return traineeDtos;
-			} else if (!collegeName.equalsIgnoreCase(ServiceConstant.NULL.toString())) {
-				log.info("filterdata by collegeName:{},searchValue:{}", collegeName, searchValue);
-				traineeDtos = listOfTrainee.stream()
-						.filter(traineeDto -> traineeDto != null
-								&& traineeDto.getEducationInfo().getCollegeName().equalsIgnoreCase(collegeName))
-						.filter(traineeDto -> traineeDto != null
-								&& traineeDto.getBasicInfo().getEmail().equalsIgnoreCase(searchValue))
-						.collect(Collectors.toList());
-				return traineeDtos;
-			} else if (!followupStatus.equalsIgnoreCase(ServiceConstant.NULL.toString())) {
-				log.info("filterdata by followupStatus:{},searchValue:{}", followupStatus, searchValue);
-				traineeDtos = listOfTrainee.stream()
-						.filter(traineeDto -> traineeDto != null
-								&& traineeDto.getFollowupStatus().equalsIgnoreCase(followupStatus))
-						.filter(traineeDto -> traineeDto != null
-								&& traineeDto.getBasicInfo().getEmail().equalsIgnoreCase(searchValue))
-						.collect(Collectors.toList());
-				return traineeDtos;
-			} else {
-				log.info("filterdata by searchValue:{}", searchValue);
-				traineeDtos = listOfTrainee.stream()
-						.filter(traineeDto -> traineeDto != null
-								&& traineeDto.getBasicInfo().getEmail().equalsIgnoreCase(searchValue)
-								|| traineeDto.getBasicInfo().getTraineeName().equalsIgnoreCase(searchValue))
-						.collect(Collectors.toList());
-				return traineeDtos;
+		if (listOfTrainee != null && searchValue != null) {
+			Predicate<TraineeDto> predicate =registrationUtil.findBySearchValue(searchValue, courseName, collegeName, followupStatus,
+					offeredAs, yearOfPassOut);
+			if(predicate!=null) {
+				traineeDtos=listOfTrainee.stream().filter(predicate).collect(Collectors.toList());
 			}
-		} else if (!courseName.equalsIgnoreCase(ServiceConstant.NULL.toString())
-				&& !collegeName.equalsIgnoreCase(ServiceConstant.NULL.toString())
-				&& !followupStatus.equalsIgnoreCase(ServiceConstant.NULL.toString())) {
-			log.info("filterdata by collegeName:{},courseName:{},followupStatus:{}", collegeName, courseName,
-					followupStatus);
-			traineeDtos = listOfTrainee.stream()
-					.filter(traineeDto -> traineeDto != null
-							&& traineeDto.getCourseInfo().getCourse().equalsIgnoreCase(courseName))
-					.filter(traineeDto -> traineeDto != null
-							&& traineeDto.getEducationInfo().getCollegeName().equalsIgnoreCase(collegeName))
-					.filter(traineeDto -> traineeDto != null
-							&& traineeDto.getFollowupStatus().equalsIgnoreCase(followupStatus))
-					.collect(Collectors.toList());
-			return traineeDtos;
-		} else if (!courseName.equalsIgnoreCase(ServiceConstant.NULL.toString())
-				&& !followupStatus.equalsIgnoreCase(ServiceConstant.NULL.toString())) {
-			log.info("filterdata by followupStatus:{},courseName:{}", followupStatus, courseName);
-			traineeDtos = listOfTrainee.stream()
-					.filter(traineeDto -> traineeDto != null
-							&& traineeDto.getCourseInfo().getCourse().equalsIgnoreCase(courseName))
-					.filter(traineeDto -> traineeDto != null
-							&& traineeDto.getFollowupStatus().equalsIgnoreCase(followupStatus))
-					.collect(Collectors.toList());
-			return traineeDtos;
-		} else if (!followupStatus.equalsIgnoreCase(ServiceConstant.NULL.toString())
-				&& !collegeName.equalsIgnoreCase(ServiceConstant.NULL.toString())) {
-			log.info("filterdata by collegeName:{},followupStatus:{}", collegeName, followupStatus);
-			traineeDtos = listOfTrainee.stream().filter(
-					traineeDto -> traineeDto != null && traineeDto.getFollowupStatus().equalsIgnoreCase(followupStatus))
-					.filter(traineeDto -> traineeDto != null
-							&& traineeDto.getEducationInfo().getCollegeName().equalsIgnoreCase(collegeName))
-					.collect(Collectors.toList());
-			return traineeDtos;
-		} else if (!courseName.equalsIgnoreCase(ServiceConstant.NULL.toString())
-				&& !collegeName.equalsIgnoreCase(ServiceConstant.NULL.toString())) {
-			log.info("filterdata by collegeName:{},courseName:{}", collegeName, courseName);
-			traineeDtos = listOfTrainee.stream()
-					.filter(traineeDto -> traineeDto != null
-							&& traineeDto.getCourseInfo().getCourse().equalsIgnoreCase(courseName))
-					.filter(traineeDto -> traineeDto != null
-							&& traineeDto.getEducationInfo().getCollegeName().equalsIgnoreCase(collegeName))
-					.collect(Collectors.toList());
-			return traineeDtos;
-		} else if (!courseName.equalsIgnoreCase(ServiceConstant.NULL.toString())) {
-			log.info("filterdata by courseName:{}", courseName);
-			traineeDtos = listOfTrainee.stream()
-					.filter(traineeDto -> traineeDto != null
-							&& traineeDto.getCourseInfo().getCourse().equalsIgnoreCase(courseName))
-					.collect(Collectors.toList());
-			return traineeDtos;
-		} else if (!collegeName.equalsIgnoreCase(ServiceConstant.NULL.toString())) {
-			log.info("filterdata by collegeName:{}", collegeName);
-			traineeDtos = listOfTrainee.stream()
-					.filter(traineeDto -> traineeDto != null
-							&& traineeDto.getEducationInfo().getCollegeName().equalsIgnoreCase(collegeName))
-					.collect(Collectors.toList());
-			return traineeDtos;
-		} else if (!followupStatus.equalsIgnoreCase(ServiceConstant.NULL.toString())) {
-			log.info("filterdata by followupStatus:{}", followupStatus);
-			traineeDtos = listOfTrainee.stream().filter(
-					traineeDto -> traineeDto != null && traineeDto.getFollowupStatus().equalsIgnoreCase(followupStatus))
-					.collect(Collectors.toList());
-			return traineeDtos;
 		}
 
 		return traineeDtos;
-	}
+	}	
 
 	private int findRowIndexByEmail(String spreadsheetId, String email) {
 		log.info("Finding row index by email in spreadsheetId: {} for email: {}", spreadsheetId, email);
@@ -452,37 +240,37 @@ public class RegistrationServiceImpl implements RegistrationService {
 		wrapper.setFieldValueAsNa(dto);
 		registrationUtil.cgpaToPercentage(dto);
 		TraineeDto traineeDto = registrationUtil.getDetailsByEmail(email);
-			int rowIndex = findRowIndexByEmail(spreadsheetId, email);
-			if (rowIndex != -1) {
-				log.info("Found row index {} for email: {}", rowIndex, email);
-				String range = sheetPropertyDto.getTraineeSheetName() + sheetPropertyDto.getRowStartRange() + rowIndex
-						+ ":" + sheetPropertyDto.getRowEndRange() + rowIndex;
-				List<List<Object>> values = Arrays.asList(wrapper.extractDtoDetails(dto));
-				if (!values.isEmpty()) {
-					List<Object> modifiedValues = new ArrayList<>(values.get(0).subList(1, values.get(0).size()));
-					values.set(0, modifiedValues);
-				}
-				ValueRange valueRange = new ValueRange();
-				valueRange.setValues(values);
-
-				UpdateValuesResponse updated = repo.update(spreadsheetId, range, valueRange);
-				if (updated != null && !updated.isEmpty()) {
-					service.updateDob(email, dto);
-					followUpService.updateFollowUp(spreadsheetId, email, dto);
-					cacheService.getCacheDataByEmail("sheetsData", "listOfTraineeData", email, dto);
-					log.info("Updated Successfully. Email: {}", email);
-					cacheService.getCacheDataByEmail("emailData", spreadsheetId, email, dto.getBasicInfo().getEmail());
-					updateCacheValues(spreadsheetId, email, dto, traineeDto);
-					return ResponseEntity.ok("Updated Successfully");
-				} else {
-					log.error("Error updating data. Email: {}", email);
-					return ResponseEntity.ok("error");
-				}
-
-			} else {
-				log.warn("Email not found: {}", email);
-				return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Email not found");
+		int rowIndex = findRowIndexByEmail(spreadsheetId, email);
+		if (rowIndex != -1) {
+			log.info("Found row index {} for email: {}", rowIndex, email);
+			String range = sheetPropertyDto.getTraineeSheetName() + sheetPropertyDto.getRowStartRange() + rowIndex + ":"
+					+ sheetPropertyDto.getRowEndRange() + rowIndex;
+			List<List<Object>> values = Arrays.asList(wrapper.extractDtoDetails(dto));
+			if (!values.isEmpty()) {
+				List<Object> modifiedValues = new ArrayList<>(values.get(0).subList(1, values.get(0).size()));
+				values.set(0, modifiedValues);
 			}
+			ValueRange valueRange = new ValueRange();
+			valueRange.setValues(values);
+
+			UpdateValuesResponse updated = repo.update(spreadsheetId, range, valueRange);
+			if (updated != null && !updated.isEmpty()) {
+				service.updateDob(email, dto);
+				followUpService.updateFollowUp(spreadsheetId, email, dto);
+				cacheService.getCacheDataByEmail("sheetsData", "listOfTraineeData", email, dto);
+				log.info("Updated Successfully. Email: {}", email);
+				cacheService.getCacheDataByEmail("emailData", spreadsheetId, email, dto.getBasicInfo().getEmail());
+				updateCacheValues(spreadsheetId, email, dto, traineeDto);
+				return ResponseEntity.ok("Updated Successfully");
+			} else {
+				log.error("Error updating data. Email: {}", email);
+				return ResponseEntity.ok("error");
+			}
+
+		} else {
+			log.warn("Email not found: {}", email);
+			return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Email not found");
+		}
 	}
 
 	private void updateCacheValues(String spreadsheetId, String email, TraineeDto dto, TraineeDto traineeDto) {
@@ -491,11 +279,10 @@ public class RegistrationServiceImpl implements RegistrationService {
 		cacheService.getCacheDataByEmail("emailData", spreadsheetId, email, dto.getBasicInfo().getEmail());
 		cacheService.EmailUpdate("usnNumber", "listOfUsnNumbers", traineeDto.getCsrDto().getUsnNumber(),
 				dto.getCsrDto().getUsnNumber());
-		cacheService.EmailUpdate("uniqueNumber", "listofUniqueNumbers",
-				traineeDto.getCsrDto().getUniqueId(), dto.getCsrDto().getUniqueId());
+		cacheService.EmailUpdate("uniqueNumber", "listofUniqueNumbers", traineeDto.getCsrDto().getUniqueId(),
+				dto.getCsrDto().getUniqueId());
 		cacheService.updateValue("alternativeNumber", "listOfAlternativeContactNumbers",
-				traineeDto.getCsrDto().getAlternateContactNumber(),
-				dto.getCsrDto().getAlternateContactNumber());
+				traineeDto.getCsrDto().getAlternateContactNumber(), dto.getCsrDto().getAlternateContactNumber());
 		cacheService.updateValue("contactData", spreadsheetId, traineeDto.getBasicInfo().getContactNumber(),
 				dto.getBasicInfo().getContactNumber());
 	}
@@ -514,91 +301,17 @@ public class RegistrationServiceImpl implements RegistrationService {
 
 	@Override
 	public ResponseEntity<List<TraineeDto>> getSearchSuggestion(String spreadsheetId, String value, String courseName,
-			String collegeName, String followupStatus) {
+			String collegeName, String followupStatus, String offeredAs, String yearOfPassOut) {
 		List<TraineeDto> suggestion = new ArrayList<>();
-//		List<List<Object>> dataList = repo.getEmailsAndNames(spreadsheetId, value);
 		if (value != null && !value.isEmpty()) {
-//			List<TraineeDto> listOfTrainee = registrationUtil.convertToTraineeDto(dataList);
 			List<TraineeDto> listOfTrainee = traineeData();
-			if (!courseName.equalsIgnoreCase(ServiceConstant.NULL.toString())
-					&& !collegeName.equalsIgnoreCase(ServiceConstant.NULL.toString())
-					&& !followupStatus.equalsIgnoreCase(ServiceConstant.NULL.toString())) {
-				log.info("suggestion by college:{} and course name:{} and followupStatus :{} ", collegeName, courseName,
-						followupStatus);
-				suggestion = listOfTrainee.stream()
-						.filter(traineeDto -> traineeDto.getCourseInfo().getCourse().equalsIgnoreCase(courseName))
-						.filter(traineeDto -> traineeDto.getEducationInfo().getCollegeName()
-								.equalsIgnoreCase(collegeName))
-						.filter(traineeDto -> traineeDto.getFollowupStatus().equalsIgnoreCase(followupStatus))
-						.filter(traineeDto -> traineeDto.getBasicInfo().getTraineeName().toLowerCase()
-								.startsWith(value.toLowerCase()))
-						.collect(Collectors.toList());
-				return ResponseEntity.ok(suggestion);
-			} else if (!courseName.equalsIgnoreCase(ServiceConstant.NULL.toString())
-					&& !collegeName.equalsIgnoreCase(ServiceConstant.NULL.toString())) {
-				log.info("suggestion by college:{} and course name:{}", collegeName, courseName);
-				suggestion = listOfTrainee.stream()
-						.filter(traineeDto -> traineeDto.getCourseInfo().getCourse().equalsIgnoreCase(courseName))
-						.filter(traineeDto -> traineeDto.getEducationInfo().getCollegeName()
-								.equalsIgnoreCase(collegeName))
-						.filter(traineeDto -> traineeDto.getBasicInfo().getTraineeName().toLowerCase()
-								.startsWith(value.toLowerCase()))
-						.collect(Collectors.toList());
-				return ResponseEntity.ok(suggestion);
-			} else if (!courseName.equalsIgnoreCase(ServiceConstant.NULL.toString())
-					&& !followupStatus.equalsIgnoreCase(ServiceConstant.NULL.toString())) {
-				log.info("suggestion by followupStatus:{} and course name:{}", followupStatus, courseName);
-				suggestion = listOfTrainee.stream()
-						.filter(traineeDto -> traineeDto.getCourseInfo().getCourse().equalsIgnoreCase(courseName))
-						.filter(traineeDto -> traineeDto.getFollowupStatus().equalsIgnoreCase(followupStatus))
-						.filter(traineeDto -> traineeDto.getBasicInfo().getTraineeName().toLowerCase()
-								.startsWith(value.toLowerCase()))
-						.collect(Collectors.toList());
-				return ResponseEntity.ok(suggestion);
-			} else if (!followupStatus.equalsIgnoreCase(ServiceConstant.NULL.toString())
-					&& !collegeName.equalsIgnoreCase(ServiceConstant.NULL.toString())) {
-				log.info("suggestion by college:{} and followupStatus:{}", collegeName, followupStatus);
-				suggestion = listOfTrainee.stream()
-						.filter(traineeDto -> traineeDto.getFollowupStatus().equalsIgnoreCase(followupStatus))
-						.filter(traineeDto -> traineeDto.getEducationInfo().getCollegeName()
-								.equalsIgnoreCase(collegeName))
-						.filter(traineeDto -> traineeDto.getBasicInfo().getTraineeName().toLowerCase()
-								.startsWith(value.toLowerCase()))
-						.collect(Collectors.toList());
-				return ResponseEntity.ok(suggestion);
-			} else if (!courseName.equalsIgnoreCase(ServiceConstant.NULL.toString())) {
-				log.info("suggestion by course name:{}", courseName);
-				suggestion = listOfTrainee.stream()
-						.filter(traineeDto -> traineeDto.getCourseInfo().getCourse().equalsIgnoreCase(courseName))
-						.filter(traineeDto -> traineeDto.getBasicInfo().getTraineeName().toLowerCase()
-								.startsWith(value.toLowerCase()))
-						.collect(Collectors.toList());
-				return ResponseEntity.ok(suggestion);
-			} else if (!collegeName.equalsIgnoreCase(ServiceConstant.NULL.toString())) {
-				log.info("suggestion by course name:{}", collegeName);
-				suggestion = listOfTrainee.stream().filter(
-						traineeDto -> traineeDto.getEducationInfo().getCollegeName().equalsIgnoreCase(collegeName))
-						.filter(traineeDto -> traineeDto.getBasicInfo().getTraineeName().toLowerCase()
-								.startsWith(value.toLowerCase()))
-						.collect(Collectors.toList());
-				return ResponseEntity.ok(suggestion);
-			} else if (!followupStatus.equalsIgnoreCase(ServiceConstant.NULL.toString())) {
-				log.info("suggestion by followupStatus:{}", followupStatus);
-				suggestion = listOfTrainee.stream()
-						.filter(traineeDto -> traineeDto.getFollowupStatus().equalsIgnoreCase(followupStatus))
-						.filter(traineeDto -> traineeDto.getBasicInfo().getTraineeName().toLowerCase()
-								.startsWith(value.toLowerCase()))
-						.collect(Collectors.toList());
-				return ResponseEntity.ok(suggestion);
-			} else {
-				suggestion = listOfTrainee.stream().filter(traineeDto -> traineeDto.getBasicInfo().getTraineeName()
-						.toLowerCase().startsWith(value.toLowerCase())).collect(Collectors.toList());
-				log.info("Returning {} search suggestions", suggestion.size());
-				return ResponseEntity.ok(suggestion);
+			Predicate<TraineeDto> predicate =registrationUtil.findSuggestion(value, courseName, collegeName, followupStatus,
+					offeredAs, yearOfPassOut);
+			if(predicate!=null) {
+				suggestion=listOfTrainee.stream().filter(predicate).collect(Collectors.toList());
 			}
 		}
-		log.warn("Null value provided for search suggestion");
-		return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ArrayList<>());
+		return ResponseEntity.ok(suggestion);
 	}
 
 	@Override
