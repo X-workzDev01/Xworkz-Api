@@ -159,7 +159,7 @@ public class BirthadayServiceImpl implements BirthadayService {
 		Comparator<TraineeDto> comparator = Comparator
 				.comparing(trainee -> trainee.getBasicInfo().getTraineeName());
 		List<BirthDayInfoDto> mailSentList = repository.getBirthadayDetails(spreadsheetId).stream()
-				.map(wrapper::listToBirthDayInfo).sorted().collect(Collectors.toList());
+				.map(wrapper::listToBirthDayInfo).collect(Collectors.toList());
 		List<TraineeDto> listOfTrainees = registrationRepo.readData(spreadsheetId).stream().map(wrapper::listToDto).sorted(comparator)
 				.collect(Collectors.toList());
 		List<BirthdayDetailsDto> listofBirthday = new ArrayList<>();
@@ -174,7 +174,7 @@ public class BirthadayServiceImpl implements BirthadayService {
 		listofBirthday.stream().forEach(birthdayDetailsDto -> {
 			mailSentList.stream().forEach(birthDayInfoDto -> {
 				if (birthDayInfoDto.getTraineeEmail().equalsIgnoreCase(birthdayDetailsDto.getBasicInfoDto().getEmail())) {
-					if (!birthDayInfoDto.getBirthDayMailSent().equals(null) && !birthDayInfoDto.getBirthDayMailSent().equals("")) {
+					if (birthDayInfoDto.getBirthDayMailSent()!=null && !birthDayInfoDto.getBirthDayMailSent().equals("")) {
 						birthDayInfoDto.setBirthDayMailSent(birthDayInfoDto.getBirthDayMailSent());
 					} else {
 						birthDayInfoDto.setBirthDayMailSent("NA");
